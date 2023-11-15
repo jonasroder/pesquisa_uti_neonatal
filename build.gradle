@@ -27,7 +27,6 @@ tasks.named('bootBuildImage') {
 	builder = 'paketobuildpacks/builder-jammy-base:latest'
 }
 
-
 tasks.register('npmInstall', Exec) {
 	workingDir = 'src/front'
 	commandLine 'npm.cmd', 'install'
@@ -39,8 +38,37 @@ tasks.register('npmBuild', Exec) {
 	commandLine 'npm.cmd', 'run', 'build'
 }
 
-processResources.dependsOn npmBuild
+tasks.register('fullBuild') {
+	dependsOn 'npmBuild'
+	finalizedBy 'clean', 'build'
+}
 
+tasks.named('fullBuild') {
+	doLast {
+		println 'Front-end and back-end build complete!'
+	}
+}
+
+tasks.register('runDevMode', Exec) {
+	workingDir = 'src/front'
+	commandLine 'npm.cmd', 'run', 'serve'
+}
+
+tasks.register('runProductionJar', Exec) {
+	workingDir = 'build/libs'
+	commandLine 'java', '-jar', 'microbiome-lab-ufu-0.0.1-SNAPSHOT.jar', '-tf'
+}
+
+
+
+//Executar o npm em modo de desenvolvmento
+// ./gradlew runDevMode
+
+//Para Builder o Project
+// ./gradlew buildWithFrontend
+
+//Para Executar o arquivo Jar de produção
+//./gradlew runProductionJar
 
 
 

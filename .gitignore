@@ -12,7 +12,6 @@ node_modules/
 
 ### Build do Frontend ###
 /dist/
-/static/
 
 ### STS (Spring Tool Suite) ###
 .apt_generated
@@ -54,3 +53,13 @@ out/
 
 ### Outros ###
 HELP.md  # Se for um arquivo que não deseja incluir no repositório
+
+# Ignorar a pasta 'static'
+/src/main/resources/static/
+
+# Incluir arquivos da pasta 'front', exceto 'node_modules'
+/front/node_modules/
+/front/node_modules/*
+!/front/node_modules/.gitkeep
+/front/
+!/front/
