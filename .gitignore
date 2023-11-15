@@ -54,12 +54,5 @@ out/
 ### Outros ###
 HELP.md  # Se for um arquivo que não deseja incluir no repositório
 
-# Ignorar a pasta 'static'
-/src/main/resources/static/
-
-# Incluir arquivos da pasta 'front', exceto 'node_modules'
-/front/node_modules/
-/front/node_modules/*
-!/front/node_modules/.gitkeep
-/front/
-!/front/
+# Incluir todos os arquivos da pasta 'front', exceto 'node_modules'
+/src/front/node_modules/
