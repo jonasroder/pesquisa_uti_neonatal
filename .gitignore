@@ -10,9 +10,6 @@ build/
 ### Node ###
 node_modules/
 
-### Build do Frontend ###
-/dist/
-
 ### STS (Spring Tool Suite) ###
 .apt_generated
 .classpath
@@ -52,7 +49,9 @@ out/
 .env.local
 
 ### Outros ###
-HELP.md  # Se for um arquivo que não deseja incluir no repositório
+HELP.md
 
-# Incluir todos os arquivos da pasta 'front', exceto 'node_modules'
-/src/front/node_modules/
+# Ignorar toda a pasta static
+src/main/resources/static/
+
+

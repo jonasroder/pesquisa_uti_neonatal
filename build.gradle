@@ -38,12 +38,12 @@ tasks.register('npmBuild', Exec) {
 	commandLine 'npm.cmd', 'run', 'build'
 }
 
-tasks.register('fullBuild') {
+tasks.register('buildWithFrontend') {
 	dependsOn 'npmBuild'
 	finalizedBy 'clean', 'build'
 }
 
-tasks.named('fullBuild') {
+tasks.named('buildWithFrontend') {
 	doLast {
 		println 'Front-end and back-end build complete!'
 	}
