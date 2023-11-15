@@ -9,7 +9,6 @@ module.exports = defineConfig({
 	      alias: {
 	        // Adiciona aliases para facilitar as importações
 	        'components': '@/components',
-	        'views': '@/views',
 	        // Você pode adicionar mais aliases conforme necessário
 	      }
     },
