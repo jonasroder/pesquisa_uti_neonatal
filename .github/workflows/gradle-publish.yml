@@ -56,11 +56,12 @@ jobs:
 
 
 
-      # Configuração do SSH Agent para usar a chave SSH privada
-      - name: Setup SSH Agent
-        uses: webfactory/ssh-agent@v0.5.2
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      # Configuração do SSH Agent para adicionar a chave SSH com passphrase
+      - name: Add SSH key with passphrase
+        env:
+          SSH_PASSPHRASE: ${{ secrets.SERVER_PASSWORD }}
+        run: |
+          echo "$SSH_PASSPHRASE" | ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
 
       # Copiar o arquivo JAR para o servidor usando SCP
       - name: Copy JAR to Server
@@ -68,4 +69,4 @@ jobs:
 
       # Reiniciar a aplicação no servidor
       - name: Restart Application on Server
-        run: ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "sudo systemctl restart microbiome-lab-ufu-0.0.1-SNAPSHOT.jar"
+        run: ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "sudo systemctl restart microbiome-lab-ufu"IP }} "sudo systemctl restart microbiome-lab-ufu-0.0.1-SNAPSHOT.jar"
