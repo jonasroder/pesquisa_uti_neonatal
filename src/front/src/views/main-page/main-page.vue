@@ -1,5 +1,5 @@
 <template>
     <div class="hello">
-        teste git action
+       Página principal do software
     </div>
 </template>
