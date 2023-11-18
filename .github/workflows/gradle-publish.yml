@@ -63,15 +63,26 @@ jobs:
       - name: Copy JAR to Workspace Root
         run: cp build/libs/*.jar ./
 
-      - name: Copy JAR to Server
-        uses: appleboy/scp-action@v0.1.4
+
+      - name: Copy JAR to Server and Restart Application
+        uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: './*.jar'
-          target: '/home/saudeemequilibrio/'
+          script: |
+            # Parar a aplicação atual
+            pkill -f 'java -jar'
+            # Remover o .jar antigo
+            rm -f /home/saudeemequilibrio/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar
+            rm -f /home/saudeemequilibrio/microbiome-lab-ufu-0.0.1-SNAPSHOT-plain.jar
+            # Copiar o novo arquivo .jar
+            cp ./microbiome-lab-ufu-0.0.1-SNAPSHOT.jar /home/saudeemequilibrio/
+            # Iniciar a nova aplicação
+            cd /home/saudeemequilibrio/
+            nohup java -jar microbiome-lab-ufu-0.0.1-SNAPSHOT.jar &      
+
 
       - name: Remove JAR from Workspace
         run: rm ./*.jar
