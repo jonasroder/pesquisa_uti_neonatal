@@ -54,19 +54,11 @@ jobs:
           name: build-artifact
           path: build/libs/*.jar
 
-
       - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
 
-
-      - name: Unlock SSH Key
-        env:
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
-        run: |
-          echo "$SSH_PASSPHRASE" | ssh-add -
 
       - name: Download Build Artifact
         uses: actions/download-artifact@v2
