@@ -1,5 +1,5 @@
 <template>
     <div class="hello">
-       Teste final de deploy de aplicação web com spring boot
+       <b>Denise Eu te Amo</b>
     </div>
 </template>
