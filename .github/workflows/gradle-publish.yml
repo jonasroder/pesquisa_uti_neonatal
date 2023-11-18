@@ -61,8 +61,10 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Unlock SSH Key
+        env:
+          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
         run: |
-          echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add -
+          echo "$SSH_PASSPHRASE" | ssh-add -
 
       - name: Download Build Artifact
         uses: actions/download-artifact@v2
