@@ -59,6 +59,14 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+          path: build/libs
+
+
       - name: Copy JAR to Server
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -67,4 +75,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: './build/libs/*.jar'
-          target: '/home/saudeemequilibrio/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar'
+          target: '/home/saudeemequilibrio/'
+
+
