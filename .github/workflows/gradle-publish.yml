@@ -54,12 +54,14 @@ jobs:
           name: build-artifact
           path: build/libs/*.jar
 
-
-
-      - name: Setup SSH connection
+      - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Unlock SSH Key
+        run: |
+          echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add -
 
       - name: Download Build Artifact
         uses: actions/download-artifact@v2
@@ -73,5 +75,5 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ./build/libs/*.jar
-          target: /home/saudeemequilibrio/
+          source: './build/libs/*.jar'
+          target: '/home/saudeemequilibrio/'
