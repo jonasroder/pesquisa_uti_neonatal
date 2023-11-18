@@ -66,6 +66,7 @@ jobs:
           name: build-artifact
           path: build/libs
 
+
       - name: Copy JAR to Server
         uses: appleboy/scp-action@v0.1.4
         with:
