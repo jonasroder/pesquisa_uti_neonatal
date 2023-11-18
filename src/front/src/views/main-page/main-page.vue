@@ -1,5 +1,5 @@
 <template>
     <div class="hello">
-       Página principal do software. Teste deploy 2
+       Teste final de deploy de aplicação web com spring boot
     </div>
 </template>
