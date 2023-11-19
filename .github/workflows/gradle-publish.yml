@@ -70,6 +70,13 @@ jobs:
 
 
 
+      - name: Stop Current Application
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          script: |
+            pkill -f 'java -jar'
 
 
 
