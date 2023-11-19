@@ -54,9 +54,6 @@ jobs:
           name: build-artifact
           path: build/libs/*.jar
 
-      - name: Copy JAR to Workspace Root
-        run: cp build/libs/*.jar ./
-
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.5.0
         with:
@@ -69,7 +66,7 @@ jobs:
         run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "rm -f /home/saudeemequilibrio/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar"
 
       - name: Transferir JAR para o Servidor
-        run: scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ./microbiome-lab-ufu-0.0.1-SNAPSHOT.jar root@${{ secrets.SERVER_IP }}:/home/saudeemequilibrio/
+        run: scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} build/libs/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar root@${{ secrets.SERVER_IP }}:/home/saudeemequilibrio/
 
       - name: Start New Application
         run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "cd /home/saudeemequilibrio/ && tmux new-session -d -s myapp 'java -Dspring.profiles.active=prod -jar microbiome-lab-ufu-0.0.1-SNAPSHOT.jar'"
