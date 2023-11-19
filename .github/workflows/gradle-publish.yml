@@ -70,7 +70,3 @@ jobs:
 
       - name: Start New Application
         run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "cd /home/saudeemequilibrio/ && tmux new-session -d -s myapp 'java -Dspring.profiles.active=prod -jar microbiome-lab-ufu-0.0.1-SNAPSHOT.jar'"
-
-      - name: Remove JAR from Workspace
-        run: rm ./*.jar
-
