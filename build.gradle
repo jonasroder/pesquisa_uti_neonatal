@@ -55,16 +55,19 @@ tasks.register('buildWithFrontend') {
 	finalizedBy 'clean', 'build'
 }
 
+
 tasks.named('buildWithFrontend') {
 	doLast {
 		println 'Front-end and back-end build complete!'
 	}
 }
 
+
 tasks.register('runDevMode', Exec) {
 	workingDir = 'src/front'
 	commandLine 'npm.cmd', 'run', 'serve'
 }
+
 
 tasks.register('runProductionJar', Exec) {
 	workingDir = 'build/libs'
