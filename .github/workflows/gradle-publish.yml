@@ -42,17 +42,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
 
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+
       - name: Build with Gradle
         run: ./gradlew buildWithFrontend
+
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2
         with:
           name: build-artifact
           path: build/libs/*.jar
+
+
+      - name: Copy JAR to Workspace Root
+        run: cp build/libs/*.jar ./
 
 
 
@@ -63,11 +70,6 @@ jobs:
 
 
 
-      - name: Copy JAR to Workspace Root
-        run: cp build/libs/*.jar ./
-
-
-
       - name: Stop Current Application
         uses: appleboy/ssh-action@v0.1.4
         with:
@@ -75,7 +77,6 @@ jobs:
           username: root
           script: |
             pkill -f 'java -jar'
-
 
 
 
