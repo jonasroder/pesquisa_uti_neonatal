@@ -1,10 +1,10 @@
 import axios from "axios";
 
-export const serviceGetLoginData = async (data) => {
+export const serviceAuthenticateUser = async (data) => {
 	try {
-		const res = await axios.get(`/api/singin/login/${data}`);
-		return res.data; // Return the data directly
+		const res = await axios.post('/api/authenticate/user', data);
+		return res.data; // Retorna os dados diretamente
 	} catch (e) {
 		console.error(e);
 	}
-}
+};

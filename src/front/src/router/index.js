@@ -1,15 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MainPage from '../views/main-page/main-page.vue'
 
 const routes = [
 	{
 		path: '/',
 		name: 'MainPage',
-		component: MainPage
+		component: () => import("../views/main-page/main-page.vue"),
 	},
 	{
 		path: '/login',
-		name: 'Login',
+		name: 'Login-Page',
 		component: () => import("../views/login/Login-Page.vue"),
 	},
 	// adicione mais rotas conforme necessário

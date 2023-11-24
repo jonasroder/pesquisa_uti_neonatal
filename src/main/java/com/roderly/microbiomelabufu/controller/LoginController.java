@@ -1,20 +1,18 @@
 package com.roderly.microbiomelabufu.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.roderly.microbiomelabufu.model.UsuarioModel;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/singin")
+@RequestMapping("/api/authenticate")
 public class LoginController {
 
-    @GetMapping("/login")
-    public String hello() {
-        return "meu primeiro código java 2";
+    @PostMapping("/user") // Adicione este método para lidar com solicitações POST
+    public String authenticateUser(@RequestBody UsuarioModel data) {
+        // Aqui você pode processar os dados de login
+        // Certifique-se de criar uma classe LoginData para representar os dados de login
+        return "Autenticação bem-sucedida"; // Substitua com a lógica real de autenticação
     }
-
-
 
     @GetMapping("/login2")
     public String hello2() {
