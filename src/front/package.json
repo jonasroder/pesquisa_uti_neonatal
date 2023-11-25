@@ -14,7 +14,8 @@
     "core-js": "^3.8.3",
     "service": "^0.1.4",
     "vue": "^3.2.13",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vuetify": "^3.4.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

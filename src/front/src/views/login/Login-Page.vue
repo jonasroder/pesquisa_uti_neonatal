@@ -1,15 +1,16 @@
 <script setup>
     import { serviceAuthenticateUser } from "@/service/login";
     import {ref, onMounted, reactive} from "vue";
+    import TextInput from '@/components/TextInput.vue';
+
 
     // reactive state
     const login = reactive({Usuario: "", Senha: ""});
-    const msg = ref('');
+    const showPassword = ref(false);
 
     // lifecycle hooks
     onMounted(async () => {
        // msg.value = await serviceAuthenticateUser(10);
-        console.log(msg)
        await submitLogin()
     })
 
@@ -17,7 +18,7 @@
     // functions that mutate state and trigger updates
     const submitLogin = async () => {
         const res = await serviceAuthenticateUser(login)
-        console.log(login.Usuario + " " + login.Senha + res)
+        console.log(login.Usuario + " " + login.Senha + res + showPassword.value)
     }
 
 
@@ -42,17 +43,29 @@
                             </div>
 
                             <div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="username" placeholder="Usuário" v-model="login.Usuario">
-                                    <label for="username">Usuário</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="password" class="form-control" id="password" placeholder="Senha" v-model="login.Senha">
-                                    <label for="password">Senha</label>
-                                </div>
+
+                                <!--Input Usuário-->
+                                <text-input
+                                    v-model="login.Usuario"
+                                    label="Usuario"
+                                    type="text"
+                                    prepend-icon="fa-solid fa-user"
+                                />
+
+                                <!--Input Senha-->
+                                <text-input
+                                    v-model="login.Senha"
+                                    label="Senha"
+                                    type="password"
+                                    prepend-icon="fa-solid fa-lock"
+                                />
+
                             </div>
 
-                            <input type="submit" value="Fazer login" class="btn btn-block btn-primary"  @click="submitLogin">
+                            <div class="d-grid gap-2">
+                                <button  type="button" class="btn btn-primary">FAZER LOGIN</button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -66,19 +79,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
-    $font-family-sans-serif-2: 'Roboto', sans-serif;
-    $font-family-serif: 'Source Serif Pro', serif;
-    $font-family-sans-serif: 'Roboto', sans-serif;
-
-    .btn-block {
-        display: block;
-        width: 100%;
-    }
-
-    body {
-        font-family: $font-family-sans-serif;
-        background-color: #f8fafb;
-    }
 
     p {
         color: darken(#ccc, 10%);
@@ -89,12 +89,6 @@
         padding: 7rem 0;
     }
 
-    .content {
-        .btn {
-            height: 54px;
-            padding-left: 30px;
-            padding-right: 30px;
-        }
-    }
+
 
 </style>
