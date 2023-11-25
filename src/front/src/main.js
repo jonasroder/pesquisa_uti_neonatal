@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import Toastify from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 import 'vuetify/styles'
 import './styles/main.scss';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
@@ -25,4 +27,4 @@ const vuetify = createVuetify({
 })
 
 
-createApp(App).use(router).use(vuetify).mount('#app')
+createApp(App).use(router).use(vuetify).use(Toastify).mount('#app')
