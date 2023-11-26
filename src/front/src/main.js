@@ -1,30 +1,20 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import './plugins/axios'
+import vuetify from './plugins/vuetify'
 import Toastify from 'vue3-toastify';
+
 import 'vue3-toastify/dist/index.css';
 import 'vuetify/styles'
 import './styles/main.scss';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import '@fortawesome/fontawesome-free/css/all.css'
 
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-import { aliases, fa } from 'vuetify/iconsets/fa';
+// O axios já está configurado via importação, então não precisamos configurá-lo novamente aqui.
 
-
-const vuetify = createVuetify({
-	icons: {
-		defaultSet: 'fa',
-		aliases,
-		sets: {
-			fa,
-		},
-	},
-	components,
-	directives,
-})
-
-
-createApp(App).use(router).use(vuetify).use(Toastify).mount('#app')
+createApp(App)
+	.use(router)
+	.use(vuetify)
+	.use(Toastify)
+	.mount('#app')

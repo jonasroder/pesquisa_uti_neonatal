@@ -1,28 +1,28 @@
 <script setup>
     import { serviceAuthenticateUser } from "@/service/login";
-    import {ref, onMounted, reactive} from "vue";
+    import { reactive } from "vue";
+    import { useRouter } from "vue-router"; // Importe o useRouter
     import TextInput from '@/components/TextInput.vue';
 
 
-    // reactive state
-    const login = reactive({Usuario: "", Senha: ""});
-    const showPassword = ref(false);
-
-    // lifecycle hooks
-    onMounted(async () => {
-       // msg.value = await serviceAuthenticateUser(10);
-       await submitLogin()
-    })
+    const login = reactive({usuario: "", senha: ""});
+    const router = useRouter(); // Crie uma instância do useRouter
 
 
-    // functions that mutate state and trigger updates
+
     const submitLogin = async () => {
-        const res = await serviceAuthenticateUser(login)
-        console.log(login.Usuario + " " + login.Senha + res + showPassword.value)
+        try {
+            const response = await serviceAuthenticateUser(login);
+            if (response) {
+                router.push('/');
+            }
+        } catch (error) {
+            console.error("Erro ao realizar login:", error);
+        }
     }
 
-
 </script>
+
 
 <template>
 
@@ -43,27 +43,25 @@
                             </div>
 
                             <div>
-
                                 <!--Input Usuário-->
                                 <text-input
-                                    v-model="login.Usuario"
-                                    label="Usuario"
+                                    v-model="login.usuario"
+                                    label="Usuário"
                                     type="text"
                                     prepend-icon="fa-solid fa-user"
                                 />
 
                                 <!--Input Senha-->
                                 <text-input
-                                    v-model="login.Senha"
+                                    v-model="login.senha"
                                     label="Senha"
                                     type="password"
                                     prepend-icon="fa-solid fa-lock"
                                 />
-
                             </div>
 
                             <div class="d-grid gap-2">
-                                <button  type="button" class="btn btn-primary">FAZER LOGIN</button>
+                                <button  type="button" class="btn btn-primary" @click="submitLogin">FAZER LOGIN</button>
                             </div>
 
                         </div>

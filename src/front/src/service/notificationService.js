@@ -13,7 +13,7 @@ export function setNotification(message, type = 'warning') {
 		draggablePercent: 0.6, // Percentual do arrasto necessário para descartar
 		showCloseButtonOnHover: true, // Mostra o botão de fechar ao passar o mouse
 		hideProgressBar: false, // Esconde a barra de progresso
-		closeButton: 'button', // Pode ser um elemento ou texto para o botão de fechar
+		closeButton: true, // Pode ser um elemento ou texto para o botão de fechar
 		icon: true, // Mostra o ícone na notificação
 	});
 }
