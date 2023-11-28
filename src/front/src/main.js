@@ -8,10 +8,7 @@ import Toastify from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import 'vuetify/styles'
 import './styles/main.scss';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import '@fortawesome/fontawesome-free/css/all.css'
-
-// O axios já está configurado via importação, então não precisamos configurá-lo novamente aqui.
 
 createApp(App)
 	.use(router)

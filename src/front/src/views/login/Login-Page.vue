@@ -1,7 +1,7 @@
 <script setup>
     import { serviceAuthenticateUser } from "@/service/login";
     import { reactive } from "vue";
-    import { useRouter } from "vue-router"; // Importe o useRouter
+    import { useRouter } from "vue-router";
     import TextInput from '@/components/TextInput.vue';
 
 
@@ -23,54 +23,45 @@
 
 </script>
 
-
 <template>
+    <v-container fluid class="align-center">
+        <v-row  align="center" justify="center" class="fill-height">
+            <v-col cols="12" md="5">
+                <v-img :src="require('../../assets/logo_grande.png')" alt="Image" contain></v-img>
+            </v-col>
 
-    <div class="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <img src="../../assets/logo_grande.png" alt="Image" class="img-fluid">
-                </div>
-
-                <div class="col-md-6 contents  d-flex align-items-center">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-
-                            <div class="mb-4">
-                                <h3 class="text-center">Bem-vindo ao Portal de Pesquisa Saúde em Equilíbio</h3>
-                                <p class="mb-4">Por favor, entre com seu usuário e senha para acessar o banco de dados de pesquisa.</p>
-                            </div>
-
-                            <div>
-                                <!--Input Usuário-->
-                                <text-input
-                                    v-model="login.usuario"
-                                    label="Usuário"
-                                    type="text"
-                                    prepend-icon="fa-solid fa-user"
-                                />
-
-                                <!--Input Senha-->
-                                <text-input
-                                    v-model="login.senha"
-                                    label="Senha"
-                                    type="password"
-                                    prepend-icon="fa-solid fa-lock"
-                                />
-                            </div>
-
-                            <div class="d-grid gap-2">
-                                <button  type="button" class="btn btn-primary" @click="submitLogin">FAZER LOGIN</button>
-                            </div>
-
+            <v-col cols="12" md="5" class="d-flex align-center">
+                <v-row justify="center">
+                    <v-col cols="12" md="8">
+                        <div class="text-center mb-4">
+                            <h3>Bem-vindo ao Portal de Pesquisa Saúde em Equilíbrio</h3>
+                            <p>Por favor, entre com seu usuário e senha para acessar o banco de dados de pesquisa.</p>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
+                        <div>
+                            <!--Input Usuário-->
+                            <text-input
+                                v-model="login.usuario"
+                                label="Usuário"
+                                type="text"
+                                prepend-icon="fa-solid fa-user"
+                            />
+
+                            <!--Input Senha-->
+                            <text-input
+                                v-model="login.senha"
+                                label="Senha"
+                                type="password"
+                                prepend-icon="fa-solid fa-lock"
+                            />
+                        </div>
+
+                        <v-btn color="primary" block @click="submitLogin">FAZER LOGIN</v-btn>
+                    </v-col>
+                </v-row>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 
