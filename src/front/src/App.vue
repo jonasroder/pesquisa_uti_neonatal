@@ -10,14 +10,14 @@ const isLoginPage = computed(() => route.path === '/login');
 
 
 <template>
-    <v-app theme="dark" v-if="!isLoginPage">
+    <v-app v-if="!isLoginPage">
         <menu-lateral/>
         <barra-superior />
-        <v-main class="bg-grey-lighten-3">
+        <v-main>
             <v-container>
                 <v-row>
                     <v-col>
-                        <v-sheet min-height="70vh"  rounded="lg" >
+                        <v-sheet min-height="70vh"  rounded="lg" color="primary" >
                             <div id="app">
                                 <router-view/>
                             </div>

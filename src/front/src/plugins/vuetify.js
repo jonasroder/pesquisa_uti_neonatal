@@ -4,6 +4,29 @@ import * as directives from 'vuetify/directives'
 import { aliases, fa } from 'vuetify/iconsets/fa'
 
 export default createVuetify({
+	theme: {
+		defaultTheme: 'light', // Mova defaultTheme para fora do objeto themes
+		themes: {
+			light: {
+				colors: {
+					primary: '#6fbfd9',
+					secondary: '#b0bec5',
+					accent: '#8c9eff',
+					background: '#b71c1c',
+				}
+			},
+			dark: {
+				dark: true,
+				colors: {
+					primary: '#388E3C',
+					secondary: '#66BB6A',
+					accent: '#81C784',
+					background: '#2E7D32',
+				}
+			},
+		},
+	},
+
 	icons: {
 		defaultSet: 'fa',
 		aliases,
@@ -11,6 +34,13 @@ export default createVuetify({
 			fa,
 		},
 	},
+
+	defaults: {
+		global: {
+			ripple: true // Corrija o erro de digitação aqui
+		}
+	},
+
 	components,
 	directives,
 })
