@@ -1,14 +1,24 @@
+<script setup>
+
+    import { ref } from 'vue';
+
+    const links = ref([
+        'Dashboard',
+        'Messages',
+        'Profile',
+        'Updates',
+    ]);
+
+</script>
+
 <template>
-    <v-app-bar flat class="border-b" >
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+    <v-app-bar flat class="border-b" color="barrasSperior">
+        <!-- conteúdo do app bar -->
+        <v-app-bar-nav-icon @click="$emit('toggle-drawer')" />
         <v-app-bar-title>Saúde em Equilibrio</v-app-bar-title>
 
-        <v-btn
-            v-for="link in links"
-            :key="link"
-            :text="link"
-            variant="text"
-        ></v-btn>
+        <v-btn v-for="link in links" :key="link" :text="link" variant="text"></v-btn>
+
 
 
         <template #append>
@@ -19,7 +29,7 @@
             </v-btn>
 
             <v-avatar>
-                <v-img cover src="data:image/jpeg;base64,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"></v-img>
+                <v-img cover src="#"></v-img>
             </v-avatar>
         </template>
 
@@ -27,12 +37,3 @@
 </template>
 
 
-
-<script setup>
-const links = [
-    'Dashboard',
-    'Messages',
-    'Profile',
-    'Updates',
-]
-</script>
