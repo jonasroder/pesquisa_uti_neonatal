@@ -1,15 +1,15 @@
 <script setup>
-    import { computed, ref } from 'vue';
-    import { useRoute } from 'vue-router';
-    import MenuLateral from "@/components/MenuLateral.vue";
-    import BarraSuperior from "@/components/BarraSuperior.vue";
+import {computed, ref} from 'vue';
+import {useRoute} from 'vue-router';
+import MenuLateral from "@/components/MenuLateral.vue";
+import BarraSuperior from "@/components/BarraSuperior.vue";
 
-    const route = useRoute();
-    const isLoginPage = computed(() => route.path === '/login');
+const route = useRoute();
+const isLoginPage = computed(() => route.path === '/login');
 
-    const drawer = ref(true);
+const drawer = ref(true);
 
-    const toggleDrawer = () => {
+const toggleDrawer = () => {
     drawer.value = !drawer.value;
     console.log(drawer.value);
 }
@@ -19,8 +19,8 @@
 
 <template>
     <v-app v-if="!isLoginPage">
-        <barra-superior @toggle-drawer="toggleDrawer" />
-        <menu-lateral :drawer="drawer" :key="drawer" />
+        <barra-superior @toggle-drawer="toggleDrawer"/>
+        <menu-lateral :drawer="drawer" :key="drawer"/>
 
         <v-main class="d-flex">
             <v-container>
