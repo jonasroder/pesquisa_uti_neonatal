@@ -1,55 +1,60 @@
-<script setup >
-    import { watch, ref } from 'vue';
-
-    const props = defineProps({
-        drawer: Boolean
-    });
-
-    const localDrawerState = ref(props.drawer);
+<script setup>
+import { ref, watch } from 'vue';
+import {useRouter} from "vue-router";
 
 
-    watch(() => props.drawer, (newVal) => {
-        localDrawerState.value = newVal;
-    });
+const router = useRouter();
 
 
+const props = defineProps({
+    drawer: Boolean
+});
 
+const localDrawerState = ref(props.drawer);
 
-    const links = ref([
-        { icon: 'mdi-home', text: 'Home' },
-        { icon: 'mdi-account', text: 'Profile' },
-    ]);
+watch(() => props.drawer, (newVal) => {
+    localDrawerState.value = newVal;
+});
 
 
 
+const links = ref([
+    { icon: 'fas fa-home', text: 'Dashboard', to: '/' },
+    { icon: 'fas fa-user', text: 'User Profile', to: '/pessoa/edit' },
+    { icon: 'fas fa-table', text: 'Regular Tables', to: '/tables' },
+]);
 
+
+const navigateTo = (route) => {
+    router.push(route);
+}
+
+const  isActive = (route) => {
+    return route === router.currentRoute.value.path;
+}
 
 
 </script>
 
+
 <template>
-
     <v-navigation-drawer v-model="localDrawerState" app>
-    <!-- Cabeçalho da Barra Lateral -->
-        <v-sheet class="pa-4" tile>
-            <v-list-item>
-                <v-icon left>mdi-icon-name</v-icon>
-                <v-list-item-title>Título do item</v-list-item-title>
-                <v-list-item-subtitle>Subtítulo do item</v-list-item-subtitle>
-            </v-list-item>
+        <v-list-item>
+            <v-list-subheader>Menu</v-list-subheader>
+        </v-list-item>
 
-        </v-sheet>
+        <v-divider/>
 
-        <v-divider></v-divider>
+        <v-list-item
+            v-for="link in links"
+            :key="link.text"
+            @click="navigateTo(link.to)"
+            :class="{'v-list-item--active': isActive(link.to)}"
+            :prepend-icon="link.icon"
+        >
+            {{ link.text }}
+        </v-list-item>
 
-        <!-- Itens da lista -->
-        <v-list dense nav>
-            <v-list-item v-for="link in links" :key="link.text" link>
-                <v-icon>{{ link.icon }}</v-icon>
-                <v-list-item-title>{{ link.text }}</v-list-item-title>
-            </v-list-item>
-        </v-list>
     </v-navigation-drawer>
 </template>
-
 

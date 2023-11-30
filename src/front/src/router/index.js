@@ -12,9 +12,15 @@ const routes = [
 		path: '/login',
 		name: 'Login-Page',
 		component: () => import("../views/login/Login-Page.vue"),
-		meta: { title: 'Saúde em Equilibrio - Login' } // Título para a página de login
+		meta: { title: 'Saúde em Equilibrio - Login' }
 	},
-	// ... outras rotas ...
+	{
+		path: '/pessoa/edit',
+		name: 'Pessoa-Page',
+		component: () => import("../views/pessoa-page/edit.vue"),
+		meta: { title: 'Saúde em Equilibrio - Cadastrar Pessoa' }
+	},
+
 ];
 
 const router = createRouter({

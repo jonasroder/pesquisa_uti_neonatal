@@ -11,11 +11,11 @@ export default createVuetify({
 				colors: {
 					barrasSperior: '#00bdda',
 					barraLateral :'#f6f8f8',
-					formArea: '#f6f8f8',
+					formArea: '#ffffff',
 					primary: '#6fbfd9',
 					secondary: '#b0bec5',
 					accent: '#8c9eff',
-					background: '#f2f7f8',
+					background: '#d7e3e5',
 				}
 			},
 			dark: {

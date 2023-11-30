@@ -7,7 +7,7 @@
     const route = useRoute();
     const isLoginPage = computed(() => route.path === '/login');
 
-    const drawer = ref(false);
+    const drawer = ref(true);
 
     const toggleDrawer = () => {
     drawer.value = !drawer.value;
@@ -19,22 +19,17 @@
 
 <template>
     <v-app v-if="!isLoginPage">
-        <menu-lateral :drawer="drawer" :key="drawer" />
         <barra-superior @toggle-drawer="toggleDrawer" />
-        <v-main>
+        <menu-lateral :drawer="drawer" :key="drawer" />
+
+        <v-main class="d-flex">
             <v-container>
-
-                <div id="app">
-                    <router-view/>
-                </div>
-
+                <router-view/>
             </v-container>
         </v-main>
     </v-app>
 
-
-    <div id="app" v-if="isLoginPage">
+    <div v-if="isLoginPage">
         <router-view/>
     </div>
-
 </template>
