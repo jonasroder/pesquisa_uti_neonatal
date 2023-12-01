@@ -12,6 +12,8 @@ export default createVuetify({
 					barrasSperior: '#00bdda',
 					barraLateral :'#f6f8f8',
 					formArea: '#ffffff',
+					azulEscuro: '#34568B',
+					cinzaAzulado: '#9EADBA',
 					primary: '#6fbfd9',
 					secondary: '#b0bec5',
 					accent: '#8c9eff',
