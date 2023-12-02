@@ -1,31 +1,45 @@
 <template>
-    <div>
-        <input type="file" @change="onFileChange" ref="fileInput" style="display: none" />
+    <div class="d-flex align-center justify-center">
+        <input type="file" @change="onFileChange" ref="fileInput" style="display: none"/>
 
-        <v-avatar v-if="image" :size="180" @click="pickFile" cover>
-            <v-img :src="image" cover></v-img>
-        </v-avatar>
+        <div v-if="!stream">
+            <v-col cols="12">
+                <v-avatar v-if="image" :size="180" @click="pickFile" cover>
+                    <v-img :src="image" cover></v-img>
+                </v-avatar>
 
-        <v-avatar v-else :size="180" @click="pickFile" color="grey lighten-4">
-            <v-icon size="32" class="fa fa-camera"></v-icon>
-        </v-avatar>
+                <v-avatar v-else :size="180" @click="pickFile" color="grey lighten-4">
+                    <v-icon size="32" class="fa fa-camera"></v-icon>
+                </v-avatar>
+            </v-col>
 
-        <!-- Botão para ativar a webcam -->
-        <v-btn @click="activateWebcam">Ativar Webcam</v-btn>
+            <v-col cols="12" v-if="!isMobile">
+                <v-btn @click="activateWebcam">Ativar Webcam</v-btn>
+            </v-col>
+        </div>
 
-        <!-- Botão para capturar a imagem da webcam -->
-        <v-btn v-if="stream" @click="captureFromWebcam">Capturar Imagem</v-btn>
 
-        <!-- Elemento de vídeo para a webcam -->
-        <video ref="video" style="display: none;"></video>
+        <div style="display: none;" ref="div_video">
+            <v-col cols="12">
+                <v-avatar :size="180" cover>
+                    <video class="rounded" id="video_avatar" ref="video" style="width: 100%; height: 100%; object-fit: cover;"></video>
+                </v-avatar>
+            </v-col>
+            <v-col cols="12">
+                <v-btn v-if="stream" @click="captureFromWebcam">Capturar Imagem</v-btn>
+            </v-col>
+        </div>
+
+
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {ref, computed } from 'vue';
 
 const fileInput = ref(null);
 const video = ref(null);
+const div_video = ref(null);
 const image = ref(null);
 const stream = ref(null);
 
@@ -48,13 +62,21 @@ const createImage = (file) => {
 
 const activateWebcam = async () => {
     try {
-        stream.value = await navigator.mediaDevices.getUserMedia({ video: true });
+        toggleVideoDisplay();
+        stream.value = await navigator.mediaDevices.getUserMedia({video: true});
         video.value.srcObject = stream.value;
         video.value.play();
     } catch (err) {
         console.error("Erro ao acessar a webcam:", err);
     }
 };
+
+const toggleVideoDisplay = () => {
+    if (div_video.value) {
+        div_video.value.style.display = div_video.value.style.display === 'none' ? 'block' : 'none';
+    }
+};
+
 
 const captureFromWebcam = () => {
     const canvas = document.createElement("canvas");
@@ -63,10 +85,17 @@ const captureFromWebcam = () => {
     canvas.getContext("2d").drawImage(video.value, 0, 0);
 
     canvas.toBlob(blob => {
-        const file = new File([blob], "webcam-image.png", { type: 'image/png' });
+        const file = new File([blob], "webcam-image.png", {type: 'image/png'});
         createImage(file);
         stream.value.getTracks().forEach(track => track.stop());
         stream.value = null;
     }, 'image/png');
+
+    toggleVideoDisplay();
 };
+
+const isMobile = computed(() => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+});
 </script>
+
