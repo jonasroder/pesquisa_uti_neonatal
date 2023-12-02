@@ -7,9 +7,6 @@
             v-model="pessoa.nome"
             label="Nome"
             type="text"
-            cols="12"
-            md="6"
-            lg="3"
         />
 
         <!--Input Sobrenome-->
@@ -17,9 +14,6 @@
             v-model="pessoa.sobrenome"
             label="Sobrenome"
             type="text"
-            cols="12"
-            md="6"
-            lg="3"
         />
 
         <!--Input CPF-->
@@ -27,9 +21,6 @@
             v-model="pessoa.cpf"
             label="CPF"
             type="text"
-            cols="12"
-            md="6"
-            lg="3"
         />
 
         <!--Input Data de Nascimento -->
@@ -37,9 +28,6 @@
             v-model="pessoa.data_nascimento"
             label="Data de Nascimento"
             type="date"
-            cols="12"
-            md="6"
-            lg="3"
         />
 
 

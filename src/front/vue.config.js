@@ -9,6 +9,7 @@ module.exports = defineConfig({
 			alias: {
 				'components': '@/components',
 				'service': '@/service',
+				'assets': '@/assets',
 			}
 		},
 		plugins: [

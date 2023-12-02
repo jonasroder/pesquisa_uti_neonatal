@@ -6,12 +6,12 @@
 
 
     const login = reactive({usuario: "", senha: ""});
-    const router = useRouter(); // Crie uma instância do useRouter
-
+    const router = useRouter();
 
 
     const submitLogin = async () => {
         try {
+            debugger
             const response = await serviceAuthenticateUser(login);
             if (response) {
                 router.push('/');
@@ -24,27 +24,29 @@
 </script>
 
 <template>
-    <v-container fluid class="align-center">
         <v-row  align="center" justify="center" class="fill-height">
+
             <v-col cols="12" md="5">
                 <v-img :src="require('../../assets/logo_grande.png')" alt="Image" contain></v-img>
             </v-col>
 
             <v-col cols="12" md="5" class="d-flex align-center">
                 <v-row justify="center">
-                    <v-col cols="12" md="8">
+                    <v-col cols="12" md="7">
                         <div class="text-center mb-4">
                             <h3>Bem-vindo ao Portal de Pesquisa Saúde em Equilíbrio</h3>
                             <p>Por favor, entre com seu usuário e senha para acessar o banco de dados de pesquisa.</p>
                         </div>
 
-                        <div>
                             <!--Input Usuário-->
                             <text-input
                                 v-model="login.usuario"
                                 label="Usuário"
                                 type="text"
                                 prepend-icon="fa-solid fa-user"
+                                md="12"
+                                lg="12"
+                                xl="12"
                             />
 
                             <!--Input Senha-->
@@ -53,20 +55,20 @@
                                 label="Senha"
                                 type="password"
                                 prepend-icon="fa-solid fa-lock"
+                                md="12"
+                                lg="12"
+                                xl="12"
                             />
-                        </div>
 
                         <v-btn color="primary" block @click="submitLogin">FAZER LOGIN</v-btn>
                     </v-col>
                 </v-row>
             </v-col>
         </v-row>
-    </v-container>
 </template>
 
 
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
 
     p {

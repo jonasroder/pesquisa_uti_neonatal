@@ -29,7 +29,9 @@ const toggleDrawer = () => {
         </v-main>
     </v-app>
 
-    <div v-if="isLoginPage">
+    <v-app v-if="isLoginPage">
+        <v-main class="d-flex">
         <router-view/>
-    </div>
+        </v-main>
+    </v-app>
 </template>
