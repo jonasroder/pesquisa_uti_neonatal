@@ -1,44 +1,55 @@
 <template>
-    <card-formulario title="Cadastro de Pessoa" subtitle="Centralizando Informações para Cuidado Integral" @handleSave="handleSave" @handleBack="handleBack">
+    <card-formulario title="Cadastro de Pessoa" subtitle="Centralizando Informações para Cuidado Integral"
+                     @handleSave="handleSave" @handleBack="handleBack">
+
         <v-row>
 
-        <!--Input Nome-->
-        <text-input
-            v-model="pessoa.nome"
-            label="Nome"
-            type="text"
-        />
+            <v-col cols="12" sm="4" md="3" justify="center" align="center" >
+                <AvatarImageInput/>
+            </v-col>
 
-        <!--Input Sobrenome-->
-        <text-input
-            v-model="pessoa.sobrenome"
-            label="Sobrenome"
-            type="text"
-        />
-
-        <!--Input CPF-->
-        <text-input
-            v-model="pessoa.cpf"
-            label="CPF"
-            type="text"
-        />
-
-        <!--Input Data de Nascimento -->
-        <text-input
-            v-model="pessoa.data_nascimento"
-            label="Data de Nascimento"
-            type="date"
-        />
-
+            <v-col cols="12" sm="8" md="9">
+                <v-row>
+                    <text-input
+                        v-model="pessoa.nome"
+                        label="Nome"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+                    <text-input
+                        v-model="pessoa.sobrenome"
+                        label="Sobrenome"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+                    <text-input
+                        v-model="pessoa.cpf"
+                        label="CPF"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+                    <text-input
+                        v-model="pessoa.data_nascimento"
+                        label="Data de Nascimento"
+                        type="date"
+                        cols="12"
+                        md="4"
+                    />
+                </v-row>
+            </v-col>
 
         </v-row>
-
     </card-formulario>
 </template>
+
 
 <script setup>
 import CardFormulario from "@/components/CardFormulario.vue";
 import TextInput from '@/components/TextInput.vue';
+import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {reactive} from "vue";
 
 

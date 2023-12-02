@@ -2,7 +2,7 @@
 import { ref, watch, defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
-    modelValue: [String, Number], // Alterado de 'value' para 'modelValue'
+    modelValue: [String, Number],
     label: String,
     prependIcon: String,
     appendIcon: String,

@@ -4,7 +4,7 @@
 </script>
 
 <template>
-    <v-app-bar flat class="border-b" color="barrasSperior">
+    <v-app-bar flat class="border-b d-flex" color="barrasSperior">
         <!-- conteúdo do app bar -->
         <v-app-bar-nav-icon @click="$emit('toggle-drawer')" />
 

@@ -18,7 +18,7 @@ const toggleDrawer = () => {
 </script>
 
 <template>
-    <v-app v-if="!isLoginPage">
+    <v-app v-if="!isLoginPage" >
         <barra-superior @toggle-drawer="toggleDrawer"/>
         <menu-lateral :drawer="drawer" :key="drawer"/>
 
