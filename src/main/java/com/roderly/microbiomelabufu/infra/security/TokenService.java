@@ -43,7 +43,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception){
-            throw new GlobalExceptionHandler.TokenValidationException("Token inválido ou expirado.");
+            return "";
         }
     }
 
