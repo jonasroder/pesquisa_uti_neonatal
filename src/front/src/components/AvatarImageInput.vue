@@ -1,41 +1,5 @@
-<template>
-    <div class="d-flex align-center justify-center">
-        <input type="file" @change="onFileChange" ref="fileInput" style="display: none"/>
-
-        <div v-if="!stream">
-            <v-col cols="12">
-                <v-avatar v-if="image" :size="180" @click="pickFile" cover>
-                    <v-img :src="image" cover></v-img>
-                </v-avatar>
-
-                <v-avatar v-else :size="180" @click="pickFile" color="grey lighten-4">
-                    <v-icon size="32" class="fa fa-camera"></v-icon>
-                </v-avatar>
-            </v-col>
-
-            <v-col cols="12" v-if="!isMobile">
-                <v-btn @click="activateWebcam">Ativar Webcam</v-btn>
-            </v-col>
-        </div>
-
-
-        <div style="display: none;" ref="div_video">
-            <v-col cols="12">
-                <v-avatar :size="180" cover>
-                    <video class="rounded" id="video_avatar" ref="video" style="width: 100%; height: 100%; object-fit: cover;"></video>
-                </v-avatar>
-            </v-col>
-            <v-col cols="12">
-                <v-btn v-if="stream" @click="captureFromWebcam">Capturar Imagem</v-btn>
-            </v-col>
-        </div>
-
-
-    </div>
-</template>
-
 <script setup>
-import {ref, computed } from 'vue';
+import {ref, computed} from 'vue';
 
 const fileInput = ref(null);
 const video = ref(null);
@@ -99,3 +63,57 @@ const isMobile = computed(() => {
 });
 </script>
 
+
+<template>
+    <div class="d-flex align-center justify-center">
+        <input type="file" @change="onFileChange" ref="fileInput" style="display: none"/>
+
+        <div v-if="!stream" class="d-flex position-relative">
+            <v-avatar v-if="image" :size="180" @click="pickFile" cover>
+                <v-img :src="image" cover></v-img>
+            </v-avatar>
+
+            <v-avatar v-else :size="180" @click="pickFile" color="grey lighten-4">
+                <v-icon size="32" class="fa fa-camera"></v-icon>
+            </v-avatar>
+
+            <!-- Botão Badge para ativar a webcam -->
+            <v-btn v-if="!isMobile" class="webcam-badge v-btn--icon v-btn--round" density="compact" color="cinzaAzulado"
+                   @click="activateWebcam">
+                <v-icon size="x-small" class="fa fa-video"></v-icon>
+            </v-btn>
+
+        </div>
+
+
+        <div style="display: none;" ref="div_video">
+            <v-col cols="12">
+                <v-avatar :size="180" cover>
+                    <video class="rounded" id="video_avatar" ref="video"
+                           style="width: 100%; height: 100%; object-fit: cover;"></video>
+                </v-avatar>
+            </v-col>
+            <v-col cols="12">
+                <v-btn v-if="stream" @click="captureFromWebcam" density="compact" color="cinzaAzulado">Capturar Imagem
+                </v-btn>
+            </v-col>
+        </div>
+
+    </div>
+</template>
+
+<style>
+.position-relative {
+    position: relative;
+}
+
+.webcam-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    border: none;
+    line-height: 0;
+    z-index: 2;
+}
+
+</style>
