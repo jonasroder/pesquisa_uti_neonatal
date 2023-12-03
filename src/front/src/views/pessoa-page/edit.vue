@@ -46,7 +46,7 @@ const handleBack = () => {
 <template>
     <card-formulario title="Cadastro de Pessoa" subtitle="Centralizando Informações para Cuidado Integral"
                      @handleSave="handleSave" @handleBack="handleBack">
-        <span>{{msg}}</span>
+
         <v-row>
             <v-col cols="12" sm="4" md="3" justify="center" align="center" >
                 <AvatarImageInput/>
