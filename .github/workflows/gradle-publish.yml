@@ -67,6 +67,3 @@ jobs:
 
       - name: Transferir JAR para o Servidor via SSH
         run: cat build/libs/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar | ssh -o StrictHostKeyChecking=no -i temp_key root@${{ secrets.SERVER_IP }} 'cat > /home/saudeemequilibrio/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar'
-
-      - name: Start New Application
-        run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "nohup java -jar /home/saudeemequilibrio/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &"
