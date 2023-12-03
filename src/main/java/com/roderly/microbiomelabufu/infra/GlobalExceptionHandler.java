@@ -27,23 +27,41 @@ public class GlobalExceptionHandler {
     }
 
     // Handler para a exceção TokenValidationException
+    // Handler para a exceção TokenValidationException
     @ExceptionHandler(TokenValidationException.class)
     public ResponseEntity<?> handleTokenValidationException(TokenValidationException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "UNAUTHORIZED" // Use um código de erro que o frontend reconheça
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
+
 
     // Handler para a exceção ResourceNotFoundException
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "NOT_FOUND" // Código de erro para a exceção de recurso não encontrado
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
+
 
     // Handler para exceções gerais
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "INTERNAL_SERVER_ERROR" // Código de erro para exceções gerais
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
