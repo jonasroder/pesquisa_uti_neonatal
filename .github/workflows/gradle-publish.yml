@@ -59,11 +59,8 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Stop Current Application
-        run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "pkill -f 'microbiome-lab-ufu-0.0.1-SNAPSHOT.jar'"
-
-      - name: Remove Old JAR Files
-        run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "rm -f /home/saudeemequilibrio/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar"
-
       - name: Transferir JAR para o Servidor via SSH
-        run: cat build/libs/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar | ssh -o StrictHostKeyChecking=no -i temp_key root@${{ secrets.SERVER_IP }} 'cat > /home/saudeemequilibrio/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar'
+        run: scp build/libs/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar root@${{ secrets.SERVER_IP }}:/home/saudeemequilibrio/
+
+      - name: Restart Application Service
+        run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "sudo systemctl restart microbiome-lab.service"
