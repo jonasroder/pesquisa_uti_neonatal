@@ -3,8 +3,7 @@ import CardFormulario from "@/components/CardFormulario.vue";
 import TextInput from '@/components/TextInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {onMounted, reactive} from "vue";
-import { serviceAuthenticateTeste } from "@/service/pessoa";
-
+import {serviceAuthenticateTeste} from "@/service/pessoa";
 
 
 onMounted(async () => {
@@ -16,6 +15,8 @@ const pessoa = reactive({
     sobrenome: "",
     sexo: "",
     data_nascimento: "",
+    telefone: "",
+    email: "",
     estado_civil: "",
     profissao: "",
     cpf: "",
@@ -44,16 +45,26 @@ const handleBack = () => {
 </script>
 
 <template>
-    <card-formulario title="Cadastro de Pessoa" subtitle="Centralizando Informações para Cuidado Integral"
-                     @handleSave="handleSave" @handleBack="handleBack">
+    <card-formulario title="Cadastro de Pessoa"
+                     subtitle="Centralizando Informações para Cuidado Integral"
+                     @handleSave="handleSave"
+                     @handleBack="handleBack">
 
         <v-row>
-            <v-col cols="12" sm="4" md="3" justify="center" align="center" >
+            <v-col cols="12"
+                   sm="4"
+                   md="3"
+                   justify="center"
+                   align="center">
                 <AvatarImageInput/>
             </v-col>
 
-            <v-col cols="12" sm="8" md="9">
+            <v-col cols="12"
+                   sm="8"
+                   md="9">
+
                 <v-row>
+
                     <text-input
                         v-model="pessoa.nome"
                         label="Nome"
@@ -61,6 +72,7 @@ const handleBack = () => {
                         cols="12"
                         md="4"
                     />
+
                     <text-input
                         v-model="pessoa.sobrenome"
                         label="Sobrenome"
@@ -68,6 +80,7 @@ const handleBack = () => {
                         cols="12"
                         md="4"
                     />
+
                     <text-input
                         v-model="pessoa.cpf"
                         label="CPF"
@@ -75,6 +88,7 @@ const handleBack = () => {
                         cols="12"
                         md="4"
                     />
+
                     <text-input
                         v-model="pessoa.data_nascimento"
                         label="Data de Nascimento"
@@ -82,6 +96,59 @@ const handleBack = () => {
                         cols="12"
                         md="4"
                     />
+
+                    <text-input
+                        v-model="pessoa.etnia"
+                        label="Etnia"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+
+
+                    <text-input
+                        v-model="pessoa.educacao"
+                        label="Educação"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+
+
+                    <text-input
+                        v-model="pessoa.religiao"
+                        label="Religião"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+
+                    <text-input
+                        v-model="pessoa.telefone"
+                        label="telefone"
+                        type="phone"
+                        :rules="['required']"
+                        cols="12"
+                        md="4"
+                    />
+
+                    <text-input
+                        v-model="pessoa.email"
+                        label="Email"
+                        type="email"
+                        :rules="['email', 'required']"
+                        cols="12"
+                        md="4"
+                    />
+
+                    <text-input
+                        v-model="pessoa.profissao"
+                        label="Profissão"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+
                 </v-row>
             </v-col>
         </v-row>
