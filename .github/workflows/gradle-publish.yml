@@ -60,7 +60,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Transferir JAR para o Servidor via SSH
-        run: scp build/libs/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar root@${{ secrets.SERVER_IP }}:/home/saudeemequilibrio/
+        run: cat build/libs/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar | ssh -o StrictHostKeyChecking=no -i temp_key root@${{ secrets.SERVER_IP }} 'cat > /home/saudeemequilibrio/microbiome-lab-ufu-0.0.1-SNAPSHOT.jar'
 
       - name: Restart Application Service
         run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "sudo systemctl restart microbiome-lab.service"
