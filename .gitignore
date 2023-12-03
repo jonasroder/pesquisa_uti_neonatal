@@ -9,6 +9,7 @@ build/
 
 ### Node ###
 node_modules/
+package-lock.json
 
 ### STS (Spring Tool Suite) ###
 .apt_generated
