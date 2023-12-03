@@ -25,7 +25,12 @@ module.exports = defineConfig({
 				changeOrigin: true,
 				ws: true,
 			},
-		},
+			'/authenticate': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+				ws: true,
+			},
+		}
 	}
 });
 

@@ -11,7 +11,6 @@
 
     const submitLogin = async () => {
         try {
-            debugger
             const response = await serviceAuthenticateUser(login);
             if (response) {
                 router.push('/');
