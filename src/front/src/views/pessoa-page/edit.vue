@@ -1,8 +1,9 @@
 <script setup>
 import CardFormulario from "@/components/CardFormulario.vue";
 import TextInput from '@/components/TextInput.vue';
+import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
-import {onMounted, reactive} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {serviceAuthenticateTeste} from "@/service/pessoa";
 
 
@@ -22,7 +23,7 @@ const pessoa = reactive({
     cpf: "",
     etnia: "",
     educacao: "",
-    religiao: "",
+    religiao: [],
     rua: "",
     numero: "",
     complemento: "",
@@ -35,13 +36,26 @@ const pessoa = reactive({
 
 const handleSave = () => {
     // Implemente a lógica de salvamento do formulário aqui
-    console.log('Formulário de usuário salvo!');
+    console.log(pessoa);
 };
 
 const handleBack = () => {
     // Implemente a lógica para voltar
     console.log('Retornando da tela de cadastro de usuário.');
 };
+
+
+
+const estados = ref([
+    { label: 'California', value: 'CA' },
+    { label: 'Colorado', value: 'CO' },
+    { label: 'Florida', value: 'FL' },
+    { label: 'Georgia', value: 'GA' },
+    { label: 'Texas', value: 'TX' },
+    { label: 'Wyoming', value: 'WY' }
+]);
+
+
 </script>
 
 <template>
@@ -115,12 +129,11 @@ const handleBack = () => {
                     />
 
 
-                    <text-input
+                    <SelectInput
+                        label="Escolha um estado"
+                        placeholder="Digite ou selecione um estado"
+                        :items="estados"
                         v-model="pessoa.religiao"
-                        label="Religião"
-                        type="text"
-                        cols="12"
-                        md="4"
                     />
 
                     <text-input
@@ -148,6 +161,8 @@ const handleBack = () => {
                         cols="12"
                         md="4"
                     />
+
+
 
                 </v-row>
             </v-col>
