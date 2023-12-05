@@ -1,5 +1,6 @@
 <script setup>
-import { ref, watch, defineProps, defineEmits } from 'vue';
+import { ref, watch, defineProps, defineEmits, onMounted } from 'vue';
+import {serviceAuthenticateTeste} from "@/service/autocomplete";
 
 const props = defineProps({
     modelValue: [String, Number, Array],
@@ -46,26 +47,74 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
+    idColumn: {
+        type: String,
+        default: ""
+    },
+    descColumn: {
+        type: String,
+        default: ""
+    },
+    tableName: {
+        type: String,
+        default: ""
+    },
+    whereClause: {
+        type: String,
+        default: ""
+    },
+    situacao: {
+        type: Boolean,
+        default: false
+    },
     multiple: {
         type: Boolean,
         default: false
     }
 });
 
-const emits = defineEmits(['update:modelValue', 'blur', 'focus', 'clear']);
+const items = ref(props.items);
 
+
+
+const getOptionsAutocomplete = async () => {
+    if(items.value.length === 0 && props.idColumn && props.descColumn && props.tableName){
+        const params = {
+            "idColumn"   : props.idColumn,
+            "descColumn" : props.descColumn,
+            "tableName"  : props.tableName,
+            "situacao"   : props.situacao,
+            "whereClause": props.whereClause
+        }
+
+        const response = await serviceAuthenticateTeste(params);
+        if (response) {
+            items.value = response.map(item => ({ value: item.value, label: item.label }));
+        }
+    }
+}
+
+
+onMounted(getOptionsAutocomplete);
+watch([() => props.idColumn, () => props.descColumn, () => props.tableName, () => props.situacao, () => props.whereClause], getOptionsAutocomplete);
+
+const emits = defineEmits(['update:modelValue', 'blur', 'focus', 'clear']);
 const internalValue = ref(props.modelValue);
+
+
 
 watch(() => props.modelValue, (newValue) => {
     internalValue.value = newValue;
 });
 
-// Use uma função para tratar a seleção de itens do autocomplete
+
+
 const updateModel = (item) => {
-    // Quando um item é selecionado, atualize internalValue e emita o evento para o componente pai
     internalValue.value = item;
     emits('update:modelValue', item);
 };
+
+
 
 const onInput = (event) => {
     const value = event.target.value;
@@ -73,19 +122,27 @@ const onInput = (event) => {
     emits('update:modelValue', value);
 };
 
+
+
 const onBlur = (event) => {
     emits('blur', event);
 };
 
+
+
 const onFocus = (event) => {
     emits('focus', event);
 };
+
+
 
 const onClear = () => {
     internalValue.value = '';
     emits('update:modelValue', '');
     emits('clear');
 };
+
+
 
 const defaultRules = {
     required: value => !!value || 'Campo obrigatório',
@@ -95,6 +152,8 @@ const defaultRules = {
     },
     counter: value => value.length <= 20 || 'Máximo de 20 caracteres'
 };
+
+
 
 const combinedRules = ref([
     ...(props.rules || []).map(ruleName => {

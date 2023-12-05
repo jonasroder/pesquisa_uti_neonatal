@@ -3,7 +3,7 @@ import CardFormulario from "@/components/CardFormulario.vue";
 import TextInput from '@/components/TextInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive} from "vue";
 import {serviceAuthenticateTeste} from "@/service/pessoa";
 
 
@@ -19,11 +19,11 @@ const pessoa = reactive({
     telefone: "",
     email: "",
     estado_civil: "",
-    profissao: "",
+    id_profissao: "",
     cpf: "",
-    etnia: "",
-    educacao: "",
-    religiao: [],
+    id_etnia: "",
+    id_escolaridade: "",
+    id_religiao: [],
     rua: "",
     numero: "",
     complemento: "",
@@ -43,24 +43,6 @@ const handleBack = () => {
     // Implemente a lógica para voltar
     console.log('Retornando da tela de cadastro de usuário.');
 };
-
-
-
-const religioes = ref([
-    { label: 'Católico', value: 1 },
-    { label: 'Evangélico', value: 2 },
-    { label: 'Espírita', value: 3 },
-    { label: 'Umbandista', value: 4 },
-    { label: 'Candomblecista', value: 5 },
-    { label: 'Budista', value: 6 },
-    { label: 'Judeu', value: 7 },
-    { label: 'Muçulmano', value: 8 },
-    { label: 'Hindu', value: 9 },
-    { label: 'Ateu', value: 10 },
-    { label: 'Agnóstico', value: 11 }
-]);
-
-
 
 
 </script>
@@ -118,19 +100,29 @@ const religioes = ref([
                         md="4"
                     />
 
-                    <text-input
-                        v-model="pessoa.etnia"
+                    <SelectInput
                         label="Etnia"
-                        type="text"
+                        placeholder="Digite ou selecione uma Etnia"
+                        idColumn="id_etnia"
+                        descColumn="descricao"
+                        tableName="etnia"
+                        :situacao="true"
+                        :multiple="false"
+                        v-model="pessoa.id_etnia"
                         cols="12"
                         md="4"
                     />
 
 
-                    <text-input
-                        v-model="pessoa.educacao"
-                        label="Educação"
-                        type="text"
+                    <SelectInput
+                        label="Escolaridade"
+                        placeholder="Digite ou selecione uma Escolaridade"
+                        idColumn="id_escolaridade"
+                        descColumn="descricao"
+                        tableName="escolaridade"
+                        :situacao="true"
+                        :multiple="false"
+                        v-model="pessoa.id_escolaridade"
                         cols="12"
                         md="4"
                     />
@@ -139,12 +131,16 @@ const religioes = ref([
                     <SelectInput
                         label="Religião"
                         placeholder="Digite ou selecione uma religião"
-                        :items="religioes"
+                        idColumn="id_religiao"
+                        descColumn="descricao"
+                        tableName="religiao"
+                        :situacao="true"
                         :multiple="false"
-                        v-model="pessoa.religiao"
+                        v-model="pessoa.id_religiao"
                         cols="12"
                         md="4"
                     />
+
 
                     <text-input
                         v-model="pessoa.telefone"
@@ -164,14 +160,18 @@ const religioes = ref([
                         md="4"
                     />
 
-                    <text-input
-                        v-model="pessoa.profissao"
+                    <SelectInput
                         label="Profissão"
-                        type="text"
+                        placeholder="Digite ou selecione uma Profissão"
+                        idColumn="id_profissao"
+                        descColumn="descricao"
+                        tableName="profissao"
+                        :situacao="true"
+                        :multiple="false"
+                        v-model="pessoa.id_profissao"
                         cols="12"
                         md="4"
                     />
-
 
 
                 </v-row>
