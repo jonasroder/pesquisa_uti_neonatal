@@ -29,11 +29,43 @@ public class DictionaryService {
         }
 
         String queryStr = "SELECT t." + idColumn + ", t." + descColumn + " FROM " + tableName + " t WHERE " + where;
-        Query query = entityManager.createNativeQuery(queryStr);
-        List<Object[]> results = query.getResultList();
-        return results.stream()
-                .map(result -> new ValueLabelDTO(result[0], (String) result[1]))
-                .collect(Collectors.toList());
+
+        if(isValidQuery(queryStr)) {
+
+            Query query = entityManager.createNativeQuery(queryStr);
+            List<Object[]> results = query.getResultList();
+            return results.stream()
+                    .map(result -> new ValueLabelDTO(result[0], (String) result[1]))
+                    .collect(Collectors.toList());
+
+        } else {
+            throw new IllegalArgumentException("Consulta SQL inválida");
+        }
+    }
+
+
+
+    private boolean isValidQuery(String sql) {
+        String upperCaseSql = sql.trim().toUpperCase();
+
+        if (upperCaseSql.startsWith("SELECT")) {
+            return !containsDangerousKeywords(upperCaseSql);
+        }
+        return false;
+    }
+
+
+
+    private boolean containsDangerousKeywords(String sql) {
+        String[] dangerousKeywords = {"DELETE", "UPDATE", "DROP", "TRUNCATE", "INSERT", "MERGE"};
+
+        for (String keyword : dangerousKeywords) {
+            if (sql.contains(keyword)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

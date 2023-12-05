@@ -18,9 +18,9 @@
                 </v-badge>
             </v-btn>
 
-            <v-avatar>
-                <v-img cover src="#"></v-img>
-            </v-avatar>
+<!--            <v-avatar>-->
+<!--                <v-img cover src="#"></v-img>-->
+<!--            </v-avatar>-->
         </template>
 
     </v-app-bar>

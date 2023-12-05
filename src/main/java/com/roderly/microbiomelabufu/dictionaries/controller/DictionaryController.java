@@ -29,5 +29,4 @@ public class DictionaryController {
         return ResponseEntity.ok(data);
     }
 
-
 }
