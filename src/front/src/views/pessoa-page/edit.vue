@@ -46,14 +46,21 @@ const handleBack = () => {
 
 
 
-const estados = ref([
-    { label: 'California', value: 'CA' },
-    { label: 'Colorado', value: 'CO' },
-    { label: 'Florida', value: 'FL' },
-    { label: 'Georgia', value: 'GA' },
-    { label: 'Texas', value: 'TX' },
-    { label: 'Wyoming', value: 'WY' }
+const religioes = ref([
+    { label: 'Católico', value: 1 },
+    { label: 'Evangélico', value: 2 },
+    { label: 'Espírita', value: 3 },
+    { label: 'Umbandista', value: 4 },
+    { label: 'Candomblecista', value: 5 },
+    { label: 'Budista', value: 6 },
+    { label: 'Judeu', value: 7 },
+    { label: 'Muçulmano', value: 8 },
+    { label: 'Hindu', value: 9 },
+    { label: 'Ateu', value: 10 },
+    { label: 'Agnóstico', value: 11 }
 ]);
+
+
 
 
 </script>
@@ -130,10 +137,13 @@ const estados = ref([
 
 
                     <SelectInput
-                        label="Escolha um estado"
-                        placeholder="Digite ou selecione um estado"
-                        :items="estados"
+                        label="Religião"
+                        placeholder="Digite ou selecione uma religião"
+                        :items="religioes"
+                        :multiple="false"
                         v-model="pessoa.religiao"
+                        cols="12"
+                        md="4"
                     />
 
                     <text-input

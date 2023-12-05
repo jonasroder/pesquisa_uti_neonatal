@@ -139,7 +139,7 @@ const combinedRules = ref([
             item-value="value"
             item-title="label"
             :multiple="multiple"
-           chips
+            :chips="multiple"
            />
     </v-col>
 </template>
