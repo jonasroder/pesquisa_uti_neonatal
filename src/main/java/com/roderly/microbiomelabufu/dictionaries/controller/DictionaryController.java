@@ -17,13 +17,13 @@ public class DictionaryController {
     private DictionaryService dictionaryService;
 
     @PostMapping("/autocomplete")
-    public ResponseEntity<List<ValueLabelDTO>> getAutocompleteData(@Valid @RequestBody AutocompleteRequestDTO requestDTO) {
+    public ResponseEntity<List<ValueLabelDTO>> getAutocompleteData(@Valid @RequestBody AutocompleteRequestDTO autocompleteRequestDTO) {
         List<ValueLabelDTO> data = dictionaryService.findIdAndLabelByTableAndCondition(
-                requestDTO.getIdColumn(),
-                requestDTO.getDescColumn(),
-                requestDTO.getTableName(),
-                requestDTO.getWhereClause(),
-                requestDTO.getSituacao()
+                autocompleteRequestDTO.idColumn(),
+                autocompleteRequestDTO.descColumn(),
+                autocompleteRequestDTO.tableName(),
+                autocompleteRequestDTO.whereClause(),
+                autocompleteRequestDTO.situacao()
         );
 
         return ResponseEntity.ok(data);
