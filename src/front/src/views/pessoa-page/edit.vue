@@ -3,6 +3,7 @@ import CardFormulario from "@/components/CardFormulario.vue";
 import TextInput from '@/components/TextInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
+import { setNotification } from "@/service/notificationService";
 import {onMounted, reactive} from "vue";
 import {serviceAuthenticateTeste, getEnderecoByCep} from "@/service/pessoa";
 
@@ -53,8 +54,19 @@ const handleBack = () => {
 
 
 const handleAppendIconClick = async () => {
-    pessoa.endereco = await getEnderecoByCep(pessoa.endereco.cep);
-    debugger
+    let respEndereco = {};
+    if(pessoa.endereco.cep.length >= 8) {
+        respEndereco = await getEnderecoByCep(pessoa.endereco.cep);
+    } else {
+        setNotification("O CEP é invalido", "error");
+    }
+
+    pessoa.endereco.cep = respEndereco.cep;
+    pessoa.endereco.rua = respEndereco.logradouro;
+    pessoa.endereco.bairro = respEndereco.bairro;
+    pessoa.endereco.cidade = respEndereco.localidade;
+    pessoa.endereco.uf = respEndereco.uf;
+
 };
 
 
@@ -288,14 +300,25 @@ const handleAppendIconClick = async () => {
                         md="4"
                     />
 
-
-
+                    <SelectInput
+                        label="Estado"
+                        placeholder="Digite ou selecione a UF"
+                        idColumn="id_uf"
+                        descColumn="sigla"
+                        tableName="uf"
+                        :is_active="true"
+                        :multiple="false"
+                        v-model="pessoa.endereco.estado"
+                        cols="12"
+                        md="4"
+                    />
 
                     <text-input
                         v-model="pessoa.endereco.cep"
                         label="CEP"
                         type="text"
                         :showSearchButton="true"
+                        :rules="['required', 'cep']"
                         cols="12"
                         md="4"
                         @click:append-icon="handleAppendIconClick"

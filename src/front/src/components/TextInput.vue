@@ -88,7 +88,11 @@ const defaultRules = {
         const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return pattern.test(value) || 'E-mail inválido';
     },
-    counter: value => value.length <= 20 || 'Máximo de 20 caracteres'
+    counter: value => value.length <= 20 || 'Máximo de 20 caracteres',
+    cep: value => {
+        const pattern = /^\d{5}-\d{3}$|^\d{8}$/; // Padrão com e sem hífen
+        return pattern.test(value) || 'CEP inválido';
+    }
 };
 
 const combinedRules = ref([
