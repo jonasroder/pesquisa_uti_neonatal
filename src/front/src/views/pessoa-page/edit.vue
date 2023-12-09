@@ -3,7 +3,7 @@ import CardFormulario from "@/components/CardFormulario.vue";
 import TextInput from '@/components/TextInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
-import { setNotification } from "@/service/notificationService";
+import {setNotification} from "@/service/notificationService";
 import {onMounted, reactive} from "vue";
 import {serviceAuthenticateTeste, getEnderecoByCep} from "@/service/pessoa";
 
@@ -55,7 +55,7 @@ const handleBack = () => {
 
 const handleAppendIconClick = async () => {
     let respEndereco = {};
-    if(pessoa.endereco.cep.length >= 8) {
+    if (pessoa.endereco.cep.length >= 8) {
         respEndereco = await getEnderecoByCep(pessoa.endereco.cep);
     } else {
         setNotification("O CEP é invalido", "error");
@@ -65,7 +65,7 @@ const handleAppendIconClick = async () => {
     pessoa.endereco.rua = respEndereco.logradouro;
     pessoa.endereco.bairro = respEndereco.bairro;
     pessoa.endereco.cidade = respEndereco.localidade;
-    pessoa.endereco.uf = respEndereco.uf;
+    pessoa.endereco.estado = respEndereco.uf;
 
 };
 
