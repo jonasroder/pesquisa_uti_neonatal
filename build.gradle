@@ -45,7 +45,6 @@ tasks.named('bootBuildImage') {
 }
 
 
-
 tasks.register('npmInstall', Exec) {
 	workingDir = 'src/front'
 	if (isWindows) {
