@@ -17,6 +17,7 @@ const props = defineProps({
     placeholder: String,
     disabled: Boolean,
     readonly: Boolean,
+    showSearchButton: Boolean,
     rules: Array,
     variant: {
         type: String,
@@ -72,6 +73,15 @@ const onClear = () => {
     emits('clear');
 };
 
+const onPrependIconClick = () => {
+    emits('click:prepend-icon');
+};
+
+const onAppendIconClick = () => {
+    emits('click:append-icon');
+};
+
+
 const defaultRules = {
     required: value => !!value || 'Campo obrigatório',
     email: value => {
@@ -94,19 +104,13 @@ const combinedRules = ref([
 </script>
 
 <template>
-    <v-col
-        :cols="cols || 12"
-        :sm="sm"
-        :md="md"
-        :lg="lg"
-        :xl="xl"
-    >
+    <v-col :cols="cols || 12" :sm="sm" :md="md" :lg="lg" :xl="xl">
         <v-text-field
             density="compact"
             v-model="internalValue"
             :label="label"
             :prepend-icon="prependIcon"
-            :append-icon="appendIcon"
+            :append-icon="showSearchButton ? 'fa-solid fa-search' : ''"
             :clearable="clearable"
             :type="type"
             :placeholder="placeholder"
@@ -118,8 +122,13 @@ const combinedRules = ref([
             @blur="onBlur"
             @focus="onFocus"
             color="primary"
+            @click:append="onAppendIconClick"
             @click:clear="onClear"
+            @click:prepend="onPrependIconClick"
         ></v-text-field>
     </v-col>
 </template>
+
+
+
 

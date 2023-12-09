@@ -4,33 +4,40 @@ import TextInput from '@/components/TextInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {onMounted, reactive} from "vue";
-import {serviceAuthenticateTeste} from "@/service/pessoa";
+import {serviceAuthenticateTeste, getEnderecoByCep} from "@/service/pessoa";
 
 
 onMounted(async () => {
     pessoa.nome = await serviceAuthenticateTeste()
+
+
 })
 
 const pessoa = reactive({
-    nome: "",
-    sobrenome: "",
-    sexo: "",
-    data_nascimento: "",
-    telefone: "",
-    email: "",
-    estado_civil: "",
-    id_profissao: "",
-    cpf: "",
-    id_etnia: "",
-    id_escolaridade: "",
-    id_religiao: [],
-    rua: "",
-    numero: "",
-    complemento: "",
-    bairro: "",
-    cidade: "",
-    estado: "",
-    cep: ""
+    pessoa: {
+        nome: "",
+        sobrenome: "",
+        sexo: "",
+        data_nascimento: "",
+        telefone: "",
+        email: "",
+        estado_civil: "",
+        id_profissao: "",
+        cpf: "",
+        id_etnia: "",
+        id_escolaridade: "",
+        id_religiao: "",
+        id_sexo: ""
+    },
+    endereco: {
+        rua: "",
+        numero: "",
+        complemento: "",
+        bairro: "",
+        cidade: "",
+        estado: "",
+        cep: ""
+    }
 });
 
 
@@ -42,6 +49,12 @@ const handleSave = () => {
 const handleBack = () => {
     // Implemente a lógica para voltar
     console.log('Retornando da tela de cadastro de usuário.');
+};
+
+
+const handleAppendIconClick = async () => {
+    pessoa.endereco = await getEnderecoByCep(pessoa.endereco.cep);
+    debugger
 };
 
 
@@ -76,6 +89,7 @@ const handleBack = () => {
                         md="4"
                     />
 
+
                     <text-input
                         v-model="pessoa.sobrenome"
                         label="Sobrenome"
@@ -83,6 +97,7 @@ const handleBack = () => {
                         cols="12"
                         md="4"
                     />
+
 
                     <text-input
                         v-model="pessoa.cpf"
@@ -92,6 +107,21 @@ const handleBack = () => {
                         md="4"
                     />
 
+
+                    <SelectInput
+                        label="Sexo"
+                        placeholder="Digite ou selecione o Sexo"
+                        idColumn="id_sexo"
+                        descColumn="descricao"
+                        tableName="sexo"
+                        :is_active="true"
+                        :multiple="false"
+                        v-model="pessoa.id_sexo"
+                        cols="12"
+                        md="4"
+                    />
+
+
                     <text-input
                         v-model="pessoa.data_nascimento"
                         label="Data de Nascimento"
@@ -99,6 +129,27 @@ const handleBack = () => {
                         cols="12"
                         md="4"
                     />
+
+
+                    <text-input
+                        v-model="pessoa.email"
+                        label="Email"
+                        type="email"
+                        :rules="['email', 'required']"
+                        cols="12"
+                        md="4"
+                    />
+
+
+                    <text-input
+                        v-model="pessoa.telefone"
+                        label="telefone"
+                        type="phone"
+                        :rules="['required']"
+                        cols="12"
+                        md="4"
+                    />
+
 
                     <SelectInput
                         label="Etnia"
@@ -142,24 +193,6 @@ const handleBack = () => {
                     />
 
 
-                    <text-input
-                        v-model="pessoa.telefone"
-                        label="telefone"
-                        type="phone"
-                        :rules="['required']"
-                        cols="12"
-                        md="4"
-                    />
-
-                    <text-input
-                        v-model="pessoa.email"
-                        label="Email"
-                        type="email"
-                        :rules="['email', 'required']"
-                        cols="12"
-                        md="4"
-                    />
-
                     <SelectInput
                         label="Profissão"
                         placeholder="Digite ou selecione uma Profissão"
@@ -174,8 +207,105 @@ const handleBack = () => {
                     />
 
 
+                    <SelectInput
+                        label="Estado Civil"
+                        placeholder="Digite ou selecione o Estado Civil"
+                        idColumn="id_estado_civil"
+                        descColumn="descricao"
+                        tableName="estado_civil"
+                        :is_active="true"
+                        :multiple="false"
+                        v-model="pessoa.id_profissao"
+                        cols="12"
+                        md="4"
+                    />
+
                 </v-row>
             </v-col>
+
+            <v-col cols="12">
+                <v-row align="center">
+                    <v-col cols="auto">
+                        <i class="fa fa-home fa-lg"
+                           aria-hidden="true"></i>
+                    </v-col>
+                    <v-col>
+                        <span class="text-h6">Endereço</span>
+                    </v-col>
+                </v-row>
+
+                <v-divider class="border-opacity-100"
+                           color="primary"></v-divider>
+
+                <v-row class="ma-3">
+                    <text-input
+                        v-model="pessoa.endereco.rua"
+                        label="Rua"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+
+
+                    <text-input
+                        v-model="pessoa.endereco.numero"
+                        label="Número"
+                        type="number"
+                        cols="12"
+                        md="4"
+                    />
+
+                    <text-input
+                        v-model="pessoa.endereco.complemento"
+                        label="Complemento"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+
+                    <text-input
+                        v-model="pessoa.endereco.bairro"
+                        label="Bairro"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+
+                    <text-input
+                        v-model="pessoa.endereco.cidade"
+                        label="Bairro"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+
+
+                    <text-input
+                        v-model="pessoa.endereco.estado"
+                        label="Estado"
+                        type="text"
+                        cols="12"
+                        md="4"
+                    />
+
+
+
+
+                    <text-input
+                        v-model="pessoa.endereco.cep"
+                        label="CEP"
+                        type="text"
+                        :showSearchButton="true"
+                        cols="12"
+                        md="4"
+                        @click:append-icon="handleAppendIconClick"
+                    />
+
+                </v-row>
+
+            </v-col>
+
+
         </v-row>
     </card-formulario>
 </template>
