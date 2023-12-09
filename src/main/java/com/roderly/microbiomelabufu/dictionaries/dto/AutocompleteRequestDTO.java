@@ -4,6 +4,6 @@ public record AutocompleteRequestDTO (
     String idColumn,
     String descColumn,
     String tableName,
-    Boolean situacao,
+    Boolean is_active,
     String whereClause
 ){}

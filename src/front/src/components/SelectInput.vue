@@ -63,7 +63,7 @@ const props = defineProps({
         type: String,
         default: ""
     },
-    situacao: {
+    is_active: {
         type: Boolean,
         default: false
     },
@@ -83,7 +83,7 @@ const getOptionsAutocomplete = async () => {
             "idColumn"   : props.idColumn,
             "descColumn" : props.descColumn,
             "tableName"  : props.tableName,
-            "situacao"   : props.situacao,
+            "is_active"   : props.is_active,
             "whereClause": props.whereClause
         }
 
@@ -96,7 +96,7 @@ const getOptionsAutocomplete = async () => {
 
 
 onMounted(getOptionsAutocomplete);
-watch([() => props.idColumn, () => props.descColumn, () => props.tableName, () => props.situacao, () => props.whereClause], getOptionsAutocomplete);
+watch([() => props.idColumn, () => props.descColumn, () => props.tableName, () => props.is_active, () => props.whereClause], getOptionsAutocomplete);
 
 const emits = defineEmits(['update:modelValue', 'blur', 'focus', 'clear']);
 const internalValue = ref(props.modelValue);

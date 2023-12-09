@@ -18,10 +18,10 @@ public class DictionaryService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<ValueLabelDTO> findIdAndLabelByTableAndCondition(String idColumn, String descColumn, String tableName, String whereClause, boolean situacao) {
+    public List<ValueLabelDTO> findIdAndLabelByTableAndCondition(String idColumn, String descColumn, String tableName, String whereClause, boolean is_active) {
 
-        if(situacao){
-            where += "AND id_situacao = 1 ";
+        if(is_active){
+            where += "AND is_active = 1 ";
         }
 
         if(!Objects.equals(whereClause, null)){

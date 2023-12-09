@@ -23,7 +23,7 @@ public class DictionaryController {
                 autocompleteRequestDTO.descColumn(),
                 autocompleteRequestDTO.tableName(),
                 autocompleteRequestDTO.whereClause(),
-                autocompleteRequestDTO.situacao()
+                autocompleteRequestDTO.is_active()
         );
 
         return ResponseEntity.ok(data);
