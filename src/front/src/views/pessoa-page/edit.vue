@@ -291,15 +291,6 @@ const handleAppendIconClick = async () => {
                         md="4"
                     />
 
-
-                    <text-input
-                        v-model="pessoa.endereco.estado"
-                        label="Estado"
-                        type="text"
-                        cols="12"
-                        md="4"
-                    />
-
                     <SelectInput
                         label="Estado"
                         placeholder="Digite ou selecione a UF"
