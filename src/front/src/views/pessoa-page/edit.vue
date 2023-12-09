@@ -247,9 +247,13 @@ const handleAppendIconClick = async () => {
                 </v-row>
 
                 <v-divider class="border-opacity-100"
-                           color="primary"></v-divider>
+                           color="primary"/>
 
-                <v-row class="ma-3">
+            </v-col>
+
+            <v-col cols="12">
+                <v-row>
+
                     <text-input
                         v-model="pessoa.endereco.rua"
                         label="Rua"
@@ -257,7 +261,6 @@ const handleAppendIconClick = async () => {
                         cols="12"
                         md="4"
                     />
-
 
                     <text-input
                         v-model="pessoa.endereco.numero"
@@ -316,7 +319,6 @@ const handleAppendIconClick = async () => {
                     />
 
                 </v-row>
-
             </v-col>
 
 
