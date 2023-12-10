@@ -1,14 +1,23 @@
 import axios from "axios";
 import { setNotification } from "@/service/notificationService";
 
-export const serviceAuthenticateTeste = async () => {
+export const serviceSave = async (data, tipo) => {
 	try {
-		const res = await axios.post('/api/pessoa/teste');
+		let res;
+
+		if(tipo == 'insert') {
+			res = await axios.post('/api/pessoa/insert', data);
+		}
+
+		if (tipo == 'update'){
+			res = await axios.put('/api/pessoa/update', data);
+		}
+
 		return res.data;
 
 	} catch (e) {
 		console.error(e);
-		setNotification("Ocorreu um erro durante a autenticação." + e, "error");
+		setNotification("Error on serviceSavePessoa: " + e, "error");
 	}
 };
 

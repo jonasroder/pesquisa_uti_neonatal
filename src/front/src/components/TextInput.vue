@@ -6,6 +6,12 @@ const props = defineProps({
     label: String,
     prependIcon: String,
     appendIcon: String,
+    appendInnerIcon: String,
+    prependInnerIcon: String,
+    placeholder: String,
+    disabled: Boolean,
+    readonly: Boolean,
+    rules: Array,
     clearable: {
         type: Boolean,
         default: true
@@ -14,11 +20,6 @@ const props = defineProps({
         type: String,
         default: 'text'
     },
-    placeholder: String,
-    disabled: Boolean,
-    readonly: Boolean,
-    showSearchButton: Boolean,
-    rules: Array,
     variant: {
         type: String,
         default: 'outlined'
@@ -81,6 +82,13 @@ const onAppendIconClick = () => {
     emits('click:append-icon');
 };
 
+const onPrependInnerIconClick = () => {
+    emits('click:prepend-inner-icon');
+};
+
+const onAppendInnerIconClick = () => {
+    emits('click:append-inner-icon');
+};
 
 const defaultRules = {
     required: value => !!value || 'Campo obrigatório',
@@ -114,7 +122,9 @@ const combinedRules = ref([
             v-model="internalValue"
             :label="label"
             :prepend-icon="prependIcon"
-            :append-icon="showSearchButton ? 'fa-solid fa-search' : ''"
+            :append-icon="appendIcon"
+            :prepend-inner-icon="prependInnerIcon"
+            :append-inner-icon="appendInnerIcon"
             :clearable="clearable"
             :type="type"
             :placeholder="placeholder"
@@ -122,13 +132,15 @@ const combinedRules = ref([
             :readonly="readonly"
             :rules="combinedRules"
             :variant="variant"
+            color="primary"
             @input="onInput"
             @blur="onBlur"
             @focus="onFocus"
-            color="primary"
-            @click:append="onAppendIconClick"
             @click:clear="onClear"
+            @click:append="onAppendIconClick"
             @click:prepend="onPrependIconClick"
+            @click:appendInner="onAppendInnerIconClick"
+            @click:prependInner="onPrependInnerIconClick"
         ></v-text-field>
     </v-col>
 </template>

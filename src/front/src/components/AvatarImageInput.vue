@@ -1,11 +1,38 @@
 <script setup>
-import {ref, computed} from 'vue';
+import {ref, computed, watch, defineProps, defineEmits, onMounted} from 'vue';
+
+const props = defineProps({
+    modelValue: String,
+});
+
 
 const fileInput = ref(null);
 const video = ref(null);
 const div_video = ref(null);
 const image = ref(null);
 const stream = ref(null);
+const emit = defineEmits(['update:modelValue']);
+
+
+onMounted(() => {
+    console.log("Valor inicial de modelValue:", props.modelValue); // Para depuração
+    if (props.modelValue) {
+        image.value = props.modelValue;
+    }
+});
+
+const updateImage = (newImage) => {
+    image.value = newImage;
+    emit('update:modelValue', newImage);
+};
+
+
+watch(() => props.modelValue, (newValue) => {
+    console.log("Mudança detectada em modelValue:", newValue); // Para depuração
+    if (newValue !== image.value) {
+        image.value = newValue;
+    }
+});
 
 const pickFile = () => {
     fileInput.value.click();
@@ -19,7 +46,7 @@ const onFileChange = (e) => {
 const createImage = (file) => {
     const reader = new FileReader();
     reader.onload = (e) => {
-        image.value = e.target.result;
+        updateImage(e.target.result);
     };
     reader.readAsDataURL(file);
 };

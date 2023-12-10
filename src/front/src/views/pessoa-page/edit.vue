@@ -5,31 +5,30 @@ import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {setNotification} from "@/service/notificationService";
 import {onMounted, reactive} from "vue";
-import {serviceAuthenticateTeste, getEnderecoByCep} from "@/service/pessoa";
+import {serviceSave, getEnderecoByCep} from "@/service/pessoa";
 
 
 onMounted(async () => {
-    pessoa.nome = await serviceAuthenticateTeste()
-
-
+   console.log("oi");
 })
 
+
 const pessoa = reactive({
-    pessoa: {
-        nome: "",
-        sobrenome: "",
-        sexo: "",
-        data_nascimento: "",
-        telefone: "",
-        email: "",
-        estado_civil: "",
-        id_profissao: "",
-        cpf: "",
-        id_etnia: "",
-        id_escolaridade: "",
-        id_religiao: "",
-        id_sexo: ""
-    },
+    foto_perfil: "",
+    nome: "",
+    sobrenome: "",
+    sexo: "",
+    data_nascimento: "",
+    telefone: "",
+    email: "",
+    estado_civil: "",
+    id_profissao: "",
+    cpf: "",
+    id_etnia: "",
+    id_escolaridade: "",
+    id_religiao: "",
+    id_sexo: "",
+    id_tipo_pessoa: "",
     endereco: {
         rua: "",
         numero: "",
@@ -42,9 +41,11 @@ const pessoa = reactive({
 });
 
 
-const handleSave = () => {
-    // Implemente a lógica de salvamento do formulário aqui
-    console.log(pessoa);
+const handleSave = async () => {
+
+   const res = await serviceSave(pessoa, 'insert');
+
+    console.log(res);
 };
 
 const handleBack = () => {
@@ -84,21 +85,25 @@ const handleAppendIconClick = async () => {
                    md="3"
                    justify="center"
                    align="center">
-                <AvatarImageInput/>
+
+                <AvatarImageInput v-model="pessoa.foto_perfil"/>
             </v-col>
 
             <v-col cols="12"
                    sm="8"
                    md="9">
 
-                <v-row>
+
+                <v-row class="justify-end">
 
                     <text-input
                         v-model="pessoa.nome"
                         label="Nome"
                         type="text"
                         cols="12"
-                        md="4"
+                        md="6"
+                        lg="6"
+                        xl="6"
                     />
 
 
@@ -107,16 +112,9 @@ const handleAppendIconClick = async () => {
                         label="Sobrenome"
                         type="text"
                         cols="12"
-                        md="4"
-                    />
-
-
-                    <text-input
-                        v-model="pessoa.cpf"
-                        label="CPF"
-                        type="text"
-                        cols="12"
-                        md="4"
+                        md="6"
+                        lg="6"
+                        xl="6"
                     />
 
 
@@ -144,10 +142,9 @@ const handleAppendIconClick = async () => {
 
 
                     <text-input
-                        v-model="pessoa.email"
-                        label="Email"
-                        type="email"
-                        :rules="['email', 'required']"
+                        v-model="pessoa.cpf"
+                        label="CPF"
+                        type="text"
                         cols="12"
                         md="4"
                     />
@@ -160,6 +157,18 @@ const handleAppendIconClick = async () => {
                         :rules="['required']"
                         cols="12"
                         md="4"
+                    />
+
+
+                    <text-input
+                        v-model="pessoa.email"
+                        label="Email"
+                        type="email"
+                        :rules="['email', 'required']"
+                        cols="12"
+                        md="6"
+                        lg="6"
+                        xl="6"
                     />
 
 
@@ -232,10 +241,25 @@ const handleAppendIconClick = async () => {
                         md="4"
                     />
 
+
+                    <SelectInput
+                        label="Tipo de Pessoa"
+                        placeholder="Digite ou selecione o Tipo"
+                        idColumn="id_tipo_pessoa"
+                        descColumn="descricao"
+                        tableName="tipos_pessoa"
+                        :is_active="true"
+                        :multiple="false"
+                        v-model="pessoa.id_tipo_pessoa"
+                        cols="12"
+                        md="4"
+                    />
+
                 </v-row>
             </v-col>
 
             <v-col cols="12">
+
                 <v-row align="center">
                     <v-col cols="auto">
                         <i class="fa fa-home fa-lg"
@@ -246,8 +270,7 @@ const handleAppendIconClick = async () => {
                     </v-col>
                 </v-row>
 
-                <v-divider class="border-opacity-100"
-                           color="primary"/>
+                <v-divider class="border-opacity-100" color="primary"/>
 
             </v-col>
 
@@ -311,11 +334,11 @@ const handleAppendIconClick = async () => {
                         v-model="pessoa.endereco.cep"
                         label="CEP"
                         type="text"
-                        :showSearchButton="true"
+                        appendInnerIcon="fa-solid fa-search"
                         :rules="['required', 'cep']"
                         cols="12"
                         md="4"
-                        @click:append-icon="handleAppendIconClick"
+                        @click:append-inner-icon="handleAppendIconClick"
                     />
 
                 </v-row>
