@@ -13,12 +13,11 @@ import java.util.stream.Collectors;
 @Service
 public class DictionaryService {
 
-    private  String where = "1 = 1 ";
-
     @PersistenceContext
     private EntityManager entityManager;
 
     public List<ValueLabelDTO> findIdAndLabelByTableAndCondition(String idColumn, String descColumn, String tableName, String whereClause, boolean is_active) {
+        String where = "1 = 1 ";
 
         if(is_active){
             where += "AND is_active = 1 ";

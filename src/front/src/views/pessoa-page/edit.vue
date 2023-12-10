@@ -12,10 +12,14 @@ import {getIdFromUrl} from  "@/service/common/utils"
 const id = ref();
 
 onMounted(async () => {
-   id.value = getIdFromUrl();
-   const data = await serviceLoad(id.value);
-   console.log(data)
-})
+    id.value = getIdFromUrl();
+    const data = await serviceLoad(id.value);
+
+    Object.assign(pessoa, data);
+    Object.assign(pessoa.endereco, data.endereco[0]);
+
+    console.log(pessoa); // Para verificar se os dados foram carregados corretamente
+});
 
 
 const pessoa = reactive({
