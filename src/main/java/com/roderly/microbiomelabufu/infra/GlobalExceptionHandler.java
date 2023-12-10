@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.infra;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +20,7 @@ public class GlobalExceptionHandler {
         }
     }
 
+
     // Outra exceção personalizada como classe interna
     public static class ResourceNotFoundException extends RuntimeException {
         public ResourceNotFoundException(String message) {
@@ -26,7 +28,7 @@ public class GlobalExceptionHandler {
         }
     }
 
-    // Handler para a exceção TokenValidationException
+
     // Handler para a exceção TokenValidationException
     @ExceptionHandler(TokenValidationException.class)
     public ResponseEntity<?> handleTokenValidationException(TokenValidationException ex, WebRequest request) {
@@ -34,7 +36,7 @@ public class GlobalExceptionHandler {
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(false),
-                "UNAUTHORIZED" // Use um código de erro que o frontend reconheça
+                "UNAUTHORIZED"
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
@@ -47,7 +49,7 @@ public class GlobalExceptionHandler {
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(false),
-                "NOT_FOUND" // Código de erro para a exceção de recurso não encontrado
+                "NOT_FOUND"
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
@@ -56,13 +58,33 @@ public class GlobalExceptionHandler {
     // Handler para exceções gerais
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request) {
+
+        String message = "Um erro interno ocorreu. Por favor, contate o suporte.";
+
         ErrorDetails errorDetails = new ErrorDetails(
                 new Date(),
-                ex.getMessage(),
+                message,
                 request.getDescription(false),
-                "INTERNAL_SERVER_ERROR" // Código de erro para exceções gerais
+                "INTERNAL_SERVER_ERROR"
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
+
+    // Handler para DataIntegrityViolationException
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
+        String message = "Falha na validação dos dados: " + ex.getMostSpecificCause().getMessage();
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                message,
+                request.getDescription(false),
+                "DATA_INTEGRITY_VIOLATION"
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+
 
 }

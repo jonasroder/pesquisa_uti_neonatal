@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setNotification } from "@/service/notificationService";
+import { setNotification } from "@/plugins/notificationService";
 
 export const serviceAuthenticateTeste = async (data) => {
 	try {

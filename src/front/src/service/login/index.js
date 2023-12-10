@@ -1,6 +1,6 @@
 import axios from "axios";
-import { setNotification } from "@/service/notificationService";
-import { saveToken, removeToken } from "@/service/tokenService";
+import { setNotification } from "@/plugins/notificationService";
+import { saveToken, removeToken } from "@/service/common/tokenService";
 
 export const serviceAuthenticateUser = async (data) => {
 	try {

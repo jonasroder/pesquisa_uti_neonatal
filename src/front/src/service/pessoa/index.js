@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setNotification } from "@/service/notificationService";
+import {handleApiError} from  "@/service/common/handleApiError"
 
 export const serviceSave = async (data, tipo) => {
 	try {
@@ -16,8 +16,8 @@ export const serviceSave = async (data, tipo) => {
 		return res.data;
 
 	} catch (e) {
-		console.error(e);
-		setNotification("Error on serviceSavePessoa: " + e, "error");
+		debugger
+		return handleApiError(e, "Error on serviceSave");
 	}
 };
 
@@ -26,8 +26,7 @@ export const getEnderecoByCep = async (cep) => {
 	try {
 		const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
 		return response.data;
-	} catch (error) {
-		console.error(error);
-		throw new Error('Ocorreu um erro ao buscar o endereço.');
+	} catch (e) {
+		return handleApiError(e, "Error on serviceSave");
 	}
 };

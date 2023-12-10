@@ -4,7 +4,7 @@ import router from './router'
 import './plugins/axios'
 import vuetify from './plugins/vuetify'
 import Toastify from 'vue3-toastify';
-import './service/axiosConfig';
+import './service/common/axiosConfig';
 
 import 'vue3-toastify/dist/index.css';
 import 'vuetify/styles'

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getToken } from '@/service/tokenService';
+import { getToken } from '@/service/common/tokenService';
 
 const routes = [
 	{

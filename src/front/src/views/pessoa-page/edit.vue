@@ -3,13 +3,13 @@ import CardFormulario from "@/components/CardFormulario.vue";
 import TextInput from '@/components/TextInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
-import {setNotification} from "@/service/notificationService";
+import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive} from "vue";
 import {serviceSave, getEnderecoByCep} from "@/service/pessoa";
 
 
 onMounted(async () => {
-   console.log("oi");
+    console.log("oi");
 })
 
 
@@ -17,11 +17,10 @@ const pessoa = reactive({
     foto_perfil: "",
     nome: "",
     sobrenome: "",
-    sexo: "",
     data_nascimento: "",
     telefone: "",
     email: "",
-    estado_civil: "",
+    id_estado_civil: "",
     id_profissao: "",
     cpf: "",
     id_etnia: "",
@@ -30,20 +29,21 @@ const pessoa = reactive({
     id_sexo: "",
     id_tipo_pessoa: "",
     endereco: {
-        rua: "",
+        logradouro: "",
         numero: "",
         complemento: "",
         bairro: "",
         cidade: "",
         estado: "",
-        cep: ""
+        cep: "",
+        referencia: ""
     }
 });
 
 
 const handleSave = async () => {
-
-   const res = await serviceSave(pessoa, 'insert');
+    console.log(pessoa);
+    const res = await serviceSave(pessoa, 'insert');
 
     console.log(res);
 };
@@ -63,7 +63,7 @@ const handleAppendIconClick = async () => {
     }
 
     pessoa.endereco.cep = respEndereco.cep;
-    pessoa.endereco.rua = respEndereco.logradouro;
+    pessoa.endereco.logradouro = respEndereco.logradouro;
     pessoa.endereco.bairro = respEndereco.bairro;
     pessoa.endereco.cidade = respEndereco.localidade;
     pessoa.endereco.estado = respEndereco.uf;
@@ -236,7 +236,7 @@ const handleAppendIconClick = async () => {
                         tableName="estado_civil"
                         :is_active="true"
                         :multiple="false"
-                        v-model="pessoa.id_profissao"
+                        v-model="pessoa.id_estado_civil"
                         cols="12"
                         md="4"
                     />
@@ -270,7 +270,8 @@ const handleAppendIconClick = async () => {
                     </v-col>
                 </v-row>
 
-                <v-divider class="border-opacity-100" color="primary"/>
+                <v-divider class="border-opacity-100"
+                           color="primary"/>
 
             </v-col>
 
@@ -278,7 +279,7 @@ const handleAppendIconClick = async () => {
                 <v-row>
 
                     <text-input
-                        v-model="pessoa.endereco.rua"
+                        v-model="pessoa.endereco.logradouro"
                         label="Rua"
                         type="text"
                         cols="12"
@@ -339,6 +340,15 @@ const handleAppendIconClick = async () => {
                         cols="12"
                         md="4"
                         @click:append-inner-icon="handleAppendIconClick"
+                    />
+
+
+                    <text-input
+                        v-model="pessoa.endereco.referencia"
+                        label="Referência"
+                        type="text"
+                        cols="12"
+                        md="4"
                     />
 
                 </v-row>

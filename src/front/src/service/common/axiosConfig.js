@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getToken, removeToken } from "@/service/tokenService";
+import { getToken, removeToken } from "@/service/common/tokenService";
 import router from "@/router";
 
 axios.interceptors.request.use(

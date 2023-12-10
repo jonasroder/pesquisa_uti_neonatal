@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, defineProps, defineEmits, onMounted } from 'vue';
-import {serviceAuthenticateTeste} from "@/service/autocomplete";
+import {serviceAuthenticateTeste} from "@/service/common/autocomplete";
 
 const props = defineProps({
     modelValue: [String, Number, Array],
