@@ -4,12 +4,17 @@ import TextInput from '@/components/TextInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {setNotification} from "@/plugins/notificationService";
-import {onMounted, reactive} from "vue";
-import {serviceSave, getEnderecoByCep} from "@/service/pessoa";
+import {onMounted, reactive, ref} from "vue";
+import {serviceSave, serviceLoad, getEnderecoByCep} from "@/service/pessoa";
+import {getIdFromUrl} from  "@/service/common/utils"
 
+
+const id = ref();
 
 onMounted(async () => {
-    console.log("oi");
+   id.value = getIdFromUrl();
+   const data = await serviceLoad(id.value);
+   console.log(data)
 })
 
 
@@ -44,6 +49,7 @@ const pessoa = reactive({
 const handleSave = async () => {
     console.log(pessoa);
     const res = await serviceSave(pessoa, 'insert');
+    id.value = res.id;
 
     console.log(res);
 };

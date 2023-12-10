@@ -16,8 +16,17 @@ export const serviceSave = async (data, tipo) => {
 		return res.data;
 
 	} catch (e) {
-		debugger
 		return handleApiError(e, "Error on serviceSave");
+	}
+};
+
+
+export const serviceLoad = async (id) => {
+	try {
+		const response = await axios.get(`/api/pessoa/load/${id}`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on serviceLoad");
 	}
 };
 

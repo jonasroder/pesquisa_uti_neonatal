@@ -1,15 +1,18 @@
 package com.roderly.microbiomelabufu.pessoa.dto;
 
 import com.roderly.microbiomelabufu.endereco.dto.EnderecoDTO;
+import com.roderly.microbiomelabufu.pessoa.model.PessoaModel;
+import com.roderly.microbiomelabufu.endereco.model.EnderecoModel;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public record SavePessoaDTO(
         Long id_pessoa,
         String fotoPerfil,
         String nome,
         String sobrenome,
-        String sexo,
         LocalDate data_nascimento,
         String telefone,
         String email,
