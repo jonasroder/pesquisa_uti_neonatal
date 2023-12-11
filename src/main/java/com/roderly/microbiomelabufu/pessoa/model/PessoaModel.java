@@ -12,8 +12,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "pessoas")
-@Entity(name = "Pessoas")
+@Table(name = "pessoa")
+@Entity(name = "Pessoa")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

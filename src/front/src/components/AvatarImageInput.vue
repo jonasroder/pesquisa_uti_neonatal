@@ -15,7 +15,6 @@ const emit = defineEmits(['update:modelValue']);
 
 
 onMounted(() => {
-    console.log("Valor inicial de modelValue:", props.modelValue); // Para depuração
     if (props.modelValue) {
         image.value = props.modelValue;
     }
@@ -28,7 +27,6 @@ const updateImage = (newImage) => {
 
 
 watch(() => props.modelValue, (newValue) => {
-    console.log("Mudança detectada em modelValue:", newValue); // Para depuração
     if (newValue !== image.value) {
         image.value = newValue;
     }

@@ -1,5 +1,5 @@
 -- Criação da tabela de Tipos Pessoa
-CREATE TABLE tipos_pessoa
+CREATE TABLE tipo_pessoa
 (
     id_tipo_pessoa INT AUTO_INCREMENT PRIMARY KEY,
     descricao      VARCHAR(255) NOT NULL,
@@ -7,11 +7,11 @@ CREATE TABLE tipos_pessoa
 );
 
 
-INSERT INTO tipos_pessoa (descricao)
+INSERT INTO tipo_pessoa (descricao)
 VALUES ('Paciente');
-INSERT INTO tipos_pessoa (descricao)
+INSERT INTO tipo_pessoa (descricao)
 VALUES ('Fornecedor');
-INSERT INTO tipos_pessoa (descricao)
+INSERT INTO tipo_pessoa (descricao)
 VALUES ('Estudante');
-INSERT INTO tipos_pessoa (descricao)
+INSERT INTO tipo_pessoa (descricao)
 VALUES ('Pesquisador');

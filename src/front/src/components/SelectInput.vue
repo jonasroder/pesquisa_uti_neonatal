@@ -188,6 +188,7 @@ const combinedRules = ref([
             :readonly="readonly"
             :rules="combinedRules"
             :variant="variant"
+            v-model="internalValue"
             @update:modelValue="updateModel"
             @input="onInput"
             @blur="onBlur"

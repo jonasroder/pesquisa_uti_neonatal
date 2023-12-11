@@ -9,16 +9,16 @@ import {serviceSave, serviceLoad, getEnderecoByCep} from "@/service/pessoa";
 import {getIdFromUrl} from  "@/service/common/utils"
 
 
-const id = ref();
+const id = ref(getIdFromUrl());
 
 onMounted(async () => {
-    id.value = getIdFromUrl();
-    const data = await serviceLoad(id.value);
+    if(id.value > 0) {
+        const data = await serviceLoad(id.value);
 
-    Object.assign(pessoa, data);
-    Object.assign(pessoa.endereco, data.endereco[0]);
+        Object.assign(pessoa, data);
+        Object.assign(pessoa.endereco, data.endereco[0]);
+    }
 
-    console.log(pessoa); // Para verificar se os dados foram carregados corretamente
 });
 
 
@@ -51,12 +51,17 @@ const pessoa = reactive({
 
 
 const handleSave = async () => {
-    console.log(pessoa);
+    console.log("Dados enviados: " + pessoa);
     const res = await serviceSave(pessoa, 'insert');
     id.value = res.id;
 
-    console.log(res);
+    console.log("Dados recebidos: " + res);
+
+    const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
+
+    window.history.pushState({ path: newUrl }, '', newUrl);
 };
+
 
 const handleBack = () => {
     // Implemente a lógica para voltar
@@ -257,7 +262,7 @@ const handleAppendIconClick = async () => {
                         placeholder="Digite ou selecione o Tipo"
                         idColumn="id_tipo_pessoa"
                         descColumn="descricao"
-                        tableName="tipos_pessoa"
+                        tableName="tipo_pessoa"
                         :is_active="true"
                         :multiple="false"
                         v-model="pessoa.id_tipo_pessoa"
@@ -329,7 +334,7 @@ const handleAppendIconClick = async () => {
                     />
 
                     <SelectInput
-                        label="Estado"
+                        label="UF"
                         placeholder="Digite ou selecione a UF"
                         idColumn="id_uf"
                         descColumn="sigla"

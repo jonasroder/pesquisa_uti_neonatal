@@ -1,5 +1,5 @@
--- Criação da tabela de pessoas
-CREATE TABLE pessoas
+-- Criação da tabela de pessoa
+CREATE TABLE pessoa
 (
     id_pessoa       INT AUTO_INCREMENT PRIMARY KEY,
     id_tipo_pessoa  INT,
@@ -19,7 +19,7 @@ CREATE TABLE pessoas
 );
 
 
-INSERT INTO pessoas (id_tipo_pessoa, nome, sobrenome, data_nascimento, cpf, is_active)
+INSERT INTO pessoa (id_tipo_pessoa, nome, sobrenome, data_nascimento, cpf, is_active)
 VALUES (1, 'Jonas', 'Röder', '1991-03-03', '06398404939', 1);
-INSERT INTO pessoas (id_tipo_pessoa, nome, sobrenome, data_nascimento, cpf, is_active)
+INSERT INTO pessoa (id_tipo_pessoa, nome, sobrenome, data_nascimento, cpf, is_active)
 VALUES (1, 'Denise', 'Röder', '1976-03-09', '03953126636', 1);

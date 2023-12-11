@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Entity(name = "Usuario")
-@Table(name = "Usuario")
+@Table(name = "usuario")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
