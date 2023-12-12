@@ -22,7 +22,7 @@ public record LoadPessoaDTO(
         Integer id_religiao,
         Integer id_sexo,
         Integer id_tipo_pessoa,
-        List<LoadEnderecoDTO> endereco // Alterado de EnderecoDTO para LoadEnderecoDTO
+        List<LoadEnderecoDTO> endereco
 ) {
     public static LoadPessoaDTO fromPessoaModel(PessoaModel pessoaModel) {
 

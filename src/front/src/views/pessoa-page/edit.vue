@@ -6,19 +6,24 @@ import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
 import {serviceSave, serviceLoad, getEnderecoByCep} from "@/service/pessoa";
-import {getIdFromUrl} from  "@/service/common/utils"
+import {getIdFromUrl} from "@/service/common/utils"
+import {loading} from "@/plugins/loadingService.js";
 
 
 const id = ref(getIdFromUrl());
 
+
 onMounted(async () => {
-    if(id.value > 0) {
+    loading.show()
+
+    if (id.value > 0) {
         const data = await serviceLoad(id.value);
 
         Object.assign(pessoa, data);
-        Object.assign(pessoa.endereco, data.endereco[0]);
+        Object.assign(endereco, data.endereco[0]);
     }
 
+    loading.hide()
 });
 
 
@@ -37,29 +42,44 @@ const pessoa = reactive({
     id_religiao: "",
     id_sexo: "",
     id_tipo_pessoa: "",
-    endereco: {
+});
+
+const endereco = reactive({
         logradouro: "",
         numero: "",
         complemento: "",
         bairro: "",
         cidade: "",
-        estado: "",
+        id_uf: "",
         cep: "",
         referencia: ""
-    }
-});
+    })
 
 
 const handleSave = async () => {
-    console.log("Dados enviados: " + pessoa);
-    const res = await serviceSave(pessoa, 'insert');
-    id.value = res.id;
+    loading.show()
 
-    console.log("Dados recebidos: " + res);
+    pessoa.endereco[0] = endereco;
 
-    const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
+    console.log(pessoa)
+    if (id.value > 0) {
+        //Faz o update
+        const res = await serviceSave(pessoa, 'update');
+        console.log(res)
 
-    window.history.pushState({ path: newUrl }, '', newUrl);
+    } else {
+
+        //Faz o Insert
+        const res = await serviceSave(pessoa, 'insert');
+        id.value = res.id;
+        const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
+        window.history.pushState({path: newUrl}, '', newUrl);
+
+    }
+
+
+    loading.hide()
+
 };
 
 
@@ -71,17 +91,17 @@ const handleBack = () => {
 
 const handleAppendIconClick = async () => {
     let respEndereco = {};
-    if (pessoa.endereco.cep.length >= 8) {
-        respEndereco = await getEnderecoByCep(pessoa.endereco.cep);
+    if (endereco.cep.length >= 8) {
+        respEndereco = await getEnderecoByCep(endereco.cep);
     } else {
         setNotification("O CEP é invalido", "error");
     }
 
-    pessoa.endereco.cep = respEndereco.cep;
-    pessoa.endereco.logradouro = respEndereco.logradouro;
-    pessoa.endereco.bairro = respEndereco.bairro;
-    pessoa.endereco.cidade = respEndereco.localidade;
-    pessoa.endereco.estado = respEndereco.uf;
+    endereco.cep = respEndereco.cep;
+    endereco.logradouro = respEndereco.logradouro;
+    endereco.bairro = respEndereco.bairro;
+    endereco.cidade = respEndereco.localidade;
+    endereco.id_uf = respEndereco.uf;
 
 };
 
@@ -294,7 +314,18 @@ const handleAppendIconClick = async () => {
                 <v-row>
 
                     <text-input
-                        v-model="pessoa.endereco.logradouro"
+                        v-model="endereco.cep"
+                        label="CEP"
+                        type="text"
+                        appendInnerIcon="fa-solid fa-search"
+                        :rules="['required', 'cep']"
+                        cols="12"
+                        md="4"
+                        @click:append-inner-icon="handleAppendIconClick"
+                    />
+
+                    <text-input
+                        v-model="endereco.logradouro"
                         label="Rua"
                         type="text"
                         cols="12"
@@ -302,7 +333,7 @@ const handleAppendIconClick = async () => {
                     />
 
                     <text-input
-                        v-model="pessoa.endereco.numero"
+                        v-model="endereco.numero"
                         label="Número"
                         type="number"
                         cols="12"
@@ -310,7 +341,7 @@ const handleAppendIconClick = async () => {
                     />
 
                     <text-input
-                        v-model="pessoa.endereco.complemento"
+                        v-model="endereco.complemento"
                         label="Complemento"
                         type="text"
                         cols="12"
@@ -318,7 +349,7 @@ const handleAppendIconClick = async () => {
                     />
 
                     <text-input
-                        v-model="pessoa.endereco.bairro"
+                        v-model="endereco.bairro"
                         label="Bairro"
                         type="text"
                         cols="12"
@@ -326,7 +357,7 @@ const handleAppendIconClick = async () => {
                     />
 
                     <text-input
-                        v-model="pessoa.endereco.cidade"
+                        v-model="endereco.cidade"
                         label="Bairro"
                         type="text"
                         cols="12"
@@ -341,25 +372,14 @@ const handleAppendIconClick = async () => {
                         tableName="uf"
                         :is_active="true"
                         :multiple="false"
-                        v-model="pessoa.endereco.estado"
+                        v-model="endereco.id_uf"
                         cols="12"
                         md="4"
                     />
 
-                    <text-input
-                        v-model="pessoa.endereco.cep"
-                        label="CEP"
-                        type="text"
-                        appendInnerIcon="fa-solid fa-search"
-                        :rules="['required', 'cep']"
-                        cols="12"
-                        md="4"
-                        @click:append-inner-icon="handleAppendIconClick"
-                    />
-
 
                     <text-input
-                        v-model="pessoa.endereco.referencia"
+                        v-model="endereco.referencia"
                         label="Referência"
                         type="text"
                         cols="12"

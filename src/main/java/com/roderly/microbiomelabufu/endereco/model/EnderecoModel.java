@@ -28,7 +28,7 @@ public class EnderecoModel {
 
     private String cidade;
 
-    private String estado;
+    private String id_uf;
 
     private String cep;
 
@@ -49,8 +49,21 @@ public class EnderecoModel {
         this.complemento = dados.complemento();
         this.bairro = dados.bairro();
         this.cidade = dados.cidade();
-        this.estado = dados.estado();
+        this.id_uf = dados.id_uf();
         this.cep = dados.cep();
         this.referencia = dados.referencia();
     }
+
+
+    public void updateFromDto(EnderecoDTO dto) {
+        this.logradouro = dto.logradouro();
+        this.numero = dto.numero();
+        this.complemento = dto.complemento();
+        this.bairro = dto.bairro();
+        this.cidade = dto.cidade();
+        this.id_uf = dto.id_uf();
+        this.cep = dto.cep();
+        this.referencia = dto.referencia();
+    }
+
 }

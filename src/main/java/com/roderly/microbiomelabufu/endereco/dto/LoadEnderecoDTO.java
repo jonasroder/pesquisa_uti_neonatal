@@ -9,7 +9,7 @@ public record LoadEnderecoDTO(
         String complemento,
         String bairro,
         String cidade,
-        String estado,
+        String id_uf,
         String cep,
         String referencia
 ) {
@@ -21,7 +21,7 @@ public record LoadEnderecoDTO(
                 enderecoModel.getComplemento(),
                 enderecoModel.getBairro(),
                 enderecoModel.getCidade(),
-                enderecoModel.getEstado(),
+                enderecoModel.getId_uf(),
                 enderecoModel.getCep(),
                 enderecoModel.getReferencia()
         );

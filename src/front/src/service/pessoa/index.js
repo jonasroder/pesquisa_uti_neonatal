@@ -5,11 +5,11 @@ export const serviceSave = async (data, tipo) => {
 	try {
 		let res;
 
-		if(tipo == 'insert') {
+		if(tipo === 'insert') {
 			res = await axios.post('/api/pessoa/insert', data);
 		}
 
-		if (tipo == 'update'){
+		if (tipo === 'update'){
 			res = await axios.put('/api/pessoa/update', data);
 		}
 

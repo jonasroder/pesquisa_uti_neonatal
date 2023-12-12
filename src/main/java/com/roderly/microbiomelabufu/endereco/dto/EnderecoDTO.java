@@ -1,7 +1,5 @@
 package com.roderly.microbiomelabufu.endereco.dto;
 
-import com.roderly.microbiomelabufu.endereco.model.EnderecoModel;
-
 public record EnderecoDTO(
         Long id_endereco,
         Long id_pessoa,
@@ -10,7 +8,7 @@ public record EnderecoDTO(
         String complemento,
         String bairro,
         String cidade,
-        String estado,
+        String id_uf,
         String cep,
         String referencia
 ){}
