@@ -1,11 +1,11 @@
 package com.roderly.microbiomelabufu.pessoa.dto;
 
-import com.roderly.microbiomelabufu.endereco.dto.EnderecoDTO;
+import com.roderly.microbiomelabufu.endereco.dto.request.EnderecoRequest;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public record SavePessoaDTO(
+public record PessoaDTO(
         Long id_pessoa,
         String fotoPerfil,
         String nome,
@@ -21,5 +21,5 @@ public record SavePessoaDTO(
         Integer id_religiao,
         Integer id_sexo,
         Integer id_tipo_pessoa,
-        List<EnderecoDTO> endereco
+        List<EnderecoRequest> endereco
 ) {}

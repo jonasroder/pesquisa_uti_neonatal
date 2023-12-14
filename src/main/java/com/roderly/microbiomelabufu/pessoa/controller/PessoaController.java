@@ -1,11 +1,12 @@
 package com.roderly.microbiomelabufu.pessoa.controller;
 
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
-import com.roderly.microbiomelabufu.infra.GlobalExceptionHandler;
-import com.roderly.microbiomelabufu.pessoa.dto.LoadPessoaDTO;
-import com.roderly.microbiomelabufu.pessoa.dto.SavePessoaDTO;
-import com.roderly.microbiomelabufu.pessoa.model.PessoaModel;
+import com.roderly.microbiomelabufu.pessoa.dto.request.PessoaCompletoRequest;
+import com.roderly.microbiomelabufu.pessoa.dto.response.PessoaCompletoResponse;
+import com.roderly.microbiomelabufu.pessoa.mapper.PessoaMapper;
+import com.roderly.microbiomelabufu.pessoa.model.Pessoa;
 import com.roderly.microbiomelabufu.pessoa.repository.PessoaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,48 +20,41 @@ public class PessoaController {
 
     @Autowired
     PessoaRepository repository;
+
     @PostMapping("/insert")
-    public ResponseEntity<ApiResponseDTO> insert(@RequestBody @Valid SavePessoaDTO dados) {
+    public ResponseEntity<ApiResponseDTO> insert(@RequestBody @Valid PessoaCompletoRequest request) {
+        Pessoa pessoa       = PessoaMapper.toPessoa(request);
+        Pessoa pessoaSalva  = repository.save(pessoa);
 
-        // Cria uma nova instância de PessoaModel com os dados do DTO
-        PessoaModel pessoa = new PessoaModel(dados);
-
-        // Associa cada EnderecoDTO à pessoa usando o método addOrUpdateEndereco
-        dados.endereco().forEach(pessoa::addOrUpdateEndereco);
-
-        // Salva a pessoa e os endereços e atualiza a referência
-        PessoaModel pessoaSalva = repository.save(pessoa);
-
-        ApiResponseDTO responseDTO = new ApiResponseDTO(
-                pessoaSalva.getId_pessoa(),
-                "Pessoa criada com sucesso"
-        );
-
+        ApiResponseDTO responseDTO = new ApiResponseDTO(pessoaSalva.getId_pessoa(), "Pessoa criada com sucesso");
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
 
     @GetMapping("/load/{id}")
-    public ResponseEntity<LoadPessoaDTO> getPessoa(@PathVariable Long id) {
-        return repository.findById(id)
-                .map(LoadPessoaDTO::fromPessoaModel)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<PessoaCompletoResponse> getPessoaComEndereco(@PathVariable Long id) {
+        Pessoa responsePessoa = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com ID: " + id));
+
+        PessoaCompletoResponse pessoaCompletoResponse = PessoaMapper.pessoaToPessoaResponse(responsePessoa);
+
+        return ResponseEntity.ok(pessoaCompletoResponse);
     }
 
 
-    @PutMapping ("/update")
+
+
+    @PutMapping("/update")
     @Transactional
-    public ResponseEntity<ApiResponseDTO> update(@RequestBody @Valid SavePessoaDTO dados) {
-        PessoaModel pessoa = repository.findById(dados.id_pessoa())
-                .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Pessoa não encontrada para este id: " + dados.id_pessoa()));
+    public ResponseEntity<ApiResponseDTO> update(@RequestBody @Valid PessoaCompletoRequest request) {
+        Pessoa responsePessoa = repository.findById(request.id_pessoa())
+                .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com ID: " + request.id_pessoa()));
 
+        Pessoa updatedPessoa = PessoaMapper.toPessoa(request);
 
-        pessoa.update(dados); // Chama o método update que agora também atualiza os endereços
-        pessoa = repository.save(pessoa); // Salva as alterações no repositório
+        repository.save(updatedPessoa);
 
-        ApiResponseDTO responseDTO = new ApiResponseDTO(pessoa.getId_pessoa(), "Pessoa atualizada com sucesso");
-        return ResponseEntity.ok(responseDTO);
+        ApiResponseDTO response = new ApiResponseDTO(updatedPessoa.getId_pessoa(), "Pessoa atualizada com sucesso.");
+        return ResponseEntity.ok(response);
     }
-
 }

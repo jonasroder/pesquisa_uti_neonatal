@@ -1,8 +1,7 @@
-package com.roderly.microbiomelabufu.endereco.dto;
+package com.roderly.microbiomelabufu.endereco.dto.response;
 
-public record EnderecoDTO(
+public record EnderecoResponse(
         Long id_endereco,
-        Long id_pessoa,
         String logradouro,
         String numero,
         String complemento,

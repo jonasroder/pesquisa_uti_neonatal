@@ -20,7 +20,7 @@ onMounted(async () => {
         const data = await serviceLoad(id.value);
 
         Object.assign(pessoa, data);
-        Object.assign(endereco, data.endereco[0]);
+        //Object.assign(endereco, data.endereco[0]);
     }
 
     loading.hide()
@@ -42,6 +42,7 @@ const pessoa = reactive({
     id_religiao: "",
     id_sexo: "",
     id_tipo_pessoa: "",
+    endereco : []
 });
 
 const endereco = reactive({
@@ -59,22 +60,20 @@ const endereco = reactive({
 const handleSave = async () => {
     loading.show()
 
-    pessoa.endereco[0] = endereco;
+    if(endereco) {
+        pessoa.endereco[0] = endereco;
+    }
 
     console.log(pessoa)
     if (id.value > 0) {
-        //Faz o update
         const res = await serviceSave(pessoa, 'update');
         console.log(res)
 
     } else {
-
-        //Faz o Insert
         const res = await serviceSave(pessoa, 'insert');
         id.value = res.id;
         const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
         window.history.pushState({path: newUrl}, '', newUrl);
-
     }
 
 
