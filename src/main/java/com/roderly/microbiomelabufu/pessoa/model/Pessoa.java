@@ -10,7 +10,8 @@ import java.util.List;
 
 @Table(name = "pessoa")
 @Entity(name = "Pessoa")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Pessoa {
@@ -45,9 +46,8 @@ public class Pessoa {
     private Integer id_religiao;
 
 
-    @Transient
     @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Endereco> enderecos = new ArrayList<>();
+    private List<Endereco> endereco = new ArrayList<>();
 
 
 }

@@ -19,6 +19,6 @@ public record PessoaCompletoResponse(
         String cpf,
         Integer id_etnia,
         Integer id_escolaridade,
-        Integer id_religiao
-       // List<EnderecoResponse> enderecos
+        Integer id_religiao,
+       List<EnderecoResponse> endereco
 ) {}

@@ -2,110 +2,70 @@
 import { ref, watch, defineProps, defineEmits, onMounted } from 'vue';
 import {serviceAuthenticateTeste} from "@/service/common/autocomplete";
 
+
 const props = defineProps({
     modelValue: [String, Number, Array],
     label: String,
     prependIcon: String,
     appendIcon: String,
-    clearable: {
-        type: Boolean,
-        default: true
-    },
-    type: {
-        type: String,
-        default: 'text'
-    },
+    clearable: Boolean,
+    type: { type: String, default: 'text' },
     placeholder: String,
     disabled: Boolean,
     readonly: Boolean,
     rules: Array,
-    variant: {
-        type: String,
-        default: 'outlined'
-    },
-    cols: {
-        type: [Number, String],
-        default: 12
-    },
-    sm: {
-        type: [Number, String],
-        default: '12'
-    },
-    md: {
-        type: [Number, String],
-        default: '6'
-    },
-    lg: {
-        type: [Number, String],
-        default: '3'
-    },
-    xl: {
-        type: [Number, String],
-        default: '3'
-    },
-    items: {
-        type: Array,
-        default: () => []
-    },
-    idColumn: {
-        type: String,
-        default: ""
-    },
-    descColumn: {
-        type: String,
-        default: ""
-    },
-    tableName: {
-        type: String,
-        default: ""
-    },
-    whereClause: {
-        type: String,
-        default: ""
-    },
-    is_active: {
-        type: Boolean,
-        default: false
-    },
-    multiple: {
-        type: Boolean,
-        default: false
-    }
+    variant: { type: String, default: 'outlined' },
+    cols: { type: [Number, String], default: 12 },
+    sm: { type: [Number, String], default: 12 },
+    md: { type: [Number, String], default: 6 },
+    lg: { type: [Number, String], default: 3 },
+    xl: { type: [Number, String], default: 3 },
+    items: { type: Array, default: () => [] },
+    idColumn: String,
+    descColumn: String,
+    tableName: String,
+    whereClause: String,
+    is_active: Boolean,
+    multiple: Boolean
 });
 
-const items = ref(props.items);
+    // Se já houver um 'internalValue' definido em algum lugar, remova esta linha e use a definição existente.
+    const internalValue = ref(props.modelValue);
+    const items = ref(props.items);
 
-
-
-const getOptionsAutocomplete = async () => {
-    if(items.value.length === 0 && props.idColumn && props.descColumn && props.tableName){
-        const params = {
-            "idColumn"   : props.idColumn,
-            "descColumn" : props.descColumn,
-            "tableName"  : props.tableName,
-            "is_active"   : props.is_active,
-            "whereClause": props.whereClause
-        }
-
-        const response = await serviceAuthenticateTeste(params);
-        if (response) {
-            items.value = response.map(item => ({ value: item.value, label: item.label }));
-        }
-    }
+    const getOptionsAutocomplete = async () => {
+    if (items.value.length === 0 && props.idColumn && props.descColumn && props.tableName) {
+    try {
+    const params = {
+    idColumn: props.idColumn,
+    descColumn: props.descColumn,
+    tableName: props.tableName,
+    is_active: props.is_active,
+    whereClause: props.whereClause
+};
+    const response = await serviceAuthenticateTeste(params);
+    console.log(response)
+    if (Array.isArray(response)) {
+    items.value = response.map(item => ({ value: item.value, label: item.label }));
+    console.log(items.value)
 }
+} catch (error) {
+    console.error("Erro ao buscar opções de autocomplete:", error);
+}
+}
+};
 
+    onMounted(() => {
+    if (items.value.length === 0) {
+    getOptionsAutocomplete();
+}
+});
 
-onMounted(getOptionsAutocomplete);
-watch([() => props.idColumn, () => props.descColumn, () => props.tableName, () => props.is_active, () => props.whereClause], getOptionsAutocomplete);
-
-const emits = defineEmits(['update:modelValue', 'blur', 'focus', 'clear']);
-const internalValue = ref(props.modelValue);
-
-
-
-watch(() => props.modelValue, (newValue) => {
+    watch(() => props.modelValue, (newValue) => {
     internalValue.value = newValue;
 });
+
+    const emits = defineEmits(['update:modelValue', 'blur', 'focus', 'clear']);
 
 
 

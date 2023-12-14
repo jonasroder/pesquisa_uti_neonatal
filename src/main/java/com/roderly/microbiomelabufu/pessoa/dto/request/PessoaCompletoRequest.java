@@ -1,6 +1,6 @@
 package com.roderly.microbiomelabufu.pessoa.dto.request;
 
-import com.roderly.microbiomelabufu.endereco.dto.response.EnderecoResponse;
+import com.roderly.microbiomelabufu.endereco.dto.request.EnderecoRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +19,6 @@ public record PessoaCompletoRequest(
         String cpf,
         Integer id_etnia,
         Integer id_escolaridade,
-        Integer id_religiao
-        //List<EnderecoResponse> enderecos
+        Integer id_religiao,
+        List<EnderecoRequest> endereco
 ) {}

@@ -20,7 +20,7 @@ onMounted(async () => {
         const data = await serviceLoad(id.value);
 
         Object.assign(pessoa, data);
-        //Object.assign(endereco, data.endereco[0]);
+        Object.assign(endereco, data.endereco[0] ?? {});
     }
 
     loading.hide()
@@ -376,7 +376,6 @@ const handleAppendIconClick = async () => {
                         md="4"
                     />
 
-
                     <text-input
                         v-model="endereco.referencia"
                         label="Referência"
@@ -384,6 +383,7 @@ const handleAppendIconClick = async () => {
                         cols="12"
                         md="4"
                     />
+
 
                 </v-row>
             </v-col>

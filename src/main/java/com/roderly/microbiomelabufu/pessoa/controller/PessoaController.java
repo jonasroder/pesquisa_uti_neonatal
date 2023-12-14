@@ -23,7 +23,7 @@ public class PessoaController {
 
     @PostMapping("/insert")
     public ResponseEntity<ApiResponseDTO> insert(@RequestBody @Valid PessoaCompletoRequest request) {
-        Pessoa pessoa       = PessoaMapper.toPessoa(request);
+        Pessoa pessoa       = PessoaMapper.PessoaCompletoRequestToPessoa(request);
         Pessoa pessoaSalva  = repository.save(pessoa);
 
         ApiResponseDTO responseDTO = new ApiResponseDTO(pessoaSalva.getId_pessoa(), "Pessoa criada com sucesso");
@@ -36,12 +36,10 @@ public class PessoaController {
         Pessoa responsePessoa = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com ID: " + id));
 
-        PessoaCompletoResponse pessoaCompletoResponse = PessoaMapper.pessoaToPessoaResponse(responsePessoa);
+        PessoaCompletoResponse pessoaCompletoResponse = PessoaMapper.pessoaToPessoaCompletoResponse(responsePessoa);
 
         return ResponseEntity.ok(pessoaCompletoResponse);
     }
-
-
 
 
     @PutMapping("/update")
@@ -50,7 +48,7 @@ public class PessoaController {
         Pessoa responsePessoa = repository.findById(request.id_pessoa())
                 .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com ID: " + request.id_pessoa()));
 
-        Pessoa updatedPessoa = PessoaMapper.toPessoa(request);
+        Pessoa updatedPessoa = PessoaMapper.PessoaCompletoRequestToPessoa(request);
 
         repository.save(updatedPessoa);
 
