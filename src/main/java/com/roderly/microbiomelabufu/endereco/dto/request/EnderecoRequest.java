@@ -7,7 +7,7 @@ public record EnderecoRequest(
         String complemento,
         String bairro,
         String cidade,
-        String id_uf,
+        Integer id_uf,
         String cep,
         String referencia
 ){}

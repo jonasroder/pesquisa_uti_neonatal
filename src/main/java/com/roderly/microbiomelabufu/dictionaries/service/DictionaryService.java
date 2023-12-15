@@ -34,7 +34,7 @@ public class DictionaryService {
             Query query = entityManager.createNativeQuery(queryStr);
             List<Object[]> results = query.getResultList();
             return results.stream()
-                    .map(result -> new ValueLabelDTO(result[0], (String) result[1]))
+                    .map(result -> new ValueLabelDTO((Integer) result[0], (String) result[1]))
                     .collect(Collectors.toList());
 
         } else {

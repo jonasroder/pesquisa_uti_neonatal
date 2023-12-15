@@ -19,8 +19,10 @@ onMounted(async () => {
     if (id.value > 0) {
         const data = await serviceLoad(id.value);
 
+        Object.assign(endereco, data.endereco[0]);
+        debugger
         Object.assign(pessoa, data);
-        Object.assign(endereco, data.endereco[0] ?? {});
+
     }
 
     loading.hide()
@@ -72,8 +74,10 @@ const handleSave = async () => {
     } else {
         const res = await serviceSave(pessoa, 'insert');
         id.value = res.id;
-        const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
-        window.history.pushState({path: newUrl}, '', newUrl);
+        if(id.value > 0) {
+            const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
+            window.history.pushState({path: newUrl}, '', newUrl);
+        }
     }
 
 
@@ -366,12 +370,12 @@ const handleAppendIconClick = async () => {
                     <SelectInput
                         label="UF"
                         placeholder="Digite ou selecione a UF"
+                        v-model="endereco.id_uf"
                         idColumn="id_uf"
                         descColumn="sigla"
                         tableName="uf"
                         :is_active="true"
                         :multiple="false"
-                        v-model="endereco.id_uf"
                         cols="12"
                         md="4"
                     />
