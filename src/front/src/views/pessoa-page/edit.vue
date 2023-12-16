@@ -18,7 +18,7 @@ onMounted(async () => {
 
     if (id.value > 0) {
         const data = await serviceLoad(id.value);
-
+        console.log(data)
         Object.assign(endereco, data.endereco[0]);
         Object.assign(pessoa, data);
     }
@@ -28,6 +28,7 @@ onMounted(async () => {
 
 
 const pessoa = reactive({
+    id_pessoa: "",
     foto_perfil: "",
     nome: "",
     sobrenome: "",
@@ -73,6 +74,7 @@ const handleSave = async () => {
         const res = await serviceSave(pessoa, 'insert');
         id.value = res.id;
         if(id.value > 0) {
+            pessoa.id_pessoa = res.id;
             const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
             window.history.pushState({path: newUrl}, '', newUrl);
         }

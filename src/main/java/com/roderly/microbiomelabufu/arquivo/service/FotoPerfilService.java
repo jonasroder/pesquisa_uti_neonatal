@@ -14,7 +14,7 @@ import java.util.Base64;
 
 @Service
 public class FotoPerfilService {
-    public String converterMetaDados(FotoPerfilMetadataRequest metadados){
+    public static String converterMetaDados(FotoPerfilMetadataRequest metadados){
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonMetadados;
         try {

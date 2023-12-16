@@ -1,6 +1,5 @@
 package com.roderly.microbiomelabufu.pessoa.controller;
 
-import com.roderly.microbiomelabufu.arquivo.dto.request.FotoPerfilMetadataRequest;
 import com.roderly.microbiomelabufu.arquivo.mapper.ArquivoMapper;
 import com.roderly.microbiomelabufu.arquivo.model.Arquivo;
 import com.roderly.microbiomelabufu.arquivo.repository.ArquivoRepository;
@@ -12,9 +11,9 @@ import com.roderly.microbiomelabufu.pessoa.mapper.PessoaMapper;
 import com.roderly.microbiomelabufu.pessoa.model.Pessoa;
 import com.roderly.microbiomelabufu.pessoa.repository.PessoaRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.hibernate.event.service.spi.EventActionWithParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -46,6 +45,7 @@ public class PessoaController {
         Arquivo saved = arquivoRepository.save(updatedFile);
         FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
 
+
         ApiResponseDTO responseDTO = new ApiResponseDTO(pessoaSalva.getId_pessoa(), "Pessoa criada com sucesso");
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
@@ -53,12 +53,16 @@ public class PessoaController {
 
     @GetMapping("/load/{id}")
     public ResponseEntity<PessoaCompletoResponse> getPessoaComEndereco(@PathVariable Long id) {
-        Pessoa responsePessoa = pessoaRepository.findById(id)
+        Tuple tuple = pessoaRepository.findPessoaWithImageProfile(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com ID: " + id));
 
-        PessoaCompletoResponse pessoaCompletoResponse = PessoaMapper.pessoaToPessoaCompletoResponse(responsePessoa);
 
-        return ResponseEntity.ok(pessoaCompletoResponse);
+        Pessoa pessoa = tuple.get(0, Pessoa.class);
+        String caminhoArquivo = tuple.get(1, String.class);
+        PessoaCompletoResponse response = PessoaMapper.pessoaToPessoaCompletoResponse(pessoa, caminhoArquivo);
+
+
+        return ResponseEntity.ok(response);
     }
 
 
@@ -79,7 +83,6 @@ public class PessoaController {
         }
         Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), updatedPessoa.getId_pessoa(), fileStorageLocation, id_arquivo);
         Arquivo saved = arquivoRepository.save(updatedFile);
-
         FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
 
 

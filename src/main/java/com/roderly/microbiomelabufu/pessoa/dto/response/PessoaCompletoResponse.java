@@ -20,5 +20,6 @@ public record PessoaCompletoResponse(
         Long id_etnia,
         Long id_escolaridade,
         Long id_religiao,
-       List<EnderecoResponse> endereco
+        List<EnderecoResponse> endereco,
+        String foto_perfil
 ) {}

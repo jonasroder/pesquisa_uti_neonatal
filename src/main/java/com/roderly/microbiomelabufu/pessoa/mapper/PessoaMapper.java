@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.pessoa.mapper;
 
+import com.roderly.microbiomelabufu.arquivo.model.Arquivo;
 import com.roderly.microbiomelabufu.endereco.dto.response.EnderecoResponse;
 import com.roderly.microbiomelabufu.endereco.mapper.EnderecoMapper;
 import com.roderly.microbiomelabufu.pessoa.dto.request.PessoaCompletoRequest;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PessoaMapper {
-    public static Pessoa PessoaCompletoRequestToPessoa(PessoaCompletoRequest request){
+    public static Pessoa PessoaCompletoRequestToPessoa(PessoaCompletoRequest request) {
         Pessoa pessoa = new Pessoa();
         pessoa.setId_pessoa(request.id_pessoa());
         pessoa.setId_tipo_pessoa(request.id_tipo_pessoa());
@@ -38,39 +39,38 @@ public class PessoaMapper {
         return pessoa;
     }
 
-    public static PessoaCompletoResponse pessoaToPessoaCompletoResponse(Pessoa response){
+    public static PessoaCompletoResponse pessoaToPessoaCompletoResponse(Pessoa responsePessoa, String caminhoArquivo) {
 
         List<EnderecoResponse> enderecosResponse = null;
 
-        if (response.getEndereco() != null && !response.getEndereco().isEmpty()) {
-            enderecosResponse = response.getEndereco().stream()
+        if (responsePessoa.getEndereco() != null && !responsePessoa.getEndereco().isEmpty()) {
+            enderecosResponse = responsePessoa.getEndereco().stream()
                     .map(EnderecoMapper::enderecoToEnderecoResponse)
                     .collect(Collectors.toList());
         }
 
         PessoaCompletoResponse pessoaCompletoResponse = new PessoaCompletoResponse(
-                response.getId_pessoa(),
-                response.getId_tipo_pessoa(),
-                response.getNome(),
-                response.getSobrenome(),
-                response.getId_sexo(),
-                response.getData_nascimento(),
-                response.getTelefone(),
-                response.getEmail(),
-                response.getId_estado_civil(),
-                response.getId_profissao(),
-                response.getCpf(),
-                response.getId_etnia(),
-                response.getId_escolaridade(),
-                response.getId_religiao(),
-                enderecosResponse
+                responsePessoa.getId_pessoa(),
+                responsePessoa.getId_tipo_pessoa(),
+                responsePessoa.getNome(),
+                responsePessoa.getSobrenome(),
+                responsePessoa.getId_sexo(),
+                responsePessoa.getData_nascimento(),
+                responsePessoa.getTelefone(),
+                responsePessoa.getEmail(),
+                responsePessoa.getId_estado_civil(),
+                responsePessoa.getId_profissao(),
+                responsePessoa.getCpf(),
+                responsePessoa.getId_etnia(),
+                responsePessoa.getId_escolaridade(),
+                responsePessoa.getId_religiao(),
+                enderecosResponse,
+                caminhoArquivo
 
         );
 
         return pessoaCompletoResponse;
     }
-
-
 
 
 }
