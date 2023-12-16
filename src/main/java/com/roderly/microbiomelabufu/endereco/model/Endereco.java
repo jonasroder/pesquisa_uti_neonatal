@@ -24,7 +24,7 @@ public class Endereco {
 
     private String cidade;
 
-    private Integer id_uf;
+    private Long id_uf;
 
     private String cep;
 

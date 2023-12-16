@@ -7,18 +7,18 @@ import java.util.List;
 
 public record PessoaCompletoResponse(
         Long id_pessoa,
-        Integer id_tipo_pessoa,
+        Long id_tipo_pessoa,
         String nome,
         String sobrenome,
-        Integer id_sexo,
+        Long id_sexo,
         LocalDate data_nascimento,
         String telefone,
         String email,
-        Integer id_estado_civil,
-        Integer id_profissao,
+        Long id_estado_civil,
+        Long id_profissao,
         String cpf,
-        Integer id_etnia,
-        Integer id_escolaridade,
-        Integer id_religiao,
+        Long id_etnia,
+        Long id_escolaridade,
+        Long id_religiao,
        List<EnderecoResponse> endereco
 ) {}

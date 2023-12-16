@@ -20,9 +20,7 @@ onMounted(async () => {
         const data = await serviceLoad(id.value);
 
         Object.assign(endereco, data.endereco[0]);
-        debugger
         Object.assign(pessoa, data);
-
     }
 
     loading.hide()

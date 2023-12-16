@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, defineProps, defineEmits, onMounted } from 'vue';
+import {ref, watch, defineProps, defineEmits, onMounted} from 'vue';
 import {serviceAuthenticateTeste} from "@/service/common/autocomplete";
 
 
@@ -9,18 +9,18 @@ const props = defineProps({
     prependIcon: String,
     appendIcon: String,
     clearable: Boolean,
-    type: { type: String, default: 'text' },
+    type: {type: String, default: 'text'},
     placeholder: String,
     disabled: Boolean,
     readonly: Boolean,
     rules: Array,
-    variant: { type: String, default: 'outlined' },
-    cols: { type: [Number, String], default: 12 },
-    sm: { type: [Number, String], default: 12 },
-    md: { type: [Number, String], default: 6 },
-    lg: { type: [Number, String], default: 3 },
-    xl: { type: [Number, String], default: 3 },
-    items: { type: Array, default: () => [] },
+    variant: {type: String, default: 'outlined'},
+    cols: {type: [Number, String], default: 12},
+    sm: {type: [Number, String], default: 12},
+    md: {type: [Number, String], default: 6},
+    lg: {type: [Number, String], default: 3},
+    xl: {type: [Number, String], default: 3},
+    items: {type: Array, default: () => []},
     idColumn: String,
     descColumn: String,
     tableName: String,
@@ -29,51 +29,47 @@ const props = defineProps({
     multiple: Boolean
 });
 
-    // Se já houver um 'internalValue' definido em algum lugar, remova esta linha e use a definição existente.
-    const internalValue = ref(props.modelValue);
-    const items = ref(props.items);
+// Se já houver um 'internalValue' definido em algum lugar, remova esta linha e use a definição existente.
+const internalValue = ref(props.modelValue);
+const items = ref(props.items);
 
-    const getOptionsAutocomplete = async () => {
+const getOptionsAutocomplete = async () => {
     if (items.value.length === 0 && props.idColumn && props.descColumn && props.tableName) {
-    try {
-    const params = {
-    idColumn: props.idColumn,
-    descColumn: props.descColumn,
-    tableName: props.tableName,
-    is_active: props.is_active,
-    whereClause: props.whereClause
-};
-    const response = await serviceAuthenticateTeste(params);
-    console.log(response)
-    if (Array.isArray(response)) {
-    items.value = response.map(item => ({ value: item.value, label: item.label }));
-    console.log(items.value)
-}
-} catch (error) {
-    console.error("Erro ao buscar opções de autocomplete:", error);
-}
-}
+        try {
+            const params = {
+                idColumn: props.idColumn,
+                descColumn: props.descColumn,
+                tableName: props.tableName,
+                is_active: props.is_active,
+                whereClause: props.whereClause
+            };
+            const response = await serviceAuthenticateTeste(params);
+            if (Array.isArray(response)) {
+                items.value = response.map(item => ({value: item.value, label: item.label}));
+            }
+        } catch (error) {
+            console.error("Erro ao buscar opções de autocomplete:", error);
+        }
+    }
 };
 
-    onMounted(() => {
+onMounted(() => {
     if (items.value.length === 0) {
-    getOptionsAutocomplete();
-}
+        getOptionsAutocomplete();
+    }
 });
 
-    watch(() => props.modelValue, (newValue) => {
+watch(() => props.modelValue, (newValue) => {
     internalValue.value = newValue;
 });
 
-    const emits = defineEmits(['update:modelValue', 'blur', 'focus', 'clear']);
-
+const emits = defineEmits(['update:modelValue', 'blur', 'focus', 'clear']);
 
 
 const updateModel = (item) => {
     internalValue.value = item;
     emits('update:modelValue', item);
 };
-
 
 
 const onInput = (event) => {
@@ -83,11 +79,9 @@ const onInput = (event) => {
 };
 
 
-
 const onBlur = (event) => {
     emits('blur', event);
 };
-
 
 
 const onFocus = (event) => {
@@ -95,13 +89,11 @@ const onFocus = (event) => {
 };
 
 
-
 const onClear = () => {
     internalValue.value = '';
     emits('update:modelValue', '');
     emits('clear');
 };
-
 
 
 const defaultRules = {
@@ -112,7 +104,6 @@ const defaultRules = {
     },
     counter: value => value.length <= 20 || 'Máximo de 20 caracteres'
 };
-
 
 
 const combinedRules = ref([
@@ -160,6 +151,6 @@ const combinedRules = ref([
             item-title="label"
             :multiple="multiple"
             :chips="multiple"
-           />
+        />
     </v-col>
 </template>

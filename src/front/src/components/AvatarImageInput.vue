@@ -2,14 +2,14 @@
 import {ref, computed, watch, defineProps, defineEmits, onMounted} from 'vue';
 
 const props = defineProps({
-    modelValue: String,
+    modelValue: [String, Object]
 });
 
 
 const fileInput = ref(null);
 const video = ref(null);
 const div_video = ref(null);
-const image = ref(null);
+const image = ref({base64: null, metadata: {name: null, type: null, size: null}});
 const stream = ref(null);
 const emit = defineEmits(['update:modelValue']);
 
@@ -20,9 +20,11 @@ onMounted(() => {
     }
 });
 
-const updateImage = (newImage) => {
-    image.value = newImage;
-    emit('update:modelValue', newImage);
+
+const updateImage = (newImage, newMetadata) => {
+    image.value.base64 = newImage;
+    image.value.metadata = newMetadata;
+    emit('update:modelValue', image.value);
 };
 
 
@@ -32,22 +34,34 @@ watch(() => props.modelValue, (newValue) => {
     }
 });
 
+
 const pickFile = () => {
     fileInput.value.click();
 };
+
 
 const onFileChange = (e) => {
     const file = e.target.files[0];
     createImage(file);
 };
 
+
 const createImage = (file) => {
     const reader = new FileReader();
     reader.onload = (e) => {
-        updateImage(e.target.result);
+        const base64Image = e.target.result;
+        const imageMetadata = {
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            base64: base64Image
+        };
+        updateImage(base64Image, imageMetadata);
     };
+
     reader.readAsDataURL(file);
 };
+
 
 const activateWebcam = async () => {
     try {
@@ -59,6 +73,7 @@ const activateWebcam = async () => {
         console.error("Erro ao acessar a webcam:", err);
     }
 };
+
 
 const toggleVideoDisplay = () => {
     if (div_video.value) {
@@ -83,6 +98,7 @@ const captureFromWebcam = () => {
     toggleVideoDisplay();
 };
 
+
 const isMobile = computed(() => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 });
@@ -91,35 +107,58 @@ const isMobile = computed(() => {
 
 <template>
     <div class="d-flex align-center justify-center">
-        <input type="file" @change="onFileChange" ref="fileInput" style="display: none"/>
+        <input type="file"
+               @change="onFileChange"
+               ref="fileInput"
+               style="display: none"/>
 
-        <div v-if="!stream" class="d-flex position-relative">
-            <v-avatar v-if="image" :size="180" @click="pickFile" cover>
-                <v-img :src="image" cover></v-img>
+        <div v-if="!stream"
+             class="d-flex position-relative">
+            <v-avatar v-if="image.base64"
+                      :size="180"
+                      @click="pickFile"
+                      cover>
+                <v-img :src="image.base64"
+                       cover></v-img>
             </v-avatar>
 
-            <v-avatar v-else :size="180" @click="pickFile" color="grey lighten-4">
-                <v-icon size="32" class="fa fa-camera"></v-icon>
+            <v-avatar v-else
+                      :size="180"
+                      @click="pickFile"
+                      color="grey lighten-4">
+                <v-icon size="32"
+                        class="fa fa-camera"></v-icon>
             </v-avatar>
 
             <!-- Botão Badge para ativar a webcam -->
-            <v-btn v-if="!isMobile" class="webcam-badge v-btn--icon v-btn--round" density="compact" color="cinzaAzulado"
+            <v-btn v-if="!isMobile"
+                   class="webcam-badge v-btn--icon v-btn--round"
+                   density="compact"
+                   color="cinzaAzulado"
                    @click="activateWebcam">
-                <v-icon size="x-small" class="fa fa-video"></v-icon>
+                <v-icon size="x-small"
+                        class="fa fa-video"></v-icon>
             </v-btn>
 
         </div>
 
 
-        <div style="display: none;" ref="div_video">
+        <div style="display: none;"
+             ref="div_video">
             <v-col cols="12">
-                <v-avatar :size="180" cover>
-                    <video class="rounded" id="video_avatar" ref="video"
+                <v-avatar :size="180"
+                          cover>
+                    <video class="rounded"
+                           id="video_avatar"
+                           ref="video"
                            style="width: 100%; height: 100%; object-fit: cover;"></video>
                 </v-avatar>
             </v-col>
             <v-col cols="12">
-                <v-btn v-if="stream" @click="captureFromWebcam" density="compact" color="cinzaAzulado">Capturar Imagem
+                <v-btn v-if="stream"
+                       @click="captureFromWebcam"
+                       density="compact"
+                       color="cinzaAzulado">Capturar Imagem
                 </v-btn>
             </v-col>
         </div>
