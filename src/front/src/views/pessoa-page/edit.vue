@@ -19,8 +19,12 @@ onMounted(async () => {
     if (id.value > 0) {
         const data = await serviceLoad(id.value);
         console.log(data)
-        Object.assign(endereco, data.endereco[0]);
         Object.assign(pessoa, data);
+        if(data.endereco != null){
+            Object.assign(endereco, data.endereco[0]);
+        } else {
+            Object.assign(endereco, []);
+        }
     }
 
     loading.hide()
@@ -62,7 +66,8 @@ const handleSave = async () => {
     loading.show()
 
     if(endereco) {
-        pessoa.endereco[0] = endereco;
+        pessoa.endereco = [];
+        pessoa.endereco.push(endereco)
     }
 
     console.log(pessoa)
@@ -80,9 +85,7 @@ const handleSave = async () => {
         }
     }
 
-
     loading.hide()
-
 };
 
 
@@ -104,7 +107,6 @@ const handleAppendIconClick = async () => {
     endereco.logradouro = respEndereco.logradouro;
     endereco.bairro = respEndereco.bairro;
     endereco.cidade = respEndereco.localidade;
-    endereco.id_uf = respEndereco.uf;
 
 };
 

@@ -18,11 +18,9 @@ const emit = defineEmits(['update:modelValue']);
 
 onMounted(() => {
     if (props.modelValue) {
-        // Verifica se modelValue é uma string (URL)
         if (typeof props.modelValue === 'string') {
             image.value.base64 = props.modelValue;
-        } else {
-            // Caso contrário, assuma que é um objeto de imagem
+        } else if (props.modelValue && typeof props.modelValue === 'object') {
             image.value = props.modelValue;
         }
     }
@@ -36,15 +34,35 @@ const updateImage = (newImage, newMetadata) => {
 };
 
 
-watch(() => props.modelValue, (newValue) => {
-    if (typeof newValue === 'string' && newValue !== image.value.base64) {
-        // Atualiza a imagem se for uma URL e diferente da atual
-        image.value.base64 = newValue;
+watch(() => props.modelValue, async (newValue) => {
+    if (newValue === null) {
+        image.value = { base64: null, metadata: { name: null, type: null, size: null }};
+    } else if (typeof newValue === 'string' && newValue !== image.value.base64) {
+        const blob = await fetchImageAsBlob(newValue);
+        const filename = newValue.split('/').pop();
+        const file = createFileFromBlob(blob, filename);
+        createImage(file);
     } else if (typeof newValue === 'object' && newValue !== image.value) {
-        // Atualiza a imagem se for um objeto e diferente do atual
         image.value = newValue;
     }
 });
+
+
+const fetchImageAsBlob = async (imageUrl) => {
+    const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error('Erro ao buscar a imagem');
+    const blob = await response.blob();
+    return blob;
+};
+
+
+const createFileFromBlob = (blob, filename) => {
+    const file = new File([blob], filename, {
+        type: blob.type,
+        lastModified: Date.now(),
+    });
+    return file;
+};
 
 
 const pickFile = () => {
@@ -65,8 +83,7 @@ const createImage = (file) => {
         const imageMetadata = {
             name: file.name,
             type: file.type,
-            size: file.size,
-            base64: base64Image
+            size: file.size
         };
         updateImage(base64Image, imageMetadata);
     };
