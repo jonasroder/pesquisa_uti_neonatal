@@ -2,7 +2,7 @@
 CREATE TABLE endereco
 (
     id_endereco INT AUTO_INCREMENT PRIMARY KEY,
-    id_pessoa   INT          NOT NULL,
+    id_paciente INT          NOT NULL,
     logradouro  VARCHAR(255) NOT NULL,
     numero      VARCHAR(10),
     complemento VARCHAR(255),

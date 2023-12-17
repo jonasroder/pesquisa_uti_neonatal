@@ -13,7 +13,7 @@ public class ArquivoMapper {
         Arquivo arquivo = new Arquivo();
         arquivo.setId_arquivo(id_arquivo);
         arquivo.setCaminho_arquivo("/uploads/profile_photos");
-        arquivo.setEntidade("pessoa");
+        arquivo.setEntidade("paciente");
         arquivo.setId_entidade(id_pessoa);
         arquivo.setId_tipo_arquivo(1L);
         arquivo.setNome_arquivo(request.name());

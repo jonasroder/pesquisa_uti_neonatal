@@ -8,44 +8,40 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "pessoa")
-@Entity(name = "Pessoa")
+@Table(name = "paciente")
+@Entity(name = "Paciente")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pessoa {
+public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_pessoa;
-
-    private Long id_tipo_pessoa;
-
+    private Long id_paciente;
     private String nome;
-
     private String sobrenome;
-
-    private Long id_sexo;
-
     private LocalDate data_nascimento;
-
-    private String telefone;
-
+    private String telefone_1;
+    private String telefone_2;
     private String email;
-
-    private Long id_estado_civil;
-
-    private Long id_profissao;
-
     private String cpf;
-
+    private String naturalidade;
+    private String nome_pai;
+    private String nome_mae;
+    private String nome_conjuge;
+    private LocalDate data_ultimo_atendimento;
+    private Long num_visitas;
+    private String indicacao;
+    private String observacao;
+    private Long id_profissao;
+    private Long id_plano_saude;
+    private Long id_estado_civil;
+    private Long id_sexo;
     private Long id_etnia;
-
     private Long id_escolaridade;
-
     private Long id_religiao;
 
-    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> endereco = new ArrayList<>();
 
 }

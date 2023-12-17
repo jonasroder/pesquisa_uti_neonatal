@@ -5,7 +5,7 @@ import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
-import {serviceSave, serviceLoad, getEnderecoByCep} from "@/service/pessoa";
+import {serviceSave, serviceLoad, getEnderecoByCep} from "@/service/paciente";
 import {getIdFromUrl} from "@/service/common/utils"
 import {loading} from "@/plugins/loadingService.js";
 
@@ -19,7 +19,7 @@ onMounted(async () => {
     if (id.value > 0) {
         const data = await serviceLoad(id.value);
         console.log(data)
-        Object.assign(pessoa, data);
+        Object.assign(paciente, data);
         if(data.endereco != null){
             Object.assign(endereco, data.endereco[0]);
         } else {
@@ -31,22 +31,30 @@ onMounted(async () => {
 });
 
 
-const pessoa = reactive({
-    id_pessoa: "",
-    foto_perfil: "",
+const paciente = reactive({
+    id_paciente: "",
     nome: "",
     sobrenome: "",
     data_nascimento: "",
-    telefone: "",
+    telefone_1: "",
+    telefone_2: "",
     email: "",
-    id_estado_civil: "",
-    id_profissao: "",
     cpf: "",
+    naturalidade: "",
+    nome_pai: "",
+    nome_mae: "",
+    nome_conjuge: "",
+    data_ultimo_atendimento : "",
+    indicacao : "",
+    obervacao : "",
+    id_profissao: "",
+    id_plano_saude : "",
+    id_estado_civil: "",
+    id_sexo: "",
     id_etnia: "",
     id_escolaridade: "",
     id_religiao: "",
-    id_sexo: "",
-    id_tipo_pessoa: "",
+    foto_perfil: "",
     endereco : []
 });
 
@@ -66,20 +74,20 @@ const handleSave = async () => {
     loading.show()
 
     if(endereco) {
-        pessoa.endereco = [];
-        pessoa.endereco.push(endereco)
+        paciente.endereco = [];
+        paciente.endereco.push(endereco)
     }
 
-    console.log(pessoa)
+    console.log(paciente)
     if (id.value > 0) {
-        const res = await serviceSave(pessoa, 'update');
+        const res = await serviceSave(paciente, 'update');
         console.log(res)
 
     } else {
-        const res = await serviceSave(pessoa, 'insert');
+        const res = await serviceSave(paciente, 'insert');
         id.value = res.id;
         if(id.value > 0) {
-            pessoa.id_pessoa = res.id;
+            paciente.id_paciente = res.id;
             const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
             window.history.pushState({path: newUrl}, '', newUrl);
         }
@@ -126,7 +134,7 @@ const handleAppendIconClick = async () => {
                    justify="center"
                    align="center">
 
-                <AvatarImageInput v-model="pessoa.foto_perfil"/>
+                <AvatarImageInput v-model="paciente.foto_perfil"/>
             </v-col>
 
             <v-col cols="12"
@@ -137,24 +145,18 @@ const handleAppendIconClick = async () => {
                 <v-row class="justify-end">
 
                     <text-input
-                        v-model="pessoa.nome"
+                        v-model="paciente.nome"
                         label="Nome"
                         type="text"
                         cols="12"
-                        md="6"
-                        lg="6"
-                        xl="6"
                     />
 
 
                     <text-input
-                        v-model="pessoa.sobrenome"
+                        v-model="paciente.sobrenome"
                         label="Sobrenome"
                         type="text"
                         cols="12"
-                        md="6"
-                        lg="6"
-                        xl="6"
                     />
 
 
@@ -166,51 +168,91 @@ const handleAppendIconClick = async () => {
                         tableName="sexo"
                         :is_active="true"
                         :multiple="false"
-                        v-model="pessoa.id_sexo"
+                        v-model="paciente.id_sexo"
                         cols="12"
-                        md="4"
                     />
 
 
                     <text-input
-                        v-model="pessoa.data_nascimento"
+                        v-model="paciente.data_nascimento"
                         label="Data de Nascimento"
                         type="date"
                         cols="12"
-                        md="4"
                     />
 
 
                     <text-input
-                        v-model="pessoa.cpf"
+                        v-model="paciente.cpf"
                         label="CPF"
                         type="text"
                         cols="12"
-                        md="4"
                     />
 
 
                     <text-input
-                        v-model="pessoa.telefone"
-                        label="telefone"
+                        v-model="paciente.telefone_1"
+                        label="telefone 1"
                         type="phone"
                         :rules="['required']"
                         cols="12"
-                        md="4"
                     />
 
+                    <text-input
+                        v-model="paciente.telefone_2"
+                        label="telefone 2"
+                        type="phone"
+                        cols="12"
+                    />
 
                     <text-input
-                        v-model="pessoa.email"
+                        v-model="paciente.email"
                         label="Email"
                         type="email"
                         :rules="['email', 'required']"
                         cols="12"
-                        md="6"
-                        lg="6"
-                        xl="6"
                     />
 
+                    <text-input
+                        v-model="paciente.naturalidade"
+                        label="Naturalidade"
+                        type="text"
+                        cols="12"
+                    />
+
+                    <text-input
+                        v-model="paciente.nome_conjuge"
+                        label="Nome do Conjuge"
+                        type="text"
+                        cols="12"
+                    />
+
+                    <text-input
+                        v-model="paciente.nome_pai"
+                        label="Nome do Pai"
+                        type="text"
+                        cols="12"
+                    />
+
+                    <text-input
+                        v-model="paciente.nome_mae"
+                        label="Nome da Mãe"
+                        type="text"
+                        cols="12"
+                    />
+
+                    <text-input
+                        v-model="paciente.indicacao"
+                        label="Quem Indicou"
+                        type="text"
+                        cols="12"
+                    />
+
+                    <text-input
+                        v-model="paciente.obervacao"
+                        label="Observacões"
+                        type="text"
+                        cols="12"
+                    />
 
                     <SelectInput
                         label="Etnia"
@@ -220,11 +262,21 @@ const handleAppendIconClick = async () => {
                         tableName="etnia"
                         :is_active="true"
                         :multiple="false"
-                        v-model="pessoa.id_etnia"
+                        v-model="paciente.id_etnia"
                         cols="12"
-                        md="4"
                     />
 
+                    <SelectInput
+                        label="Plano de Saúde"
+                        placeholder="Digite ou selecione uma Plano de Saúde"
+                        idColumn="id_plano_saude"
+                        descColumn="descricao"
+                        tableName="plano_saude"
+                        :is_active="true"
+                        :multiple="false"
+                        v-model="paciente.id_plano_saude"
+                        cols="12"
+                    />
 
                     <SelectInput
                         label="Escolaridade"
@@ -234,9 +286,8 @@ const handleAppendIconClick = async () => {
                         tableName="escolaridade"
                         :is_active="true"
                         :multiple="false"
-                        v-model="pessoa.id_escolaridade"
+                        v-model="paciente.id_escolaridade"
                         cols="12"
-                        md="4"
                     />
 
 
@@ -248,9 +299,8 @@ const handleAppendIconClick = async () => {
                         tableName="religiao"
                         :is_active="true"
                         :multiple="false"
-                        v-model="pessoa.id_religiao"
+                        v-model="paciente.id_religiao"
                         cols="12"
-                        md="4"
                     />
 
 
@@ -262,9 +312,8 @@ const handleAppendIconClick = async () => {
                         tableName="profissao"
                         :is_active="true"
                         :multiple="false"
-                        v-model="pessoa.id_profissao"
+                        v-model="paciente.id_profissao"
                         cols="12"
-                        md="4"
                     />
 
 
@@ -276,23 +325,8 @@ const handleAppendIconClick = async () => {
                         tableName="estado_civil"
                         :is_active="true"
                         :multiple="false"
-                        v-model="pessoa.id_estado_civil"
+                        v-model="paciente.id_estado_civil"
                         cols="12"
-                        md="4"
-                    />
-
-
-                    <SelectInput
-                        label="Tipo de Pessoa"
-                        placeholder="Digite ou selecione o Tipo"
-                        idColumn="id_tipo_pessoa"
-                        descColumn="descricao"
-                        tableName="tipo_pessoa"
-                        :is_active="true"
-                        :multiple="false"
-                        v-model="pessoa.id_tipo_pessoa"
-                        cols="12"
-                        md="4"
                     />
 
                 </v-row>
@@ -325,7 +359,6 @@ const handleAppendIconClick = async () => {
                         appendInnerIcon="fa-solid fa-search"
                         :rules="['required', 'cep']"
                         cols="12"
-                        md="4"
                         @click:append-inner-icon="handleAppendIconClick"
                     />
 
@@ -334,7 +367,6 @@ const handleAppendIconClick = async () => {
                         label="Rua"
                         type="text"
                         cols="12"
-                        md="4"
                     />
 
                     <text-input
@@ -342,7 +374,6 @@ const handleAppendIconClick = async () => {
                         label="Número"
                         type="number"
                         cols="12"
-                        md="4"
                     />
 
                     <text-input
@@ -350,7 +381,6 @@ const handleAppendIconClick = async () => {
                         label="Complemento"
                         type="text"
                         cols="12"
-                        md="4"
                     />
 
                     <text-input
@@ -358,7 +388,6 @@ const handleAppendIconClick = async () => {
                         label="Bairro"
                         type="text"
                         cols="12"
-                        md="4"
                     />
 
                     <text-input
@@ -366,7 +395,6 @@ const handleAppendIconClick = async () => {
                         label="Bairro"
                         type="text"
                         cols="12"
-                        md="4"
                     />
 
                     <SelectInput
@@ -379,7 +407,6 @@ const handleAppendIconClick = async () => {
                         :is_active="true"
                         :multiple="false"
                         cols="12"
-                        md="4"
                     />
 
                     <text-input
@@ -387,7 +414,6 @@ const handleAppendIconClick = async () => {
                         label="Referência"
                         type="text"
                         cols="12"
-                        md="4"
                     />
 
 

@@ -5,7 +5,7 @@ import com.roderly.microbiomelabufu.endereco.dto.response.EnderecoResponse;
 import java.time.LocalDate;
 import java.util.List;
 
-public record PessoaCompletoResponse(
+public record PacienteCompletoResponse(
         Long id_pessoa,
         Long id_tipo_pessoa,
         String nome,

@@ -1,6 +1,6 @@
 package com.roderly.microbiomelabufu.endereco.model;
 
-import com.roderly.microbiomelabufu.pessoa.model.Pessoa;
+import com.roderly.microbiomelabufu.pessoa.model.Paciente;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,7 +32,7 @@ public class Endereco {
 
 
     @ManyToOne
-    @JoinColumn(name = "id_pessoa", referencedColumnName = "id_pessoa")
-    private Pessoa pessoa;
+    @JoinColumn(name = "id_paciente", referencedColumnName = "id_paciente")
+    private Paciente paciente;
 
 }

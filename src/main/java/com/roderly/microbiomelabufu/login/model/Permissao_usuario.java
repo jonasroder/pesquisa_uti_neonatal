@@ -7,18 +7,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
-@Entity(name = "permissao")
-@Table(name = "permissao")
+@Entity(name = "Permissao_usuario")
+@Table(name = "permissao_usuario")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id_permissao")
+@EqualsAndHashCode(of = "id_permissao_usuario")
 
-public class Permissao implements GrantedAuthority {
+public class Permissao_usuario implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_permissao;
+    private int id_permissao_usuario;
 
     private String descricao;
 

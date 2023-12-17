@@ -6,11 +6,11 @@ export const serviceSave = async (data, tipo) => {
 		let res;
 
 		if(tipo === 'insert') {
-			res = await axios.post('/api/pessoa/insert', data);
+			res = await axios.post('/api/paciente/insert', data);
 		}
 
 		if (tipo === 'update'){
-			res = await axios.put('/api/pessoa/update', data);
+			res = await axios.put('/api/paciente/update', data);
 		}
 
 		return res.data;
@@ -23,7 +23,7 @@ export const serviceSave = async (data, tipo) => {
 
 export const serviceLoad = async (id) => {
 	try {
-		const response = await axios.get(`/api/pessoa/load/${id}`);
+		const response = await axios.get(`/api/paciente/load/${id}`);
 		return response.data;
 	} catch (e) {
 		return handleApiError(e, "Error on serviceLoad");
