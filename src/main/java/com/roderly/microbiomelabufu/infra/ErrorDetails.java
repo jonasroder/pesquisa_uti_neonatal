@@ -8,7 +8,6 @@ public class ErrorDetails {
     private String details;
     private String errorCode; // Novo campo
 
-    // Atualize o construtor e os getters/setters conforme necessário
     public ErrorDetails(Date timestamp, String message, String details, String errorCode) {
         super();
         this.timestamp = timestamp;
@@ -17,7 +16,6 @@ public class ErrorDetails {
         this.errorCode = errorCode;
     }
 
-    // Getters e setters para errorCode
     public String getErrorCode() {
         return errorCode;
     }

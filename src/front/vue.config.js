@@ -10,6 +10,9 @@ module.exports = defineConfig({
 				'components': '@/components',
 				'service': '@/service',
 				'assets': '@/assets',
+			},
+			fallback: {
+				path: require.resolve('path-browserify'),
 			}
 		},
 		plugins: [

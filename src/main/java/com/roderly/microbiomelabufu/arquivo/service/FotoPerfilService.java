@@ -3,6 +3,7 @@ package com.roderly.microbiomelabufu.arquivo.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roderly.microbiomelabufu.arquivo.dto.request.FotoPerfilMetadataRequest;
+import com.roderly.microbiomelabufu.infra.FileStorageProperties;
 import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
@@ -27,13 +28,13 @@ public class FotoPerfilService {
     }
 
 
-    public static void saveBase64ToFile(String base64String, String filePath, Long insertId) throws IOException {
+    public static void saveBase64ToFile(String base64String, FileStorageProperties fileStorageLocation, Long insertId) throws IOException {
         // Decodificar a string base64
         String base64Image = base64String.split(",")[1];
         byte[] data = Base64.getDecoder().decode(base64Image);
 
         // O caminho completo para a pasta onde os arquivos serão salvos
-        Path directoryPath = Paths.get(filePath, "profile_photos");
+        Path directoryPath = Paths.get(fileStorageLocation.getFileStorageLocation(), "profile_photos");
         Files.createDirectories(directoryPath);
 
         // Construir o caminho completo do arquivo com a extensão correta

@@ -5,6 +5,8 @@ const props = defineProps({
     modelValue: [String, Object]
 });
 
+const path = require('path');
+console.log(path)
 
 const fileInput = ref(null);
 const video = ref(null);
@@ -16,7 +18,13 @@ const emit = defineEmits(['update:modelValue']);
 
 onMounted(() => {
     if (props.modelValue) {
-        image.value = props.modelValue;
+        // Verifica se modelValue é uma string (URL)
+        if (typeof props.modelValue === 'string') {
+            image.value.base64 = props.modelValue;
+        } else {
+            // Caso contrário, assuma que é um objeto de imagem
+            image.value = props.modelValue;
+        }
     }
 });
 
@@ -29,7 +37,11 @@ const updateImage = (newImage, newMetadata) => {
 
 
 watch(() => props.modelValue, (newValue) => {
-    if (newValue !== image.value) {
+    if (typeof newValue === 'string' && newValue !== image.value.base64) {
+        // Atualiza a imagem se for uma URL e diferente da atual
+        image.value.base64 = newValue;
+    } else if (typeof newValue === 'object' && newValue !== image.value) {
+        // Atualiza a imagem se for um objeto e diferente do atual
         image.value = newValue;
     }
 });

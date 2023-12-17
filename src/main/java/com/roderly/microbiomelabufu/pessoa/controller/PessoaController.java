@@ -5,6 +5,7 @@ import com.roderly.microbiomelabufu.arquivo.model.Arquivo;
 import com.roderly.microbiomelabufu.arquivo.repository.ArquivoRepository;
 import com.roderly.microbiomelabufu.arquivo.service.FotoPerfilService;
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
+import com.roderly.microbiomelabufu.infra.FileStorageProperties;
 import com.roderly.microbiomelabufu.pessoa.dto.request.PessoaCompletoRequest;
 import com.roderly.microbiomelabufu.pessoa.dto.response.PessoaCompletoResponse;
 import com.roderly.microbiomelabufu.pessoa.mapper.PessoaMapper;
@@ -30,9 +31,9 @@ public class PessoaController {
     PessoaRepository pessoaRepository;
     @Autowired
     ArquivoRepository arquivoRepository;
+    @Autowired
+    private FileStorageProperties fileStorageLocation;
 
-    @Value("${file.storage.location}")
-    private String fileStorageLocation;
 
 
     @PostMapping("/insert")
@@ -41,7 +42,7 @@ public class PessoaController {
         Pessoa pessoaSalva = pessoaRepository.save(pessoa);
 
 
-        Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), pessoaSalva.getId_pessoa(), fileStorageLocation, null);
+        Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), pessoaSalva.getId_pessoa(),null);
         Arquivo saved = arquivoRepository.save(updatedFile);
         FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
 
@@ -81,7 +82,7 @@ public class PessoaController {
         if (savedFile != null) {
             id_arquivo = savedFile.getId_arquivo();
         }
-        Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), updatedPessoa.getId_pessoa(), fileStorageLocation, id_arquivo);
+        Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), updatedPessoa.getId_pessoa(), id_arquivo);
         Arquivo saved = arquivoRepository.save(updatedFile);
         FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
 
