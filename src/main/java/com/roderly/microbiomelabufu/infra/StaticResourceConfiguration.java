@@ -14,8 +14,8 @@ public class StaticResourceConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Adiciona o caminho do diretório como um local de recursos estáticos
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + fileStorageLocation + "/");
+        String location = "file:" + fileStorageLocation.getFileStorageLocation() + "/";
+        registry.addResourceHandler("/uploads/**").addResourceLocations(location);
     }
+
 }

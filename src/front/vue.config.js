@@ -33,6 +33,10 @@ module.exports = defineConfig({
 				changeOrigin: true,
 				ws: true,
 			},
+			'/uploads': {
+				target: 'http://localhost:8080',
+				changeOrigin: true
+			}
 		}
 	}
 });
