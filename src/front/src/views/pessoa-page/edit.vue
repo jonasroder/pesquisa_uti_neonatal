@@ -20,7 +20,7 @@ onMounted(async () => {
         const data = await serviceLoad(id.value);
         console.log(data)
         Object.assign(paciente, data);
-        if(data.endereco != null){
+        if (data.endereco != null) {
             Object.assign(endereco, data.endereco[0]);
         } else {
             Object.assign(endereco, []);
@@ -44,36 +44,36 @@ const paciente = reactive({
     nome_pai: "",
     nome_mae: "",
     nome_conjuge: "",
-    data_ultimo_atendimento : "",
-    indicacao : "",
-    obervacao : "",
+    data_ultimo_atendimento: "",
+    indicacao: "",
+    observacao: "",
     id_profissao: "",
-    id_plano_saude : "",
+    id_plano_saude: "",
     id_estado_civil: "",
     id_sexo: "",
     id_etnia: "",
     id_escolaridade: "",
     id_religiao: "",
     foto_perfil: "",
-    endereco : []
+    endereco: []
 });
 
 const endereco = reactive({
-        logradouro: "",
-        numero: "",
-        complemento: "",
-        bairro: "",
-        cidade: "",
-        id_uf: "",
-        cep: "",
-        referencia: ""
-    })
+    logradouro: "",
+    numero: "",
+    complemento: "",
+    bairro: "",
+    cidade: "",
+    id_uf: "",
+    cep: "",
+    referencia: ""
+})
 
 
 const handleSave = async () => {
     loading.show()
 
-    if(endereco) {
+    if (endereco) {
         paciente.endereco = [];
         paciente.endereco.push(endereco)
     }
@@ -86,7 +86,7 @@ const handleSave = async () => {
     } else {
         const res = await serviceSave(paciente, 'insert');
         id.value = res.id;
-        if(id.value > 0) {
+        if (id.value > 0) {
             paciente.id_paciente = res.id;
             const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
             window.history.pushState({path: newUrl}, '', newUrl);
@@ -248,7 +248,7 @@ const handleAppendIconClick = async () => {
                     />
 
                     <text-input
-                        v-model="paciente.obervacao"
+                        v-model="paciente.observacao"
                         label="Observacões"
                         type="text"
                         cols="12"

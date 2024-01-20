@@ -37,7 +37,7 @@ public class PacienteController {
 
     @PostMapping("/insert")
     public ResponseEntity<ApiResponseDTO> insert(@RequestBody @Valid PacienteCompletoRequest request) throws IOException {
-        Paciente paciente = PacienteMapper.PacienteCompletoRequestToPessoa(request);
+        Paciente paciente = PacienteMapper.PacienteCompletoRequestToPaciente(request);
         Paciente pacienteSalva = pacienteRepository.save(paciente);
 
 
@@ -59,7 +59,7 @@ public class PacienteController {
 
         Paciente paciente = tuple.get(0, Paciente.class);
         String caminhoArquivo = tuple.get(1, String.class);
-        PacienteCompletoResponse response = PacienteMapper.pessoaToPessoaCompletoResponse(paciente, caminhoArquivo);
+        PacienteCompletoResponse response = PacienteMapper.pacienteToPacienteCompletoResponse(paciente, caminhoArquivo);
 
 
         return ResponseEntity.ok(response);
@@ -70,9 +70,9 @@ public class PacienteController {
     @Transactional
     public ResponseEntity<ApiResponseDTO> update(@RequestBody @Valid PacienteCompletoRequest request) throws IOException {
 
-        Paciente responsePaciente = pacienteRepository.findById(request.id_pessoa())
-                .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com ID: " + request.id_pessoa()));
-        Paciente updatedPaciente = PacienteMapper.PacienteCompletoRequestToPessoa(request);
+        Paciente responsePaciente = pacienteRepository.findById(request.id_paciente())
+                .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com ID: " + request.id_paciente()));
+        Paciente updatedPaciente = PacienteMapper.PacienteCompletoRequestToPaciente(request);
         Paciente paciente = pacienteRepository.save(updatedPaciente);
 
 
