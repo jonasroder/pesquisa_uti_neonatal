@@ -12,6 +12,10 @@ const props = defineProps({
     disabled: Boolean,
     readonly: Boolean,
     rules: Array,
+    mask: {
+        type: String,
+        default: ''
+    },
     clearable: {
         type: Boolean,
         default: true
@@ -53,6 +57,21 @@ const internalValue = ref(props.modelValue);
 watch(() => props.modelValue, (newValue) => {
     internalValue.value = newValue;
 });
+
+
+const options = ref({});
+watch(() => props.mask, (newMask) => {
+    if (newMask === 'telefone') {
+        options.value = { mask: '(##) #####-####' };
+    } else if (newMask === 'cep') {
+        options.value = { mask: '#####-###' };
+    } else if (newMask === 'cpf') {
+        options.value = { mask: '###.###.###-##' };
+    } else {
+        options.value = {};
+    }
+}, { immediate: true });
+
 
 const onInput = (event) => {
     const value = event.target.value;
@@ -132,6 +151,7 @@ const combinedRules = ref([
             :readonly="readonly"
             :rules="combinedRules"
             :variant="variant"
+            v-maska:[options]="options"
             color="primary"
             @input="onInput"
             @blur="onBlur"

@@ -118,6 +118,8 @@ const handleAppendIconClick = async () => {
 
 };
 
+// const options = { mask: '(##) #####-####' };
+// const myValue = ref('');
 
 </script>
 
@@ -185,21 +187,25 @@ const handleAppendIconClick = async () => {
                         v-model="paciente.cpf"
                         label="CPF"
                         type="text"
+                        mask="cpf"
                         cols="12"
                     />
 
+                  <!--  <v-text-field v-maska:[options] v-model="myValue"/> -->
 
                     <text-input
                         v-model="paciente.telefone_1"
                         label="telefone 1"
                         type="phone"
                         :rules="['required']"
+                        mask="telefone"
                         cols="12"
                     />
 
                     <text-input
                         v-model="paciente.telefone_2"
                         label="telefone 2"
+                        mask="telefone"
                         type="phone"
                         cols="12"
                     />
@@ -358,6 +364,7 @@ const handleAppendIconClick = async () => {
                         type="text"
                         appendInnerIcon="fa-solid fa-search"
                         :rules="['required', 'cep']"
+                        mask="cep"
                         cols="12"
                         @click:append-inner-icon="handleAppendIconClick"
                     />

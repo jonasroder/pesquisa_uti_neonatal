@@ -17,7 +17,7 @@ const routes = [
 	{
 		path: '/pessoa/edit',
 		name: 'Pessoa-Page',
-		component: () => import("../views/pessoa-page/edit.vue"),
+		component: () => import("@/views/paciente-page/edit.vue"),
 		meta: { title: 'Saúde em Equilibrio - Cadastrar Pessoa' }
 	},
 

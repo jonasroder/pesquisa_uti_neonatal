@@ -12,6 +12,7 @@
 		"@fortawesome/fontawesome-free": "^6.4.2",
 		"axios": "^1.6.1",
 		"core-js": "^3.8.3",
+		"maska": "^2.1.11",
 		"path-browserify": "^1.0.1",
 		"service": "^0.1.4",
 		"vue": "^3.2.13",
