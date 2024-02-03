@@ -16,4 +16,7 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
 
     Optional<Tuple> findPessoaWithImageProfile(@Param("id_paciente") Long id_pessoa);
 
+    //Faz A busca por cpf
+    Optional<Paciente> findByCpf(String cpf);
+
 }

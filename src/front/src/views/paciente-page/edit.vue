@@ -6,17 +6,18 @@ import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
 import {serviceSave, serviceLoad, getEnderecoByCep} from "@/service/paciente";
-import {getIdFromUrl, limparMascara} from "@/service/common/utils"
+import {getIdFromUrl, limparMascara, adicionarParametrosURL} from "@/service/common/utils"
 import {loading} from "@/plugins/loadingService.js";
 
 
 const id = ref(getIdFromUrl());
-
+const cpfDisabled = ref(false);
 
 onMounted(async () => {
     loading.show()
 
     if (id.value > 0) {
+        cpfDisabled.value = true;
         const data = await serviceLoad(id.value);
         console.log(data)
         Object.assign(paciente, data);
@@ -80,8 +81,8 @@ const handleSave = async () => {
     }
 
     paciente.cpf = limparMascara(paciente.cpf);
-    paciente.cpf = limparMascara(paciente.telefone_1);
-    paciente.cpf = limparMascara(paciente.telefone_2);
+    paciente.telefone_1 = limparMascara(paciente.telefone_1);
+    paciente.telefone_2 = limparMascara(paciente.telefone_2);
 
     console.log(paciente)
 
@@ -93,8 +94,8 @@ const handleSave = async () => {
         id.value = res.id;
         if (id.value > 0) {
             paciente.id_paciente = res.id;
-            const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${res.id}`;
-            window.history.pushState({path: newUrl}, '', newUrl);
+            cpfDisabled.value = true;
+            adicionarParametrosURL({id : res.id});
         }
     }
 
@@ -125,7 +126,7 @@ const handleAppendIconClick = async () => {
 </script>
 
 <template>
-    <card-formulario title="Cadastro de Pessoa"
+    <card-formulario title="Cadastro de Paciente"
                      subtitle="Centralizando Informações para Cuidado Integral"
                      @handleSave="handleSave"
                      @handleBack="handleBack">
@@ -187,6 +188,7 @@ const handleAppendIconClick = async () => {
                     <text-input
                         v-model="paciente.cpf"
                         label="CPF"
+                        :disabled="cpfDisabled"
                         type="text"
                         mask="cpf"
                         cols="12"

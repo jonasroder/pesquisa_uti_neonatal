@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/paciente")
@@ -37,17 +38,20 @@ public class PacienteController {
 
     @PostMapping("/insert")
     public ResponseEntity<ApiResponseDTO> insert(@RequestBody @Valid PacienteCompletoRequest request) throws IOException {
-        Paciente paciente = PacienteMapper.PacienteCompletoRequestToPaciente(request);
-        Paciente pacienteSalva = pacienteRepository.save(paciente);
+        Optional<Paciente> pacienteExistente = pacienteRepository.findByCpf(request.cpf());
 
+        if (pacienteExistente.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponseDTO(null,"CPF já cadastrado."));
+        } else {
+            Paciente paciente = PacienteMapper.PacienteCompletoRequestToPaciente(request);
+            Paciente pacienteSalva = pacienteRepository.save(paciente);
 
-        Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), pacienteSalva.getId_paciente(),null);
-        Arquivo saved = arquivoRepository.save(updatedFile);
-        FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
+            Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), pacienteSalva.getId_paciente(),null);
+            Arquivo saved = arquivoRepository.save(updatedFile);
+            FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
 
-
-        ApiResponseDTO responseDTO = new ApiResponseDTO(pacienteSalva.getId_paciente(), "Pessoa criada com sucesso");
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+            return ResponseEntity.ok(new ApiResponseDTO(pacienteSalva.getId_paciente(),"Paciente cadastrado com sucesso."));
+        }
     }
 
 
@@ -86,7 +90,7 @@ public class PacienteController {
         FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
 
 
-        ApiResponseDTO response = new ApiResponseDTO(updatedPaciente.getId_paciente(), "Pessoa atualizada com sucesso.");
+        ApiResponseDTO response = new ApiResponseDTO(updatedPaciente.getId_paciente(), "Paciente atualizado com sucesso.");
         return ResponseEntity.ok(response);
     }
 }

@@ -20,8 +20,8 @@ watch(() => props.drawer, (newVal) => {
 
 const links = ref([
     { icon: 'fas fa-home', text: 'Início', to: '/' },
-    { icon: 'fas fa-user', text: 'Gerenciar Pessoas', to: '/pessoa/edit' },
-    { icon: 'fas fa-table', text: 'Regular Tables', to: '/tables' },
+    { icon: 'fas fa-user', text: 'Pacientes', to: '/pessoa/edit' },
+    { icon: 'fas fa-table', text: 'Cadastros', to: '/tables' },
 ]);
 
 
