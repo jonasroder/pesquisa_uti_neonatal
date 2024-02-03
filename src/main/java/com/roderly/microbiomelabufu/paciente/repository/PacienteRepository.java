@@ -1,6 +1,6 @@
-package com.roderly.microbiomelabufu.pessoa.repository;
+package com.roderly.microbiomelabufu.paciente.repository;
 
-import com.roderly.microbiomelabufu.pessoa.model.Paciente;
+import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

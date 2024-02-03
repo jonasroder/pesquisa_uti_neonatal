@@ -1,6 +1,6 @@
 package com.roderly.microbiomelabufu.endereco.model;
 
-import com.roderly.microbiomelabufu.pessoa.model.Paciente;
+import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.roderly.microbiomelabufu.pessoa.controller;
+package com.roderly.microbiomelabufu.paciente.controller;
 
 import com.roderly.microbiomelabufu.arquivo.mapper.ArquivoMapper;
 import com.roderly.microbiomelabufu.arquivo.model.Arquivo;
@@ -6,11 +6,11 @@ import com.roderly.microbiomelabufu.arquivo.repository.ArquivoRepository;
 import com.roderly.microbiomelabufu.arquivo.service.FotoPerfilService;
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
 import com.roderly.microbiomelabufu.infra.FileStorageProperties;
-import com.roderly.microbiomelabufu.pessoa.dto.request.PacienteCompletoRequest;
-import com.roderly.microbiomelabufu.pessoa.dto.response.PacienteCompletoResponse;
-import com.roderly.microbiomelabufu.pessoa.mapper.PacienteMapper;
-import com.roderly.microbiomelabufu.pessoa.model.Paciente;
-import com.roderly.microbiomelabufu.pessoa.repository.PacienteRepository;
+import com.roderly.microbiomelabufu.paciente.dto.request.PacienteCompletoRequest;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteCompletoResponse;
+import com.roderly.microbiomelabufu.paciente.mapper.PacienteMapper;
+import com.roderly.microbiomelabufu.paciente.model.Paciente;
+import com.roderly.microbiomelabufu.paciente.repository.PacienteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;

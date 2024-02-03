@@ -1,10 +1,10 @@
-package com.roderly.microbiomelabufu.pessoa.mapper;
+package com.roderly.microbiomelabufu.paciente.mapper;
 
 import com.roderly.microbiomelabufu.endereco.dto.response.EnderecoResponse;
 import com.roderly.microbiomelabufu.endereco.mapper.EnderecoMapper;
-import com.roderly.microbiomelabufu.pessoa.dto.request.PacienteCompletoRequest;
-import com.roderly.microbiomelabufu.pessoa.dto.response.PacienteCompletoResponse;
-import com.roderly.microbiomelabufu.pessoa.model.Paciente;
+import com.roderly.microbiomelabufu.paciente.dto.request.PacienteCompletoRequest;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteCompletoResponse;
+import com.roderly.microbiomelabufu.paciente.model.Paciente;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +24,7 @@ public class PacienteMapper {
         paciente.setNome_pai(request.nome_pai());
         paciente.setNome_mae(request.nome_mae());
         paciente.setNome_conjuge(request.nome_conjuge());
-        paciente.setData_nascimento(request.data_ultimo_atendimento());
+        paciente.setData_ultimo_atendimento(request.data_ultimo_atendimento());
         paciente.setNum_visitas(request.num_visitas());
         paciente.setIndicacao(request.indicacao());
         paciente.setObservacao(request.observacao());

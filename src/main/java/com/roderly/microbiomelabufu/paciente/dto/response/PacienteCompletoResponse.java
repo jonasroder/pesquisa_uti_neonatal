@@ -1,12 +1,11 @@
-package com.roderly.microbiomelabufu.pessoa.dto.request;
+package com.roderly.microbiomelabufu.paciente.dto.response;
 
-import com.roderly.microbiomelabufu.arquivo.dto.request.FotoPerfilRequest;
-import com.roderly.microbiomelabufu.endereco.dto.request.EnderecoRequest;
+import com.roderly.microbiomelabufu.endereco.dto.response.EnderecoResponse;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public record PacienteCompletoRequest(
+public record PacienteCompletoResponse(
         Long id_paciente,
         String nome,
         String sobrenome,
@@ -30,6 +29,6 @@ public record PacienteCompletoRequest(
         Long id_etnia,
         Long id_escolaridade,
         Long id_religiao,
-        List<EnderecoRequest> endereco,
-        FotoPerfilRequest foto_perfil
+        List<EnderecoResponse> endereco,
+        String foto_perfil
 ) {}

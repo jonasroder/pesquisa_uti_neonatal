@@ -6,7 +6,7 @@ import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
 import {serviceSave, serviceLoad, getEnderecoByCep} from "@/service/paciente";
-import {getIdFromUrl} from "@/service/common/utils"
+import {getIdFromUrl, limparMascara} from "@/service/common/utils"
 import {loading} from "@/plugins/loadingService.js";
 
 
@@ -74,15 +74,20 @@ const handleSave = async () => {
     loading.show()
 
     if (endereco) {
+        endereco.cep = limparMascara(endereco.cep);
         paciente.endereco = [];
         paciente.endereco.push(endereco)
     }
 
+    paciente.cpf = limparMascara(paciente.cpf);
+    paciente.cpf = limparMascara(paciente.telefone_1);
+    paciente.cpf = limparMascara(paciente.telefone_2);
+
     console.log(paciente)
+
     if (id.value > 0) {
         const res = await serviceSave(paciente, 'update');
         console.log(res)
-
     } else {
         const res = await serviceSave(paciente, 'insert');
         id.value = res.id;
@@ -115,11 +120,7 @@ const handleAppendIconClick = async () => {
     endereco.logradouro = respEndereco.logradouro;
     endereco.bairro = respEndereco.bairro;
     endereco.cidade = respEndereco.localidade;
-
 };
-
-// const options = { mask: '(##) #####-####' };
-// const myValue = ref('');
 
 </script>
 
@@ -191,7 +192,6 @@ const handleAppendIconClick = async () => {
                         cols="12"
                     />
 
-                  <!--  <v-text-field v-maska:[options] v-model="myValue"/> -->
 
                     <text-input
                         v-model="paciente.telefone_1"

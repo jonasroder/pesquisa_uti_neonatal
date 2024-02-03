@@ -3,3 +3,7 @@ export const getIdFromUrl = () => {
 	const id = queryParams.get('id');
 	return id ? Number(id) : null;
 };
+
+export const limparMascara = (valor) => {
+	return valor.replace(/\D+/g, '');
+};
