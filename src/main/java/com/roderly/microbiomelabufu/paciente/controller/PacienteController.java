@@ -89,10 +89,15 @@ public class PacienteController {
         Long id_arquivo = null;
         if (savedFile != null) {
             id_arquivo = savedFile.getId_arquivo();
+            Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), updatedPaciente.getId_paciente(), id_arquivo);
+            Arquivo saved = arquivoRepository.save(updatedFile);
+            FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
+        } else {
+            Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), paciente.getId_paciente(),null);
+            Arquivo saved = arquivoRepository.save(updatedFile);
+            FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
         }
-        Arquivo updatedFile = ArquivoMapper.fotoPerfilRequestToArquivo(request.foto_perfil().metadata(), updatedPaciente.getId_paciente(), id_arquivo);
-        Arquivo saved = arquivoRepository.save(updatedFile);
-        FotoPerfilService.saveBase64ToFile(request.foto_perfil().base64(), fileStorageLocation, updatedFile.getId_arquivo());
+
 
 
         ApiResponseDTO response = new ApiResponseDTO(updatedPaciente.getId_paciente(), "Paciente atualizado com sucesso.");

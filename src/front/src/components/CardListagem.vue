@@ -1,3 +1,23 @@
+<script setup>
+import {defineProps} from 'vue';
+
+defineProps({
+    title: {
+        type: String,
+        required: true
+    },
+    subtitle: {
+        type: String,
+        default: ''
+    },
+    botao: {
+        type: String,
+        default: 'Novo Cadastro'
+    }
+});
+</script>
+
+
 <template>
     <v-container>
         <v-row justify="center" align="center"  class="d-flex  pa-0 fill-height border border-sm border-opacity-100 border-barrasSperior rounded" >
@@ -31,22 +51,3 @@
         </v-row>
     </v-container>
 </template>
-
-<script setup>
-import {defineProps} from 'vue';
-
-defineProps({
-    title: {
-        type: String,
-        required: true
-    },
-    subtitle: {
-        type: String,
-        default: ''
-    },
-    botao: {
-        type: String,
-        default: 'Novo Cadastro'
-    }
-});
-</script>
