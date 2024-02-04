@@ -4,8 +4,12 @@ import com.roderly.microbiomelabufu.endereco.dto.response.EnderecoResponse;
 import com.roderly.microbiomelabufu.endereco.mapper.EnderecoMapper;
 import com.roderly.microbiomelabufu.paciente.dto.request.PacienteCompletoRequest;
 import com.roderly.microbiomelabufu.paciente.dto.response.PacienteCompletoResponse;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteListagemResponse;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
+import jakarta.persistence.Tuple;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,6 +89,24 @@ public class PacienteMapper {
                 caminhoArquivo
         );
     }
+
+
+    public static PacienteListagemResponse tuplePacienteToPacienteListagemResponse(Tuple paciente) {
+        LocalDate dataNascimento = paciente.get(3, LocalDate.class);
+        Integer idade = (dataNascimento != null) ? Period.between(dataNascimento, LocalDate.now()).getYears() : null;
+
+        return new PacienteListagemResponse(
+                paciente.get(0, Long.class),
+                paciente.get(1, String.class) + " " + paciente.get(2, String.class),
+                idade,
+                paciente.get(4, String.class),
+                paciente.get(5, String.class),
+                paciente.get(6, LocalDate.class),
+                paciente.get(7, Long.class),
+                paciente.get(8, String.class)
+        );
+    }
+
 
 
 }

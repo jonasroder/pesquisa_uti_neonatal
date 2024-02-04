@@ -15,10 +15,16 @@ const routes = [
 		meta: { title: 'Saúde em Equilibrio - Login' }
 	},
 	{
-		path: '/pessoa/edit',
-		name: 'Pessoa-Page',
+		path: '/paciente/edit',
+		name: 'Paciente-Page',
 		component: () => import("@/views/paciente-page/edit.vue"),
 		meta: { title: 'Cadastrar Paciente' }
+	},
+	{
+		path: '/paciente/index',
+		name: 'Paciente-List',
+		component: () => import("@/views/paciente-page/index.vue"),
+		meta: { title: 'Lista Pacientes' }
 	},
 
 ];

@@ -39,3 +39,14 @@ export const getEnderecoByCep = async (cep) => {
 		return handleApiError(e, "Error on serviceSave");
 	}
 };
+
+
+
+export const serviceList = async () => {
+	try {
+		const response = await axios.get(`/api/paciente/list`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on serviceList");
+	}
+};

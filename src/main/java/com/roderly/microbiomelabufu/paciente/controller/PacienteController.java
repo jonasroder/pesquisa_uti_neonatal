@@ -8,6 +8,7 @@ import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
 import com.roderly.microbiomelabufu.infra.FileStorageProperties;
 import com.roderly.microbiomelabufu.paciente.dto.request.PacienteCompletoRequest;
 import com.roderly.microbiomelabufu.paciente.dto.response.PacienteCompletoResponse;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteListagemResponse;
 import com.roderly.microbiomelabufu.paciente.mapper.PacienteMapper;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import com.roderly.microbiomelabufu.paciente.repository.PacienteRepository;
@@ -21,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/paciente")
@@ -55,6 +58,7 @@ public class PacienteController {
     }
 
 
+
     @GetMapping("/load/{id}")
     public ResponseEntity<PacienteCompletoResponse> getPessoaComEndereco(@PathVariable Long id) {
         Tuple tuple = pacienteRepository.findPessoaWithImageProfile(id)
@@ -68,6 +72,7 @@ public class PacienteController {
 
         return ResponseEntity.ok(response);
     }
+
 
 
     @PutMapping("/update")
@@ -92,5 +97,22 @@ public class PacienteController {
 
         ApiResponseDTO response = new ApiResponseDTO(updatedPaciente.getId_paciente(), "Paciente atualizado com sucesso.");
         return ResponseEntity.ok(response);
+    }
+
+
+
+    @GetMapping("/list")
+    public ResponseEntity<List<PacienteListagemResponse>> getListagemPaciente() {
+        List<Tuple> tuples = pacienteRepository.getListaPacientes();
+
+        if (tuples.isEmpty()) {
+            throw new EntityNotFoundException("Lista de pacientes não encontrada.");
+        }
+
+        List<PacienteListagemResponse> responses = tuples.stream()
+                .map(PacienteMapper::tuplePacienteToPacienteListagemResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(responses);
     }
 }
