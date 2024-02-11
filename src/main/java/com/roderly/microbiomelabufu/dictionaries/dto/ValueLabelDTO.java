@@ -1,3 +1,3 @@
 package com.roderly.microbiomelabufu.dictionaries.dto;
 
-public record ValueLabelDTO(Integer value, String label) {}
+public record ValueLabelDTO(Long value, String label) {}

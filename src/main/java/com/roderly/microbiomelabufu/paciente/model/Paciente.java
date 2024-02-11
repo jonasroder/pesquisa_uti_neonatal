@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.paciente.model;
 
+import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import com.roderly.microbiomelabufu.endereco.model.Endereco;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,7 +30,7 @@ public class Paciente {
     private String nome_pai;
     private String nome_mae;
     private String nome_conjuge;
-    private LocalDate data_ultimo_atendimento;
+    private String numero_plano_saude;
     private Long num_visitas;
     private String indicacao;
     private String observacao;
@@ -43,5 +44,8 @@ public class Paciente {
 
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> endereco = new ArrayList<>();
+
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Consulta> consultas = new ArrayList<>();
 
 }

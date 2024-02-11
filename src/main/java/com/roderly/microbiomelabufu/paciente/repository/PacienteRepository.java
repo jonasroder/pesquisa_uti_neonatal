@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PacienteRepository extends JpaRepository<Paciente, Long> {
-    @Query("SELECT p, CONCAT(a.caminho_arquivo, '/', a.id_arquivo,'.jpeg'), p.nome " +
+    @Query("SELECT p, CONCAT(a.caminho_arquivo, '/', a.id_arquivo,'.jpeg'), ps.descricao " +
             "FROM Paciente p " +
             "LEFT JOIN Arquivo a ON a.id_entidade = p.id_paciente AND a.entidade = 'paciente' " +
+            "LEFT JOIN Plano_saude ps ON ps.id_plano_saude = p.id_plano_saude " +
             "WHERE p.id_paciente = :id_paciente")
     Optional<Tuple> findPessoaWithImageProfile(@Param("id_paciente") Long id_pessoa);
 
@@ -28,7 +29,6 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
             "p.data_nascimento, " +
             "p.telefone_1, " +
             "p.telefone_2, " +
-            "p.data_ultimo_atendimento, " +
             "p.num_visitas, " +
             "CONCAT(a.caminho_arquivo, '/', a.id_arquivo,'.jpeg') " +
             "FROM Paciente p " +

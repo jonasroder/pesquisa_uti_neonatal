@@ -25,7 +25,7 @@ const props = defineProps({
     descColumn: String,
     tableName: String,
     whereClause: String,
-    is_active: Boolean,
+    is_active: {type: Boolean, default: true},
     multiple: Boolean
 });
 

@@ -4,9 +4,9 @@ import { setNotification } from "@/plugins/notificationService";
  * Extrai o valor do parâmetro 'id' da URL atual.
  * @returns {number|null} O valor do 'id' como número, ou null se não estiver presente.
  */
-export const getIdFromUrl = () => {
+export const getIdFromUrl = (param = 'id') => {
 	const queryParams = new URLSearchParams(window.location.search);
-	const id = queryParams.get('id');
+	const id = queryParams.get(param);
 	return id ? Number(id) : null;
 };
 
@@ -95,3 +95,30 @@ export const verificarCamposObrigatorios = (objeto, camposObrigatorios) => {
 	return true;
 };
 
+
+
+/**
+ * Formata números de telefone com base no número de dígitos.
+ * Assume-se que um número com 11 dígitos seja um celular com código de área e nono dígito,
+ * e um número com 10 dígitos seja um telefone fixo com código de área.
+ *
+ * @param {string} numero - O número de telefone a ser formatado.
+ * @returns {string} - O número de telefone formatado.
+ */
+export const formatarTelefone = (numero) => {
+	// Removendo caracteres não numéricos para garantir que o número esteja limpo
+	numero = numero.replace(/\D/g, '');
+
+	// Formata como número de celular se tiver 11 dígitos
+	if (numero.length === 11) {
+		return `(${numero.substring(0, 2)}) ${numero.substring(2, 7)}-${numero.substring(7)}`;
+	}
+	// Formata como telefone fixo se tiver 10 dígitos
+	else if (numero.length === 10) {
+		return `(${numero.substring(0, 2)}) ${numero.substring(2, 6)}-${numero.substring(6)}`;
+	}
+	// Retorna o número sem formatação se não tiver um formato conhecido
+	else {
+		return numero;
+	}
+};

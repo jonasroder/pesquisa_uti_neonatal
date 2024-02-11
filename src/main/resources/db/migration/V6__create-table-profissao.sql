@@ -1,9 +1,9 @@
 -- Criação da tabela de profissão
 CREATE TABLE profissao
 (
-    id_profissao INT AUTO_INCREMENT PRIMARY KEY,
+    id_profissao BIGINT AUTO_INCREMENT PRIMARY KEY,
     descricao    VARCHAR(255) NOT NULL,
-    is_active    TINYINT(1) DEFAULT 1
+    is_active    TINYINT DEFAULT 1
 );
 
 

@@ -1,9 +1,9 @@
 -- Criação da tabela de etnia
 CREATE TABLE etnia
 (
-    id_etnia  INT AUTO_INCREMENT PRIMARY KEY,
+    id_etnia  BIGINT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
-    is_active TINYINT(1) DEFAULT 1
+    is_active TINYINT DEFAULT 1
 );
 
 

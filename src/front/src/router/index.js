@@ -26,6 +26,12 @@ const routes = [
 		component: () => import("@/views/paciente-page/index.vue"),
 		meta: { title: 'Lista Pacientes' }
 	},
+	{
+		path: '/consulta/edit',
+		name: 'Consulta-Page',
+		component: () => import("@/views/consulta-page/edit.vue"),
+		meta: { title: 'Consulta' }
+	},
 
 ];
 

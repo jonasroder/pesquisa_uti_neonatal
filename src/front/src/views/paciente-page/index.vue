@@ -5,11 +5,12 @@ import {loading} from "@/plugins/loadingService";
 import {serviceList} from "@/service/paciente";
 import TextInput from "@/components/TextInput.vue";
 import {useRouter} from "vue-router";
+import {formatarTelefone} from "@/service/common/utils"
+import defaultImagePath from "@/assets/no_image.png";
 
 
 const data = ref([]);
 const search = ref("");
-const defaultImagePath = require('@/assets/no_image.png');
 const router = useRouter();
 
 
@@ -26,8 +27,9 @@ const headers = ref([
     {title: 'Nome', key: 'nome', align: 'start', class: 'text--primary'},
     {title: 'Idade', key: 'idade', align: 'start'},
     {title: 'Telefone', key: 'telefone_1', align: 'start'},
-    {title: 'Último Atendimento', key: 'data_ultimo_atendimento', align: 'start'},
     {title: 'Nº Visitas', key: 'num_visitas', align: 'start'},
+    {title: 'Últimas Consultas', key: 'id_paciente', align: 'start'},
+    { title: 'Nova Consulta', key: 'action', align: 'start' }
 ]);
 
 
@@ -44,6 +46,12 @@ const navigateToEditPage = (idPaciente) => {
 const handleNew = () => {
     router.push({ name: 'Paciente-Page' });
 }
+
+
+const createNewConsulta = (id_paciente) => {
+    router.push({ name: 'Consulta-Page', query: { id_paciente:  id_paciente } });
+}
+
 </script>
 
 
@@ -92,11 +100,20 @@ const handleNew = () => {
                 <!-- Coluna Telefone -->
                 <template v-slot:[`item.telefone_1`]="{ item }">
                     <div>
-                        <a v-if="item.telefone_1" :href="`https://wa.me/+55${item.telefone_1.replace(/[^0-9]/g, '')}`" target="_blank">{{ item.telefone_1 }}</a>
+                        <a v-if="item.telefone_1" :href="`https://wa.me/+55${item.telefone_1.replace(/[^0-9]/g, '')}`" target="_blank">{{ formatarTelefone(item.telefone_1) }}</a>
                         <br v-if="item.telefone_1 && item.telefone_2">
-                        <a v-if="item.telefone_2" :href="`https://wa.me/+55${item.telefone_2.replace(/[^0-9]/g, '')}`" target="_blank">{{ item.telefone_2 }}</a>
+                        <a v-if="item.telefone_2" :href="`https://wa.me/+55${item.telefone_2.replace(/[^0-9]/g, '')}`" target="_blank">{{ formatarTelefone(item.telefone_2) }}</a>
                     </div>
                 </template>
+
+                <template v-slot:[`item.action`]="{ item }">
+                    <v-btn color="blue lighten-2" class="text-none" @click="createNewConsulta(item.id_paciente)">
+                        <v-icon left>mdi-calendar-plus</v-icon>
+                        Nova Consulta
+                    </v-btn>
+                </template>
+
+
 
 
             </v-data-table>

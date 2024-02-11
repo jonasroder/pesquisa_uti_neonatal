@@ -19,7 +19,7 @@ public record PacienteCompletoRequest(
         String nome_pai,
         String nome_mae,
         String nome_conjuge,
-        LocalDate data_ultimo_atendimento,
+        String numero_plano_saude,
         Long num_visitas,
         String indicacao,
         String observacao,

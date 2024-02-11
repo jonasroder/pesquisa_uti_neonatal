@@ -8,7 +8,6 @@ public record PacienteListagemResponse(
         Integer idade,
         String telefone_1,
         String telefone_2,
-        LocalDate data_ultimo_atendimento,
         Long num_visitas,
         String foto_perfil
 ) {}

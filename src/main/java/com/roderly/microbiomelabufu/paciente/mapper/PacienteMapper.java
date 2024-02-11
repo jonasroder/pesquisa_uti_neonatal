@@ -28,7 +28,7 @@ public class PacienteMapper {
         paciente.setNome_pai(request.nome_pai());
         paciente.setNome_mae(request.nome_mae());
         paciente.setNome_conjuge(request.nome_conjuge());
-        paciente.setData_ultimo_atendimento(request.data_ultimo_atendimento());
+        paciente.setNumero_plano_saude(request.numero_plano_saude());
         paciente.setNum_visitas(request.num_visitas());
         paciente.setIndicacao(request.indicacao());
         paciente.setObservacao(request.observacao());
@@ -74,7 +74,7 @@ public class PacienteMapper {
                 responsePaciente.getNome_pai(),
                 responsePaciente.getNome_mae(),
                 responsePaciente.getNome_conjuge(),
-                responsePaciente.getData_ultimo_atendimento(),
+                responsePaciente.getNumero_plano_saude(),
                 responsePaciente.getNum_visitas(),
                 responsePaciente.getIndicacao(),
                 responsePaciente.getObservacao(),
@@ -101,9 +101,8 @@ public class PacienteMapper {
                 idade,
                 paciente.get(4, String.class),
                 paciente.get(5, String.class),
-                paciente.get(6, LocalDate.class),
-                paciente.get(7, Long.class),
-                paciente.get(8, String.class)
+                paciente.get(6, Long.class),
+                paciente.get(7, String.class)
         );
     }
 
