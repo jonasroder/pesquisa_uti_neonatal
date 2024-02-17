@@ -28,7 +28,8 @@ CREATE TABLE paciente
 );
 
 
-INSERT INTO paciente (nome, sobrenome, data_nascimento, cpf, is_active)
-VALUES ('Jonas', 'Röder', '1991-03-03', '06398404939', 1);
-INSERT INTO paciente (nome, sobrenome, data_nascimento, cpf, is_active)
-VALUES ('Denise', 'Röder', '1976-03-09', '03953126636', 1);
+INSERT INTO paciente (nome, sobrenome, data_nascimento, telefone_1, telefone_2, email, cpf, naturalidade, nome_pai,
+                      nome_mae, nome_conjuge, numero_plano_saude, num_visitas, indicacao, observacao, id_profissao,
+                      id_plano_saude, id_estado_civil, id_sexo, id_etnia, id_escolaridade, id_religiao, is_active)
+VALUES ('Jonas', 'Röder', '1991-03-03', '34996841061', '34991854234', 'jonas@gmail.com', '06398404939', 'Garuva',
+        'Werner', 'Elfrida', 'Densie', '45698713548976', NULL, 'Internet', 'teste obs', 8, 1, 2, 1, 1, 4, 2, 1);

@@ -106,6 +106,8 @@ export const verificarCamposObrigatorios = (objeto, camposObrigatorios) => {
  * @returns {string} - O número de telefone formatado.
  */
 export const formatarTelefone = (numero) => {
+	if(!numero) return;
+
 	// Removendo caracteres não numéricos para garantir que o número esteja limpo
 	numero = numero.replace(/\D/g, '');
 

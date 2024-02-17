@@ -135,7 +135,7 @@ const combinedRules = ref([
 </script>
 
 <template>
-    <v-col :cols="cols || 12" :sm="sm" :md="md" :lg="lg" :xl="xl">
+    <v-col :cols="cols || 12" :sm="sm" :md="md" :lg="lg" :xl="xl" class="pb-0">
         <v-text-field
             density="compact"
             v-model="internalValue"

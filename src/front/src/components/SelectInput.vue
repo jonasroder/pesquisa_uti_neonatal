@@ -29,7 +29,7 @@ const props = defineProps({
     multiple: Boolean
 });
 
-// Se já houver um 'internalValue' definido em algum lugar, remova esta linha e use a definição existente.
+
 const internalValue = ref(props.modelValue);
 const items = ref(props.items);
 
@@ -120,13 +120,7 @@ const combinedRules = ref([
 
 
 <template>
-    <v-col
-        :cols="cols"
-        :sm="sm"
-        :md="md"
-        :lg="lg"
-        :xl="xl"
-    >
+    <v-col :cols="cols" :sm="sm" :md="md" :lg="lg" :xl="xl" class="pb-0" >
         <v-autocomplete
             density="compact"
             :label="label"
@@ -151,6 +145,7 @@ const combinedRules = ref([
             item-title="label"
             :multiple="multiple"
             :chips="multiple"
+            :closable-chips="multiple"
         />
     </v-col>
 </template>

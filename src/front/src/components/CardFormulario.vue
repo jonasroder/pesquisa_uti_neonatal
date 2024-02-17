@@ -13,8 +13,8 @@
 
                         <v-col cols="12" sm="12" md="4" lg="2">
                             <div class="d-flex justify-end mt-3 mr-2">
-                                <v-btn class="mr-2" color="cinzaAzulado" @click="$emit('handleBack')">Voltar</v-btn>
-                                <v-btn color="azulEscuro" @click="$emit('handleSave')">Salvar</v-btn>
+                                <v-btn class="mr-2" variant="elevated" color="cinzaAzulado" @click="$emit('handleBack')">Voltar</v-btn>
+                                <v-btn color="azulEscuro" variant="elevated" @click="$emit('handleSave')">Salvar</v-btn>
                             </div>
                         </v-col>
                     </v-row>
