@@ -6,7 +6,7 @@ import '../styles/main.scss';
 
 export default createVuetify({
 	theme: {
-		defaultTheme: 'light', // Mova defaultTheme para fora do objeto themes
+		defaultTheme: 'light',
 		themes: {
 			light: {
 				colors: {
@@ -50,6 +50,22 @@ export default createVuetify({
 			ripple: true,
 			textColor: 'textColor',
 			iconColor: 'iconColor',
+		},
+		VAutocomplete: {
+			multiple: false,
+			clearable: true,
+			chips: false,
+			closableChips: true,
+			itemTitle: 'label',
+			itemValue: 'value',
+			variant: 'outlined',
+			color: 'primary',
+			density: 'compact'
+		},
+		VTextField:{
+			variant: 'outlined',
+			color: 'primary',
+			density: 'compact'
 		}
 	},
 

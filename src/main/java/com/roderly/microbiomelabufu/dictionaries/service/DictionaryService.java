@@ -27,7 +27,7 @@ public class DictionaryService {
             where += whereClause;
         }
 
-        String queryStr = "SELECT t." + idColumn + ", t." + descColumn + " FROM " + tableName + " t WHERE " + where;
+        String queryStr = "SELECT " + idColumn + ", " + descColumn + " FROM " + tableName + " t WHERE " + where;
 
         if(isValidQuery(queryStr)) {
 

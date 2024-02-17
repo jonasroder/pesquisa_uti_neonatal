@@ -6,7 +6,6 @@ CREATE TABLE prescricao_medicamento
     dosagem                   VARCHAR(255),
     instrucoes                TEXT,
     id_frequencia             BIGINT,
-    inicio_tratamento         DATE,
-    fim_tratamento            DATE,
+    id_periodo                BIGINT,
     is_active                 TINYINT DEFAULT 1
 );
