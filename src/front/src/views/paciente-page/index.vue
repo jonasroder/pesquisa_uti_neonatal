@@ -3,13 +3,12 @@ import {ref, onMounted} from 'vue';
 import CardListagem from "@/components/CardListagem.vue";
 import {loading} from "@/plugins/loadingService";
 import {serviceList} from "@/service/paciente";
-import TextInput from "@/components/TextInput.vue";
 import {useRouter} from "vue-router";
 import {formatarTelefone} from "@/service/common/utils"
 import defaultImagePath from "@/assets/no_image.png";
 
 
-const data = ref([]);
+const data   = ref([]);
 const search = ref("");
 const router = useRouter();
 
@@ -22,15 +21,36 @@ onMounted(async () => {
 });
 
 
-const headers = ref([
-    {key: 'foto_perfil', align: 'start', sortable: false},
-    {title: 'Nome', key: 'nome', align: 'start', class: 'text--primary'},
-    {title: 'Idade', key: 'idade', align: 'start'},
-    {title: 'Telefone', key: 'telefone_1', align: 'start'},
-    {title: 'Nº Visitas', key: 'num_visitas', align: 'start'},
-    {title: 'Últimas Consultas', key: 'id_paciente', align: 'start'},
-    { title: 'Nova Consulta', key: 'action', align: 'start' }
-]);
+const headers = ref([{
+    key     : 'foto_perfil',
+    align   : 'start',
+    sortable: false
+}, {
+    title: 'Nome',
+    key  : 'nome',
+    align: 'start',
+    class: 'text--primary'
+}, {
+    title: 'Idade',
+    key  : 'idade',
+    align: 'start'
+}, {
+    title: 'Telefone',
+    key  : 'telefone_1',
+    align: 'start'
+}, {
+    title: 'Nº Visitas',
+    key  : 'num_visitas',
+    align: 'start'
+}, {
+    title: 'Últimas Consultas',
+    key  : 'id_paciente',
+    align: 'start'
+}, {
+    title: 'Nova Consulta',
+    key  : 'action',
+    align: 'start'
+}]);
 
 
 const getProfilePhoto = (path) => {
@@ -39,17 +59,23 @@ const getProfilePhoto = (path) => {
 
 
 const navigateToEditPage = (idPaciente) => {
-    router.push({ name: 'Paciente-Page', query: { id: idPaciente } });
+    router.push({
+        name : 'Paciente-Page',
+        query: {id: idPaciente}
+    });
 };
 
 
 const handleNew = () => {
-    router.push({ name: 'Paciente-Page' });
+    router.push({name: 'Paciente-Page'});
 }
 
 
 const createNewConsulta = (id_paciente) => {
-    router.push({ name: 'Consulta-Page', query: { id_paciente:  id_paciente } });
+    router.push({
+        name : 'Consulta-Page',
+        query: {id_paciente: id_paciente}
+    });
 }
 
 </script>
@@ -60,15 +86,14 @@ const createNewConsulta = (id_paciente) => {
                   subtitle="Centralizando Informações para Cuidado Integral"
                   @handleNew="handleNew">
 
-
         <v-card flat>
             <v-card-title class="d-flex align-center pe-2">
                 <v-spacer/>
-                <text-input
-                    v-model="search"
+                <v-text-field
                     label="Buscar"
                     type="text"
                     prependInnerIcon="fa-solid fa-search"
+                    v-model="search"
                 />
             </v-card-title>
 
@@ -82,19 +107,14 @@ const createNewConsulta = (id_paciente) => {
 
                 <!-- Coluna Imagem perfil -->
                 <template v-slot:[`item.foto_perfil`]="{ item }">
-                    <v-avatar size="55"
-                              class="ma-1">
-                        <img :src="getProfilePhoto(item.foto_perfil)"
-                             :alt="item.nome"
-                             class="fit-cover">
+                    <v-avatar size="55" class="ma-1">
+                        <img :src="getProfilePhoto(item.foto_perfil)" :alt="item.nome" class="fit-cover">
                     </v-avatar>
                 </template>
 
                 <!-- Coluna Nome -->
                 <template v-slot:[`item.nome`]="{ item }">
-                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id_paciente)">
-                        {{ item.nome }}
-                    </a>
+                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id_paciente)"> {{ item.nome }} </a>
                 </template>
 
                 <!-- Coluna Telefone -->
@@ -112,8 +132,6 @@ const createNewConsulta = (id_paciente) => {
                         Nova Consulta
                     </v-btn>
                 </template>
-
-
 
 
             </v-data-table>

@@ -1,6 +1,5 @@
 <script setup>
 import CardFormulario from "@/components/CardFormulario.vue";
-// import TextInput from '@/components/TextInput.vue';
 // import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
 import {serviceLoad} from "@/service/consulta";
@@ -8,7 +7,6 @@ import {getIdFromUrl, formatarTelefone, getOptionsAutocomplete} from "@/service/
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
 import defaultImagePath from "@/assets/no_image.png";
-import TextInput from "@/components/TextInput.vue";
 
 
 const router      = useRouter();
@@ -224,7 +222,7 @@ const removerPrescricaoMedicamento = (info, index) => {
     }
 }
 
-const removerPrescricaoSuplemento= (info, index) => {
+const removerPrescricaoSuplemento = (info, index) => {
     if (info.id_consulta_informacao_saude) {
         arrPrescricaoSuplemento[index].is_active = 0;
     } else {
@@ -265,9 +263,7 @@ const removerPrescricaoSuplemento= (info, index) => {
                     />
                 </v-row>
             </v-col>
-
         </v-row>
-
 
         <v-divider class="border-opacity-100 mt-2 mb-3" color="primary"/>
 
@@ -327,7 +323,7 @@ const removerPrescricaoSuplemento= (info, index) => {
                                             label="Medicamento"
                                             :items="optionsMedicamentos"
                                             v-model="med.id_medicamento"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <text-input
@@ -342,7 +338,7 @@ const removerPrescricaoSuplemento= (info, index) => {
                                             label="Frequência"
                                             :items="optionsFrequencia"
                                             v-model="med.id_frequencia"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pb-0">
@@ -350,7 +346,7 @@ const removerPrescricaoSuplemento= (info, index) => {
                                             label="Período"
                                             :items="optionsPeriodo"
                                             v-model="med.id_periodo"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
@@ -413,7 +409,7 @@ const removerPrescricaoSuplemento= (info, index) => {
                                             label="Frequência"
                                             :items="optionsFrequencia"
                                             v-model="sup.id_frequencia"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pb-0">
@@ -421,7 +417,7 @@ const removerPrescricaoSuplemento= (info, index) => {
                                             label="Período"
                                             :items="optionsPeriodo"
                                             v-model="sup.id_periodo"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
@@ -518,7 +514,7 @@ const removerPrescricaoSuplemento= (info, index) => {
                                         v-model="consulta.id_diagonostico_multiple"
                                         :chips="true"
                                         :multiple="true"
-                                    ></v-autocomplete>
+                                    />
                                 </v-col>
                             </div>
                         </div>
@@ -548,19 +544,19 @@ const removerPrescricaoSuplemento= (info, index) => {
                                     class="pb-0"
                                 >
 
-                                    <v-col xl="2" lg="2" md="2" sm="2" cols="2" class="scale-80 pt-2 pb-0">
+                                    <v-col xl="1" lg="1" md="1" sm="1" cols="3" class="scale-80 pt-2 pb-0">
                                         <v-btn icon x-small variant="elevated" @click="() => removerPrescricaoMedicamento(med, i)">
                                             <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
                                         </v-btn>
                                     </v-col>
 
 
-                                    <v-col cols="10" sm="6" md="6" lg="6" xl="6" class="pb-0">
+                                    <v-col cols="9" sm="7" md="7" lg="7" xl="7" class="pb-0">
                                         <v-autocomplete
                                             label="Medicamento"
                                             :items="optionsMedicamentos"
                                             v-model="med.id_medicamento"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <text-input
@@ -575,7 +571,7 @@ const removerPrescricaoSuplemento= (info, index) => {
                                             label="Frequência"
                                             :items="optionsFrequencia"
                                             v-model="med.id_frequencia"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pb-0">
@@ -583,7 +579,7 @@ const removerPrescricaoSuplemento= (info, index) => {
                                             label="Período"
                                             :items="optionsPeriodo"
                                             v-model="med.id_periodo"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
@@ -619,19 +615,19 @@ const removerPrescricaoSuplemento= (info, index) => {
                                     class="pb-0"
                                 >
 
-                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="scale-80 pt-2 pb-0">
+                                    <v-col xl="1" lg="1" md="1" sm="1" cols="3" class="scale-80 pt-2 pb-0">
                                         <v-btn icon x-small variant="elevated" @click="() => removerPrescricaoSuplemento(med, i)">
                                             <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
                                         </v-btn>
                                     </v-col>
 
 
-                                    <v-col cols="9" sm="6" md="6" lg="6" xl="6" class="pb-0">
+                                    <v-col cols="9" sm="7" md="7" lg="7" xl="7" class="pb-0">
                                         <v-autocomplete
                                             label="Medicamento"
                                             :items="optionsMedicamentos"
                                             v-model="med.id_medicamento"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <text-input
@@ -641,20 +637,20 @@ const removerPrescricaoSuplemento= (info, index) => {
                                         xl="4" lg="4" md="4"
                                     />
 
-                                    <v-col cols="9" sm="6" md="6" lg="6" xl="6" class="pb-0">
+                                    <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pb-0">
                                         <v-autocomplete
                                             label="Frequência"
                                             :items="optionsFrequencia"
                                             v-model="med.id_frequencia"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
-                                    <v-col cols="9" sm="6" md="6" lg="6" xl="6" class="pb-0">
+                                    <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pb-0">
                                         <v-autocomplete
                                             label="Período"
                                             :items="optionsPeriodo"
                                             v-model="med.id_periodo"
-                                        ></v-autocomplete>
+                                        />
                                     </v-col>
 
                                     <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>

@@ -1,26 +1,90 @@
 <script setup>
 import CardFormulario from "@/components/CardFormulario.vue";
-import TextInput from '@/components/TextInput.vue';
-import SelectInput from '@/components/SelectInput.vue';
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
 import {serviceSave, serviceLoad, getEnderecoByCep} from "@/service/paciente";
-import {getIdFromUrl, limparMascara, adicionarParametrosURL, verificarCamposObrigatorios} from "@/service/common/utils"
+import {
+    getIdFromUrl,
+    limparMascara,
+    adicionarParametrosURL,
+    verificarCamposObrigatorios,
+    getOptionsAutocomplete,
+    getMaskSettings
+} from "@/service/common/utils"
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
 
 
-const id = ref(getIdFromUrl());
+const id          = ref(getIdFromUrl());
 const cpfDisabled = ref(false);
-const router = useRouter();
+const router      = useRouter();
+
+const maskCelular = reactive(getMaskSettings({maskType: 'celular'}));
+const maskCPF     = reactive(getMaskSettings({maskType: 'cpf'}));
+const maskCEP     = reactive(getMaskSettings({maskType: 'cep'}));
+
+
+const optionsProfissao     = ref([]);
+const optionsPlanoSaude    = ref([]);
+const optionsEstadoCivil   = ref([]);
+const optionsSexo          = ref([]);
+const optionsEtnia         = ref([]);
+const optionsEscolariadade = ref([]);
+const optionsReligiao      = ref([]);
+const optionsUF            = ref([]);
+
 
 onMounted(async () => {
     loading.show()
 
+
+    const results = await Promise.all([getOptionsAutocomplete({
+        idColumn  : 'id_profissao',
+        descColumn: 'descricao',
+        tableName : 'profissao'
+    }), getOptionsAutocomplete({
+        idColumn  : 'id_plano_saude',
+        descColumn: 'descricao',
+        tableName : 'plano_saude'
+    }), getOptionsAutocomplete({
+        idColumn  : 'id_estado_civil',
+        descColumn: 'descricao',
+        tableName : 'estado_civil'
+    }), getOptionsAutocomplete({
+        idColumn  : 'id_sexo',
+        descColumn: 'descricao',
+        tableName : 'sexo'
+    }), getOptionsAutocomplete({
+        idColumn  : 'id_etnia',
+        descColumn: 'descricao',
+        tableName : 'etnia'
+    }), getOptionsAutocomplete({
+        idColumn  : 'id_escolaridade',
+        descColumn: 'descricao',
+        tableName : 'escolaridade'
+    }), getOptionsAutocomplete({
+        idColumn  : 'id_religiao',
+        descColumn: 'descricao',
+        tableName : 'religiao'
+    }), getOptionsAutocomplete({
+        idColumn  : 'id_uf',
+        descColumn: 'sigla',
+        tableName : 'uf'
+    })]);
+
+    optionsProfissao.value     = results[0];
+    optionsPlanoSaude.value    = results[1];
+    optionsEstadoCivil.value   = results[2];
+    optionsSexo.value          = results[3];
+    optionsEtnia.value         = results[4];
+    optionsEscolariadade.value = results[5];
+    optionsReligiao.value      = results[6];
+    optionsUF.value            = results[7];
+
     if (id.value > 0) {
         cpfDisabled.value = true;
-        const data = await serviceLoad(id.value);
+        const data        = await serviceLoad(id.value);
         console.log(data)
         Object.assign(paciente, data);
         if (data.endereco != null) {
@@ -35,41 +99,41 @@ onMounted(async () => {
 
 
 const paciente = reactive({
-    id_paciente: "",
-    nome: "",
-    sobrenome: "",
-    data_nascimento: "",
-    telefone_1: "",
-    telefone_2: "",
-    email: "",
-    cpf: "",
-    naturalidade: "",
-    nome_pai: "",
-    nome_mae: "",
-    nome_conjuge: "",
+    id_paciente       : "",
+    nome              : "",
+    sobrenome         : "",
+    data_nascimento   : "",
+    telefone_1        : "",
+    telefone_2        : "",
+    email             : "",
+    cpf               : "",
+    naturalidade      : "",
+    nome_pai          : "",
+    nome_mae          : "",
+    nome_conjuge      : "",
     numero_plano_saude: "",
-    indicacao: "",
-    observacao: "",
-    id_profissao: "",
-    id_plano_saude: "",
-    id_estado_civil: "",
-    id_sexo: "",
-    id_etnia: "",
-    id_escolaridade: "",
-    id_religiao: "",
-    foto_perfil: "",
-    endereco: []
+    indicacao         : "",
+    observacao        : "",
+    id_profissao      : "",
+    id_plano_saude    : "",
+    id_estado_civil   : "",
+    id_sexo           : "",
+    id_etnia          : "",
+    id_escolaridade   : "",
+    id_religiao       : "",
+    foto_perfil       : "",
+    endereco          : []
 });
 
 const endereco = reactive({
-    logradouro: "",
-    numero: "",
+    logradouro : "",
+    numero     : "",
     complemento: "",
-    bairro: "",
-    cidade: "",
-    id_uf: "",
-    cep: "",
-    referencia: ""
+    bairro     : "",
+    cidade     : "",
+    id_uf      : "",
+    cep        : "",
+    referencia : ""
 })
 
 
@@ -77,33 +141,31 @@ const handleSave = async () => {
     loading.show()
 
     if (endereco) {
-        endereco.cep = limparMascara(endereco.cep);
+        endereco.cep      = limparMascara(endereco.cep);
         paciente.endereco = [];
         paciente.endereco.push(endereco)
     }
 
-    paciente.cpf = limparMascara(paciente.cpf);
+    paciente.cpf        = limparMascara(paciente.cpf);
     paciente.telefone_1 = limparMascara(paciente.telefone_1);
     paciente.telefone_2 = limparMascara(paciente.telefone_2);
 
-
-    const camposObrigatorios = [{ nome: "Nome" }, { cpf: "CPF" }, { telefone_1: "Telefone" }];
+    const camposObrigatorios = [{nome: "Nome"}, {cpf: "CPF"}, {telefone_1: "Telefone"}];
 
     if (!verificarCamposObrigatorios(paciente, camposObrigatorios)) {
         loading.hide();
         return;
     }
 
-
     if (id.value > 0) {
-       await serviceSave(paciente, 'update');
+        await serviceSave(paciente, 'update');
     } else {
         const res = await serviceSave(paciente, 'insert');
-        id.value = res.id;
+        id.value  = res.id;
         if (id.value > 0) {
             paciente.id_paciente = res.id;
-            cpfDisabled.value = true;
-            adicionarParametrosURL({id : res.id});
+            cpfDisabled.value    = true;
+            adicionarParametrosURL({id: res.id});
         }
     }
 
@@ -112,11 +174,11 @@ const handleSave = async () => {
 
 
 const handleBack = () => {
-    router.push({ name: 'Paciente-List' });
+    router.push({name: 'Paciente-List'});
 };
 
 
-const handleAppendIconClick = async () => {
+const buscarEnderecoCEP = async () => {
     let respEndereco = {};
     if (endereco.cep.length >= 8) {
         respEndereco = await getEnderecoByCep(endereco.cep);
@@ -124,10 +186,15 @@ const handleAppendIconClick = async () => {
         setNotification("O CEP é invalido", "error");
     }
 
-    endereco.cep = respEndereco.cep;
+    const ufObjeto = optionsUF.value.find(option => option.label == respEndereco.uf);
+    if (ufObjeto) {
+        endereco.id_uf = ufObjeto.value;
+    }
+
+    endereco.cep        = respEndereco.cep;
     endereco.logradouro = respEndereco.logradouro;
-    endereco.bairro = respEndereco.bairro;
-    endereco.cidade = respEndereco.localidade;
+    endereco.bairro     = respEndereco.bairro;
+    endereco.cidade     = respEndereco.localidade;
 };
 
 </script>
@@ -139,190 +206,176 @@ const handleAppendIconClick = async () => {
                      @handleBack="handleBack">
 
         <v-row>
-            <v-col cols="12"
-                   sm="4"
-                   md="3"
-                   justify="center"
-                   align="center">
-
+            <v-col cols="12" sm="4" md="3" justify="center" align="center">
                 <AvatarImageInput v-model="paciente.foto_perfil"/>
             </v-col>
 
-            <v-col cols="12"
-                   sm="8"
-                   md="9">
-
-
+            <v-col cols="12" sm="8" md="9">
                 <v-row class="justify-end">
 
-                    <text-input
-                        v-model="paciente.nome"
-                        label="Nome*"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Nome"
+                            type="text"
+                            v-model="paciente.nome"
+                        />
+                    </v-col>
 
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Sobrenome"
+                            type="text"
+                            v-model="paciente.sobrenome"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.sobrenome"
-                        label="Sobrenome"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-autocomplete
+                            label="Sexo"
+                            :items="optionsSexo"
+                            v-model="paciente.id_sexo"
+                        />
+                    </v-col>
 
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Data de Nascimento"
+                            type="date"
+                            v-model="paciente.data_nascimento"
+                        />
+                    </v-col>
 
-                    <SelectInput
-                        label="Sexo"
-                        placeholder="Digite ou selecione o Sexo"
-                        idColumn="id_sexo"
-                        descColumn="descricao"
-                        tableName="sexo"
-                        :is_active="true"
-                        :multiple="false"
-                        v-model="paciente.id_sexo"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="CPF*"
+                            type="text"
+                            v-maska:[maskCPF]
+                            :disabled="cpfDisabled"
+                            v-model="paciente.cpf"
+                        />
+                    </v-col>
 
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Telefone 1"
+                            type="phone"
+                            v-maska:[maskCelular]
+                            v-model="paciente.telefone_1"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.data_nascimento"
-                        label="Data de Nascimento"
-                        type="date"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Telefone 2"
+                            type="phone"
+                            v-maska:[maskCelular]
+                            v-model="paciente.telefone_2"
+                        />
+                    </v-col>
 
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Email"
+                            type="email"
+                            v-model="paciente.email"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.cpf"
-                        label="CPF*"
-                        :disabled="cpfDisabled"
-                        type="text"
-                        mask="cpf"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Naturalidade"
+                            type="text"
+                            v-model="paciente.naturalidade"
+                        />
+                    </v-col>
 
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Nome do Conjuge"
+                            type="text"
+                            v-model="paciente.nome_conjuge"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.telefone_1"
-                        label="telefone 1"
-                        type="phone"
-                        :rules="['required']"
-                        mask="telefone"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Nome do Pai"
+                            type="text"
+                            v-model="paciente.nome_pai"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.telefone_2"
-                        label="telefone 2"
-                        mask="telefone"
-                        type="phone"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Nome da Mãe"
+                            type="text"
+                            v-model="paciente.nome_mae"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.email"
-                        label="Email"
-                        type="email"
-                        :rules="['email', 'required']"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Quem Indicou"
+                            type="text"
+                            v-model="paciente.indicacao"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.naturalidade"
-                        label="Naturalidade"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Nº Plano Saúde"
+                            type="text"
+                            v-model="paciente.numero_plano_saude"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.nome_conjuge"
-                        label="Nome do Conjuge"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-autocomplete
+                            label="Plano de Saúde"
+                            :items="optionsPlanoSaude"
+                            v-model="paciente.id_plano_saude"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.nome_pai"
-                        label="Nome do Pai"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-autocomplete
+                            label="Etnia"
+                            :items="optionsEtnia"
+                            v-model="paciente.id_etnia"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.nome_mae"
-                        label="Nome da Mãe"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-autocomplete
+                            label="Escolaridade"
+                            :items="optionsEscolariadade"
+                            v-model="paciente.id_escolaridade"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.indicacao"
-                        label="Quem Indicou"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-autocomplete
+                            label="Religião"
+                            :items="optionsReligiao"
+                            v-model="paciente.id_religiao"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="paciente.numero_plano_saude"
-                        label="Nº Plano Saúde"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-autocomplete
+                            label="Profissão"
+                            :items="optionsProfissao"
+                            v-model="paciente.id_profissao"
+                        />
+                    </v-col>
 
-                    <SelectInput
-                        label="Plano de Saúde"
-                        placeholder="Digite ou selecione uma Plano de Saúde"
-                        idColumn="id_plano_saude"
-                        descColumn="descricao"
-                        tableName="plano_saude"
-                        :is_active="true"
-                        :multiple="false"
-                        v-model="paciente.id_plano_saude"
-                    />
-
-                    <SelectInput
-                        label="Etnia"
-                        placeholder="Digite ou selecione uma Etnia"
-                        idColumn="id_etnia"
-                        descColumn="descricao"
-                        tableName="etnia"
-                        :is_active="true"
-                        :multiple="false"
-                        v-model="paciente.id_etnia"
-                    />
-
-                    <SelectInput
-                        label="Escolaridade"
-                        placeholder="Digite ou selecione uma Escolaridade"
-                        idColumn="id_escolaridade"
-                        descColumn="descricao"
-                        tableName="escolaridade"
-                        :is_active="true"
-                        :multiple="false"
-                        v-model="paciente.id_escolaridade"
-                    />
-
-
-                    <SelectInput
-                        label="Religião"
-                        placeholder="Digite ou selecione uma religião"
-                        idColumn="id_religiao"
-                        descColumn="descricao"
-                        tableName="religiao"
-                        :is_active="true"
-                        :multiple="false"
-                        v-model="paciente.id_religiao"
-                    />
-
-
-                    <SelectInput
-                        label="Profissão"
-                        placeholder="Digite ou selecione uma Profissão"
-                        idColumn="id_profissao"
-                        descColumn="descricao"
-                        tableName="profissao"
-                        :is_active="true"
-                        :multiple="false"
-                        v-model="paciente.id_profissao"
-                    />
-
-
-                    <SelectInput
-                        label="Estado Civil"
-                        placeholder="Digite ou selecione o Estado Civil"
-                        idColumn="id_estado_civil"
-                        descColumn="descricao"
-                        tableName="estado_civil"
-                        :is_active="true"
-                        :multiple="false"
-                        v-model="paciente.id_estado_civil"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-autocomplete
+                            label="Estado Civil"
+                            :items="optionsEstadoCivil"
+                            v-model="paciente.id_estado_civil"
+                        />
+                    </v-col>
 
                 </v-row>
             </v-col>
@@ -337,86 +390,89 @@ const handleAppendIconClick = async () => {
             </v-col>
 
             <v-col cols="12">
-
                 <v-row align="center">
                     <v-col cols="auto">
-                        <i class="fa fa-home fa-lg"
-                           aria-hidden="true"></i>
+                        <i class="fa fa-home fa-lg" aria-hidden="true"></i>
                     </v-col>
                     <v-col>
                         <span class="text-h6">Endereço</span>
                     </v-col>
                 </v-row>
-
-                <v-divider class="border-opacity-100"
-                           color="primary"/>
-
+                <v-divider class="border-opacity-100" color="primary"/>
             </v-col>
 
             <v-col cols="12">
                 <v-row>
 
-                    <text-input
-                        v-model="endereco.cep"
-                        label="CEP"
-                        type="text"
-                        appendInnerIcon="fa-solid fa-search"
-                        :rules="['required', 'cep']"
-                        mask="cep"
-                        @click:append-inner-icon="handleAppendIconClick"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="CEP"
+                            type="text"
+                            append-inner-icon="fa-solid fa-search"
+                            @click:appendInner="buscarEnderecoCEP"
+                            v-maska:[maskCEP]
+                            v-model="endereco.cep"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="endereco.logradouro"
-                        label="Rua"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Logradouro"
+                            type="text"
+                            v-model="endereco.logradouro"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="endereco.numero"
-                        label="Número"
-                        type="number"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Número"
+                            type="number"
+                            v-model="endereco.numero"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="endereco.complemento"
-                        label="Complemento"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Complemento"
+                            type="text"
+                            v-model="endereco.complemento"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="endereco.bairro"
-                        label="Bairro"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Bairro"
+                            type="text"
+                            v-model="endereco.bairro"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="endereco.cidade"
-                        label="Bairro"
-                        type="text"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Cidade"
+                            type="text"
+                            v-model="endereco.cidade"
+                        />
+                    </v-col>
 
-                    <SelectInput
-                        label="UF"
-                        placeholder="Digite ou selecione a UF"
-                        v-model="endereco.id_uf"
-                        idColumn="id_uf"
-                        descColumn="sigla"
-                        tableName="uf"
-                        :is_active="true"
-                        :multiple="false"
-                    />
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-autocomplete
+                            label="UF"
+                            :items="optionsUF"
+                            v-model="endereco.id_uf"
+                        />
+                    </v-col>
 
-                    <text-input
-                        v-model="endereco.referencia"
-                        label="Referência"
-                        type="text"
-                    />
-
+                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                        <v-text-field
+                            label="Referência"
+                            type="text"
+                            v-model="endereco.referencia"
+                        />
+                    </v-col>
 
                 </v-row>
             </v-col>
-
 
         </v-row>
     </card-formulario>

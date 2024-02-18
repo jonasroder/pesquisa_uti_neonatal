@@ -167,3 +167,30 @@ export const getOptionsAutocomplete = async ({ idColumn, descColumn, tableName, 
 		return [];
 	}
 };
+
+
+
+/**
+ * Retorna as configurações de máscara de input baseadas no tipo especificado.
+ * A função suporta múltiplos tipos de máscaras, como CPF, CNPJ, telefone, entre outros.
+ * Cada tipo de máscara é configurado para atender aos padrões brasileiros de formatação.
+ *
+ * @function getMaskSettings
+ * @param {Object} params - Objeto contendo o tipo de máscara desejado.
+ * @param {string} params.maskType - O tipo de máscara (ex: "cpf", "cnpj", "telefone").
+ * @returns {Object} - Um objeto contendo a máscara e configurações adicionais para o tipo especificado.
+ */
+export const getMaskSettings = ({ maskType }) => {
+	const masks = {
+		cpf: { mask: '###.###.###-##', eager: true },
+		cnpj: { mask: '##.###.###/####-##', eager: true },
+		telefone: { mask: '(##) ####-####', eager: false },
+		celular: { mask: '(##) #####-####', eager: false },
+		cep: { mask: '#####-###', eager: true }
+	};
+
+	const defaultMask = { mask: '', eager: false };
+
+	return masks[maskType] || defaultMask;
+};
+
