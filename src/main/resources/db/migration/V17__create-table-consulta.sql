@@ -6,5 +6,6 @@ CREATE TABLE consulta
     id_tipo_consulta BIGINT   NOT NULL,
     data_hora        DATETIME NOT NULL,
     observacoes      TEXT,
+    sintomas         TEXT,
     is_active        TINYINT DEFAULT 1
 );

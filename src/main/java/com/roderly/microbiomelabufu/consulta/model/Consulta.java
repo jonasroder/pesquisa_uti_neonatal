@@ -5,6 +5,7 @@ import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Table(name = "consulta")
 @Entity(name = "Consulta")
@@ -19,6 +20,7 @@ public class Consulta {
     private Long id_tipo_consulta;
     private LocalDateTime data_hora;
     private String observacoes;
+    private String sintomas;
     private Boolean is_active;
 
 
@@ -29,4 +31,11 @@ public class Consulta {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_paciente", referencedColumnName = "id_paciente")
     private Paciente paciente;
+
+    @OneToMany(mappedBy = "consulta")
+    private Set<ConsultaDiagnostico> consultaDiagnosticos;
+
+    @OneToMany(mappedBy = "consulta")
+    private Set<PacienteMedicamento> pacienteMedicamentos;
+
 }

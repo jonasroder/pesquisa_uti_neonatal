@@ -3,10 +3,11 @@ import CardFormulario from "@/components/CardFormulario.vue";
 // import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
 import {serviceLoad} from "@/service/consulta";
-import {getIdFromUrl, formatarTelefone, getOptionsAutocomplete} from "@/service/common/utils"
+import {getIdFromUrl, formatarTelefone, getOptionsAutocomplete, adicionarParametrosURL} from "@/service/common/utils"
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
 import defaultImagePath from "@/assets/no_image.png";
+import {serviceSave} from "@/service/consulta";
 
 
 const router      = useRouter();
@@ -64,7 +65,6 @@ onMounted(async () => {
 
     if (id_paciente.value > 0) {
         const data = await serviceLoad(id_paciente.value, id_consulta.value);
-        console.log(data)
         Object.assign(consulta, data);
     }
 
@@ -72,79 +72,83 @@ onMounted(async () => {
 });
 
 
-const arrMedicamentoUsoPaciente  = reactive([]);
-const arrSuplementoUsoPaciente   = reactive([]);
-const arrInformacaoSaudeTemplate = reactive([])
-const arrPrescricaoMedicamento   = reactive([])
-const arrPrescricaoSuplemento    = reactive([])
+const arrMedicamentoUsoPaciente = reactive([]);
+const arrSuplementoUsoPaciente  = reactive([]);
+const arrInformacaoSaude        = reactive([])
+const arrPrescricaoMedicamento  = reactive([])
+const arrPrescricaoSuplemento   = reactive([])
 
 const consulta = reactive({
-    id_paciente             : null,
-    id_consulta             : null,
-    foto_perfil             : null,
-    nome                    : null,
-    idade                   : null,
-    telefone_1              : null,
-    telefone_2              : null,
-    plano_saude             : null,
-    id_tipo_consulta        : null,
-    convenio                : null,
-    observacoes             : null,
-    sintomas                : null,
-    id_diagonostico_multiple: null
+    id_paciente              : id_paciente,
+    id_consulta              : id_consulta,
+    foto_perfil              : null,
+    nome                     : null,
+    idade                    : null,
+    telefone_1               : null,
+    telefone_2               : null,
+    plano_saude              : null,
+    id_tipo_consulta         : 1,
+    convenio                 : null,
+    observacoes              : null,
+    sintomas                 : null,
+    id_diagonostico_multiple : null,
+    arrMedicamentoUsoPaciente: [],
+    arrSuplementoUsoPaciente : [],
+    arrInformacaoSaude       : [],
+    arrPrescricaoMedicamento : [],
+    arrPrescricaoSuplemento  : [],
+    is_active                : 1,
 });
 
 
 const medicamentoUsoPacienteTemplate = {
     id_paciente_medicamento: null,
-    id_consulta            : null,
+    id_consulta            : id_consulta,
     id_medicamento         : null,
     dosagem                : null,
     id_frequencia          : null,
     id_periodo             : null,
-    is_active              : null,
+    is_active              : 1,
 }
 
 const suplementoUsoPacienteTemplate = {
     id_paciente_suplemento: null,
-    id_consulta           : null,
+    id_consulta           : id_consulta,
     id_suplemento         : null,
     dosagem               : null,
     id_frequencia         : null,
     id_periodo            : null,
-    is_active             : null,
+    is_active             : 1,
 }
 
 const informacaoSaudeTemplate = {
     id_consulta_informacao_saude: null,
-    id_consulta                 : null,
+    id_consulta                 : id_consulta,
     id_tipo_informacao_saude    : null,
     valor                       : null,
-    is_active                   : null,
+    is_active                   : 1,
 }
 
 const priscricaoMedicamentoTemplate = {
     id_prescricao_medicamento: null,
-    id_consulta              : null,
+    id_consulta              : id_consulta,
     id_medicamento           : null,
     dosagem                  : null,
     instrucoes               : null,
     id_frequencia            : null,
-    inicio_tratamento        : null,
-    fim_tratamento           : null,
-    is_active                : null
+    id_periodo               : null,
+    is_active                : 1
 }
 
 const priscricaoSuplementoTemplate = {
     id_prescricao_suplemento: null,
-    id_consulta             : null,
+    id_consulta             : id_consulta,
     id_suplemento           : null,
     dosagem                 : null,
     instrucoes              : null,
     id_frequencia           : null,
-    inicio_tratamento       : null,
-    fim_tratamento          : null,
-    is_active               : null
+    id_periodo              : null,
+    is_active               : 1
 }
 
 const addMedicamentoUsoPaciente = () => {
@@ -159,7 +163,7 @@ const addSuplementoUsoPaciente = () => {
 
 const addInformacaoSaude = () => {
     const novoInformacaoSaudeTemplate = {...informacaoSaudeTemplate};
-    arrInformacaoSaudeTemplate.push(novoInformacaoSaudeTemplate);
+    arrInformacaoSaude.push(novoInformacaoSaudeTemplate);
 };
 
 const addPrescricaoMedicamento = () => {
@@ -174,8 +178,36 @@ const addPrescricaoSuplemento = () => {
 
 const handleSave = async () => {
     loading.show()
+
     console.log(consulta);
-    console.log(arrMedicamentoUsoPaciente)
+
+    const data = {
+        id_paciente              : consulta.id_paciente,
+        id_consulta              : consulta.id_consulta,
+        id_tipo_consulta         : consulta.id_tipo_consulta,
+        observacoes              : consulta.observacoes,
+        sintomas                 : consulta.sintomas,
+        consultaDiagnostico      : consulta.id_diagonostico_multiple,
+        arrInformacaoSaude       : arrInformacaoSaude,
+        arrMedicamentoUsoPaciente: arrMedicamentoUsoPaciente,
+        arrSuplementoUsoPaciente : arrSuplementoUsoPaciente,
+        arrPrescricaoSuplemento  : arrPrescricaoSuplemento,
+        arrPrescricaoMedicamento : arrPrescricaoMedicamento,
+    }
+
+
+    if (id_consulta.value > 0) {
+        await serviceSave(data, 'update');
+    } else {
+        const res         = await serviceSave(data, 'insert');
+        id_consulta.value = res.id;
+        if (id_consulta.value > 0) {
+            consulta.id_consulta = res.id;
+            adicionarParametrosURL({id_paciente: res.id});
+        }
+    }
+
+
     loading.hide()
 };
 
@@ -208,9 +240,9 @@ const removerSuplementoPaciente = (sup, index) => {
 
 const removerInformacaoSaude = (info, index) => {
     if (info.id_consulta_informacao_saude) {
-        arrInformacaoSaudeTemplate[index].is_active = 0;
+        arrInformacaoSaude[index].is_active = 0;
     } else {
-        arrInformacaoSaudeTemplate.splice(index, 1);
+        arrInformacaoSaude.splice(index, 1);
     }
 }
 
@@ -245,7 +277,7 @@ const removerPrescricaoSuplemento = (info, index) => {
                 </v-avatar>
             </v-col>
 
-            <v-col cols="12" md="8" lg="8">
+            <v-col cols="12" md="4" lg="4">
                 <div class="text-h5 mb-2"><b>Paciente:</b> {{ consulta.nome }}</div>
                 <div class="text-subtitle-1 mb-2"><b>Idade:</b> {{ consulta.idade }} anos</div>
                 <div class="text-subtitle-1 mb-2">
@@ -254,13 +286,19 @@ const removerPrescricaoSuplemento = (info, index) => {
                 <div class="text-subtitle-1 mb-2"><b>Plano de Saúde:</b> {{ consulta.plano_saude }}</div>
             </v-col>
 
-            <v-col cols="12" md="2" lg="2">
-                <v-row class="justify-end mt-1">
-                    <v-autocomplete
-                        label="Tipo da Consulta"
-                        :items="optionsTipoConsulta"
-                        v-model="consulta.id_tipo_consulta"
-                    />
+            <v-col cols="12" md="3" lg="3">
+                <v-radio-group v-model="consulta.id_tipo_consulta" inline label="Tipo do Atendimento">
+                    <v-radio color="primary" label="Consulta" :value="1"></v-radio>
+                    <v-radio color="primary" label="Retorno" :value="2"></v-radio>
+                </v-radio-group>
+            </v-col>
+
+            <v-col cols="12" md="3" lg="3">
+                <v-row class="justify-end mr-2">
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addAtividadeFisica">Formulário Atividade Física</v-btn>
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addAlimentacao">Formulário Alimentação</v-btn>
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addSono">Formulário Sono</v-btn>
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addEscalaHamilton">Formulário Escala de Hamilton</v-btn>
                 </v-row>
             </v-col>
         </v-row>
@@ -282,8 +320,6 @@ const removerPrescricaoSuplemento = (info, index) => {
                             <div class="text-caption">
                                 <v-textarea
                                     label="Descrição"
-                                    variant="outlined"
-                                    color="primary"
                                     v-model="consulta.sintomas"
                                 />
                             </div>
@@ -326,12 +362,13 @@ const removerPrescricaoSuplemento = (info, index) => {
                                         />
                                     </v-col>
 
-                                    <text-input
-                                        v-model="med.dosagem"
-                                        label="Dose (mg/ml)"
-                                        type="number"
-                                        xl="4" lg="4" md="4"
-                                    />
+                                    <v-col cols="12" md="4" lg="4" xl="4" class="pb-0">
+                                        <v-text-field
+                                            label="Dose (mg/ml)"
+                                            type="text"
+                                            v-model="med.dosagem"
+                                        />
+                                    </v-col>
 
                                     <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pb-0">
                                         <v-autocomplete
@@ -397,12 +434,13 @@ const removerPrescricaoSuplemento = (info, index) => {
                                         />
                                     </v-col>
 
-                                    <text-input
-                                        v-model="sup.dosagem"
-                                        label="Dose (mg/ml)"
-                                        type="number"
-                                        xl="4" lg="4" md="4"
-                                    />
+                                    <v-col cols="12" md="4" lg="4" xl="4" class="pb-0">
+                                        <v-text-field
+                                            label="Dose (mg/ml)"
+                                            type="text"
+                                            v-model="sup.dosagem"
+                                        />
+                                    </v-col>
 
                                     <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pb-0">
                                         <v-autocomplete
@@ -454,7 +492,7 @@ const removerPrescricaoSuplemento = (info, index) => {
                             <div class="text-caption">
 
                                 <v-row
-                                    v-for="(info, i) in arrInformacaoSaudeTemplate.filter(item => item.is_active !== 0)"
+                                    v-for="(info, i) in arrInformacaoSaude.filter(item => item.is_active !== 0)"
                                     :key="`med-${i}`"
                                     class="pb-0"
                                 >
@@ -473,12 +511,13 @@ const removerPrescricaoSuplemento = (info, index) => {
                                         />
                                     </v-col>
 
-                                    <text-input
-                                        v-model="info.valor"
-                                        label="Valor"
-                                        type="text"
-                                        xl="4" lg="4" md="4"
-                                    />
+                                    <v-col cols="12" md="4" lg="4" xl="4" class="pb-0">
+                                        <v-text-field
+                                            label="Valor"
+                                            type="text"
+                                            v-model="info.valor"
+                                        />
+                                    </v-col>
 
                                     <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
 
@@ -513,7 +552,7 @@ const removerPrescricaoSuplemento = (info, index) => {
                                         :items="optionsDiagonostico"
                                         v-model="consulta.id_diagonostico_multiple"
                                         :chips="true"
-                                        :multiple="true"
+                                        multiple
                                     />
                                 </v-col>
                             </div>
@@ -524,7 +563,6 @@ const removerPrescricaoSuplemento = (info, index) => {
             </v-col>
 
             <v-divider class="border-opacity-100 mt-4 mb-3" color="primary"/>
-
 
             <v-col cols="12" md="6" lg="6">
                 <v-card class="mx-auto" variant="elevated">
@@ -559,12 +597,13 @@ const removerPrescricaoSuplemento = (info, index) => {
                                         />
                                     </v-col>
 
-                                    <text-input
-                                        v-model="med.dosagem"
-                                        label="Dose (mg/ml)"
-                                        type="number"
-                                        xl="4" lg="4" md="4"
-                                    />
+                                    <v-col cols="12" md="4" lg="4" xl="4" class="pb-0">
+                                        <v-text-field
+                                            label="Dose (mg/ml)"
+                                            type="text"
+                                            v-model="med.dosagem"
+                                        />
+                                    </v-col>
 
                                     <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pb-0">
                                         <v-autocomplete
@@ -579,6 +618,14 @@ const removerPrescricaoSuplemento = (info, index) => {
                                             label="Período"
                                             :items="optionsPeriodo"
                                             v-model="med.id_periodo"
+                                        />
+                                    </v-col>
+
+
+                                    <v-col cols="12" class="pb-0">
+                                        <v-textarea
+                                            label="Instruções"
+                                            v-model="med.instrucoes"
                                         />
                                     </v-col>
 
@@ -624,18 +671,19 @@ const removerPrescricaoSuplemento = (info, index) => {
 
                                     <v-col cols="9" sm="7" md="7" lg="7" xl="7" class="pb-0">
                                         <v-autocomplete
-                                            label="Medicamento"
-                                            :items="optionsMedicamentos"
-                                            v-model="med.id_medicamento"
+                                            label="Suplemento"
+                                            :items="optionsSuplemento"
+                                            v-model="med.id_suplemento"
                                         />
                                     </v-col>
 
-                                    <text-input
-                                        v-model="med.dosagem"
-                                        label="Dose (mg/ml)"
-                                        type="number"
-                                        xl="4" lg="4" md="4"
-                                    />
+                                    <v-col cols="12" md="4" lg="4" xl="4" class="pb-0">
+                                        <v-text-field
+                                            label="Dose (mg/ml)"
+                                            type="text"
+                                            v-model="med.dosagem"
+                                        />
+                                    </v-col>
 
                                     <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pb-0">
                                         <v-autocomplete
@@ -653,6 +701,13 @@ const removerPrescricaoSuplemento = (info, index) => {
                                         />
                                     </v-col>
 
+                                    <v-col cols="12" class="pb-0">
+                                        <v-textarea
+                                            label="Instruções"
+                                            v-model="med.instrucoes"
+                                        />
+                                    </v-col>
+
                                     <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
 
                                 </v-row>
@@ -665,6 +720,49 @@ const removerPrescricaoSuplemento = (info, index) => {
                         </v-btn>
                     </v-card-actions>
 
+                </v-card>
+            </v-col>
+
+            <v-divider class="border-opacity-100 mt-4 mb-3" color="primary"/>
+
+            <v-col cols="12" md="6" lg="6">
+                <v-card class="mx-auto" variant="elevated">
+                    <v-card-item>
+                        <div>
+                            <div class="text-h6 mb-1">
+                                Observações Gerais
+                            </div>
+
+                            <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
+
+                            <div class="text-caption">
+                                <v-textarea
+                                    label="Observações"
+                                    v-model="consulta.observacoes"
+                                />
+                            </div>
+                        </div>
+                    </v-card-item>
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" md="6" lg="6">
+                <v-card class="mx-auto" variant="elevated">
+                    <v-card-item>
+                        <div>
+                            <div class="text-h6 mb-1">
+                                Anexos
+                            </div>
+
+                            <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
+
+                        </div>
+                    </v-card-item>
+                    <v-card-actions>
+                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="adicionarAnexo">
+                            Adicionar
+                        </v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-col>
 

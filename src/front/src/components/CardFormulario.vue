@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-row justify="center" align="center"  class="d-flex  pa-0 fill-height border border-sm border-opacity-100 border-barrasSperior rounded" >
+        <v-row justify="center" align="center" class="d-flex  pa-0 fill-height border border-sm border-opacity-100 border-barrasSperior rounded">
             <v-col cols="12">
                 <v-card>
                     <v-row class="mb-2">
@@ -37,12 +37,12 @@
 import {defineProps} from 'vue';
 
 defineProps({
-    title: {
-        type: String,
+    title   : {
+        type    : String,
         required: true
     },
     subtitle: {
-        type: String,
+        type   : String,
         default: ''
     }
 });

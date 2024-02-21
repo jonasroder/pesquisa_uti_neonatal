@@ -62,7 +62,7 @@ public class PacienteController {
     @GetMapping("/load/{id}")
     public ResponseEntity<PacienteCompletoResponse> getPessoaComEndereco(@PathVariable Long id) {
         Tuple tuple = pacienteRepository.findPessoaWithImageProfile(id)
-                .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado com ID: " + id));
 
 
         Paciente paciente = tuple.get(0, Paciente.class);
