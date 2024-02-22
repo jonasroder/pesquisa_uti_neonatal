@@ -27,4 +27,10 @@ public class Medicamento {
 
     @OneToMany(mappedBy = "medicamento")
     private Set<PacienteMedicamento> pacienteMedicamentos;;
+
+
+
+    public Medicamento(Long id_medicamento) {
+        this.id_medicamento = id_medicamento;
+    }
 }

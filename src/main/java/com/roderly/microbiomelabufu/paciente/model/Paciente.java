@@ -48,4 +48,9 @@ public class Paciente {
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
 
+
+    public Paciente(Long id_paciente) {
+        this.id_paciente = id_paciente;
+    }
+
 }

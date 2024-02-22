@@ -1,4 +1,4 @@
-package com.roderly.microbiomelabufu.dictionaries.model;
+package com.roderly.microbiomelabufu.cadastros_gerais.periodo.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,17 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "plano_saude")
-@Entity(name = "Plano_saude")
+@Table(name = "periodo")
+@Entity(name = "Periodo")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Plano_saude {
+public class Periodo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long id_plano_saude;
+    private Long id_periodo;
     private String descricao;
-    private boolean is_active;
+    private Boolean is_active;
+
+    public Periodo(Long id_periodo) {
+        this.id_periodo = id_periodo;
+    }
 }

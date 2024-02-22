@@ -4,24 +4,23 @@ package com.roderly.microbiomelabufu.consulta.model;
 import com.roderly.microbiomelabufu.cadastros_gerais.frequencia.model.Frequencia;
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.model.Medicamento;
 import com.roderly.microbiomelabufu.cadastros_gerais.periodo.model.Periodo;
+import com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model.Suplemento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
-@Table(name = "paciente_medicamento")
-@Entity(name = "PacienteMedicamento")
+@Table(name = "paciente_suplemento")
+@Entity(name = "PacienteSuplemento")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PacienteMedicamento {
+public class PacienteSuplemento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_paciente_medicamento;
+    private Long id_paciente_suplemento;
     private String dosagem;
     private Boolean is_active;
 
@@ -30,8 +29,8 @@ public class PacienteMedicamento {
     private Consulta consulta;
 
     @ManyToOne
-    @JoinColumn(name = "id_medicamento", referencedColumnName = "id_medicamento")
-    private Medicamento medicamento;
+    @JoinColumn(name = "id_suplemento", referencedColumnName = "id_suplemento")
+    private Suplemento suplemento;
 
     @ManyToOne
     @JoinColumn(name = "id_frequencia", referencedColumnName = "id_frequencia")

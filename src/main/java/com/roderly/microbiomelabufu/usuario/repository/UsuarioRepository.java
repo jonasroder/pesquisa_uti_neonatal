@@ -1,6 +1,6 @@
-package com.roderly.microbiomelabufu.login.repository;
+package com.roderly.microbiomelabufu.usuario.repository;
 
-import com.roderly.microbiomelabufu.login.model.Usuario;
+import com.roderly.microbiomelabufu.usuario.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;

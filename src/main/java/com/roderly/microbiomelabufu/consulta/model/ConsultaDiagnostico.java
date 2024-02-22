@@ -1,6 +1,6 @@
 package com.roderly.microbiomelabufu.consulta.model;
 
-import com.roderly.microbiomelabufu.diagnostico.model.Diagnostico;
+import com.roderly.microbiomelabufu.cadastros_gerais.diagnostico.model.Diagnostico;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

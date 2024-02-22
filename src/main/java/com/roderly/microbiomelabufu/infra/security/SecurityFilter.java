@@ -1,7 +1,7 @@
 package com.roderly.microbiomelabufu.infra.security;
 
 import com.roderly.microbiomelabufu.infra.GlobalExceptionHandler;
-import com.roderly.microbiomelabufu.login.repository.UsuarioRepository;
+import com.roderly.microbiomelabufu.usuario.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

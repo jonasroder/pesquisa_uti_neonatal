@@ -1,6 +1,6 @@
 package com.roderly.microbiomelabufu.login.service;
 
-import com.roderly.microbiomelabufu.login.repository.UsuarioRepository;
+import com.roderly.microbiomelabufu.usuario.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

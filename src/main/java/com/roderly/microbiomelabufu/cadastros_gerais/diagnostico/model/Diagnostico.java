@@ -1,4 +1,4 @@
-package com.roderly.microbiomelabufu.diagnostico.model;
+package com.roderly.microbiomelabufu.cadastros_gerais.diagnostico.model;
 
 import com.roderly.microbiomelabufu.consulta.model.ConsultaDiagnostico;
 import jakarta.persistence.*;
@@ -25,5 +25,10 @@ public class Diagnostico {
 
     @OneToMany(mappedBy = "diagnostico")
     private Set<ConsultaDiagnostico> consultaDiagnosticos;
+
+
+    public Diagnostico(Long id_diagnostico) {
+        this.id_diagnostico = id_diagnostico;
+    }
 
 }

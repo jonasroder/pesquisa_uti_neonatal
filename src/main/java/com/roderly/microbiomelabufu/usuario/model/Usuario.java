@@ -1,11 +1,8 @@
-package com.roderly.microbiomelabufu.login.model;
+package com.roderly.microbiomelabufu.usuario.model;
 
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,9 +12,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Entity(name = "Usuario")
 @Table(name = "usuario")
+@Entity(name = "Usuario")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -25,21 +23,17 @@ public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_usuario;
+    private Long id_tipo_usuario;
     private String usuario;
     private String senha;
     private String nome_completo;
     private String telefone_1;
     private String telefone_2;
     private String cpf;
+    private Boolean is_active;
 
     @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Consulta> consultas;
-
-    public Usuario(String usuario, String encryptedPassword) {
-        this.usuario = usuario;
-        this.senha = encryptedPassword;
-    }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

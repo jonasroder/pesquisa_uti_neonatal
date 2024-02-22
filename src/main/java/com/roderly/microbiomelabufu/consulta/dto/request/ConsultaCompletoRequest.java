@@ -8,7 +8,7 @@ public record ConsultaCompletoRequest(
         Long id_tipo_consulta,
         String observacoes,
         String sintomas,
-        List<Long> consultaDiagnostico,
+        List<ConsultaDiagnosticoRequest> arrConsultaDiagnostico,
         List<PacienteMedicamentoRequest> arrMedicamentoUsoPaciente,
         List<PacienteSuplementoRequest> arrSuplementoUsoPaciente,
         List<ConsultaInformacaoSaudeRequest> arrInformacaoSaude,

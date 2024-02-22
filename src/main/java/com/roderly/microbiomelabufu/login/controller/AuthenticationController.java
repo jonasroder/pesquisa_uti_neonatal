@@ -4,9 +4,9 @@ package com.roderly.microbiomelabufu.login.controller;
 import com.roderly.microbiomelabufu.infra.security.TokenService;
 import com.roderly.microbiomelabufu.login.dto.AuthenticationDTO;
 import com.roderly.microbiomelabufu.login.dto.LoginResponseDTO;
-import com.roderly.microbiomelabufu.login.dto.RegisterDTO;
-import com.roderly.microbiomelabufu.login.model.Usuario;
-import com.roderly.microbiomelabufu.login.repository.UsuarioRepository;
+import com.roderly.microbiomelabufu.usuario.dto.request.UsuarioCompletoRequest;
+import com.roderly.microbiomelabufu.usuario.model.Usuario;
+import com.roderly.microbiomelabufu.usuario.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,6 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UsuarioRepository repository;
-
-    @Autowired
     private TokenService tokenService;
 
     @PostMapping("/login")
@@ -37,18 +34,6 @@ public class AuthenticationController {
 
     }
 
-    @PostMapping("/register")
-    public ResponseEntity register (@RequestBody @Valid RegisterDTO data) {
-
-        if(this.repository.findByUsuario(data.usuario()) != null) return ResponseEntity.badRequest().body("Nome de Usuário Não Disponível!");
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
-        Usuario novoUsuraio = new Usuario(data.usuario(), encryptedPassword);
-
-        this.repository.save(novoUsuraio);
-
-        return ResponseEntity.ok().build();
-    }
 
 
 }

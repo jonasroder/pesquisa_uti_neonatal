@@ -74,9 +74,11 @@ onMounted(async () => {
 
 const arrMedicamentoUsoPaciente = reactive([]);
 const arrSuplementoUsoPaciente  = reactive([]);
-const arrInformacaoSaude        = reactive([])
-const arrPrescricaoMedicamento  = reactive([])
-const arrPrescricaoSuplemento   = reactive([])
+const arrInformacaoSaude        = reactive([]);
+const arrPrescricaoMedicamento  = reactive([]);
+const arrPrescricaoSuplemento   = reactive([]);
+const arrConsultaDiagnostico    = reactive([]);
+
 
 const consulta = reactive({
     id_paciente              : id_paciente,
@@ -151,6 +153,13 @@ const priscricaoSuplementoTemplate = {
     is_active               : 1
 }
 
+const consultaDiagnosticoTemplate = {
+    id_consulta_diagnostico: null,
+    id_consulta            : id_consulta,
+    id_diagnostico         : null,
+    is_active              : 1
+}
+
 const addMedicamentoUsoPaciente = () => {
     const novoMedicamentoUsoPaciente = {...medicamentoUsoPacienteTemplate};
     arrMedicamentoUsoPaciente.push(novoMedicamentoUsoPaciente);
@@ -176,6 +185,11 @@ const addPrescricaoSuplemento = () => {
     arrPrescricaoSuplemento.push(novaPrescricaoSuplemento);
 };
 
+const addConsultaDiagnostico = () => {
+    const novoDiagnostico = {...consultaDiagnosticoTemplate};
+    arrConsultaDiagnostico.push(novoDiagnostico);
+};
+
 const handleSave = async () => {
     loading.show()
 
@@ -187,7 +201,7 @@ const handleSave = async () => {
         id_tipo_consulta         : consulta.id_tipo_consulta,
         observacoes              : consulta.observacoes,
         sintomas                 : consulta.sintomas,
-        consultaDiagnostico      : consulta.id_diagonostico_multiple,
+        arrConsultaDiagnostico   : arrConsultaDiagnostico,
         arrInformacaoSaude       : arrInformacaoSaude,
         arrMedicamentoUsoPaciente: arrMedicamentoUsoPaciente,
         arrSuplementoUsoPaciente : arrSuplementoUsoPaciente,
@@ -230,6 +244,7 @@ const removerMedicamentoPaciente = (med, index) => {
     }
 }
 
+
 const removerSuplementoPaciente = (sup, index) => {
     if (sup.id_paciente_suplemento) {
         arrSuplementoUsoPaciente[index].is_active = 0;
@@ -238,6 +253,7 @@ const removerSuplementoPaciente = (sup, index) => {
     }
 }
 
+
 const removerInformacaoSaude = (info, index) => {
     if (info.id_consulta_informacao_saude) {
         arrInformacaoSaude[index].is_active = 0;
@@ -245,6 +261,7 @@ const removerInformacaoSaude = (info, index) => {
         arrInformacaoSaude.splice(index, 1);
     }
 }
+
 
 const removerPrescricaoMedicamento = (info, index) => {
     if (info.id_consulta_informacao_saude) {
@@ -259,6 +276,15 @@ const removerPrescricaoSuplemento = (info, index) => {
         arrPrescricaoSuplemento[index].is_active = 0;
     } else {
         arrPrescricaoSuplemento.splice(index, 1);
+    }
+}
+
+
+const removerConsultaDiagnostico = (info, index) => {
+    if (info.id_consulta_diagnostico) {
+        arrConsultaDiagnostico[index].is_active = 0;
+    } else {
+        arrConsultaDiagnostico.splice(index, 1);
     }
 }
 
@@ -546,21 +572,43 @@ const removerPrescricaoSuplemento = (info, index) => {
                             <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
 
                             <div class="text-caption">
-                                <v-col class="pb-0">
-                                    <v-autocomplete
-                                        label="Diagnósticos"
-                                        :items="optionsDiagonostico"
-                                        v-model="consulta.id_diagonostico_multiple"
-                                        :chips="true"
-                                        multiple
-                                    />
-                                </v-col>
+
+                                <v-row
+                                    v-for="(info, i) in arrConsultaDiagnostico.filter(item => item.is_active !== 0)"
+                                    :key="`med-${i}`"
+                                    class="pb-0"
+                                >
+
+                                    <v-col xl="1" lg="1" md="1" sm="2" cols="3" class="scale-80 pt-2 pb-0">
+                                        <v-btn icon x-small variant="elevated" @click="() => removerConsultaDiagnostico(info, i)">
+                                            <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
+                                        </v-btn>
+                                    </v-col>
+
+                                    <v-col cols="9" sm="10" md="11" lg="11" xl="11" class="pb-0">
+                                        <v-autocomplete
+                                            label="Diagnóstico"
+                                            :items="optionsDiagonostico"
+                                            v-model="info.id_diagnostico"
+                                        />
+                                    </v-col>
+
+                                    <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
+
+                                </v-row>
                             </div>
                         </div>
                     </v-card-item>
+                    <v-card-actions>
+                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addConsultaDiagnostico">
+                            Adicionar
+                        </v-btn>
+                    </v-card-actions>
 
                 </v-card>
             </v-col>
+
+
 
             <v-divider class="border-opacity-100 mt-4 mb-3" color="primary"/>
 

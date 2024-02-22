@@ -1,6 +1,6 @@
 package com.roderly.microbiomelabufu.consulta.model;
 
-import com.roderly.microbiomelabufu.login.model.Usuario;
+import com.roderly.microbiomelabufu.usuario.model.Usuario;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
 import lombok.*;
