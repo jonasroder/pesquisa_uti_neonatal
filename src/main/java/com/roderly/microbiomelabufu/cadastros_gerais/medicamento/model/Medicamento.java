@@ -1,6 +1,7 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.medicamento.model;
 
 import com.roderly.microbiomelabufu.consulta.model.PacienteMedicamento;
+import com.roderly.microbiomelabufu.consulta.model.PrescricaoMedicamento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,10 @@ public class Medicamento {
     private Boolean is_active;
 
     @OneToMany(mappedBy = "medicamento")
-    private Set<PacienteMedicamento> pacienteMedicamentos;;
+    private Set<PacienteMedicamento> pacienteMedicamentos;
+
+    @OneToMany(mappedBy = "medicamento")
+    private Set<PrescricaoMedicamento> prescricaoMedicamentos;
 
 
 

@@ -3,6 +3,7 @@ package com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model;
 
 import com.roderly.microbiomelabufu.consulta.model.PacienteMedicamento;
 import com.roderly.microbiomelabufu.consulta.model.PacienteSuplemento;
+import com.roderly.microbiomelabufu.consulta.model.PrescricaoSuplemento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,9 @@ public class Suplemento {
 
     @OneToMany(mappedBy = "suplemento")
     private Set<PacienteSuplemento> pacienteSuplementos;
+
+    @OneToMany(mappedBy = "suplemento")
+    private Set<PrescricaoSuplemento> prescricaoSuplementos;
 
 
     public Suplemento(Long id_suplemento){
