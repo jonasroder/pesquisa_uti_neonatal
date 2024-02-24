@@ -1,4 +1,4 @@
-CREATE TABLE consulta_diagonostico
+CREATE TABLE consulta_diagnostico
 (
     id_consulta_diagnostico BIGINT AUTO_INCREMENT PRIMARY KEY,
     id_consulta             BIGINT,

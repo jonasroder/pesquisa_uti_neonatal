@@ -6,10 +6,7 @@ import com.roderly.microbiomelabufu.cadastros_gerais.periodo.model.Periodo;
 import com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model.Suplemento;
 import com.roderly.microbiomelabufu.cadastros_gerais.tipo_informacao_saude.model.TipoInformacaoSaude;
 import com.roderly.microbiomelabufu.consulta.dto.request.*;
-import com.roderly.microbiomelabufu.consulta.dto.response.ConsultaInformacaoSaudeResponse;
-import com.roderly.microbiomelabufu.consulta.dto.response.PacienteConsultaResponse;
-import com.roderly.microbiomelabufu.consulta.dto.response.PacienteMedicamentoResponse;
-import com.roderly.microbiomelabufu.consulta.dto.response.PacienteSuplementoResponse;
+import com.roderly.microbiomelabufu.consulta.dto.response.*;
 import com.roderly.microbiomelabufu.consulta.model.*;
 import com.roderly.microbiomelabufu.cadastros_gerais.diagnostico.model.Diagnostico;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
@@ -159,6 +156,17 @@ public class ConsultaMapper {
     }
 
 
+    public static ConsultaResponse consutaToConsultaResponse(Consulta consulta){
+        return new ConsultaResponse(
+                consulta.getId_consulta(),
+                consulta.getId_tipo_consulta(),
+                consulta.getSintomas(),
+                consulta.getObservacoes(),
+                consulta.getIs_active()
+        );
+    }
+
+
     public static Set<PacienteMedicamentoResponse> pacienteMedicamentoToPacienteMedicamentoResponse(Set<PacienteMedicamento> pacienteMedicamentos) {
         return pacienteMedicamentos.stream().map(pacienteMedicamento -> {
             return new PacienteMedicamentoResponse(
@@ -201,5 +209,48 @@ public class ConsultaMapper {
         }).collect(Collectors.toSet());
     }
 
+
+    public static Set<ConsultaDiagnosticoResponse> consultaDiagnosticoToConsutoaDiagnosticoResponse(Set<ConsultaDiagnostico> consultaDiagnosticos) {
+        return consultaDiagnosticos.stream().map(consultaDiagnostico -> {
+            return new ConsultaDiagnosticoResponse(
+                    consultaDiagnostico.getId_consulta_diagnostico(),
+                    consultaDiagnostico.getConsulta() != null ? consultaDiagnostico.getConsulta().getId_consulta() : null,
+                    consultaDiagnostico.getDiagnostico() != null ? consultaDiagnostico.getDiagnostico().getId_diagnostico() : null,
+                    consultaDiagnostico.getIs_active()
+            );
+        }).collect(Collectors.toSet());
+    }
+
+
+    public static Set<PrescricaoMedicamentoResponse> prescricaoMedicamentoToPrescricaoMedicamentoResponse(Set<PrescricaoMedicamento> prescricaoMedicamentos){
+        return prescricaoMedicamentos.stream().map(prescricaoMedicamento -> {
+            return new PrescricaoMedicamentoResponse(
+                    prescricaoMedicamento.getId_prescricao_medicamento(),
+                    prescricaoMedicamento.getConsulta() != null ? prescricaoMedicamento.getConsulta().getId_consulta() : null,
+                    prescricaoMedicamento.getMedicamento() != null ? prescricaoMedicamento.getMedicamento().getId_medicamento() : null,
+                    prescricaoMedicamento.getDosagem(),
+                    prescricaoMedicamento.getInstrucoes(),
+                    prescricaoMedicamento.getFrequencia() != null ? prescricaoMedicamento.getFrequencia().getId_frequencia() : null,
+                    prescricaoMedicamento.getPeriodo() != null ? prescricaoMedicamento.getPeriodo().getId_periodo() : null,
+                    prescricaoMedicamento.getIs_active()
+            );
+        }).collect(Collectors.toSet());
+    }
+
+
+    public static Set<PrescricaoSuplementoResponse> prescricaoSuplementoToPrescricaoSuplementoResponse(Set<PrescricaoSuplemento> prescricaoSuplementos){
+        return prescricaoSuplementos.stream().map(prescricaoSuplementoResponse -> {
+            return new PrescricaoSuplementoResponse(
+                    prescricaoSuplementoResponse.getId_prescricao_suplemento(),
+                    prescricaoSuplementoResponse.getConsulta() != null ? prescricaoSuplementoResponse.getConsulta().getId_consulta() : null,
+                    prescricaoSuplementoResponse.getSuplemento() != null ? prescricaoSuplementoResponse.getSuplemento().getId_suplemento() : null,
+                    prescricaoSuplementoResponse.getDosagem(),
+                    prescricaoSuplementoResponse.getInstrucoes(),
+                    prescricaoSuplementoResponse.getFrequencia() != null ? prescricaoSuplementoResponse.getFrequencia().getId_frequencia() : null,
+                    prescricaoSuplementoResponse.getPeriodo() != null ? prescricaoSuplementoResponse.getPeriodo().getId_periodo() : null,
+                    prescricaoSuplementoResponse.getIs_active()
+            );
+        }).collect(Collectors.toSet());
+    }
 
 }

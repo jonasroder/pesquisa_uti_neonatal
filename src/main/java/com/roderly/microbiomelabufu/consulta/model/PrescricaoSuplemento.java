@@ -10,13 +10,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
-@Table(name = "prescricao_suplemento")
-@Entity(name = "PrescricaoSuplemento")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "prescricao_suplemento")
+@Entity(name = "PrescricaoSuplemento")
 public class PrescricaoSuplemento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

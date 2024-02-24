@@ -21,23 +21,22 @@ const optionsFrequencia          = ref([]);
 const optionsTipoConsulta        = ref([]);
 const optionsDiagonostico        = ref([]);
 
+
 onMounted(async () => {
     loading.show()
 
-    const results = await getAutoCompleteOptions();
-
-    optionsMedicamentos.value        = results[0];
-    optionsSuplemento.value          = results[1];
-    optionsTipoInformacaoSaude.value = results[2];
-    optionsPeriodo.value             = results[3];
-    optionsFrequencia.value          = results[4];
-    optionsTipoConsulta.value        = results[5];
-    optionsDiagonostico.value        = results[6];
+    await getAutoCompleteOptions();
 
     if (id_paciente.value > 0) {
         const data = await serviceLoad(id_paciente.value, id_consulta.value);
-        Object.assign(consulta, data.pacienteConsultaResponse);
+        Object.assign(consulta, data.consultaResponse);
+        Object.assign(paciente, data.pacienteConsultaResponse);
         Object.assign(arrMedicamentoUsoPaciente, data.pacienteMedicamentos);
+        Object.assign(arrSuplementoUsoPaciente, data.pacienteSuplementos);
+        Object.assign(arrInformacaoSaude, data.consultaInformacoesSaude);
+        Object.assign(arrConsultaDiagnostico, data.consultaDiagnosticos);
+        Object.assign(arrPrescricaoMedicamento, data.prescricaoMedicamentos);
+        Object.assign(arrPrescricaoSuplemento, data.prescricaoSuplementos);
     }
 
     loading.hide()
@@ -53,7 +52,7 @@ const arrConsultaDiagnostico    = reactive([]);
 
 
 const getAutoCompleteOptions = async () => {
-    return await Promise.all([getOptionsAutocomplete({
+    const results = await Promise.all([getOptionsAutocomplete({
         idColumn  : 'id_medicamento',
         descColumn: 'nome',
         tableName : 'medicamento'
@@ -81,32 +80,35 @@ const getAutoCompleteOptions = async () => {
         idColumn  : 'id_diagnostico',
         descColumn: 'CONCAT(nome, IFNULL(CONCAT(" (cid: ", codigo_cid, ")"), ""))',
         tableName : 'diagnostico'
-    }),]);
+    }),])
+
+    optionsMedicamentos.value        = results[0];
+    optionsSuplemento.value          = results[1];
+    optionsTipoInformacaoSaude.value = results[2];
+    optionsPeriodo.value             = results[3];
+    optionsFrequencia.value          = results[4];
+    optionsTipoConsulta.value        = results[5];
+    optionsDiagonostico.value        = results[6];
 }
 
-
-const consulta = reactive({
-    id_paciente              : id_paciente,
-    id_consulta              : id_consulta,
-    foto_perfil              : null,
-    nome                     : null,
-    idade                    : null,
-    telefone_1               : null,
-    telefone_2               : null,
-    plano_saude              : null,
-    id_tipo_consulta         : 1,
-    convenio                 : null,
-    observacoes              : null,
-    sintomas                 : null,
-    id_diagonostico_multiple : null,
-    arrMedicamentoUsoPaciente: [],
-    arrSuplementoUsoPaciente : [],
-    arrInformacaoSaude       : [],
-    arrPrescricaoMedicamento : [],
-    arrPrescricaoSuplemento  : [],
-    is_active                : 1,
+const paciente = reactive({
+    id_paciente: id_paciente,
+    foto_perfil: null,
+    nome       : null,
+    idade      : null,
+    telefone_1 : null,
+    telefone_2 : null,
+    plano_saude: null,
 });
 
+const consulta = reactive({
+    id_consulta     : id_consulta,
+    id_tipo_consulta: 1,
+    convenio        : null,
+    observacoes     : null,
+    sintomas        : null,
+    is_active       : 1,
+});
 
 const medicamentoUsoPacienteTemplate = {
     id_paciente_medicamento: null,
@@ -201,7 +203,7 @@ const handleSave = async () => {
     console.log(consulta);
 
     const data = {
-        id_paciente              : consulta.id_paciente,
+        id_paciente              : paciente.id_paciente,
         id_consulta              : consulta.id_consulta,
         id_tipo_consulta         : consulta.id_tipo_consulta,
         observacoes              : consulta.observacoes,
@@ -222,8 +224,10 @@ const handleSave = async () => {
         id_consulta.value = res.id;
         if (id_consulta.value > 0) {
             consulta.id_consulta = res.id;
-            debugger
-            adicionarParametrosURL({id_paciente:id_paciente, id_consulta: res.id});
+            adicionarParametrosURL({
+                id_paciente: id_paciente.value,
+                id_consulta: res.id
+            });
         }
     }
 
@@ -305,17 +309,17 @@ const removerConsultaDiagnostico = (info, index) => {
         <v-row>
             <v-col cols="12" md="3" lg="2" class="d-flex justify-center align-center">
                 <v-avatar size="120" class="ma-1">
-                    <img :src="getProfilePhoto(consulta.foto_perfil)" class="fit-cover">
+                    <img :src="getProfilePhoto(paciente.foto_perfil)" class="fit-cover">
                 </v-avatar>
             </v-col>
 
             <v-col cols="12" md="4" lg="4">
-                <div class="text-h5 mb-2"><b>Paciente:</b> {{ consulta.nome }}</div>
-                <div class="text-subtitle-1 mb-2"><b>Idade:</b> {{ consulta.idade }} anos</div>
+                <div class="text-h5 mb-2"><b>Paciente:</b> {{ paciente.nome }}</div>
+                <div class="text-subtitle-1 mb-2"><b>Idade:</b> {{ paciente.idade }} anos</div>
                 <div class="text-subtitle-1 mb-2">
-                    <b>Telefone:</b> {{ formatarTelefone(consulta.telefone_1) }} / {{ formatarTelefone(consulta.telefone_2) }}
+                    <b>Telefone:</b> {{ formatarTelefone(paciente.telefone_1) }} / {{ formatarTelefone(paciente.telefone_2) }}
                 </div>
-                <div class="text-subtitle-1 mb-2"><b>Plano de Saúde:</b> {{ consulta.plano_saude }}</div>
+                <div class="text-subtitle-1 mb-2"><b>Plano de Saúde:</b> {{ paciente.plano_saude }}</div>
             </v-col>
 
             <v-col cols="12" md="3" lg="3">
@@ -613,7 +617,6 @@ const removerConsultaDiagnostico = (info, index) => {
 
                 </v-card>
             </v-col>
-
 
 
             <v-divider class="border-opacity-100 mt-4 mb-3" color="primary"/>

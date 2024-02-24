@@ -5,6 +5,8 @@ import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -15,6 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "consulta")
 @Entity(name = "Consulta")
+@FilterDef(name = "isActiveFilter", parameters = @ParamDef(name = "is_active", type = Boolean.class))
 public class Consulta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,21 +37,27 @@ public class Consulta {
     private Paciente paciente;
 
     @OneToMany(mappedBy = "consulta")
+    @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
     private Set<ConsultaDiagnostico> consultaDiagnosticos;
 
     @OneToMany(mappedBy = "consulta")
+    @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
     private Set<PacienteMedicamento> pacienteMedicamentos;
 
     @OneToMany(mappedBy = "consulta")
+    @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
     private Set<PacienteSuplemento> pacienteSuplementos;
 
     @OneToMany(mappedBy = "consulta")
+    @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
     private Set<ConsultaInformacaoSaude> consultaInformacoesSaude;
 
     @OneToMany(mappedBy = "consulta")
+    @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
     private Set<PrescricaoMedicamento> prescricaoMedicamentos;
 
     @OneToMany(mappedBy = "consulta")
+    @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
     private Set<PrescricaoSuplemento> prescricaoSuplementos;
 
 }
