@@ -4,22 +4,26 @@ import com.roderly.microbiomelabufu.cadastros_gerais.diagnostico.repository.Diag
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.repository.MedicamentoRepository;
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
 import com.roderly.microbiomelabufu.consulta.dto.request.*;
-import com.roderly.microbiomelabufu.consulta.dto.response.ConsultaCompletaResponse;
-import com.roderly.microbiomelabufu.consulta.dto.response.PacienteConsultaResponse;
-import com.roderly.microbiomelabufu.consulta.dto.response.PacienteMedicamentoResponse;
+import com.roderly.microbiomelabufu.consulta.dto.response.*;
 import com.roderly.microbiomelabufu.consulta.mapper.ConsultaMapper;
 import com.roderly.microbiomelabufu.consulta.model.*;
 import com.roderly.microbiomelabufu.consulta.repository.*;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import com.roderly.microbiomelabufu.paciente.repository.PacienteRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ConsultaService {
@@ -45,6 +49,8 @@ public class ConsultaService {
     @Autowired
     private PrescricaoSuplementoRepository prescricaoSuplementoRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Transactional
     public ApiResponseDTO insertConsulta(ConsultaCompletoRequest request) throws IOException {
@@ -88,16 +94,22 @@ public class ConsultaService {
 
     public ConsultaCompletaResponse getDadosConsulta(Long id_paciente, Long id_consulta) {
 
+        Set<PacienteMedicamentoResponse> pacienteMedicamentosResponse = new HashSet<>();
+        Set<PacienteSuplementoResponse> pacienteSuplementosResponse = new HashSet<>();
+        Set<ConsultaInformacaoSaudeResponse> consultaInformacoesSaudeResponse = new HashSet<>();
+
         Tuple tuple = this.pacienteRepository.findPessoaWithImageProfile(id_paciente).orElseThrow(() -> new EntityNotFoundException("Paciente não encontrada com ID: " + id_paciente));
         PacienteConsultaResponse pacienteConsultaResponse = ConsultaMapper.pacienteToPacienteConsultaResponse(tuple);
 
-        List<PacienteMedicamento> pacienteMedicamentos = pacienteMedicamentoRepository.findByIdConsulta(id_consulta);
-        List<PacienteMedicamentoResponse> pacienteMedicamentosResponse = ConsultaMapper.pacienteMedicamentoToPacienteMedicamentoResponse(pacienteMedicamentos);
+        if (id_consulta != 0) {
+            Consulta consulta = consultaRepository.findById(id_consulta) .orElseThrow(() -> new EntityNotFoundException("Consulta não encontrada com ID: " + id_consulta));
 
+            pacienteMedicamentosResponse = ConsultaMapper.pacienteMedicamentoToPacienteMedicamentoResponse(consulta.getPacienteMedicamentos());
+            pacienteSuplementosResponse = ConsultaMapper.pacienteSuplementoToPacienteSuplementoResponse(consulta.getPacienteSuplementos());
+            consultaInformacoesSaudeResponse = ConsultaMapper.consultaInformacaoSaudeToConsultaInformacaoSaudeResponse(consulta.getConsultaInformacoesSaude());
+        }
 
-
-
-        return new ConsultaCompletaResponse(pacienteConsultaResponse, pacienteMedicamentosResponse);
+        return new ConsultaCompletaResponse(pacienteConsultaResponse, pacienteMedicamentosResponse, pacienteSuplementosResponse, consultaInformacoesSaudeResponse);
     }
 
 }

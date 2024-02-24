@@ -8,7 +8,7 @@ import axios from "axios";
 export const getIdFromUrl = (param = 'id') => {
 	const queryParams = new URLSearchParams(window.location.search);
 	const id = queryParams.get(param);
-	return id ? Number(id) : null;
+	return id ? Number(id) : 0;
 };
 
 

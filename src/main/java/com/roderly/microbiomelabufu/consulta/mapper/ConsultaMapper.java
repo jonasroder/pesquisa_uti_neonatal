@@ -6,8 +6,10 @@ import com.roderly.microbiomelabufu.cadastros_gerais.periodo.model.Periodo;
 import com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model.Suplemento;
 import com.roderly.microbiomelabufu.cadastros_gerais.tipo_informacao_saude.model.TipoInformacaoSaude;
 import com.roderly.microbiomelabufu.consulta.dto.request.*;
+import com.roderly.microbiomelabufu.consulta.dto.response.ConsultaInformacaoSaudeResponse;
 import com.roderly.microbiomelabufu.consulta.dto.response.PacienteConsultaResponse;
 import com.roderly.microbiomelabufu.consulta.dto.response.PacienteMedicamentoResponse;
+import com.roderly.microbiomelabufu.consulta.dto.response.PacienteSuplementoResponse;
 import com.roderly.microbiomelabufu.consulta.model.*;
 import com.roderly.microbiomelabufu.cadastros_gerais.diagnostico.model.Diagnostico;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
@@ -18,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ConsultaMapper {
@@ -156,7 +159,7 @@ public class ConsultaMapper {
     }
 
 
-    public static List<PacienteMedicamentoResponse> pacienteMedicamentoToPacienteMedicamentoResponse(List<PacienteMedicamento> pacienteMedicamentos) {
+    public static Set<PacienteMedicamentoResponse> pacienteMedicamentoToPacienteMedicamentoResponse(Set<PacienteMedicamento> pacienteMedicamentos) {
         return pacienteMedicamentos.stream().map(pacienteMedicamento -> {
             return new PacienteMedicamentoResponse(
                     pacienteMedicamento.getId_paciente_medicamento(),
@@ -167,7 +170,35 @@ public class ConsultaMapper {
                     pacienteMedicamento.getPeriodo() != null ? pacienteMedicamento.getPeriodo().getId_periodo() : null,
                     pacienteMedicamento.getIs_active()
             );
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
+    }
+
+
+    public static Set<PacienteSuplementoResponse> pacienteSuplementoToPacienteSuplementoResponse(Set<PacienteSuplemento> pacienteSuplementos) {
+        return pacienteSuplementos.stream().map(pacienteSuplemento -> {
+            return new PacienteSuplementoResponse(
+                    pacienteSuplemento.getId_paciente_suplemento(),
+                    pacienteSuplemento.getConsulta() != null ? pacienteSuplemento.getConsulta().getId_consulta() : null,
+                    pacienteSuplemento.getSuplemento() != null ? pacienteSuplemento.getSuplemento().getId_suplemento() : null,
+                    pacienteSuplemento.getDosagem(),
+                    pacienteSuplemento.getFrequencia() != null ? pacienteSuplemento.getFrequencia().getId_frequencia() : null,
+                    pacienteSuplemento.getPeriodo() != null ? pacienteSuplemento.getPeriodo().getId_periodo() : null,
+                    pacienteSuplemento.getIs_active()
+            );
+        }).collect(Collectors.toSet());
+    }
+
+
+    public static Set<ConsultaInformacaoSaudeResponse> consultaInformacaoSaudeToConsultaInformacaoSaudeResponse(Set<ConsultaInformacaoSaude> consultaInformacoesSaude) {
+        return consultaInformacoesSaude.stream().map(consultaInformacaoSaude -> {
+            return new ConsultaInformacaoSaudeResponse(
+                    consultaInformacaoSaude.getId_consulta_informacao_saude(),
+                    consultaInformacaoSaude.getConsulta() != null ? consultaInformacaoSaude.getConsulta().getId_consulta() : null,
+                    consultaInformacaoSaude.getTipoInformacaoSaude() != null ? consultaInformacaoSaude.getTipoInformacaoSaude().getId_tipo_informacao_saude() : null,
+                    consultaInformacaoSaude.getValor(),
+                    consultaInformacaoSaude.getIs_active()
+            );
+        }).collect(Collectors.toSet());
     }
 
 

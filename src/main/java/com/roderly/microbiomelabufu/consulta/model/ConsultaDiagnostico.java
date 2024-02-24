@@ -6,13 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
-@Table(name = "consulta_diagonostico")
-@Entity(name = "ConsultaDiagonostico")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "consulta_diagnostico")
+@Entity(name = "ConsultaDiagonostico")
+
 public class ConsultaDiagnostico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

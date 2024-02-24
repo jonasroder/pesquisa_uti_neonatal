@@ -4,15 +4,17 @@ import com.roderly.microbiomelabufu.usuario.model.Usuario;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Filter;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Table(name = "consulta")
-@Entity(name = "Consulta")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "consulta")
+@Entity(name = "Consulta")
 public class Consulta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +25,11 @@ public class Consulta {
     private String sintomas;
     private Boolean is_active;
 
-
     @ManyToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     private Usuario medico;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_paciente", referencedColumnName = "id_paciente")
     private Paciente paciente;
 
@@ -37,5 +38,17 @@ public class Consulta {
 
     @OneToMany(mappedBy = "consulta")
     private Set<PacienteMedicamento> pacienteMedicamentos;
+
+    @OneToMany(mappedBy = "consulta")
+    private Set<PacienteSuplemento> pacienteSuplementos;
+
+    @OneToMany(mappedBy = "consulta")
+    private Set<ConsultaInformacaoSaude> consultaInformacoesSaude;
+
+    @OneToMany(mappedBy = "consulta")
+    private Set<PrescricaoMedicamento> prescricaoMedicamentos;
+
+    @OneToMany(mappedBy = "consulta")
+    private Set<PrescricaoSuplemento> prescricaoSuplementos;
 
 }

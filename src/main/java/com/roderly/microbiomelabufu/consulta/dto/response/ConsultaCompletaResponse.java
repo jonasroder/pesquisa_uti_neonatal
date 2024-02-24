@@ -1,14 +1,15 @@
 package com.roderly.microbiomelabufu.consulta.dto.response;
 
 import java.util.List;
+import java.util.Set;
 
 public record ConsultaCompletaResponse(
         PacienteConsultaResponse pacienteConsultaResponse,
-        List<PacienteMedicamentoResponse> pacienteMedicamentos
-//        List<PacienteSuplementoResponse> pacienteSuplementos,
-//        List<ConsultaInformacaoSaudeResponse> consultaInformacoesSaude,
-//        List<ConsultaDiagnosticoResponse> consultaDiagnosticos,
-//        List<PrescricaoMedicamentoResponse> prescricaoMedicamentos,
-//        List<PrescricaoSuplementoResponse> prescricaoSuplementos
+        Set<PacienteMedicamentoResponse> pacienteMedicamentos,
+        Set<PacienteSuplementoResponse> pacienteSuplementos,
+        Set<ConsultaInformacaoSaudeResponse> consultaInformacoesSaude
+//        Set<ConsultaDiagnosticoResponse> consultaDiagnosticos,
+//        Set<PrescricaoMedicamentoResponse> prescricaoMedicamentos,
+//        Set<PrescricaoSuplementoResponse> prescricaoSuplementos
 ) {
 }
