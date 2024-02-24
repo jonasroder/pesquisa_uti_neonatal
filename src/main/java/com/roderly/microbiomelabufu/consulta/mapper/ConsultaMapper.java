@@ -6,30 +6,36 @@ import com.roderly.microbiomelabufu.cadastros_gerais.periodo.model.Periodo;
 import com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model.Suplemento;
 import com.roderly.microbiomelabufu.cadastros_gerais.tipo_informacao_saude.model.TipoInformacaoSaude;
 import com.roderly.microbiomelabufu.consulta.dto.request.*;
-import com.roderly.microbiomelabufu.consulta.dto.response.ConsultaCompletoResponse;
+import com.roderly.microbiomelabufu.consulta.dto.response.PacienteConsultaResponse;
+import com.roderly.microbiomelabufu.consulta.dto.response.PacienteMedicamentoResponse;
 import com.roderly.microbiomelabufu.consulta.model.*;
 import com.roderly.microbiomelabufu.cadastros_gerais.diagnostico.model.Diagnostico;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import com.roderly.microbiomelabufu.usuario.service.UsuarioService;
+import jakarta.persistence.Tuple;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ConsultaMapper {
-    public static ConsultaCompletoResponse consultaToConsultaCompletoResponse(Paciente responsePaciente, String caminhoFotoPerfil, String planoDeSaude) {
-
-        LocalDate dataNascimento = responsePaciente.getData_nascimento();
+    public static PacienteConsultaResponse pacienteToPacienteConsultaResponse(Tuple search) {
+        Paciente paciente = search.get(0, Paciente.class);
+        String caminhoFotoPerfil = search.get(1, String.class);
+        String planoDeSaude = search.get(2, String.class);
+        LocalDate dataNascimento = paciente.getData_nascimento();
         Integer idade = (dataNascimento != null) ? Period.between(dataNascimento, LocalDate.now()).getYears() : null;
 
-        return new ConsultaCompletoResponse(
-                responsePaciente.getId_paciente(),
+        return new PacienteConsultaResponse(
+                paciente.getId_paciente(),
                 caminhoFotoPerfil,
-                responsePaciente.getNome() + " " + responsePaciente.getSobrenome(),
+                paciente.getNome() + " " + paciente.getSobrenome(),
                 idade,
                 planoDeSaude,
-                responsePaciente.getTelefone_1(),
-                responsePaciente.getTelefone_2()
+                paciente.getTelefone_1(),
+                paciente.getTelefone_2()
         );
     }
 
@@ -98,7 +104,6 @@ public class ConsultaMapper {
     }
 
 
-
     public static ConsultaInformacaoSaude consultaInformacaoSaudeRequestToConsultaInformacaoSaude(Consulta consulta, ConsultaInformacaoSaudeRequest request) {
         ConsultaInformacaoSaude consultaInformacaoSaude = new ConsultaInformacaoSaude();
         TipoInformacaoSaude tipoInformacaoSaude = new TipoInformacaoSaude(request.id_tipo_informacao_saude());
@@ -132,8 +137,6 @@ public class ConsultaMapper {
     }
 
 
-
-
     public static PrescricaoMedicamento prescricaoMedicamentoRequestToPrescricaoMedicamento(Consulta consulta, PrescricaoMedicamentoRequest request) {
         PrescricaoMedicamento prescricaoMedicamento = new PrescricaoMedicamento();
         Frequencia frequencia = new Frequencia(request.id_frequencia());
@@ -150,6 +153,21 @@ public class ConsultaMapper {
         prescricaoMedicamento.setIs_active(request.is_active());
 
         return prescricaoMedicamento;
+    }
+
+
+    public static List<PacienteMedicamentoResponse> pacienteMedicamentoToPacienteMedicamentoResponse(List<PacienteMedicamento> pacienteMedicamentos) {
+        return pacienteMedicamentos.stream().map(pacienteMedicamento -> {
+            return new PacienteMedicamentoResponse(
+                    pacienteMedicamento.getId_paciente_medicamento(),
+                    pacienteMedicamento.getConsulta() != null ? pacienteMedicamento.getConsulta().getId_consulta() : null,
+                    pacienteMedicamento.getMedicamento() != null ? pacienteMedicamento.getMedicamento().getId_medicamento() : null,
+                    pacienteMedicamento.getDosagem(),
+                    pacienteMedicamento.getFrequencia() != null ? pacienteMedicamento.getFrequencia().getId_frequencia() : null,
+                    pacienteMedicamento.getPeriodo() != null ? pacienteMedicamento.getPeriodo().getId_periodo() : null,
+                    pacienteMedicamento.getIs_active()
+            );
+        }).collect(Collectors.toList());
     }
 
 

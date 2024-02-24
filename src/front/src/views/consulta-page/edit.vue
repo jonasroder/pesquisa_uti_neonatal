@@ -2,12 +2,11 @@
 import CardFormulario from "@/components/CardFormulario.vue";
 // import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
-import {serviceLoad} from "@/service/consulta";
+import {serviceLoad, serviceSave} from "@/service/consulta";
 import {getIdFromUrl, formatarTelefone, getOptionsAutocomplete, adicionarParametrosURL} from "@/service/common/utils"
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
 import defaultImagePath from "@/assets/no_image.png";
-import {serviceSave} from "@/service/consulta";
 
 
 const router      = useRouter();
@@ -25,7 +24,36 @@ const optionsDiagonostico        = ref([]);
 onMounted(async () => {
     loading.show()
 
-    const results = await Promise.all([getOptionsAutocomplete({
+    const results = await getAutoCompleteOptions();
+
+    optionsMedicamentos.value        = results[0];
+    optionsSuplemento.value          = results[1];
+    optionsTipoInformacaoSaude.value = results[2];
+    optionsPeriodo.value             = results[3];
+    optionsFrequencia.value          = results[4];
+    optionsTipoConsulta.value        = results[5];
+    optionsDiagonostico.value        = results[6];
+
+    if (id_paciente.value > 0) {
+        const data = await serviceLoad(id_paciente.value, id_consulta.value);
+        Object.assign(consulta, data.pacienteConsultaResponse);
+        Object.assign(arrMedicamentoUsoPaciente, data.pacienteMedicamentos);
+    }
+
+    loading.hide()
+});
+
+
+const arrMedicamentoUsoPaciente = reactive([]);
+const arrSuplementoUsoPaciente  = reactive([]);
+const arrInformacaoSaude        = reactive([]);
+const arrPrescricaoMedicamento  = reactive([]);
+const arrPrescricaoSuplemento   = reactive([]);
+const arrConsultaDiagnostico    = reactive([]);
+
+
+const getAutoCompleteOptions = async () => {
+    return await Promise.all([getOptionsAutocomplete({
         idColumn  : 'id_medicamento',
         descColumn: 'nome',
         tableName : 'medicamento'
@@ -54,30 +82,7 @@ onMounted(async () => {
         descColumn: 'CONCAT(nome, IFNULL(CONCAT(" (cid: ", codigo_cid, ")"), ""))',
         tableName : 'diagnostico'
     }),]);
-
-    optionsMedicamentos.value        = results[0];
-    optionsSuplemento.value          = results[1];
-    optionsTipoInformacaoSaude.value = results[2];
-    optionsPeriodo.value             = results[3];
-    optionsFrequencia.value          = results[4];
-    optionsTipoConsulta.value        = results[5];
-    optionsDiagonostico.value        = results[6];
-
-    if (id_paciente.value > 0) {
-        const data = await serviceLoad(id_paciente.value, id_consulta.value);
-        Object.assign(consulta, data);
-    }
-
-    loading.hide()
-});
-
-
-const arrMedicamentoUsoPaciente = reactive([]);
-const arrSuplementoUsoPaciente  = reactive([]);
-const arrInformacaoSaude        = reactive([]);
-const arrPrescricaoMedicamento  = reactive([]);
-const arrPrescricaoSuplemento   = reactive([]);
-const arrConsultaDiagnostico    = reactive([]);
+}
 
 
 const consulta = reactive({
@@ -217,7 +222,8 @@ const handleSave = async () => {
         id_consulta.value = res.id;
         if (id_consulta.value > 0) {
             consulta.id_consulta = res.id;
-            adicionarParametrosURL({id_paciente: res.id});
+            debugger
+            adicionarParametrosURL({id_paciente:id_paciente, id_consulta: res.id});
         }
     }
 

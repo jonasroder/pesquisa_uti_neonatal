@@ -15,7 +15,6 @@ export const serviceLoad = async (id_paciente, id_consulta) => {
 export const serviceSave = async (data, tipo) => {
 	try {
 		let res;
-debugger
 		if(tipo === 'insert') {
 			res = await axios.post('/api/consulta/insert', data);
 		}
