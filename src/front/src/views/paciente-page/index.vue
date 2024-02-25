@@ -16,6 +16,7 @@ const router = useRouter();
 onMounted(async () => {
     loading.show();
     const resp = await serviceList();
+    debugger
     data.value = resp;
     loading.hide();
 });

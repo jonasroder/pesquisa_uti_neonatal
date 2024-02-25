@@ -136,10 +136,7 @@ const isMobile = computed(() => {
 
 <template>
     <div class="d-flex align-center justify-center">
-        <input type="file"
-               @change="onFileChange"
-               ref="fileInput"
-               style="display: none"/>
+        <input type="file" @change="onFileChange" ref="fileInput" style="display: none"/>
 
         <div v-if="!stream"
              class="d-flex position-relative">

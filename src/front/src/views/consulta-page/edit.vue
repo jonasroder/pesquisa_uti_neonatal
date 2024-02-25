@@ -200,8 +200,6 @@ const addConsultaDiagnostico = () => {
 const handleSave = async () => {
     loading.show()
 
-    console.log(consulta);
-
     const data = {
         id_paciente              : paciente.id_paciente,
         id_consulta              : consulta.id_consulta,
@@ -216,11 +214,10 @@ const handleSave = async () => {
         arrPrescricaoMedicamento : arrPrescricaoMedicamento,
     }
 
-
     if (id_consulta.value > 0) {
-        await serviceSave(data, 'update');
+        await serviceSave(data);
     } else {
-        const res         = await serviceSave(data, 'insert');
+        const res         = await serviceSave(data);
         id_consulta.value = res.id;
         if (id_consulta.value > 0) {
             consulta.id_consulta = res.id;
@@ -230,7 +227,6 @@ const handleSave = async () => {
             });
         }
     }
-
 
     loading.hide()
 };
@@ -245,56 +241,15 @@ const getProfilePhoto = (path) => {
     return path ? `${path}` : defaultImagePath;
 };
 
+const removerItem = (info, arrayObj, id) => {
+    const index = arrayObj.findIndex(item => item[id] === info[id] || item === info);
 
-const removerMedicamentoPaciente = (med, index) => {
-    if (med.id_paciente_medicamento) {
-        arrMedicamentoUsoPaciente[index].is_active = 0;
-    } else {
-        arrMedicamentoUsoPaciente.splice(index, 1);
-    }
-}
-
-
-const removerSuplementoPaciente = (sup, index) => {
-    if (sup.id_paciente_suplemento) {
-        arrSuplementoUsoPaciente[index].is_active = 0;
-    } else {
-        arrSuplementoUsoPaciente.splice(index, 1);
-    }
-}
-
-
-const removerInformacaoSaude = (info, index) => {
-    if (info.id_consulta_informacao_saude) {
-        arrInformacaoSaude[index].is_active = 0;
-    } else {
-        arrInformacaoSaude.splice(index, 1);
-    }
-}
-
-
-const removerPrescricaoMedicamento = (info, index) => {
-    if (info.id_consulta_informacao_saude) {
-        arrPrescricaoMedicamento[index].is_active = 0;
-    } else {
-        arrPrescricaoMedicamento.splice(index, 1);
-    }
-}
-
-const removerPrescricaoSuplemento = (info, index) => {
-    if (info.id_consulta_informacao_saude) {
-        arrPrescricaoSuplemento[index].is_active = 0;
-    } else {
-        arrPrescricaoSuplemento.splice(index, 1);
-    }
-}
-
-
-const removerConsultaDiagnostico = (info, index) => {
-    if (info.id_consulta_diagnostico) {
-        arrConsultaDiagnostico[index].is_active = 0;
-    } else {
-        arrConsultaDiagnostico.splice(index, 1);
+    if (index !== -1) {
+        if (info[id]) {
+            arrayObj[index].is_active = 0;
+        } else {
+            arrayObj.splice(index, 1);
+        }
     }
 }
 
@@ -309,7 +264,7 @@ const removerConsultaDiagnostico = (info, index) => {
         <v-row>
             <v-col cols="12" md="3" lg="2" class="d-flex justify-center align-center">
                 <v-avatar size="120" class="ma-1">
-                    <img :src="getProfilePhoto(paciente.foto_perfil)" class="fit-cover">
+                    <img :src="getProfilePhoto(paciente.foto_perfil)" alt="foto perfil" class="fit-cover">
                 </v-avatar>
             </v-col>
 
@@ -384,7 +339,7 @@ const removerConsultaDiagnostico = (info, index) => {
                                 >
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerMedicamentoPaciente(med, i)">
+                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(med, arrMedicamentoUsoPaciente, 'id_paciente_medicamento')">
                                             <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
                                         </v-btn>
                                     </v-col>
@@ -457,7 +412,7 @@ const removerConsultaDiagnostico = (info, index) => {
                                 >
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerSuplementoPaciente(sup, i)">
+                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(sup, arrSuplementoUsoPaciente, 'id_paciente_suplemento')">
                                             <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
                                         </v-btn>
                                     </v-col>
@@ -534,7 +489,7 @@ const removerConsultaDiagnostico = (info, index) => {
                                 >
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerInformacaoSaude(info, i)">
+                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(info, arrInformacaoSaude, 'id_consulta_informacao_saude')">
                                             <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
                                         </v-btn>
                                     </v-col>
@@ -590,7 +545,7 @@ const removerConsultaDiagnostico = (info, index) => {
                                 >
 
                                     <v-col xl="1" lg="1" md="1" sm="2" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerConsultaDiagnostico(info, i)">
+                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(info, arrConsultaDiagnostico, 'id_consulta_diagnostico')">
                                             <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
                                         </v-btn>
                                     </v-col>
@@ -640,7 +595,7 @@ const removerConsultaDiagnostico = (info, index) => {
                                 >
 
                                     <v-col xl="1" lg="1" md="1" sm="1" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerPrescricaoMedicamento(med, i)">
+                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(med, arrPrescricaoMedicamento, 'id_prescricao_medicamento')">
                                             <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
                                         </v-btn>
                                     </v-col>
@@ -720,7 +675,7 @@ const removerConsultaDiagnostico = (info, index) => {
                                 >
 
                                     <v-col xl="1" lg="1" md="1" sm="1" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerPrescricaoSuplemento(med, i)">
+                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(med, arrPrescricaoSuplemento, 'id_prescricao_suplemento')">
                                             <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
                                         </v-btn>
                                     </v-col>
@@ -835,5 +790,11 @@ const removerConsultaDiagnostico = (info, index) => {
 <style scoped>
 .scale-80 {
     scale: 0.8;
+}
+
+.fit-cover {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
 </style>

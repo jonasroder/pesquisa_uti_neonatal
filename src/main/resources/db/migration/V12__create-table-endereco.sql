@@ -7,9 +7,9 @@ CREATE TABLE endereco
     numero      VARCHAR(10),
     complemento VARCHAR(255),
     bairro      VARCHAR(100),
-    cidade      VARCHAR(100) NOT NULL,
-    id_uf       BIGINT       NOT NULL,
-    cep         VARCHAR(8)   NOT NULL,
+    cidade      VARCHAR(100),
+    id_uf       BIGINT,
+    cep         VARCHAR(8),
     referencia  VARCHAR(255)
 )
 

@@ -1,7 +1,14 @@
 package com.roderly.microbiomelabufu.paciente.model;
 
+import com.roderly.microbiomelabufu.cadastros_gerais.escolaridade.model.Escolaridade;
+import com.roderly.microbiomelabufu.cadastros_gerais.estado_civil.model.EstadoCivil;
+import com.roderly.microbiomelabufu.cadastros_gerais.etnia.model.Etnia;
+import com.roderly.microbiomelabufu.cadastros_gerais.plano_saude.model.PlanoSaude;
+import com.roderly.microbiomelabufu.cadastros_gerais.profissao.model.Profissao;
+import com.roderly.microbiomelabufu.cadastros_gerais.religiao.model.Religiao;
+import com.roderly.microbiomelabufu.cadastros_gerais.sexo.model.Sexo;
+import com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model.Suplemento;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
-import com.roderly.microbiomelabufu.endereco.model.Endereco;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,12 +16,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "paciente")
-@Entity(name = "Paciente")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "paciente")
+@Entity(name = "Paciente")
 public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,19 +41,43 @@ public class Paciente {
     private Long num_visitas;
     private String indicacao;
     private String observacao;
-    private Long id_profissao;
-    private Long id_plano_saude;
-    private Long id_estado_civil;
-    private Long id_sexo;
-    private Long id_etnia;
-    private Long id_escolaridade;
-    private Long id_religiao;
 
-    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Endereco> endereco = new ArrayList<>();
+    @OneToOne(mappedBy = "paciente")
+    private Endereco endereco;
 
-    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "paciente")
     private List<Consulta> consultas = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "id_profissao", referencedColumnName = "id_profissao")
+    private Profissao profissao;
+
+    @ManyToOne
+    @JoinColumn(name = "id_plano_saude", referencedColumnName = "id_plano_saude")
+    private PlanoSaude planoSaude;
+
+    @ManyToOne
+    @JoinColumn(name = "id_estado_civil", referencedColumnName = "id_estado_civil")
+    private EstadoCivil estadoCivil;
+
+    @ManyToOne
+    @JoinColumn(name = "id_sexo", referencedColumnName = "id_sexo")
+    private Sexo sexo;
+
+    @ManyToOne
+    @JoinColumn(name = "id_etnia", referencedColumnName = "id_etnia")
+    private Etnia etnia;
+
+    @ManyToOne
+    @JoinColumn(name = "id_escolaridade", referencedColumnName = "id_escolaridade")
+    private Escolaridade escolaridade;
+
+    @ManyToOne
+    @JoinColumn(name = "id_religiao", referencedColumnName = "id_religiao")
+    private Religiao religiao;
+
+    @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private FotoPerfil fotoPerfil;
 
 
     public Paciente(Long id_paciente) {

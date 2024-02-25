@@ -1,18 +1,9 @@
 import axios from "axios";
 import {handleApiError} from  "@/service/common/handleApiError"
 
-export const serviceSave = async (data, tipo) => {
+export const serviceSave = async (data) => {
 	try {
-		let res;
-
-		if(tipo === 'insert') {
-			res = await axios.post('/api/paciente/insert', data);
-		}
-
-		if (tipo === 'update'){
-			res = await axios.put('/api/paciente/update', data);
-		}
-
+		let res= await axios.post('/api/paciente/save', data);
 		return res.data;
 
 	} catch (e) {

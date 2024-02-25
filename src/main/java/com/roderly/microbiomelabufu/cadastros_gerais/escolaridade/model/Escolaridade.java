@@ -1,5 +1,6 @@
-package com.roderly.microbiomelabufu.cadastros_gerais.plano_saude.model;
+package com.roderly.microbiomelabufu.cadastros_gerais.escolaridade.model;
 
+import com.roderly.microbiomelabufu.consulta.model.ConsultaDiagnostico;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,20 +15,20 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "plano_saude")
-@Entity(name = "Plano_saude")
-public class PlanoSaude {
+@Table(name = "escolaridade")
+@Entity(name = "Escolaridade")
+public class Escolaridade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_plano_saude;
+    private Long id_escolaridade;
     private String descricao;
-    private boolean is_active;
+    private Boolean is_active;
 
-
-    @OneToMany(mappedBy = "planoSaude")
+    @OneToMany(mappedBy = "escolaridade")
     private Set<Paciente> pacientes;
 
-    public PlanoSaude(Long id_plano_saude) {
-        this.id_plano_saude = id_plano_saude;
+    public Escolaridade(Long id_escolaridade) {
+        this.id_escolaridade = id_escolaridade;
     }
+
 }

@@ -1,21 +1,32 @@
 package com.roderly.microbiomelabufu.paciente.mapper;
 
-import com.roderly.microbiomelabufu.endereco.dto.response.EnderecoResponse;
-import com.roderly.microbiomelabufu.endereco.mapper.EnderecoMapper;
-import com.roderly.microbiomelabufu.paciente.dto.request.PacienteCompletoRequest;
-import com.roderly.microbiomelabufu.paciente.dto.response.PacienteCompletoResponse;
+import com.roderly.microbiomelabufu.cadastros_gerais.escolaridade.model.Escolaridade;
+import com.roderly.microbiomelabufu.cadastros_gerais.estado_civil.model.EstadoCivil;
+import com.roderly.microbiomelabufu.cadastros_gerais.etnia.model.Etnia;
+import com.roderly.microbiomelabufu.cadastros_gerais.plano_saude.model.PlanoSaude;
+import com.roderly.microbiomelabufu.cadastros_gerais.profissao.model.Profissao;
+import com.roderly.microbiomelabufu.cadastros_gerais.religiao.model.Religiao;
+import com.roderly.microbiomelabufu.cadastros_gerais.sexo.model.Sexo;
+import com.roderly.microbiomelabufu.paciente.dto.request.PacienteRequest;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteResponse;
 import com.roderly.microbiomelabufu.paciente.dto.response.PacienteListagemResponse;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.Tuple;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class PacienteMapper {
-    public static Paciente PacienteCompletoRequestToPaciente(PacienteCompletoRequest request) {
+    public static Paciente PacienteRequestToPaciente(PacienteRequest request) {
         Paciente paciente = new Paciente();
+        Profissao profissao = new Profissao(request.id_profissao());
+        PlanoSaude planoSaude = new PlanoSaude(request.id_plano_saude());
+        EstadoCivil estadoCivil = new EstadoCivil(request.id_estado_civil());
+        Sexo sexo = new Sexo(request.id_sexo());
+        Etnia etnia = new Etnia(request.id_etnia());
+        Escolaridade escolaridade = new Escolaridade(request.id_escolaridade());
+        Religiao religiao = new Religiao(request.id_religiao());
+
         paciente.setId_paciente(request.id_paciente());
         paciente.setNome(request.nome());
         paciente.setSobrenome(request.sobrenome());
@@ -32,36 +43,42 @@ public class PacienteMapper {
         paciente.setNum_visitas(request.num_visitas());
         paciente.setIndicacao(request.indicacao());
         paciente.setObservacao(request.observacao());
-        paciente.setId_profissao(request.id_profissao());
-        paciente.setId_plano_saude(request.id_plano_saude());
-        paciente.setId_estado_civil(request.id_estado_civil());
-        paciente.setId_sexo(request.id_sexo());
-        paciente.setId_etnia(request.id_etnia());
-        paciente.setId_escolaridade(request.id_escolaridade());
-        paciente.setId_religiao(request.id_religiao());
-
-        if (request.endereco() != null) {
-            paciente.setEndereco(request.endereco().stream()
-                    .map(EnderecoMapper::enderecoRequestToEndereco)
-                    .collect(Collectors.toList()));
-            paciente.getEndereco().forEach(endereco -> endereco.setPaciente(paciente));
+        if (request.id_profissao() != null) {
+            paciente.setProfissao(profissao);
         }
+        ;
+        if (request.id_plano_saude() != null) {
+            paciente.setPlanoSaude(planoSaude);
+        }
+        ;
+        if (request.id_estado_civil() != null) {
+            paciente.setEstadoCivil(estadoCivil);
+        }
+        ;
+        if (request.id_sexo() != null) {
+            paciente.setSexo(sexo);
+        }
+        ;
+        if (request.id_etnia() != null) {
+            paciente.setEtnia(etnia);
+        }
+        ;
+        if (request.id_religiao() != null) {
+            paciente.setReligiao(religiao);
+        }
+        ;
+        if (request.id_escolaridade() != null) {
+            paciente.setEscolaridade(escolaridade);
+        }
+        ;
 
         return paciente;
     }
 
 
-    public static PacienteCompletoResponse pacienteToPacienteCompletoResponse(Paciente responsePaciente, String caminhoArquivo) {
+    public static PacienteResponse pacienteToPacienteResponse(Paciente responsePaciente) {
 
-        List<EnderecoResponse> enderecosResponse = null;
-
-        if (responsePaciente.getEndereco() != null && !responsePaciente.getEndereco().isEmpty()) {
-            enderecosResponse = responsePaciente.getEndereco().stream()
-                    .map(EnderecoMapper::enderecoToEnderecoResponse)
-                    .collect(Collectors.toList());
-        }
-
-        return new PacienteCompletoResponse(
+        return new PacienteResponse(
                 responsePaciente.getId_paciente(),
                 responsePaciente.getNome(),
                 responsePaciente.getSobrenome(),
@@ -78,34 +95,29 @@ public class PacienteMapper {
                 responsePaciente.getNum_visitas(),
                 responsePaciente.getIndicacao(),
                 responsePaciente.getObservacao(),
-                responsePaciente.getId_profissao(),
-                responsePaciente.getId_plano_saude(),
-                responsePaciente.getId_estado_civil(),
-                responsePaciente.getId_sexo(),
-                responsePaciente.getId_etnia(),
-                responsePaciente.getId_escolaridade(),
-                responsePaciente.getId_religiao(),
-                enderecosResponse,
-                caminhoArquivo
+                responsePaciente.getProfissao() != null ? responsePaciente.getProfissao().getId_profissao() : null,
+                responsePaciente.getPlanoSaude() != null ? responsePaciente.getPlanoSaude().getId_plano_saude() : null,
+                responsePaciente.getEstadoCivil() != null ? responsePaciente.getEstadoCivil().getId_estado_civil() : null,
+                responsePaciente.getSexo() != null ? responsePaciente.getSexo().getId_sexo() : null,
+                responsePaciente.getEtnia() != null ? responsePaciente.getEtnia().getId_etnia() : null,
+                responsePaciente.getEscolaridade() != null ? responsePaciente.getEscolaridade().getId_escolaridade() : null,
+                responsePaciente.getReligiao() != null ? responsePaciente.getReligiao().getId_religiao() : null
         );
     }
 
 
-    public static PacienteListagemResponse tuplePacienteToPacienteListagemResponse(Tuple paciente) {
-        LocalDate dataNascimento = paciente.get(3, LocalDate.class);
+    public static PacienteListagemResponse pacienteToPacienteListagemResponse(Paciente paciente) {
+        LocalDate dataNascimento = paciente.getData_nascimento();
         Integer idade = (dataNascimento != null) ? Period.between(dataNascimento, LocalDate.now()).getYears() : null;
 
         return new PacienteListagemResponse(
-                paciente.get(0, Long.class),
-                paciente.get(1, String.class) + " " + paciente.get(2, String.class),
+                paciente.getId_paciente(),
+                paciente.getNome() + " " + paciente.getSobrenome(),
                 idade,
-                paciente.get(4, String.class),
-                paciente.get(5, String.class),
-                paciente.get(6, Long.class),
-                paciente.get(7, String.class)
+                paciente.getTelefone_1(),
+                paciente.getTelefone_2(),
+                paciente.getFotoPerfil() != null ? paciente.getFotoPerfil().getCaminho_arquivo() + "/" + paciente.getFotoPerfil().getId_foto_perfil() + ".jpeg" : null
         );
     }
-
-
 
 }

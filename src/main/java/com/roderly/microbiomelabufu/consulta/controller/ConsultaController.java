@@ -3,7 +3,6 @@ package com.roderly.microbiomelabufu.consulta.controller;
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
 import com.roderly.microbiomelabufu.consulta.dto.request.*;
 import com.roderly.microbiomelabufu.consulta.dto.response.ConsultaCompletaResponse;
-import com.roderly.microbiomelabufu.consulta.dto.response.PacienteConsultaResponse;
 import com.roderly.microbiomelabufu.consulta.service.ConsultaService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -28,9 +27,9 @@ public class ConsultaController {
     }
 
 
-    @PostMapping("/insert")
-    public ResponseEntity<ApiResponseDTO> insert(@RequestBody @Valid ConsultaCompletoRequest request) throws IOException {
-        ApiResponseDTO response = consultaService.insertConsulta(request);
+    @PostMapping("/save")
+    public ResponseEntity<ApiResponseDTO> save(@RequestBody @Valid ConsultaCompletoRequest request) throws IOException {
+        ApiResponseDTO response = consultaService.saveConsulta(request);
         return ResponseEntity.ok(response);
     }
 

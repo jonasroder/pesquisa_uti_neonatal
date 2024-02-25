@@ -1,4 +1,4 @@
-package com.roderly.microbiomelabufu.cadastros_gerais.plano_saude.model;
+package com.roderly.microbiomelabufu.cadastros_gerais.etnia.model;
 
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
@@ -14,20 +14,22 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "plano_saude")
-@Entity(name = "Plano_saude")
-public class PlanoSaude {
+@Table(name = "etnia")
+@Entity(name = "Etnia")
+public class Etnia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_plano_saude;
+    private Long id_etnia;
     private String descricao;
-    private boolean is_active;
+    private Boolean is_active;
 
 
-    @OneToMany(mappedBy = "planoSaude")
+    @OneToMany(mappedBy = "etnia")
     private Set<Paciente> pacientes;
 
-    public PlanoSaude(Long id_plano_saude) {
-        this.id_plano_saude = id_plano_saude;
+
+    public Etnia(Long id_etnia) {
+        this.id_etnia = id_etnia;
     }
+
 }

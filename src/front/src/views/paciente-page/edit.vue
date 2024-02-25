@@ -38,6 +38,23 @@ const optionsUF            = ref([]);
 onMounted(async () => {
     loading.show()
 
+    await getOpcoesAutocomplete();
+
+    if (id.value > 0) {
+        cpfDisabled.value = true;
+        const data        = await serviceLoad(id.value);
+
+        Object.assign(paciente, data.pacienteResponse);
+        Object.assign(endereco, data.enderecoResponse);
+        foto_perfil.value = data.fotoPerfilResponse?.caminho ?? null;
+    }
+
+    debugger
+    loading.hide()
+});
+
+
+const getOpcoesAutocomplete = async () => {
 
     const results = await Promise.all([getOptionsAutocomplete({
         idColumn  : 'id_profissao',
@@ -81,22 +98,10 @@ onMounted(async () => {
     optionsEscolariadade.value = results[5];
     optionsReligiao.value      = results[6];
     optionsUF.value            = results[7];
+}
 
-    if (id.value > 0) {
-        cpfDisabled.value = true;
-        const data        = await serviceLoad(id.value);
-        console.log(data)
-        Object.assign(paciente, data);
-        if (data.endereco != null) {
-            Object.assign(endereco, data.endereco[0]);
-        } else {
-            Object.assign(endereco, []);
-        }
-    }
 
-    loading.hide()
-});
-
+const foto_perfil = ref();
 
 const paciente = reactive({
     id_paciente       : "",
@@ -120,9 +125,7 @@ const paciente = reactive({
     id_sexo           : "",
     id_etnia          : "",
     id_escolaridade   : "",
-    id_religiao       : "",
-    foto_perfil       : "",
-    endereco          : []
+    id_religiao       : ""
 });
 
 const endereco = reactive({
@@ -140,12 +143,7 @@ const endereco = reactive({
 const handleSave = async () => {
     loading.show()
 
-    if (endereco) {
-        endereco.cep      = limparMascara(endereco.cep);
-        paciente.endereco = [];
-        paciente.endereco.push(endereco)
-    }
-
+    endereco.cep        = limparMascara(endereco.cep);
     paciente.cpf        = limparMascara(paciente.cpf);
     paciente.telefone_1 = limparMascara(paciente.telefone_1);
     paciente.telefone_2 = limparMascara(paciente.telefone_2);
@@ -157,16 +155,18 @@ const handleSave = async () => {
         return;
     }
 
+    const data = {
+        pacienteRequest  : paciente,
+        enderecoRequest  : endereco,
+        fotoPerfilRequest: foto_perfil.value
+    }
+    debugger
+    const res = await serviceSave(data);
+    id.value  = res.id;
     if (id.value > 0) {
-        await serviceSave(paciente, 'update');
-    } else {
-        const res = await serviceSave(paciente, 'insert');
-        id.value  = res.id;
-        if (id.value > 0) {
-            paciente.id_paciente = res.id;
-            cpfDisabled.value    = true;
-            adicionarParametrosURL({id: res.id});
-        }
+        paciente.id_paciente = res.id;
+        cpfDisabled.value    = true;
+        adicionarParametrosURL({id: res.id});
     }
 
     loading.hide()
@@ -207,7 +207,7 @@ const buscarEnderecoCEP = async () => {
 
         <v-row>
             <v-col cols="12" sm="4" md="3" justify="center" align="center">
-                <AvatarImageInput v-model="paciente.foto_perfil"/>
+                <AvatarImageInput v-model="foto_perfil"/>
             </v-col>
 
             <v-col cols="12" sm="8" md="9">
@@ -313,6 +313,11 @@ const buscarEnderecoCEP = async () => {
                         />
                     </v-col>
 
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <v-row>
                     <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
                         <v-text-field
                             label="Quem Indicou"
