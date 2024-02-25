@@ -33,11 +33,7 @@ public class ConsultaService {
     @Autowired
     private ConsultaRepository consultaRepository;
     @Autowired
-    private DiagnosticoRepository diagnosticoRepository;
-    @Autowired
     private ConsultaDiagnosticoRepository consultaDiagnosticoRepository;
-    @Autowired
-    private MedicamentoRepository medicamentoRepository;
     @Autowired
     private PacienteMedicamentoRepository pacienteMedicamentoRepository;
     @Autowired
