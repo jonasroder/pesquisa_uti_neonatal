@@ -16,7 +16,6 @@ const router = useRouter();
 onMounted(async () => {
     loading.show();
     const resp = await serviceList();
-    debugger
     data.value = resp;
     loading.hide();
 });
@@ -30,7 +29,8 @@ const headers = ref([{
     title: 'Nome',
     key  : 'nome',
     align: 'start',
-    class: 'text--primary'
+    class: 'text--primary',
+    width: '30%'
 }, {
     title: 'Idade',
     key  : 'idade',
@@ -40,17 +40,12 @@ const headers = ref([{
     key  : 'telefone_1',
     align: 'start'
 }, {
-    title: 'Nº Visitas',
-    key  : 'num_visitas',
+    title: 'Últimos Atendimentos',
+    key  : 'listaConsultas',
     align: 'start'
 }, {
-    title: 'Últimas Consultas',
-    key  : 'id_paciente',
-    align: 'start'
-}, {
-    title: 'Nova Consulta',
     key  : 'action',
-    align: 'start'
+    align: 'center'
 }]);
 
 
@@ -78,6 +73,19 @@ const createNewConsulta = (id_paciente) => {
         query: {id_paciente: id_paciente}
     });
 }
+
+const editarConsulta = (id_paciente, id_consulta) => {
+    const routeData = router.resolve({
+        name: 'Consulta-Page',
+        query: {
+            id_paciente: id_paciente,
+            id_consulta: id_consulta
+        }
+    });
+
+    window.open(routeData.href, '_blank');
+}
+
 
 </script>
 
@@ -115,7 +123,7 @@ const createNewConsulta = (id_paciente) => {
 
                 <!-- Coluna Nome -->
                 <template v-slot:[`item.nome`]="{ item }">
-                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id_paciente)"> {{ item.nome }} </a>
+                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id_paciente)"> <b>{{ item.nome }}</b> </a>
                 </template>
 
                 <!-- Coluna Telefone -->
@@ -127,11 +135,21 @@ const createNewConsulta = (id_paciente) => {
                     </div>
                 </template>
 
+                <!-- Coluna Lista Consultas -->
+                <template v-slot:[`item.listaConsultas`]="{ item }">
+                    <div v-for="(consulta, index) in item.listaConsultas"
+                         :key="`consulta-${index}`">
+                        <a href="#" class="editable-name" @click.prevent="editarConsulta(item.id_paciente, consulta.id_consulta)">
+                            {{ `${consulta.tipo_consulta}: ${consulta.data}` }}
+                        </a>
+                    </div>
+                </template>
+
+                <!-- Botão nova consulta -->
                 <template v-slot:[`item.action`]="{ item }">
-                    <v-btn color="blue lighten-2" class="text-none" @click="createNewConsulta(item.id_paciente)">
-                        <v-icon left>mdi-calendar-plus</v-icon>
-                        Nova Consulta
-                    </v-btn>
+                    <v-col cols="auto">
+                        <v-btn color="cinzaAzulado" icon="fas fa-plus" variant="elevated" size="small" @click="createNewConsulta(item.id_paciente)"></v-btn>
+                    </v-col>
                 </template>
 
 

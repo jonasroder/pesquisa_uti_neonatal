@@ -7,6 +7,9 @@ import com.roderly.microbiomelabufu.cadastros_gerais.plano_saude.model.PlanoSaud
 import com.roderly.microbiomelabufu.cadastros_gerais.profissao.model.Profissao;
 import com.roderly.microbiomelabufu.cadastros_gerais.religiao.model.Religiao;
 import com.roderly.microbiomelabufu.cadastros_gerais.sexo.model.Sexo;
+import com.roderly.microbiomelabufu.common.Utilitarios.DateUtil;
+import com.roderly.microbiomelabufu.consulta.dto.response.ConsultasPacienteBasicoResponse;
+import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import com.roderly.microbiomelabufu.paciente.dto.request.PacienteRequest;
 import com.roderly.microbiomelabufu.paciente.dto.response.PacienteResponse;
 import com.roderly.microbiomelabufu.paciente.dto.response.PacienteListagemResponse;
@@ -15,6 +18,8 @@ import jakarta.persistence.Tuple;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PacienteMapper {
     public static Paciente PacienteRequestToPaciente(PacienteRequest request) {
@@ -110,14 +115,30 @@ public class PacienteMapper {
         LocalDate dataNascimento = paciente.getData_nascimento();
         Integer idade = (dataNascimento != null) ? Period.between(dataNascimento, LocalDate.now()).getYears() : null;
 
+        var consultasPaciente = paciente.getConsultas().stream()
+                .map(PacienteMapper::pacienteConsultasToConsultasPacienteBasicoResponse)
+                .toList();
+
         return new PacienteListagemResponse(
                 paciente.getId_paciente(),
                 paciente.getNome() + " " + paciente.getSobrenome(),
                 idade,
                 paciente.getTelefone_1(),
                 paciente.getTelefone_2(),
-                paciente.getFotoPerfil() != null ? paciente.getFotoPerfil().getCaminho_arquivo() + "/" + paciente.getFotoPerfil().getId_foto_perfil() + ".jpeg" : null
+                paciente.getFotoPerfil() != null ? paciente.getFotoPerfil().getCaminho_arquivo() + "/" + paciente.getFotoPerfil().getId_foto_perfil() + ".jpeg" : null,
+                consultasPaciente
         );
+    }
+
+
+    public static ConsultasPacienteBasicoResponse pacienteConsultasToConsultasPacienteBasicoResponse (Consulta consulta){
+            String tipo_consulta = consulta.getId_tipo_consulta() == 1 ? "Consulta" : "Retorno";
+
+            return new ConsultasPacienteBasicoResponse(
+                    consulta.getId_consulta(),
+                    DateUtil.LocalDateTimeToDateBR(consulta.getData_hora()),
+                    tipo_consulta
+            );
     }
 
 }

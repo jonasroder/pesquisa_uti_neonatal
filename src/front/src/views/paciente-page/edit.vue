@@ -49,7 +49,6 @@ onMounted(async () => {
         foto_perfil.value = data.fotoPerfilResponse?.caminho ?? null;
     }
 
-    debugger
     loading.hide()
 });
 
@@ -160,7 +159,7 @@ const handleSave = async () => {
         enderecoRequest  : endereco,
         fotoPerfilRequest: foto_perfil.value
     }
-    debugger
+
     const res = await serviceSave(data);
     id.value  = res.id;
     if (id.value > 0) {

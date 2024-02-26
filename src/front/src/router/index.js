@@ -5,13 +5,13 @@ const routes = [
 	{
 		path: '/',
 		name: 'Home',
-		component: () => import("../views/main-page/main-page.vue"),
+		component: () => import("@/views/main-page/main-page.vue"),
 		meta: { title: 'Jonas e Denise' }
 	},
 	{
 		path: '/login',
 		name: 'Login-Page',
-		component: () => import("../views/login/Login-Page.vue"),
+		component: () => import("@/views/login/index.vue"),
 		meta: { title: 'Saúde em Equilibrio - Login' }
 	},
 	{
@@ -49,8 +49,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((to) => {
-	// Muda o título da aba com base na rota atual
-	document.title = to.meta.title || 'Título Padrão';
+	document.title = to.meta.title || 'Saúde em Equilíbrio';
 });
 
 export default router;

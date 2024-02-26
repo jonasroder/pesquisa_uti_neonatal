@@ -110,6 +110,7 @@ public class PacienteService {
 
     public Set<PacienteListagemResponse> getDadosListagemPaciente() {
         var pacientes = pacienteRepository.findAll();
+
         return pacientes.stream()
                 .map(PacienteMapper::pacienteToPacienteListagemResponse)
                 .collect(Collectors.toSet());

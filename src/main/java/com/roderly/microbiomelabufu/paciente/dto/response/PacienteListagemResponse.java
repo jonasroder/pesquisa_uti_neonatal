@@ -1,6 +1,8 @@
 package com.roderly.microbiomelabufu.paciente.dto.response;
 
-import java.time.LocalDate;
+import com.roderly.microbiomelabufu.consulta.dto.response.ConsultasPacienteBasicoResponse;
+
+import java.util.List;
 
 public record PacienteListagemResponse(
         Long id_paciente,
@@ -8,5 +10,6 @@ public record PacienteListagemResponse(
         Integer idade,
         String telefone_1,
         String telefone_2,
-        String foto_perfil
+        String foto_perfil,
+        List<ConsultasPacienteBasicoResponse> listaConsultas
 ) {}
