@@ -4,11 +4,11 @@ import {reactive} from "vue";
 import {useRouter} from "vue-router";
 
 
+const router = useRouter();
 const login  = reactive({
     usuario: "",
     senha  : ""
 });
-const router = useRouter();
 
 
 const submitLogin = async () => {

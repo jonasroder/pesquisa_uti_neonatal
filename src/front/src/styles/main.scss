@@ -8,6 +8,9 @@ html, body {
   font-size: 16px;
 }
 
+body {
+  color: var(--v-theme-textColor);
+}
 
 th {
   font-weight: bold !important;

@@ -10,5 +10,6 @@ export const getToken = () => {
 
 export const removeToken = () => {
 	localStorage.removeItem(TOKEN_KEY);
+	localStorage.removeItem('cachedRoutes');
 };
 

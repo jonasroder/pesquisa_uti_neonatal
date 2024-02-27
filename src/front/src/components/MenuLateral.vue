@@ -1,13 +1,18 @@
 <script setup>
-import {onMounted, reactive, ref, watch} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
 import {getMenu} from "@/service/menu";
+import {getToken} from "@/service/common/tokenService";
 
-const router = useRouter();
+const router      = useRouter();
 const menuLateral = ref([]);
 
 onMounted(async () => {
+    if (!getToken()) {
+        return;
+    }
+
     loading.show()
     menuLateral.value = await getMenu();
     loading.hide()
@@ -53,17 +58,19 @@ const isActive = (route) => {
                     <template #activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                            :title="item.title"
                             :prepend-icon="item.icon"
-                        />
+                        >
+                            <b>{{ item.title }}</b>
+                        </v-list-item>
                     </template>
 
                     <v-list-item
                         v-for="subItem in item.subMenus"
                         :key="subItem.title"
                         @click="navigateTo(subItem.vueRouter.path)"
+                        :class="{'v-list-item--active': isActive(subItem.vueRouter.path)}"
                     >
-                        {{ subItem.title }}
+                        <b>{{ subItem.title }}</b>
                     </v-list-item>
                 </v-list-group>
 
@@ -74,7 +81,7 @@ const isActive = (route) => {
                     :class="{'v-list-item--active': isActive(item.vueRouter.path)}"
                     :prepend-icon="item.icon"
                 >
-                    {{ item.title }}
+                    <b>{{ item.title }}</b>
                 </v-list-item>
             </template>
         </v-list>
