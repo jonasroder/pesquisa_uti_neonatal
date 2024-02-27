@@ -46,6 +46,22 @@ public class TokenService {
         }
     }
 
+
+    public String refreshToken(String oldToken) {
+        // Primeiro, validar o token existente. Assumindo que `validateToken` retorna o nome de usuário se válido,
+        // ou uma string vazia caso contrário. Você pode ajustar conforme a lógica de validação que você tem.
+        String usuario = this.validateToken(oldToken);
+        if (usuario.isEmpty()) {
+            throw new JWTVerificationException("Token inválido ou expirado");
+        }
+
+        // Se o token é válido, gerar um novo token
+        Usuario user = new Usuario(); // Você precisará obter o objeto Usuario do seu repositório
+        user.setUsuario(usuario);
+        return this.generateToken(user);
+    }
+
+
     private Instant getExpireTimeToken(){
         return LocalDateTime.now().plusHours(8).toInstant(ZoneOffset.of("-03:00"));
     }

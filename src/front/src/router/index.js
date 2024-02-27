@@ -26,19 +26,15 @@ const addDynamicRoutes = () => {
 	let cachedRoutes = localStorage.getItem('cachedRoutes');
 	let routesObj    = cachedRoutes ? JSON.parse(cachedRoutes) : null;
 
-
 	if (routesObj != null) {
 		routesObj.forEach(route => {
-
 			const rota = {
 				path     : route.path,
 				name     : route.name,
 				component: () => import(`@/views/${route.component}`),
 				meta     : {title: route.title}
 			}
-
 			router.addRoute(rota);
-
 		});
 	}
 };
@@ -57,6 +53,7 @@ const router = createRouter({
 	routes : staticRoutes,
 })
 
+
 router.beforeEach((to, from, next) => {
 	if (to.name !== 'Login-Page' && !getToken()) {
 		next({name: 'Login-Page'});
@@ -65,9 +62,12 @@ router.beforeEach((to, from, next) => {
 	}
 });
 
+
 router.afterEach((to) => {
 	document.title = to.meta.title || 'Saúde em Equilíbrio';
 });
 
+
 addDynamicRoutes();
+
 export default router;
