@@ -74,6 +74,10 @@ export default createVuetify({
 		},
 		VRadio       : {
 			color: 'primary',
+		},
+		VSwitch      : {
+			color: 'azulEscuro',
+			inset: true
 		}
 
 	},

@@ -387,8 +387,6 @@ const buscarEnderecoCEP = async () => {
             <v-col cols="12">
                 <v-textarea
                     label="Observações"
-                    variant="outlined"
-                    color="primary"
                     v-model="paciente.observacao"
                 />
             </v-col>

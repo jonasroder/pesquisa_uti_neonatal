@@ -36,6 +36,14 @@ const headers = ref([{
     key  : 'idade',
     align: 'start'
 }, {
+    title: 'Plano de Saúde',
+    key  : 'plano_saude',
+    align: 'start'
+}, {
+    title: 'Cidade',
+    key  : 'cidade',
+    align: 'start'
+}, {
     title: 'Telefone',
     key  : 'telefone_1',
     align: 'start'
@@ -76,7 +84,7 @@ const createNewConsulta = (id_paciente) => {
 
 const editarConsulta = (id_paciente, id_consulta) => {
     const routeData = router.resolve({
-        name: 'Consulta-Page',
+        name : 'Consulta-Page',
         query: {
             id_paciente: id_paciente,
             id_consulta: id_consulta
@@ -123,7 +131,8 @@ const editarConsulta = (id_paciente, id_consulta) => {
 
                 <!-- Coluna Nome -->
                 <template v-slot:[`item.nome`]="{ item }">
-                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id_paciente)"> <b>{{ item.nome }}</b> </a>
+                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id_paciente)">
+                        <b>{{ item.nome }}</b> </a>
                 </template>
 
                 <!-- Coluna Telefone -->

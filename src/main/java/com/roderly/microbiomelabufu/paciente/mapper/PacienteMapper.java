@@ -126,19 +126,21 @@ public class PacienteMapper {
                 paciente.getTelefone_1(),
                 paciente.getTelefone_2(),
                 paciente.getFotoPerfil() != null ? paciente.getFotoPerfil().getCaminho_arquivo() + "/" + paciente.getFotoPerfil().getId_foto_perfil() + ".jpeg" : null,
+                paciente.getPlanoSaude() != null ? paciente.getPlanoSaude().getDescricao() : null,
+                paciente.getEndereco() != null ? paciente.getEndereco().getCidade() : null,
                 consultasPaciente
         );
     }
 
 
-    public static ConsultasPacienteBasicoResponse pacienteConsultasToConsultasPacienteBasicoResponse (Consulta consulta){
-            String tipo_consulta = consulta.getId_tipo_consulta() == 1 ? "Consulta" : "Retorno";
+    public static ConsultasPacienteBasicoResponse pacienteConsultasToConsultasPacienteBasicoResponse(Consulta consulta) {
+        String tipo_consulta = consulta.getId_tipo_consulta() == 1 ? "Consulta" : "Retorno";
 
-            return new ConsultasPacienteBasicoResponse(
-                    consulta.getId_consulta(),
-                    DateUtil.LocalDateTimeToDateBR(consulta.getData_hora()),
-                    tipo_consulta
-            );
+        return new ConsultasPacienteBasicoResponse(
+                consulta.getId_consulta(),
+                DateUtil.LocalDateTimeToDateBR(consulta.getData_hora()),
+                tipo_consulta
+        );
     }
 
 }

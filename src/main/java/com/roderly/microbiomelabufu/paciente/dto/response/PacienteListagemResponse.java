@@ -11,5 +11,7 @@ public record PacienteListagemResponse(
         String telefone_1,
         String telefone_2,
         String foto_perfil,
+        String plano_saude,
+        String cidade,
         List<ConsultasPacienteBasicoResponse> listaConsultas
 ) {}
