@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {getToken} from '@/service/common/tokenService';
-import {getRoutes} from "@/service/menu";
+import {getMenu, getRoutes} from "@/service/menu";
 
 export const loadRoutes = async () => {
 	let cachedRoutes = localStorage.getItem('cachedRoutes');
@@ -8,8 +8,12 @@ export const loadRoutes = async () => {
 
 	if (!cachedRoutes || (routesObj && routesObj.error)) {
 		try {
-			let dynamicRoutes = await getRoutes();
+
+			const [dynamicRoutes, dynamicMenu] = await Promise.all([getRoutes(), getMenu()]);
+
 			localStorage.setItem('cachedRoutes', JSON.stringify(dynamicRoutes));
+			localStorage.setItem('cachedMenu', JSON.stringify(dynamicMenu));
+
 			await addDynamicRoutes();
 			return dynamicRoutes;
 		} catch (error) {

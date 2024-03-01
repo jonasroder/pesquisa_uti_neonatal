@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Table(name = "suplemento")
@@ -33,6 +34,9 @@ public class Suplemento {
 
     @OneToMany(mappedBy = "suplemento")
     private Set<PrescricaoSuplemento> prescricaoSuplementos;
+
+    @OneToMany(mappedBy = "suplemento")
+    private List<SuplementoIngrediente> suplementoIngredientes;
 
 
     public Suplemento(Long id_suplemento){

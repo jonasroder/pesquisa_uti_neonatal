@@ -2,7 +2,6 @@
 import {onMounted, ref, watch} from 'vue';
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
-import {getMenu} from "@/service/menu";
 import {getToken} from "@/service/common/tokenService";
 
 const router      = useRouter();
@@ -14,7 +13,8 @@ onMounted(async () => {
     }
 
     loading.show()
-    menuLateral.value = await getMenu();
+    let cachedMenu = localStorage.getItem('cachedMenu');
+    menuLateral.value    = cachedMenu ? JSON.parse(cachedMenu) : null;
     loading.hide()
 });
 
