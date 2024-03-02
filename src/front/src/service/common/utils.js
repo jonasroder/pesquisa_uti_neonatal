@@ -41,59 +41,61 @@ export const adicionarParametrosURL = (parametros) => {
 
 
 /**
- * Verifica se os campos obrigatórios especificados em um objeto estão presentes e não estão vazios.
- * Aceita um array de objetos, onde cada objeto contém uma chave que é o caminho para o campo no objeto
- * principal e o valor é uma string amigável que será exibida na notificação de campos faltantes.
+ * Verifica se todos os campos obrigatórios em um objeto ou em cada objeto de um array estão preenchidos.
  *
- * @param {Object} objeto - O objeto que será verificado.
- * @param {Object[]} camposObrigatorios - Um array de objetos com os campos obrigatórios e seus nomes amigáveis.
- * @returns {boolean} Retorna true se todos os campos obrigatórios estiverem presentes e preenchidos, false caso contrário.
+ * A função aceita um array de verificações, onde cada verificação é um objeto que contém dois campos:
+ * 'dados', que pode ser um objeto ou um array de objetos, e 'campos', que é um array de strings representando
+ * os nomes das chaves obrigatórias nos objetos de dados.
+ *
+ * Se qualquer um dos campos obrigatórios estiver vazio ou não estiver presente no objeto de dados, a função
+ * registra um erro no console e exibe uma notificação de erro. A função retorna 'true' se todos os campos
+ * obrigatórios estiverem preenchidos corretamente em todos os objetos fornecidos, e 'false' caso contrário.
+ *
+ * @param {Array} verificacoes - Um array de objetos de verificação.
+ * @returns {boolean} Retorna 'true' se todos os campos obrigatórios estiverem preenchidos, 'false' caso contrário.
  *
  * @example
- * const paciente = { nome: 'John Doe', cpf: '123.456.789-00' };
- * const camposObrigatorios = [{ nome: "Nome Completo" }, { cpf: "CPF" }];
- * const resultado = verificarCamposObrigatorios(paciente, camposObrigatorios);
- * // Retorna true se 'nome' e 'cpf' estiverem presentes e preenchidos no objeto paciente.
+ * // Define os dados e os campos obrigatórios para a verificação
+ * const verificacoes = [
+ *     {dados: arrMedicamentoUsoPaciente, campos: ['id_medicamento', 'dosagem', 'id_frequencia']},
+ *     {dados: arrSuplementoUsoPaciente, campos: ['id_suplemento', 'dosagem', 'id_frequencia']}
+ *     // Adicione mais verificações conforme necessário
+ * ];
+ *
+ * // Chama a função e armazena o resultado
+ * const todosCamposPreenchidos = verificarCamposObrigatorios(verificacoes);
+ *
+ * // Imprime o resultado no console
+ * console.log(todosCamposPreenchidos); // Saída: true ou false
  */
-export const verificarCamposObrigatorios = (objeto, camposObrigatorios) => {
-	let camposFaltantes = [];
+export const verificarCamposObrigatorios = (verificacoes) => {
+	let todosCamposPreenchidos = true;
 
-	const verificar = (valor, caminhoCompleto, nomeAmigavel) => {
-		if (valor === undefined || valor === null || (typeof valor === 'string' && valor.trim() === '')) {
-			camposFaltantes.push(nomeAmigavel || caminhoCompleto);
-			return;
-		}
-
-		if (typeof valor === 'object') {
-			if (Array.isArray(valor)) {
-				valor.forEach((item, index) => {
-					if (typeof item === 'object') {
-						Object.keys(item).forEach(subChave => {
-							verificar(item[subChave], `${caminhoCompleto}[${index}].${subChave}`, item[subChave]);
-						});
+	for (const {dados, campos} of verificacoes) {
+		if (Array.isArray(dados)) {
+			dados.forEach(objeto => {
+				campos.forEach(campo => {
+					if (!objeto[campo] || objeto[campo].toString().trim() === '') {
+						console.error(`Campo obrigatório não preenchido: ${campo}`);
+						todosCamposPreenchidos = false;
 					}
 				});
-			} else {
-				Object.keys(valor).forEach(subChave => {
-					verificar(valor[subChave], `${caminhoCompleto}.${subChave}`, valor[subChave]);
-				});
-			}
+			});
+		} else {
+			campos.forEach(campo => {
+				if (!dados[campo] || dados[campo].toString().trim() === '') {
+					console.error(`Campo obrigatório não preenchido: ${campo}`);
+					todosCamposPreenchidos = false;
+				}
+			});
 		}
-	};
-
-	camposObrigatorios.forEach(objetoCampo => {
-		const campo = Object.keys(objetoCampo)[0];
-		const nomeAmigavel = objetoCampo[campo];
-		const valorCampo = campo.split('.').reduce((acc, chave) => acc && acc[chave], objeto);
-		verificar(valorCampo, campo, nomeAmigavel);
-	});
-
-	if (camposFaltantes.length > 0) {
-		setNotification(`Campos obrigatórios faltando: ${camposFaltantes.join(', ')}`, "error");
-		return false;
 	}
 
-	return true;
+	if(!todosCamposPreenchidos){
+		setNotification("Preencha os campos obrigatórios", "error");
+	}
+
+	return todosCamposPreenchidos;
 };
 
 

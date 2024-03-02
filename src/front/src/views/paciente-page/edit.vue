@@ -19,6 +19,7 @@ import {useRouter} from "vue-router";
 const id          = ref(getIdFromUrl());
 const cpfDisabled = ref(false);
 const router      = useRouter();
+const camposObrigatorios = ref(true);
 
 const maskCelular = reactive(getMaskSettings({maskType: 'celular'}));
 const maskCPF     = reactive(getMaskSettings({maskType: 'cpf'}));
@@ -103,53 +104,59 @@ const getOpcoesAutocomplete = async () => {
 const foto_perfil = ref();
 
 const paciente = reactive({
-    id_paciente       : "",
-    nome              : "",
-    sobrenome         : "",
-    data_nascimento   : "",
-    telefone_1        : "",
-    telefone_2        : "",
-    email             : "",
-    cpf               : "",
-    naturalidade      : "",
-    nome_pai          : "",
-    nome_mae          : "",
-    nome_conjuge      : "",
-    numero_plano_saude: "",
-    indicacao         : "",
-    observacao        : "",
-    id_profissao      : "",
-    id_plano_saude    : "",
-    id_estado_civil   : "",
-    id_sexo           : "",
-    id_etnia          : "",
-    id_escolaridade   : "",
-    id_religiao       : ""
+    id_paciente       : null,
+    nome              : null,
+    sobrenome         : null,
+    data_nascimento   : null,
+    telefone_1        : null,
+    telefone_2        : null,
+    email             : null,
+    cpf               : null,
+    naturalidade      : null,
+    nome_pai          : null,
+    nome_mae          : null,
+    nome_conjuge      : null,
+    numero_plano_saude: null,
+    indicacao         : null,
+    observacao        : null,
+    id_profissao      : null,
+    id_plano_saude    : null,
+    id_estado_civil   : null,
+    id_sexo           : null,
+    id_etnia          : null,
+    id_escolaridade   : null,
+    id_religiao       : null
 });
 
 const endereco = reactive({
-    logradouro : "",
-    numero     : "",
-    complemento: "",
-    bairro     : "",
-    cidade     : "",
-    id_uf      : "",
-    cep        : "",
-    referencia : ""
+    logradouro : null,
+    numero     : null,
+    complemento: null,
+    bairro     : null,
+    cidade     : null,
+    id_uf      : null,
+    cep        : null,
+    referencia : null
 })
 
 
 const handleSave = async () => {
     loading.show()
 
+    camposObrigatorios.value = true;
+
     endereco.cep        = limparMascara(endereco.cep);
     paciente.cpf        = limparMascara(paciente.cpf);
     paciente.telefone_1 = limparMascara(paciente.telefone_1);
     paciente.telefone_2 = limparMascara(paciente.telefone_2);
 
-    const camposObrigatorios = [{nome: "Nome"}, {cpf: "CPF"}, {telefone_1: "Telefone"}];
+    const verificacoes       = [{
+        dados : paciente,
+        campos: ['nome', 'cpf', 'telefone_1']
+    }]
 
-    if (!verificarCamposObrigatorios(paciente, camposObrigatorios)) {
+    if (!verificarCamposObrigatorios(verificacoes)) {
+        camposObrigatorios.value = false;
         loading.hide();
         return;
     }
@@ -214,17 +221,19 @@ const buscarEnderecoCEP = async () => {
 
                     <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
                         <v-text-field
-                            label="Nome"
+                            label="Nome*"
                             type="text"
                             v-model="paciente.nome"
+                            :error="!paciente.nome && !camposObrigatorios"
                         />
                     </v-col>
 
                     <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
                         <v-text-field
-                            label="Sobrenome"
+                            label="Sobrenome*"
                             type="text"
                             v-model="paciente.sobrenome"
+                            :error="!paciente.sobrenome && !camposObrigatorios"
                         />
                     </v-col>
 
@@ -251,15 +260,17 @@ const buscarEnderecoCEP = async () => {
                             v-maska:[maskCPF]
                             :disabled="cpfDisabled"
                             v-model="paciente.cpf"
+                            :error="!paciente.cpf  && !camposObrigatorios"
                         />
                     </v-col>
 
                     <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
                         <v-text-field
-                            label="Telefone 1"
+                            label="Telefone 1*"
                             type="phone"
                             v-maska:[maskCelular]
                             v-model="paciente.telefone_1"
+                            :error="!paciente.telefone_1 && !camposObrigatorios"
                         />
                     </v-col>
 

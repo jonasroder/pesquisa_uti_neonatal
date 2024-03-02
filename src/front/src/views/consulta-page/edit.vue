@@ -3,15 +3,18 @@ import CardFormulario from "@/components/CardFormulario.vue";
 // import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
 import {serviceLoad, serviceSave} from "@/service/consulta";
-import {getIdFromUrl, formatarTelefone, getOptionsAutocomplete, adicionarParametrosURL} from "@/service/common/utils"
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
 import defaultImagePath from "@/assets/no_image.png";
+import {
+    getIdFromUrl, formatarTelefone, getOptionsAutocomplete, adicionarParametrosURL, verificarCamposObrigatorios
+} from "@/service/common/utils"
 
 
-const router      = useRouter();
-const id_paciente = ref(getIdFromUrl('id_paciente'));
-const id_consulta = ref(getIdFromUrl('id_consulta'));
+const router             = useRouter();
+const id_paciente        = ref(getIdFromUrl('id_paciente'));
+const id_consulta        = ref(getIdFromUrl('id_consulta'));
+const camposObrigatorios = ref(true);
 
 const optionsMedicamentos        = ref([]);
 const optionsSuplemento          = ref([]);
@@ -21,6 +24,12 @@ const optionsFrequencia          = ref([]);
 const optionsTipoConsulta        = ref([]);
 const optionsDiagonostico        = ref([]);
 
+const arrMedicamentoUsoPaciente = reactive([]);
+const arrSuplementoUsoPaciente  = reactive([]);
+const arrInformacaoSaude        = reactive([]);
+const arrPrescricaoMedicamento  = reactive([]);
+const arrPrescricaoSuplemento   = reactive([]);
+const arrConsultaDiagnostico    = reactive([]);
 
 onMounted(async () => {
     loading.show()
@@ -41,14 +50,6 @@ onMounted(async () => {
 
     loading.hide()
 });
-
-
-const arrMedicamentoUsoPaciente = reactive([]);
-const arrSuplementoUsoPaciente  = reactive([]);
-const arrInformacaoSaude        = reactive([]);
-const arrPrescricaoMedicamento  = reactive([]);
-const arrPrescricaoSuplemento   = reactive([]);
-const arrConsultaDiagnostico    = reactive([]);
 
 
 const getAutoCompleteOptions = async () => {
@@ -200,6 +201,34 @@ const addConsultaDiagnostico = () => {
 const handleSave = async () => {
     loading.show()
 
+    camposObrigatorios.value = true;
+
+    const verificacoes = [{
+        dados : arrMedicamentoUsoPaciente,
+        campos: ['id_medicamento']
+    }, {
+        dados : arrSuplementoUsoPaciente,
+        campos: ['id_suplemento']
+    }, {
+        dados : arrConsultaDiagnostico,
+        campos: ['id_diagnostico']
+    }, {
+        dados : arrPrescricaoMedicamento,
+        campos: ['id_medicamento']
+    }, {
+        dados : arrPrescricaoSuplemento,
+        campos: ['id_suplemento']
+    }, {
+        dados : arrInformacaoSaude,
+        campos: ['valor', 'id_tipo_informacao_saude']
+    },];
+
+    if (!verificarCamposObrigatorios(verificacoes)) {
+        camposObrigatorios.value = false;
+        loading.hide();
+        return;
+    }
+
     const data = {
         id_paciente              : paciente.id_paciente,
         id_consulta              : consulta.id_consulta,
@@ -347,9 +376,10 @@ const removerItem = (info, arrayObj, id) => {
 
                                     <v-col cols="9" sm="6" md="6" lg="6" xl="6" class="pb-0">
                                         <v-autocomplete
-                                            label="Medicamento"
+                                            label="Medicamento*"
                                             :items="optionsMedicamentos"
                                             v-model="med.id_medicamento"
+                                            :error="med.id_medicamento == null && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -358,6 +388,7 @@ const removerItem = (info, arrayObj, id) => {
                                             label="Dose (mg/ml)"
                                             type="text"
                                             v-model="med.dosagem"
+                                            :error="med.dosagem == null"
                                         />
                                     </v-col>
 
@@ -419,9 +450,10 @@ const removerItem = (info, arrayObj, id) => {
 
                                     <v-col cols="9" sm="6" md="6" lg="6" xl="6" class="pb-0">
                                         <v-autocomplete
-                                            label="Suplemento"
+                                            label="Suplemento*"
                                             :items="optionsSuplemento"
                                             v-model="sup.id_suplemento"
+                                            :error="sup.id_suplemento == null && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -496,17 +528,19 @@ const removerItem = (info, arrayObj, id) => {
 
                                     <v-col cols="9" sm="6" md="6" lg="6" xl="6" class="pb-0">
                                         <v-autocomplete
-                                            label="Selecione"
+                                            label="Selecione*"
                                             :items="optionsTipoInformacaoSaude"
                                             v-model="info.id_tipo_informacao_saude"
+                                            :error="info.id_tipo_informacao_saude == null && !camposObrigatorios"
                                         />
                                     </v-col>
 
                                     <v-col cols="12" md="4" lg="4" xl="4" class="pb-0">
                                         <v-text-field
-                                            label="Valor"
+                                            label="Valor*"
                                             type="text"
                                             v-model="info.valor"
+                                            :error="info.valor == null && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -552,9 +586,10 @@ const removerItem = (info, arrayObj, id) => {
 
                                     <v-col cols="9" sm="10" md="11" lg="11" xl="11" class="pb-0">
                                         <v-autocomplete
-                                            label="Diagnóstico"
+                                            label="Diagnóstico*"
                                             :items="optionsDiagonostico"
                                             v-model="info.id_diagnostico"
+                                            :error="info.id_diagnostico == null && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -600,12 +635,12 @@ const removerItem = (info, arrayObj, id) => {
                                         </v-btn>
                                     </v-col>
 
-
                                     <v-col cols="9" sm="7" md="7" lg="7" xl="7" class="pb-0">
                                         <v-autocomplete
-                                            label="Medicamento"
+                                            label="Medicamento*"
                                             :items="optionsMedicamentos"
                                             v-model="med.id_medicamento"
+                                            :error="med.id_medicamento == null && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -632,7 +667,6 @@ const removerItem = (info, arrayObj, id) => {
                                             v-model="med.id_periodo"
                                         />
                                     </v-col>
-
 
                                     <v-col cols="12" class="pb-0">
                                         <v-textarea
@@ -680,12 +714,12 @@ const removerItem = (info, arrayObj, id) => {
                                         </v-btn>
                                     </v-col>
 
-
                                     <v-col cols="9" sm="7" md="7" lg="7" xl="7" class="pb-0">
                                         <v-autocomplete
-                                            label="Suplemento"
+                                            label="Suplemento*"
                                             :items="optionsSuplemento"
                                             v-model="med.id_suplemento"
+                                            :error="med.id_suplemento == null && !camposObrigatorios"
                                         />
                                     </v-col>
 

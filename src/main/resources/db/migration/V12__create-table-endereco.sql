@@ -2,8 +2,8 @@
 CREATE TABLE endereco
 (
     id_endereco BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_paciente BIGINT       NOT NULL,
-    logradouro  VARCHAR(255) NOT NULL,
+    id_paciente BIGINT NOT NULL,
+    logradouro  VARCHAR(255),
     numero      VARCHAR(10),
     complemento VARCHAR(255),
     bairro      VARCHAR(100),

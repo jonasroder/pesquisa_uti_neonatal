@@ -9,4 +9,7 @@ CREATE TABLE menu
     is_active     TINYINT DEFAULT 1
 );
 
+INSERT INTO menu (id_vue_router, icon, title, activator, ordem, is_active) VALUES(1, 'fas fa-home', 'Início', NULL, 1, 1);
+INSERT INTO menu (id_vue_router, icon, title, activator, ordem, is_active) VALUES(4, 'fas fa-user', 'Pacientes', NULL, 2, 1);
+INSERT INTO menu (id_vue_router, icon, title, activator, ordem, is_active) VALUES(NULL, 'fas fa-cogs', 'Cadastros', 'a1', 3, 1);
 
