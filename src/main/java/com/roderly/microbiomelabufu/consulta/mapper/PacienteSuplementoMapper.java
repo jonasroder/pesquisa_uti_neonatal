@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public class PacienteSuplementoMapper {
     public static PacienteSuplemento pacienteSuplementoRequestToPacienteSuplemento(Consulta consulta, PacienteSuplementoRequest request) {
         PacienteSuplemento pacienteSuplemento = new PacienteSuplemento();
-        Frequencia frequencia = new Frequencia(request.id_frequencia());
-        Periodo periodo = new Periodo(request.id_periodo());
-        Suplemento suplemento = new Suplemento(request.id_suplemento());
+        Frequencia frequencia = request.id_suplemento() != null ? new Frequencia(request.id_frequencia()) : null;
+        Periodo periodo = request.id_periodo() != null ? new Periodo(request.id_periodo()) : null;
+        Suplemento suplemento = request.id_suplemento() != null ? new Suplemento(request.id_suplemento()) : null;
 
         pacienteSuplemento.setId_paciente_suplemento(request.id_paciente_suplemento());
         pacienteSuplemento.setConsulta(consulta);

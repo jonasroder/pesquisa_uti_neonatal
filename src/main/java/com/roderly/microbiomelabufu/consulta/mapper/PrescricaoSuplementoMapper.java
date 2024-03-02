@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public class PrescricaoSuplementoMapper {
     public static PrescricaoSuplemento prescricaoSuplementoRequestToPrescricaoSuplemento(Consulta consulta, PrescricaoSuplementoRequest request) {
         PrescricaoSuplemento prescricaoSuplemento = new PrescricaoSuplemento();
-        Frequencia frequencia = new Frequencia(request.id_frequencia());
-        Periodo periodo = new Periodo(request.id_periodo());
-        Suplemento suplemento = new Suplemento(request.id_suplemento());
+        Frequencia frequencia = request.id_frequencia() != null ? new Frequencia(request.id_frequencia()) : null;
+        Periodo periodo = request.id_periodo() != null ? new Periodo(request.id_periodo()) : null;
+        Suplemento suplemento = request.id_suplemento() != null ? new Suplemento(request.id_suplemento()) : null;
 
         prescricaoSuplemento.setId_prescricao_suplemento(request.id_prescricao_suplemento());
         prescricaoSuplemento.setConsulta(consulta);
@@ -30,7 +30,7 @@ public class PrescricaoSuplementoMapper {
         return prescricaoSuplemento;
     }
 
-    public static Set<PrescricaoSuplementoResponse> prescricaoSuplementoToPrescricaoSuplementoResponse(Set<PrescricaoSuplemento> prescricaoSuplementos){
+    public static Set<PrescricaoSuplementoResponse> prescricaoSuplementoToPrescricaoSuplementoResponse(Set<PrescricaoSuplemento> prescricaoSuplementos) {
         return prescricaoSuplementos.stream().map(prescricaoSuplementoResponse -> {
             return new PrescricaoSuplementoResponse(
                     prescricaoSuplementoResponse.getId_prescricao_suplemento(),

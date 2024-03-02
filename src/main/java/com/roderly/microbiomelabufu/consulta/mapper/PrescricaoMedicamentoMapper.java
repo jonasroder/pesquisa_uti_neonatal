@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public class PrescricaoMedicamentoMapper {
     public static PrescricaoMedicamento prescricaoMedicamentoRequestToPrescricaoMedicamento(Consulta consulta, PrescricaoMedicamentoRequest request) {
         PrescricaoMedicamento prescricaoMedicamento = new PrescricaoMedicamento();
-        Frequencia frequencia = new Frequencia(request.id_frequencia());
-        Periodo periodo = new Periodo(request.id_periodo());
-        Medicamento medicamento = new Medicamento(request.id_medicamento());
+        Frequencia frequencia = request.id_frequencia() != null ? new Frequencia(request.id_frequencia()) : null;
+        Periodo periodo = request.id_periodo() != null ? new Periodo(request.id_periodo()) : null;
+        Medicamento medicamento = request.id_medicamento() != null ? new Medicamento(request.id_medicamento()) : null;
 
         prescricaoMedicamento.setId_prescricao_medicamento(request.id_prescricao_medicamento());
         prescricaoMedicamento.setConsulta(consulta);
@@ -30,7 +30,7 @@ public class PrescricaoMedicamentoMapper {
         return prescricaoMedicamento;
     }
 
-    public static Set<PrescricaoMedicamentoResponse> prescricaoMedicamentoToPrescricaoMedicamentoResponse(Set<PrescricaoMedicamento> prescricaoMedicamentos){
+    public static Set<PrescricaoMedicamentoResponse> prescricaoMedicamentoToPrescricaoMedicamentoResponse(Set<PrescricaoMedicamento> prescricaoMedicamentos) {
         return prescricaoMedicamentos.stream().map(prescricaoMedicamento -> {
             return new PrescricaoMedicamentoResponse(
                     prescricaoMedicamento.getId_prescricao_medicamento(),

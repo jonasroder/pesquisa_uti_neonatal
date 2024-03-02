@@ -14,17 +14,17 @@ import java.util.stream.Collectors;
 public class PacienteMedicamentoMapper {
     public static PacienteMedicamento pacienteMedicamentoRequestToPacienteMedicamento(Consulta consulta, PacienteMedicamentoRequest request) {
         PacienteMedicamento pacienteMedicamento = new PacienteMedicamento();
-        Frequencia frequencia = new Frequencia(request.id_frequencia());
-        Periodo periodo = new Periodo(request.id_periodo());
-        Medicamento medicamento = new Medicamento(request.id_medicamento());
+        Frequencia frequencia = request.id_frequencia() != null ? new Frequencia(request.id_frequencia()) : null;
+        Periodo periodo = request.id_periodo() != null ? new Periodo(request.id_periodo()) : null;
+        Medicamento medicamento = request.id_medicamento() != null ? new Medicamento(request.id_medicamento()) : null;
 
         pacienteMedicamento.setId_paciente_medicamento(request.id_paciente_medicamento());
         pacienteMedicamento.setConsulta(consulta);
         pacienteMedicamento.setMedicamento(medicamento);
         pacienteMedicamento.setDosagem(request.dosagem());
+        pacienteMedicamento.setIs_active(request.is_active());
         pacienteMedicamento.setFrequencia(frequencia);
         pacienteMedicamento.setPeriodo(periodo);
-        pacienteMedicamento.setIs_active(request.is_active());
 
         return pacienteMedicamento;
     }

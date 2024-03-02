@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class ConsultaInformacaoSaudeMapper {
     public static ConsultaInformacaoSaude consultaInformacaoSaudeRequestToConsultaInformacaoSaude(Consulta consulta, ConsultaInformacaoSaudeRequest request) {
         ConsultaInformacaoSaude consultaInformacaoSaude = new ConsultaInformacaoSaude();
-        TipoInformacaoSaude tipoInformacaoSaude = new TipoInformacaoSaude(request.id_tipo_informacao_saude());
+        TipoInformacaoSaude tipoInformacaoSaude = request.id_tipo_informacao_saude() != null ? new TipoInformacaoSaude(request.id_tipo_informacao_saude()) : null;
 
         consultaInformacaoSaude.setId_consulta_informacao_saude(request.id_consulta_informacao_saude());
         consultaInformacaoSaude.setConsulta(consulta);

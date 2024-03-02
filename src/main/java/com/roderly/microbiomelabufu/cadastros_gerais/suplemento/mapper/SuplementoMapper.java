@@ -27,15 +27,13 @@ public class SuplementoMapper {
 
     public static SuplementoIngrediente suplementoIgredienteRequestToSuplementoIgrediente(SuplementoIngredienteRequest request, Suplemento suplemento) {
         var suplementoIgrediente = new SuplementoIngrediente();
-        var ingrediente = new Ingrediente(request.id_ingrediente());
+        var ingrediente = request.id_ingrediente() != null ? new Ingrediente(request.id_ingrediente()) : null;
 
         suplementoIgrediente.setId_suplemento_ingrediente(request.id_suplemento_ingrediente());
         suplementoIgrediente.setDosagem(request.dosagem());
         suplementoIgrediente.setIs_active(request.is_active());
         suplementoIgrediente.setSuplemento(suplemento);
-        if (request.id_ingrediente() != null) {
-            suplementoIgrediente.setIngrediente(ingrediente);
-        }
+        suplementoIgrediente.setIngrediente(ingrediente);
 
         return suplementoIgrediente;
     }

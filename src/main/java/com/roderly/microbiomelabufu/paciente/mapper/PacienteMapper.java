@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 public class PacienteMapper {
     public static Paciente PacienteRequestToPaciente(PacienteRequest request) {
         Paciente paciente = new Paciente();
-        Profissao profissao = new Profissao(request.id_profissao());
-        PlanoSaude planoSaude = new PlanoSaude(request.id_plano_saude());
-        EstadoCivil estadoCivil = new EstadoCivil(request.id_estado_civil());
-        Sexo sexo = new Sexo(request.id_sexo());
-        Etnia etnia = new Etnia(request.id_etnia());
-        Escolaridade escolaridade = new Escolaridade(request.id_escolaridade());
-        Religiao religiao = new Religiao(request.id_religiao());
+        Profissao profissao = request.id_profissao() != null ? new Profissao(request.id_profissao()) : null;
+        PlanoSaude planoSaude = request.id_plano_saude() != null ? new PlanoSaude(request.id_plano_saude()) : null;
+        EstadoCivil estadoCivil = request.id_estado_civil() != null ? new EstadoCivil(request.id_estado_civil()) : null;
+        Sexo sexo = request.id_sexo() != null ? new Sexo(request.id_sexo()) : null;
+        Etnia etnia = request.id_etnia() != null ? new Etnia(request.id_etnia()) : null;
+        Escolaridade escolaridade = request.id_escolaridade() != null ? new Escolaridade(request.id_escolaridade()) : null;
+        Religiao religiao = request.id_religiao() != null ? new Religiao(request.id_religiao()) : null;
 
         paciente.setId_paciente(request.id_paciente());
         paciente.setNome(request.nome());
@@ -48,34 +48,13 @@ public class PacienteMapper {
         paciente.setNum_visitas(request.num_visitas());
         paciente.setIndicacao(request.indicacao());
         paciente.setObservacao(request.observacao());
-        if (request.id_profissao() != null) {
-            paciente.setProfissao(profissao);
-        }
-        ;
-        if (request.id_plano_saude() != null) {
-            paciente.setPlanoSaude(planoSaude);
-        }
-        ;
-        if (request.id_estado_civil() != null) {
-            paciente.setEstadoCivil(estadoCivil);
-        }
-        ;
-        if (request.id_sexo() != null) {
-            paciente.setSexo(sexo);
-        }
-        ;
-        if (request.id_etnia() != null) {
-            paciente.setEtnia(etnia);
-        }
-        ;
-        if (request.id_religiao() != null) {
-            paciente.setReligiao(religiao);
-        }
-        ;
-        if (request.id_escolaridade() != null) {
-            paciente.setEscolaridade(escolaridade);
-        }
-        ;
+        paciente.setProfissao(profissao);
+        paciente.setPlanoSaude(planoSaude);
+        paciente.setEstadoCivil(estadoCivil);
+        paciente.setSexo(sexo);
+        paciente.setEtnia(etnia);
+        paciente.setReligiao(religiao);
+        paciente.setEscolaridade(escolaridade);
 
         return paciente;
     }

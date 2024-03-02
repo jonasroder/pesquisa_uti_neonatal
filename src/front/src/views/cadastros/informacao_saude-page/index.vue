@@ -2,7 +2,7 @@
 import {ref, onMounted} from 'vue';
 import CardListagem from "@/components/CardListagem.vue";
 import {loading} from "@/plugins/loadingService";
-import {serviceList} from "@/service/cadastros/ingrediente";
+import {serviceList} from "@/service/cadastros/informacao_saude";
 import {useRouter} from "vue-router";
 
 
@@ -31,16 +31,16 @@ const headers = ref([{
 }]);
 
 
-const navigateToEditPage = (id_ingrediente) => {
+const navigateToEditPage = (id_tipo_informacao_saude) => {
     router.push({
-        name : 'Ingrediente-Page',
-        query: {id: id_ingrediente}
+        name : 'InformacaoSaude-Page',
+        query: {id: id_tipo_informacao_saude}
     });
 };
 
 
 const handleNew = () => {
-    router.push({name: 'Ingrediente-Page'});
+    router.push({name: 'InformacaoSaude-Page'});
 }
 
 
@@ -48,7 +48,7 @@ const handleNew = () => {
 
 
 <template>
-    <CardListagem title="Lista de Ingredientes"
+    <CardListagem title="Lista de Informações de Saúde"
                   subtitle="Escolha um para editar ou cadastre um novo"
                   @handleNew="handleNew">
 
@@ -73,7 +73,7 @@ const handleNew = () => {
 
                 <!-- Coluna Nome -->
                 <template v-slot:[`item.nome`]="{ item }">
-                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id_ingrediente)">
+                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id_tipo_informacao_saude)">
                         <b>{{ item.nome }}</b> </a>
                 </template>
 

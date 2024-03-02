@@ -8,24 +8,22 @@ import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.model.Medicamen
 
 public class MedicamentoMapper {
 
-    public static Medicamento medicamentoRequestToMedicamento(MedicamentoRequest medicamentoRequest){
+    public static Medicamento medicamentoRequestToMedicamento(MedicamentoRequest medicamentoRequest) {
         var medicamento = new Medicamento();
-        var fabricanteMedicamento = new FabricanteMedicamento(medicamentoRequest.id_fabricante_medicamento());
+        var fabricanteMedicamento = medicamentoRequest.id_fabricante_medicamento() != null ? new FabricanteMedicamento(medicamentoRequest.id_fabricante_medicamento()) : null;
 
-       medicamento.setId_medicamento(medicamentoRequest.id_medicamento());
-       medicamento.setNome(medicamentoRequest.nome());
-       medicamento.setDosagem(medicamentoRequest.dosagem());
-       medicamento.setInstrucoes(medicamentoRequest.instrucoes());
-       medicamento.setIs_active(medicamentoRequest.is_active());
-       if (medicamentoRequest.id_fabricante_medicamento() != null){
-           medicamento.setFabricanteMedicamento(fabricanteMedicamento);
-       }
+        medicamento.setId_medicamento(medicamentoRequest.id_medicamento());
+        medicamento.setNome(medicamentoRequest.nome());
+        medicamento.setDosagem(medicamentoRequest.dosagem());
+        medicamento.setInstrucoes(medicamentoRequest.instrucoes());
+        medicamento.setIs_active(medicamentoRequest.is_active());
+        medicamento.setFabricanteMedicamento(fabricanteMedicamento);
 
-       return medicamento;
+        return medicamento;
     }
 
 
-    public static MedicamentoResponse medicamentoToMedicamentoResponse(Medicamento medicamento){
+    public static MedicamentoResponse medicamentoToMedicamentoResponse(Medicamento medicamento) {
         return new MedicamentoResponse(
                 medicamento.getId_medicamento(),
                 medicamento.getNome(),
@@ -37,7 +35,7 @@ public class MedicamentoMapper {
     }
 
 
-    public static MedicamentoListResponse medicamentoToMedicamentoListResponse(Medicamento medicamento){
+    public static MedicamentoListResponse medicamentoToMedicamentoListResponse(Medicamento medicamento) {
         return new MedicamentoListResponse(
                 medicamento.getId_medicamento(),
                 medicamento.getNome(),

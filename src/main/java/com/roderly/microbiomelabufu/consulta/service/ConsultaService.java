@@ -55,33 +55,43 @@ public class ConsultaService {
         Consulta consultaSalva = this.consultaRepository.save(consulta);
 
         for (ConsultaDiagnosticoRequest consultaDiagnosticoRequest : request.arrConsultaDiagnostico()) {
-            ConsultaDiagnostico consultaDiagnostico = ConsultaDiagnosticoMapper.consultaDiagnosticoRequestToConsultaDiagnostico(consulta, consultaDiagnosticoRequest);
+            ConsultaDiagnostico consultaDiagnostico = ConsultaDiagnosticoMapper.consultaDiagnosticoRequestToConsultaDiagnostico(consultaSalva, consultaDiagnosticoRequest);
             this.consultaDiagnosticoRepository.save(consultaDiagnostico);
         }
 
         for (PacienteMedicamentoRequest pacienteMedicamentoRequest : request.arrMedicamentoUsoPaciente()) {
-            PacienteMedicamento pacienteMedicamento = PacienteMedicamentoMapper.pacienteMedicamentoRequestToPacienteMedicamento(consulta, pacienteMedicamentoRequest);
-            this.pacienteMedicamentoRepository.save(pacienteMedicamento);
+            if (pacienteMedicamentoRequest.id_medicamento() != null) {
+                PacienteMedicamento pacienteMedicamento = PacienteMedicamentoMapper.pacienteMedicamentoRequestToPacienteMedicamento(consultaSalva, pacienteMedicamentoRequest);
+                this.pacienteMedicamentoRepository.save(pacienteMedicamento);
+            }
         }
 
         for (PacienteSuplementoRequest pacienteSuplementoRequest : request.arrSuplementoUsoPaciente()) {
-            PacienteSuplemento pacienteSuplemento = PacienteSuplementoMapper.pacienteSuplementoRequestToPacienteSuplemento(consulta, pacienteSuplementoRequest);
-            this.pacienteSuplementoRepository.save(pacienteSuplemento);
+            if (pacienteSuplementoRequest.id_suplemento() != null) {
+                PacienteSuplemento pacienteSuplemento = PacienteSuplementoMapper.pacienteSuplementoRequestToPacienteSuplemento(consultaSalva, pacienteSuplementoRequest);
+                this.pacienteSuplementoRepository.save(pacienteSuplemento);
+            }
         }
 
         for (ConsultaInformacaoSaudeRequest consultaInformacaoSaudeRequest : request.arrInformacaoSaude()) {
-            ConsultaInformacaoSaude consultaInformacaoSaude = ConsultaInformacaoSaudeMapper.consultaInformacaoSaudeRequestToConsultaInformacaoSaude(consulta, consultaInformacaoSaudeRequest);
-            this.consultaInformacaoSaudeRepository.save(consultaInformacaoSaude);
+            if (consultaInformacaoSaudeRequest.id_tipo_informacao_saude() != null) {
+                ConsultaInformacaoSaude consultaInformacaoSaude = ConsultaInformacaoSaudeMapper.consultaInformacaoSaudeRequestToConsultaInformacaoSaude(consultaSalva, consultaInformacaoSaudeRequest);
+                this.consultaInformacaoSaudeRepository.save(consultaInformacaoSaude);
+            }
         }
 
         for (PrescricaoMedicamentoRequest prescricaoMedicamentoRequest : request.arrPrescricaoMedicamento()) {
-            PrescricaoMedicamento prescricaoMedicamento = PrescricaoMedicamentoMapper.prescricaoMedicamentoRequestToPrescricaoMedicamento(consulta, prescricaoMedicamentoRequest);
-            this.prescricaoMedicamentoRepository.save(prescricaoMedicamento);
+            if (prescricaoMedicamentoRequest.id_medicamento() != null) {
+                PrescricaoMedicamento prescricaoMedicamento = PrescricaoMedicamentoMapper.prescricaoMedicamentoRequestToPrescricaoMedicamento(consultaSalva, prescricaoMedicamentoRequest);
+                this.prescricaoMedicamentoRepository.save(prescricaoMedicamento);
+            }
         }
 
         for (PrescricaoSuplementoRequest prescricaoSuplementoRequest : request.arrPrescricaoSuplemento()) {
-            PrescricaoSuplemento prescricaoSuplemento = PrescricaoSuplementoMapper.prescricaoSuplementoRequestToPrescricaoSuplemento(consulta, prescricaoSuplementoRequest);
-            this.prescricaoSuplementoRepository.save(prescricaoSuplemento);
+            if (prescricaoSuplementoRequest.id_suplemento() != null) {
+                PrescricaoSuplemento prescricaoSuplemento = PrescricaoSuplementoMapper.prescricaoSuplementoRequestToPrescricaoSuplemento(consultaSalva, prescricaoSuplementoRequest);
+                this.prescricaoSuplementoRepository.save(prescricaoSuplemento);
+            }
         }
 
         return new ApiResponseDTO((long) consultaSalva.getId_consulta(), "A consulta foi salva!");
