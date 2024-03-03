@@ -22,7 +22,7 @@ axios.interceptors.request.use(config => {
 		return Promise.reject("No token found");
 	}
 
-	if (!config.url.endsWith('/renew') && !config.url.endsWith('/dictionary')) {
+	if (!config.url.endsWith('/renew') && !config.url.endsWith('/autocomplete')) {
 		renovarToken()
 	}
 
