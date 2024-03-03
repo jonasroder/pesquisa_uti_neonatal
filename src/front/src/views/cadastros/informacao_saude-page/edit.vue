@@ -6,13 +6,22 @@ import {loading} from "@/plugins/loadingService";
 import {getIdFromUrl, adicionarParametrosURL} from "@/service/common/utils"
 import {serviceSave, serviceLoad} from "@/service/cadastros/informacao_saude";
 
+
+const props = defineProps({
+    confUrl: {
+        type   : Boolean,
+        default: true
+    }
+});
+
+const emit   = defineEmits(['saved']);
 const router = useRouter();
 const id     = ref(getIdFromUrl());
 
 
 onMounted(async () => {
     loading.show()
-    if (id.value > 0) {
+    if (id.value > 0 && props.confUrl) {
         const data             = await serviceLoad(id.value);
         informacao_saude.value = data;
     }
@@ -34,9 +43,11 @@ const handleSave = async () => {
     const res  = await serviceSave(data);
 
     id.value = res.id;
-    if (id.value > 0) {
+    if (id.value > 0 && props.confUrl) {
         informacao_saude.value.id_tipo_informacao_saude = id.value;
         adicionarParametrosURL({id: res.id});
+    } else {
+        emit('close_modal');
     }
 
     loading.hide()

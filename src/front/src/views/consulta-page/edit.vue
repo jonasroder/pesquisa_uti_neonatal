@@ -1,20 +1,25 @@
 <script setup>
 import CardFormulario from "@/components/CardFormulario.vue";
-// import {setNotification} from "@/plugins/notificationService";
 import {onMounted, reactive, ref} from "vue";
 import {serviceLoad, serviceSave} from "@/service/consulta";
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
 import defaultImagePath from "@/assets/no_image.png";
+import MedicamentoForm from '@/views/cadastros/medicamento-page/edit.vue';
+import SuplementoForm from '@/views/cadastros/suplemento-page/edit.vue';
+import DiagnosticoForm from '@/views/cadastros/diagnostico-page/edit.vue';
+import InfoSaudeForm from '@/views/cadastros/informacao_saude-page/edit.vue';
 import {
     getIdFromUrl, formatarTelefone, getOptionsAutocomplete, adicionarParametrosURL, verificarCamposObrigatorios
 } from "@/service/common/utils"
 
 
-const router             = useRouter();
-const id_paciente        = ref(getIdFromUrl('id_paciente'));
-const id_consulta        = ref(getIdFromUrl('id_consulta'));
-const camposObrigatorios = ref(true);
+const router               = useRouter();
+const id_paciente          = ref(getIdFromUrl('id_paciente'));
+const id_consulta          = ref(getIdFromUrl('id_consulta'));
+const camposObrigatorios   = ref(true);
+const modalCadastroRapido  = ref(false)
+const moduloCadastroRapido = ref("")
 
 const optionsMedicamentos        = ref([]);
 const optionsSuplemento          = ref([]);
@@ -282,6 +287,15 @@ const removerItem = (info, arrayObj, id) => {
     }
 }
 
+const fecharModalCadastroRapido = () => {
+    getAutoCompleteOptions();
+    modalCadastroRapido.value = false
+}
+
+const cadastroRapido = (modulo) => {
+    moduloCadastroRapido.value = modulo;
+    modalCadastroRapido.value  = true;
+}
 
 </script>
 
@@ -299,9 +313,11 @@ const removerItem = (info, arrayObj, id) => {
 
             <v-col cols="12" md="4" lg="4">
                 <div class="text-h5 mb-2"><b>Paciente:</b> {{ paciente.nome }}</div>
-                <div class="text-subtitle-1 mb-2"><b>Idade:</b> {{ paciente.idade }} anos</div>
+                <div class="text-subtitle-1 mb-2"><b>Idade:</b> {{ paciente.idade }}
+                    <span v-if="paciente.idade !== null">anos</span></div>
                 <div class="text-subtitle-1 mb-2">
-                    <b>Telefone:</b> {{ formatarTelefone(paciente.telefone_1) }} / {{ formatarTelefone(paciente.telefone_2) }}
+                    <b>Telefone:</b> {{ formatarTelefone(paciente.telefone_1) }}
+                    <span v-if="paciente.telefone_2">/ {{ formatarTelefone(paciente.telefone_2) }}</span>
                 </div>
                 <div class="text-subtitle-1 mb-2"><b>Plano de Saúde:</b> {{ paciente.plano_saude }}</div>
             </v-col>
@@ -354,7 +370,21 @@ const removerItem = (info, arrayObj, id) => {
                     <v-card-item>
                         <div>
                             <div class="text-h6 mb-1">
-                                Medicamentos de uso do Paciente
+                                <v-row class="align-center justify-space-between">
+                                    <v-col>
+                                        <span>Medicamentos de uso do Paciente</span>
+                                    </v-col>
+
+                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
+                                        <v-tooltip text="Cadastrar novo medicamento">
+                                            <template v-slot:activator="{ props }">
+                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('medicamento')">
+                                                    <v-icon size="small">fas fa-plus</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-tooltip>
+                                    </v-col>
+                                </v-row>
                             </div>
 
                             <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
@@ -379,7 +409,7 @@ const removerItem = (info, arrayObj, id) => {
                                             label="Medicamento*"
                                             :items="optionsMedicamentos"
                                             v-model="med.id_medicamento"
-                                            :error="med.id_medicamento == null && !camposObrigatorios"
+                                            :error="!med.id_medicamento && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -388,7 +418,6 @@ const removerItem = (info, arrayObj, id) => {
                                             label="Dose (mg/ml)"
                                             type="text"
                                             v-model="med.dosagem"
-                                            :error="med.dosagem == null"
                                         />
                                     </v-col>
 
@@ -415,9 +444,13 @@ const removerItem = (info, arrayObj, id) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addMedicamentoUsoPaciente">
-                            Adicionar
-                        </v-btn>
+                        <v-tooltip text="Adicionar novo medicamento de uso do paciente">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addMedicamentoUsoPaciente">
+                                    Adicionar
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
                     </v-card-actions>
 
                 </v-card>
@@ -429,7 +462,21 @@ const removerItem = (info, arrayObj, id) => {
                     <v-card-item>
                         <div>
                             <div class="text-h6 mb-1">
-                                Suplementos de uso do Paciente
+                                <v-row class="align-center justify-space-between">
+                                    <v-col>
+                                        <span> Suplementos de uso do Paciente</span>
+                                    </v-col>
+
+                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
+                                        <v-tooltip text="Cadastrar novo suplemento">
+                                            <template v-slot:activator="{ props }">
+                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('suplemento')">
+                                                    <v-icon size="small">fas fa-plus</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-tooltip>
+                                    </v-col>
+                                </v-row>
                             </div>
 
                             <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
@@ -453,7 +500,7 @@ const removerItem = (info, arrayObj, id) => {
                                             label="Suplemento*"
                                             :items="optionsSuplemento"
                                             v-model="sup.id_suplemento"
-                                            :error="sup.id_suplemento == null && !camposObrigatorios"
+                                            :error="!sup.id_suplemento && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -488,9 +535,13 @@ const removerItem = (info, arrayObj, id) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addSuplementoUsoPaciente">
-                            Adicionar
-                        </v-btn>
+                        <v-tooltip text="Adicionar novo suplemento de uso do paciente">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addSuplementoUsoPaciente">
+                                    Adicionar
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
                     </v-card-actions>
 
                 </v-card>
@@ -507,7 +558,21 @@ const removerItem = (info, arrayObj, id) => {
                     <v-card-item>
                         <div>
                             <div class="text-h6 mb-1">
-                                Informações Gerais Saúde
+                                <v-row class="align-center justify-space-between">
+                                    <v-col>
+                                        <span>Informações Gerais Saúde</span>
+                                    </v-col>
+
+                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
+                                        <v-tooltip text="Cadastrar nova informação de saúde">
+                                            <template v-slot:activator="{ props }">
+                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('info_saude')">
+                                                    <v-icon size="small">fas fa-plus</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-tooltip>
+                                    </v-col>
+                                </v-row>
                             </div>
 
                             <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
@@ -531,7 +596,7 @@ const removerItem = (info, arrayObj, id) => {
                                             label="Selecione*"
                                             :items="optionsTipoInformacaoSaude"
                                             v-model="info.id_tipo_informacao_saude"
-                                            :error="info.id_tipo_informacao_saude == null && !camposObrigatorios"
+                                            :error="!info.id_tipo_informacao_saude && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -540,7 +605,7 @@ const removerItem = (info, arrayObj, id) => {
                                             label="Valor*"
                                             type="text"
                                             v-model="info.valor"
-                                            :error="info.valor == null && !camposObrigatorios"
+                                            :error="!info.valor && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -551,9 +616,13 @@ const removerItem = (info, arrayObj, id) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addInformacaoSaude">
-                            Adicionar
-                        </v-btn>
+                        <v-tooltip text="Adicionar nova informação do paciente">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addInformacaoSaude">
+                                    Adicionar
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
                     </v-card-actions>
 
                 </v-card>
@@ -565,7 +634,21 @@ const removerItem = (info, arrayObj, id) => {
                     <v-card-item>
                         <div>
                             <div class="text-h6 mb-1">
-                                Diagnósticos
+                                <v-row class="align-center justify-space-between">
+                                    <v-col>
+                                        <span>Diagnósticos</span>
+                                    </v-col>
+
+                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
+                                        <v-tooltip text="Cadastrar novo diagnóstico">
+                                            <template v-slot:activator="{ props }">
+                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('diagnostico')">
+                                                    <v-icon size="small">fas fa-plus</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-tooltip>
+                                    </v-col>
+                                </v-row>
                             </div>
 
                             <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
@@ -589,7 +672,7 @@ const removerItem = (info, arrayObj, id) => {
                                             label="Diagnóstico*"
                                             :items="optionsDiagonostico"
                                             v-model="info.id_diagnostico"
-                                            :error="info.id_diagnostico == null && !camposObrigatorios"
+                                            :error="!info.id_diagnostico && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -600,9 +683,13 @@ const removerItem = (info, arrayObj, id) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addConsultaDiagnostico">
-                            Adicionar
-                        </v-btn>
+                        <v-tooltip text="Adicionar novo diagnóstico">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addConsultaDiagnostico">
+                                    Adicionar
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
                     </v-card-actions>
 
                 </v-card>
@@ -616,7 +703,21 @@ const removerItem = (info, arrayObj, id) => {
                     <v-card-item>
                         <div>
                             <div class="text-h6 mb-1">
-                                Prescrição Medicamentos
+                                <v-row class="align-center justify-space-between">
+                                    <v-col>
+                                        <span>Prescrição Medicamentos</span>
+                                    </v-col>
+
+                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
+                                        <v-tooltip text="Cadastrar novo medicamento">
+                                            <template v-slot:activator="{ props }">
+                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('medicamento')">
+                                                    <v-icon size="small">fas fa-plus</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-tooltip>
+                                    </v-col>
+                                </v-row>
                             </div>
 
                             <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
@@ -640,7 +741,7 @@ const removerItem = (info, arrayObj, id) => {
                                             label="Medicamento*"
                                             :items="optionsMedicamentos"
                                             v-model="med.id_medicamento"
-                                            :error="med.id_medicamento == null && !camposObrigatorios"
+                                            :error="!med.id_medicamento && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -682,9 +783,13 @@ const removerItem = (info, arrayObj, id) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoMedicamento">
-                            Adicionar
-                        </v-btn>
+                        <v-tooltip text="Adicionar nova prescrição de medicamento">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoMedicamento">
+                                    Adicionar
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -695,7 +800,21 @@ const removerItem = (info, arrayObj, id) => {
                     <v-card-item>
                         <div>
                             <div class="text-h6 mb-1">
-                                Prescrição Suplementos
+                                <v-row class="align-center justify-space-between">
+                                    <v-col>
+                                        <span>Prescrição Suplementos</span>
+                                    </v-col>
+
+                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
+                                        <v-tooltip text="Cadastrar novo suplemento">
+                                            <template v-slot:activator="{ props }">
+                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('suplemento')">
+                                                    <v-icon size="small">fas fa-plus</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-tooltip>
+                                    </v-col>
+                                </v-row>
                             </div>
 
                             <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
@@ -719,7 +838,7 @@ const removerItem = (info, arrayObj, id) => {
                                             label="Suplemento*"
                                             :items="optionsSuplemento"
                                             v-model="med.id_suplemento"
-                                            :error="med.id_suplemento == null && !camposObrigatorios"
+                                            :error="!med.id_suplemento && !camposObrigatorios"
                                         />
                                     </v-col>
 
@@ -761,9 +880,13 @@ const removerItem = (info, arrayObj, id) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoSuplemento">
-                            Adicionar
-                        </v-btn>
+                        <v-tooltip text="Adicionar nova prescrição de suplemento">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoSuplemento">
+                                    Adicionar
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
                     </v-card-actions>
 
                 </v-card>
@@ -814,6 +937,13 @@ const removerItem = (info, arrayObj, id) => {
 
 
         </v-row>
+
+        <v-dialog v-model="modalCadastroRapido" transition="dialog-top-transition" width="60%">
+            <MedicamentoForm v-if="moduloCadastroRapido == 'medicamento'" @close_modal="fecharModalCadastroRapido" :isModal="true" :confUrl="false"/>
+            <SuplementoForm v-else-if="moduloCadastroRapido == 'suplemento'" @close_modal="fecharModalCadastroRapido" :isModal="true" :confUrl="false"/>
+            <DiagnosticoForm v-else-if="moduloCadastroRapido == 'diagnostico'" @close_modal="fecharModalCadastroRapido" :isModal="true" :confUrl="false"/>
+            <InfoSaudeForm v-else-if="moduloCadastroRapido == 'info_saude'" @close_modal="fecharModalCadastroRapido" :isModal="true" :confUrl="false"/>
+        </v-dialog>
 
 
     </card-formulario>

@@ -1,11 +1,19 @@
 <script setup>
 import {useRouter} from "vue-router";
-import {onMounted, ref} from "vue";
+import {defineProps, onMounted, ref} from "vue";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {loading} from "@/plugins/loadingService";
 import {getIdFromUrl, adicionarParametrosURL, getOptionsAutocomplete} from "@/service/common/utils"
 import {serviceSave, serviceLoad} from "@/service/cadastros/suplemento";
 
+const props = defineProps({
+    confUrl: {
+        type   : Boolean,
+        default: true
+    }
+});
+
+const emit                     = defineEmits(['saved']);
 const router                   = useRouter();
 const optionsIngrediente       = ref([]);
 const id                       = ref(getIdFromUrl());
@@ -32,10 +40,10 @@ onMounted(async () => {
     loading.show()
     await getOptionsIngrediente();
 
-    if (id.value > 0) {
-        const data        = await serviceLoad(id.value);
+    if (id.value > 0 && props.confUrl) {
+        const data                     = await serviceLoad(id.value);
         arrSuplementoIngrediente.value = data.arrSuplementosIngredientes;
-        suplemento.value = data.suplementoResponse;
+        suplemento.value               = data.suplementoResponse;
     }
 
     loading.hide()
@@ -55,17 +63,19 @@ const handleSave = async () => {
     loading.show()
 
     const data = {
-        suplementoRequest : suplemento.value,
-        suplementosIngredienteRequest : arrSuplementoIngrediente.value
+        suplementoRequest            : suplemento.value,
+        suplementosIngredienteRequest: arrSuplementoIngrediente.value
     }
 
 
-    const res  = await serviceSave(data);
+    const res = await serviceSave(data);
 
     id.value = res.id;
-    if (id.value > 0) {
+    if (id.value > 0 && props.confUrl) {
         suplemento.value.id_suplemento = id.value;
         adicionarParametrosURL({id: res.id});
+    } else {
+        emit('close_modal');
     }
 
     loading.hide()
@@ -140,7 +150,7 @@ const removerItem = (info, arrayObj, id) => {
                         />
                     </v-col>
 
-                    <v-col cols="12"  sm="12" md="6" lg="6" xl="6">
+                    <v-col cols="12" sm="12" md="6" lg="6" xl="6">
                         <v-textarea
                             label="Observações"
                             v-model="suplemento.instrucoes_uso"
@@ -148,7 +158,7 @@ const removerItem = (info, arrayObj, id) => {
                     </v-col>
 
 
-                    <v-col cols="12"  sm="12" md="6" lg="6" xl="6">
+                    <v-col cols="12" sm="12" md="6" lg="6" xl="6">
                         <v-card class="mx-auto" variant="elevated">
                             <v-card-item>
                                 <div>

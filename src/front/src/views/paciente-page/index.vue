@@ -156,9 +156,17 @@ const editarConsulta = (id_paciente, id_consulta) => {
 
                 <!-- Botão nova consulta -->
                 <template v-slot:[`item.action`]="{ item }">
-                    <v-col cols="auto">
-                        <v-btn color="cinzaAzulado" icon="fas fa-plus" variant="elevated" size="small" @click="createNewConsulta(item.id_paciente)"></v-btn>
+
+                    <v-col class="text-right align-center">
+                        <v-tooltip text="Cadastrar nova consulta">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="createNewConsulta(item.id_paciente)">
+                                    <v-icon size="small">fas fa-plus</v-icon>
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
                     </v-col>
+
                 </template>
 
 

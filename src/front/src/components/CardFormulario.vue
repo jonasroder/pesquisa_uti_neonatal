@@ -13,7 +13,9 @@
 
                         <v-col cols="12" sm="12" md="4" lg="2">
                             <div class="d-flex justify-end mt-3 mr-2">
-                                <v-btn class="mr-2" variant="elevated" color="cinzaAzulado" @click="$emit('handleBack')">Voltar</v-btn>
+                                <v-btn v-if="isModal" class="mr-2" variant="elevated" color="cinzaAzulado" @click="$emit('close_modal')">Fechar</v-btn>
+                                <v-btn v-else variant="elevated" class="mr-2" color="cinzaAzulado" @click="$emit('handleBack')">Voltar</v-btn>
+
                                 <v-btn color="azulEscuro" variant="elevated" @click="$emit('handleSave')">Salvar</v-btn>
                             </div>
                         </v-col>
@@ -44,6 +46,10 @@ defineProps({
     subtitle: {
         type   : String,
         default: ''
+    },
+    isModal: {
+        type: Boolean,
+        default: false
     }
 });
 </script>
