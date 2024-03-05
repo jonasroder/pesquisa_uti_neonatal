@@ -43,15 +43,20 @@ onMounted(async () => {
 
     if (id.value > 0) {
         cpfDisabled.value = true;
-        const data        = await serviceLoad(id.value);
-
-        Object.assign(paciente, data.pacienteResponse);
-        Object.assign(endereco, data.enderecoResponse);
-        foto_perfil.value = data.fotoPerfilResponse?.caminho ?? null;
+        await getDadosPaciente();
     }
 
     loading.hide()
 });
+
+
+const getDadosPaciente = async () => {
+    const data        = await serviceLoad(id.value);
+
+    Object.assign(paciente, data.pacienteResponse);
+    Object.assign(endereco, data.enderecoResponse);
+    foto_perfil.value = data.fotoPerfilResponse?.caminho ?? null;
+}
 
 
 const getOpcoesAutocomplete = async () => {
@@ -173,6 +178,7 @@ const handleSave = async () => {
         paciente.id_paciente = res.id;
         cpfDisabled.value    = true;
         adicionarParametrosURL({id: res.id});
+        await getDadosPaciente();
     }
 
     loading.hide()
@@ -186,7 +192,7 @@ const handleBack = () => {
 
 const buscarEnderecoCEP = async () => {
     let respEndereco = {};
-    if (endereco.cep.length >= 8) {
+    if (endereco.cep?.length >= 8) {
         respEndereco = await getEnderecoByCep(endereco.cep);
     } else {
         setNotification("O CEP é invalido", "error");
