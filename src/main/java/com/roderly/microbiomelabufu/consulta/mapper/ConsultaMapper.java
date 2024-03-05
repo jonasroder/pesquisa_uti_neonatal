@@ -40,7 +40,7 @@ public class ConsultaMapper {
     public static Consulta conusltaCompletoRequestToConsulta(ConsultaCompletoRequest request) {
         Consulta consulta = new Consulta();
         Paciente paciente = new Paciente(request.id_paciente());
-        var data = request.id_consulta() == null ? LocalDateTime.now() : request.data_hora();
+        var data = request.id_consulta() == 0 ? LocalDateTime.now() : request.data_hora();
 
         consulta.setId_consulta(request.id_consulta());
         consulta.setPaciente(paciente);
