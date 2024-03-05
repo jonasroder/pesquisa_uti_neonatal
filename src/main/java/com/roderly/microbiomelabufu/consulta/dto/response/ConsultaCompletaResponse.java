@@ -1,6 +1,5 @@
 package com.roderly.microbiomelabufu.consulta.dto.response;
 
-import java.util.List;
 import java.util.Set;
 
 public record ConsultaCompletaResponse(
@@ -11,6 +10,7 @@ public record ConsultaCompletaResponse(
         Set<ConsultaInformacaoSaudeResponse> consultaInformacoesSaude,
         Set<ConsultaDiagnosticoResponse> consultaDiagnosticos,
         Set<PrescricaoMedicamentoResponse> prescricaoMedicamentos,
-        Set<PrescricaoSuplementoResponse> prescricaoSuplementos
+        Set<PrescricaoSuplementoResponse> prescricaoSuplementos,
+        Set<ArquivoConsultaReponse> arquivosConsulta
 ) {
 }

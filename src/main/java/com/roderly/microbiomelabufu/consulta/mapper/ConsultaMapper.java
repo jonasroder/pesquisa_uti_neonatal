@@ -40,11 +40,12 @@ public class ConsultaMapper {
     public static Consulta conusltaCompletoRequestToConsulta(ConsultaCompletoRequest request) {
         Consulta consulta = new Consulta();
         Paciente paciente = new Paciente(request.id_paciente());
+        var data = request.id_consulta() == null ? LocalDateTime.now() : request.data_hora();
 
         consulta.setId_consulta(request.id_consulta());
         consulta.setPaciente(paciente);
         consulta.setId_tipo_consulta(request.id_tipo_consulta());
-        consulta.setData_hora(LocalDateTime.now());
+        consulta.setData_hora(data);
         consulta.setObservacoes(request.observacoes());
         consulta.setSintomas(request.sintomas());
         consulta.setMedico(UsuarioService.getUsuarioAutenticado());
@@ -57,6 +58,7 @@ public class ConsultaMapper {
         return new ConsultaResponse(
                 consulta.getId_consulta(),
                 consulta.getId_tipo_consulta(),
+                consulta.getData_hora(),
                 consulta.getSintomas(),
                 consulta.getObservacoes(),
                 consulta.getIs_active()

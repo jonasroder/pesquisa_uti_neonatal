@@ -1,7 +1,7 @@
 <script setup>
 import CardFormulario from "@/components/CardFormulario.vue";
 import {onMounted, reactive, ref} from "vue";
-import {serviceLoad, serviceSave} from "@/service/consulta";
+import {serviceDownloadArquivo, serviceLoad, serviceSave, serviceUpload} from "@/service/consulta";
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
 import defaultImagePath from "@/assets/no_image.png";
@@ -10,7 +10,12 @@ import SuplementoForm from '@/views/cadastros/suplemento-page/edit.vue';
 import DiagnosticoForm from '@/views/cadastros/diagnostico-page/edit.vue';
 import InfoSaudeForm from '@/views/cadastros/informacao_saude-page/edit.vue';
 import {
-    getIdFromUrl, formatarTelefone, getOptionsAutocomplete, adicionarParametrosURL, verificarCamposObrigatorios
+    getIdFromUrl,
+    formatarTelefone,
+    getOptionsAutocomplete,
+    adicionarParametrosURL,
+    verificarCamposObrigatorios,
+    getScreenSize
 } from "@/service/common/utils"
 
 
@@ -18,8 +23,9 @@ const router               = useRouter();
 const id_paciente          = ref(getIdFromUrl('id_paciente'));
 const id_consulta          = ref(getIdFromUrl('id_consulta'));
 const camposObrigatorios   = ref(true);
-const modalCadastroRapido  = ref(false)
-const moduloCadastroRapido = ref("")
+const modalCadastroRapido  = ref(false);
+const moduloCadastroRapido = ref("");
+const tamanhoModal         = ref("");
 
 const optionsMedicamentos        = ref([]);
 const optionsSuplemento          = ref([]);
@@ -28,6 +34,7 @@ const optionsPeriodo             = ref([]);
 const optionsFrequencia          = ref([]);
 const optionsTipoConsulta        = ref([]);
 const optionsDiagonostico        = ref([]);
+const optionsTipoAquivo          = ref([]);
 
 const arrMedicamentoUsoPaciente = reactive([]);
 const arrSuplementoUsoPaciente  = reactive([]);
@@ -35,6 +42,9 @@ const arrInformacaoSaude        = reactive([]);
 const arrPrescricaoMedicamento  = reactive([]);
 const arrPrescricaoSuplemento   = reactive([]);
 const arrConsultaDiagnostico    = reactive([]);
+const arrUpload                 = reactive([]);
+const arrArquivos               = reactive([]);
+
 
 onMounted(async () => {
     loading.show()
@@ -42,19 +52,26 @@ onMounted(async () => {
     await getAutoCompleteOptions();
 
     if (id_paciente.value > 0) {
-        const data = await serviceLoad(id_paciente.value, id_consulta.value);
-        Object.assign(consulta, data.consultaResponse);
-        Object.assign(paciente, data.pacienteConsultaResponse);
-        Object.assign(arrMedicamentoUsoPaciente, data.pacienteMedicamentos);
-        Object.assign(arrSuplementoUsoPaciente, data.pacienteSuplementos);
-        Object.assign(arrInformacaoSaude, data.consultaInformacoesSaude);
-        Object.assign(arrConsultaDiagnostico, data.consultaDiagnosticos);
-        Object.assign(arrPrescricaoMedicamento, data.prescricaoMedicamentos);
-        Object.assign(arrPrescricaoSuplemento, data.prescricaoSuplementos);
+        await carregarDadosConsulta();
     }
 
     loading.hide()
 });
+
+
+const carregarDadosConsulta = async () => {
+    const data = await serviceLoad(id_paciente.value, id_consulta.value);
+    Object.assign(consulta, data.consultaResponse);
+    Object.assign(paciente, data.pacienteConsultaResponse);
+    Object.assign(arrMedicamentoUsoPaciente, data.pacienteMedicamentos);
+    Object.assign(arrSuplementoUsoPaciente, data.pacienteSuplementos);
+    Object.assign(arrInformacaoSaude, data.consultaInformacoesSaude);
+    Object.assign(arrConsultaDiagnostico, data.consultaDiagnosticos);
+    Object.assign(arrPrescricaoMedicamento, data.prescricaoMedicamentos);
+    Object.assign(arrPrescricaoSuplemento, data.prescricaoSuplementos);
+    Object.assign(arrArquivos, data.arquivosConsulta);
+    debugger
+}
 
 
 const getAutoCompleteOptions = async () => {
@@ -83,6 +100,10 @@ const getAutoCompleteOptions = async () => {
         descColumn: 'descricao',
         tableName : 'tipo_consulta'
     }), getOptionsAutocomplete({
+        idColumn  : 'id_tipo_arquivo',
+        descColumn: 'descricao',
+        tableName : 'tipo_arquivo'
+    }), getOptionsAutocomplete({
         idColumn  : 'id_diagnostico',
         descColumn: 'CONCAT(nome, IFNULL(CONCAT(" (cid: ", codigo_cid, ")"), ""))',
         tableName : 'diagnostico'
@@ -94,8 +115,10 @@ const getAutoCompleteOptions = async () => {
     optionsPeriodo.value             = results[3];
     optionsFrequencia.value          = results[4];
     optionsTipoConsulta.value        = results[5];
-    optionsDiagonostico.value        = results[6];
+    optionsTipoAquivo.value          = results[6];
+    optionsDiagonostico.value        = results[7];
 }
+
 
 const paciente = reactive({
     id_paciente: id_paciente,
@@ -107,14 +130,17 @@ const paciente = reactive({
     plano_saude: null,
 });
 
+
 const consulta = reactive({
     id_consulta     : id_consulta,
     id_tipo_consulta: 1,
+    data_hora       : null,
     convenio        : null,
     observacoes     : null,
     sintomas        : null,
     is_active       : 1,
 });
+
 
 const medicamentoUsoPacienteTemplate = {
     id_paciente_medicamento: null,
@@ -126,6 +152,7 @@ const medicamentoUsoPacienteTemplate = {
     is_active              : 1,
 }
 
+
 const suplementoUsoPacienteTemplate = {
     id_paciente_suplemento: null,
     id_consulta           : id_consulta,
@@ -136,6 +163,7 @@ const suplementoUsoPacienteTemplate = {
     is_active             : 1,
 }
 
+
 const informacaoSaudeTemplate = {
     id_consulta_informacao_saude: null,
     id_consulta                 : id_consulta,
@@ -143,6 +171,7 @@ const informacaoSaudeTemplate = {
     valor                       : null,
     is_active                   : 1,
 }
+
 
 const priscricaoMedicamentoTemplate = {
     id_prescricao_medicamento: null,
@@ -155,6 +184,7 @@ const priscricaoMedicamentoTemplate = {
     is_active                : 1
 }
 
+
 const priscricaoSuplementoTemplate = {
     id_prescricao_suplemento: null,
     id_consulta             : id_consulta,
@@ -166,6 +196,7 @@ const priscricaoSuplementoTemplate = {
     is_active               : 1
 }
 
+
 const consultaDiagnosticoTemplate = {
     id_consulta_diagnostico: null,
     id_consulta            : id_consulta,
@@ -173,60 +204,102 @@ const consultaDiagnosticoTemplate = {
     is_active              : 1
 }
 
+
+const anexosTemplate = {
+    id_consulta    : id_consulta,
+    id_tipo_arquivo: null,
+    multipartFile  : null,
+}
+
+
 const addMedicamentoUsoPaciente = () => {
     const novoMedicamentoUsoPaciente = {...medicamentoUsoPacienteTemplate};
     arrMedicamentoUsoPaciente.push(novoMedicamentoUsoPaciente);
 };
+
 
 const addSuplementoUsoPaciente = () => {
     const novoSuplementoUsoPaciente = {...suplementoUsoPacienteTemplate};
     arrSuplementoUsoPaciente.push(novoSuplementoUsoPaciente);
 };
 
+
 const addInformacaoSaude = () => {
     const novoInformacaoSaudeTemplate = {...informacaoSaudeTemplate};
     arrInformacaoSaude.push(novoInformacaoSaudeTemplate);
 };
+
 
 const addPrescricaoMedicamento = () => {
     const novaPrescricaoMedicamento = {...priscricaoMedicamentoTemplate};
     arrPrescricaoMedicamento.push(novaPrescricaoMedicamento);
 };
 
+
 const addPrescricaoSuplemento = () => {
     const novaPrescricaoSuplemento = {...priscricaoSuplementoTemplate};
     arrPrescricaoSuplemento.push(novaPrescricaoSuplemento);
 };
+
 
 const addConsultaDiagnostico = () => {
     const novoDiagnostico = {...consultaDiagnosticoTemplate};
     arrConsultaDiagnostico.push(novoDiagnostico);
 };
 
+
+const addAnexo = () => {
+    const novoAnexo = {...anexosTemplate};
+    arrUpload.push(novoAnexo);
+};
+
+
+const verificacoes = [{
+    dados : arrMedicamentoUsoPaciente,
+    campos: ['id_medicamento']
+}, {
+    dados : arrSuplementoUsoPaciente,
+    campos: ['id_suplemento']
+}, {
+    dados : arrConsultaDiagnostico,
+    campos: ['id_diagnostico']
+}, {
+    dados : arrPrescricaoMedicamento,
+    campos: ['id_medicamento']
+}, {
+    dados : arrUpload,
+    campos: ['multipartFile', 'id_tipo_arquivo']
+}, {
+    dados : arrPrescricaoSuplemento,
+    campos: ['id_suplemento']
+}, {
+    dados : arrInformacaoSaude,
+    campos: ['valor', 'id_tipo_informacao_saude']
+},];
+
+
+const headersTabelaAnexo = ref([{
+    title: 'Arquivo',
+    key  : 'nome_arquivo',
+    align: 'start'
+}, {
+    title: 'Data',
+    key  : 'data_upload',
+    align: 'start'
+}, {
+    title: 'Tipo',
+    key  : 'tipo_arquivo',
+    align: 'start'
+}, {
+    key  : 'action',
+    align: 'start'
+}]);
+
+
 const handleSave = async () => {
     loading.show()
 
     camposObrigatorios.value = true;
-
-    const verificacoes = [{
-        dados : arrMedicamentoUsoPaciente,
-        campos: ['id_medicamento']
-    }, {
-        dados : arrSuplementoUsoPaciente,
-        campos: ['id_suplemento']
-    }, {
-        dados : arrConsultaDiagnostico,
-        campos: ['id_diagnostico']
-    }, {
-        dados : arrPrescricaoMedicamento,
-        campos: ['id_medicamento']
-    }, {
-        dados : arrPrescricaoSuplemento,
-        campos: ['id_suplemento']
-    }, {
-        dados : arrInformacaoSaude,
-        campos: ['valor', 'id_tipo_informacao_saude']
-    },];
 
     if (!verificarCamposObrigatorios(verificacoes)) {
         camposObrigatorios.value = false;
@@ -238,7 +311,7 @@ const handleSave = async () => {
         id_paciente              : paciente.id_paciente,
         id_consulta              : consulta.id_consulta,
         id_tipo_consulta         : consulta.id_tipo_consulta,
-        observacoes              : consulta.observacoes,
+        data_hora                : consulta.data_hora,
         sintomas                 : consulta.sintomas,
         arrConsultaDiagnostico   : arrConsultaDiagnostico,
         arrInformacaoSaude       : arrInformacaoSaude,
@@ -246,15 +319,33 @@ const handleSave = async () => {
         arrSuplementoUsoPaciente : arrSuplementoUsoPaciente,
         arrPrescricaoSuplemento  : arrPrescricaoSuplemento,
         arrPrescricaoMedicamento : arrPrescricaoMedicamento,
+        arrConsultaAnexos        : arrArquivos
     }
 
     if (id_consulta.value > 0) {
         await serviceSave(data);
+        const formDataUpload = await getAnexos();
+
+        if (formDataUpload) {
+            await serviceUpload(formDataUpload);
+            await carregarDadosConsulta();
+            arrUpload.splice(0, arrUpload.length);
+        }
+
     } else {
         const res         = await serviceSave(data);
         id_consulta.value = res.id;
+
         if (id_consulta.value > 0) {
             consulta.id_consulta = res.id;
+
+            const formDataUpload = await getAnexos();
+            if (formDataUpload) {
+                await serviceUpload(formDataUpload);
+                await carregarDadosConsulta();
+                arrUpload.splice(0, arrUpload.length);
+            }
+
             adicionarParametrosURL({
                 id_paciente: id_paciente.value,
                 id_consulta: res.id
@@ -266,6 +357,25 @@ const handleSave = async () => {
 };
 
 
+const getAnexos = () => {
+
+    if (arrUpload.length < 1) {
+        return false;
+    }
+
+    const formData = new FormData();
+    arrUpload.forEach((anexo) => {
+        if (anexo.multipartFile && anexo.multipartFile[0] instanceof File) {
+            formData.append('multipartFile', anexo.multipartFile[0]);
+            formData.append('id_consulta', anexo.id_consulta?.toString());
+            formData.append('id_tipo_arquivo', anexo.id_tipo_arquivo?.toString());
+        }
+    });
+
+    return formData;
+};
+
+
 const handleBack = () => {
     router.push({name: 'Paciente-List'});
 };
@@ -274,6 +384,7 @@ const handleBack = () => {
 const getProfilePhoto = (path) => {
     return path ? `${path}` : defaultImagePath;
 };
+
 
 const removerItem = (info, arrayObj, id) => {
     const index = arrayObj.findIndex(item => item[id] === info[id] || item === info);
@@ -287,14 +398,32 @@ const removerItem = (info, arrayObj, id) => {
     }
 }
 
+
 const fecharModalCadastroRapido = () => {
     getAutoCompleteOptions();
     modalCadastroRapido.value = false
 }
 
+
 const cadastroRapido = (modulo) => {
     moduloCadastroRapido.value = modulo;
     modalCadastroRapido.value  = true;
+    const screenWidth          = getScreenSize().width;
+
+    if (screenWidth < 600) {
+        tamanhoModal.value = "90%";
+    } else if (screenWidth >= 600 && screenWidth <= 1200) {
+        tamanhoModal.value = '70%';
+    } else {
+        tamanhoModal.value = '50%';
+    }
+}
+
+
+const baixarAnexo = async (id_arquivo) => {
+    loading.show()
+    await serviceDownloadArquivo(id_arquivo);
+    loading.hide()
 }
 
 </script>
@@ -397,19 +526,14 @@ const cadastroRapido = (modulo) => {
                                     class="pb-0"
                                 >
 
-                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(med, arrMedicamentoUsoPaciente, 'id_paciente_medicamento')">
-                                            <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
-                                        </v-btn>
-                                    </v-col>
-
-
-                                    <v-col cols="9" sm="6" md="6" lg="6" xl="6" class="pb-0">
+                                    <v-col cols="12" md="8" lg="8" xl="8" class="pb-0">
                                         <v-autocomplete
                                             label="Medicamento*"
                                             :items="optionsMedicamentos"
                                             v-model="med.id_medicamento"
                                             :error="!med.id_medicamento && !camposObrigatorios"
+                                            prepend-icon="fas fa-trash-alt"
+                                            @click:prepend="() => removerItem(med, arrMedicamentoUsoPaciente, 'id_paciente_medicamento')"
                                         />
                                     </v-col>
 
@@ -489,18 +613,14 @@ const cadastroRapido = (modulo) => {
                                     class="pb-0"
                                 >
 
-                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(sup, arrSuplementoUsoPaciente, 'id_paciente_suplemento')">
-                                            <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
-                                        </v-btn>
-                                    </v-col>
-
-                                    <v-col cols="9" sm="6" md="6" lg="6" xl="6" class="pb-0">
+                                    <v-col cols="12" md="8" lg="8" xl="8" class="pb-0">
                                         <v-autocomplete
                                             label="Suplemento*"
                                             :items="optionsSuplemento"
                                             v-model="sup.id_suplemento"
                                             :error="!sup.id_suplemento && !camposObrigatorios"
+                                            prepend-icon="fas fa-trash-alt"
+                                            @click:prepend="() => removerItem(sup, arrSuplementoUsoPaciente, 'id_paciente_suplemento')"
                                         />
                                     </v-col>
 
@@ -585,18 +705,14 @@ const cadastroRapido = (modulo) => {
                                     class="pb-0"
                                 >
 
-                                    <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(info, arrInformacaoSaude, 'id_consulta_informacao_saude')">
-                                            <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
-                                        </v-btn>
-                                    </v-col>
-
-                                    <v-col cols="9" sm="6" md="6" lg="6" xl="6" class="pb-0">
+                                    <v-col cols="12" md="8" lg="8" xl="8" class="pb-0">
                                         <v-autocomplete
                                             label="Selecione*"
                                             :items="optionsTipoInformacaoSaude"
                                             v-model="info.id_tipo_informacao_saude"
                                             :error="!info.id_tipo_informacao_saude && !camposObrigatorios"
+                                            prepend-icon="fas fa-trash-alt"
+                                            @click:prepend="() => removerItem(info, arrInformacaoSaude, 'id_consulta_informacao_saude')"
                                         />
                                     </v-col>
 
@@ -661,18 +777,14 @@ const cadastroRapido = (modulo) => {
                                     class="pb-0"
                                 >
 
-                                    <v-col xl="1" lg="1" md="1" sm="2" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(info, arrConsultaDiagnostico, 'id_consulta_diagnostico')">
-                                            <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
-                                        </v-btn>
-                                    </v-col>
-
-                                    <v-col cols="9" sm="10" md="11" lg="11" xl="11" class="pb-0">
+                                    <v-col cols="12" class="pb-0">
                                         <v-autocomplete
                                             label="Diagnóstico*"
                                             :items="optionsDiagonostico"
                                             v-model="info.id_diagnostico"
                                             :error="!info.id_diagnostico && !camposObrigatorios"
+                                            prepend-icon="fas fa-trash-alt"
+                                            @click:prepend="() => removerItem(info, arrConsultaDiagnostico, 'id_consulta_diagnostico')"
                                         />
                                     </v-col>
 
@@ -729,19 +841,14 @@ const cadastroRapido = (modulo) => {
                                     :key="`med-${i}`"
                                     class="pb-0"
                                 >
-
-                                    <v-col xl="1" lg="1" md="1" sm="1" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(med, arrPrescricaoMedicamento, 'id_prescricao_medicamento')">
-                                            <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
-                                        </v-btn>
-                                    </v-col>
-
-                                    <v-col cols="9" sm="7" md="7" lg="7" xl="7" class="pb-0">
+                                    <v-col cols="12" sm="8" md="8" lg="8" xl="8" class="pb-0">
                                         <v-autocomplete
                                             label="Medicamento*"
                                             :items="optionsMedicamentos"
                                             v-model="med.id_medicamento"
                                             :error="!med.id_medicamento && !camposObrigatorios"
+                                            prepend-icon="fas fa-trash-alt"
+                                            @click:prepend="() => removerItem(med, arrPrescricaoMedicamento, 'id_prescricao_medicamento')"
                                         />
                                     </v-col>
 
@@ -827,18 +934,14 @@ const cadastroRapido = (modulo) => {
                                     class="pb-0"
                                 >
 
-                                    <v-col xl="1" lg="1" md="1" sm="1" cols="3" class="scale-80 pt-2 pb-0">
-                                        <v-btn icon x-small variant="elevated" @click="() => removerItem(med, arrPrescricaoSuplemento, 'id_prescricao_suplemento')">
-                                            <v-icon size="small" color="red"> fas fa-trash-alt</v-icon>
-                                        </v-btn>
-                                    </v-col>
-
-                                    <v-col cols="9" sm="7" md="7" lg="7" xl="7" class="pb-0">
+                                    <v-col cols="12" md="8" lg="8" xl="8" class="pb-0">
                                         <v-autocomplete
                                             label="Suplemento*"
                                             :items="optionsSuplemento"
                                             v-model="med.id_suplemento"
                                             :error="!med.id_suplemento && !camposObrigatorios"
+                                            prepend-icon="fas fa-trash-alt"
+                                            @click:prepend="() => removerItem(med, arrPrescricaoSuplemento, 'id_prescricao_suplemento')"
                                         />
                                     </v-col>
 
@@ -925,10 +1028,71 @@ const cadastroRapido = (modulo) => {
 
                             <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
 
+                            <v-data-table :headers="headersTabelaAnexo"
+                                          :items="arrArquivos.filter(item => item.is_active !== 0)"
+                                          class="elevation-1"
+                                          hide-default-footer
+                            >
+                                <template v-slot:[`item.nome_arquivo`]="{ item }">
+                                    <a href="#" class="editable-name" @click.prevent="baixarAnexo(item.id_arquivo)">
+                                        <b>{{ item.nome_arquivo }}</b>
+                                    </a>
+                                </template>
+
+                                <template v-slot:[`item.data_upload`]="{ item }">
+                                    <span>{{ item.data_upload }}</span>
+                                </template>
+
+                                <template v-slot:[`item.action`]="{ item }">
+                                    <v-tooltip text="Remover Anexo">
+                                        <template v-slot:activator="{ props }">
+                                            <v-btn v-bind="props" class="ms-2" icon variant="elevated" size="small" color="cinzaAzulado" @click="() => removerItem(item, arrArquivos, 'id_arquivo')">
+                                                <v-icon class="scale-80">fas fa-trash-alt</v-icon>
+                                            </v-btn>
+                                        </template>
+                                    </v-tooltip>
+                                </template>
+                            </v-data-table>
+
+                            <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
+
+                            <div class="text-caption">
+
+                                <v-row
+                                    v-for="(item, i) in arrUpload.filter(item => item.is_active !== 0)"
+                                    :key="`med-${i}`"
+                                    class="pb-0"
+                                >
+
+                                    <v-col md="7" lg="7" xl="7" class="pb-0">
+                                        <v-file-input
+                                            label="Arquivo"
+                                            v-model="item.multipartFile"
+                                            :error="!item.multipartFile && !camposObrigatorios"
+                                        />
+                                    </v-col>
+
+                                    <v-col md="5" lg="5" xl="5" class="pb-0">
+                                        <v-autocomplete
+                                            label="Tipo Arquivo"
+                                            :items="optionsTipoAquivo"
+                                            v-model="item.id_tipo_arquivo"
+                                            :error="!item.id_tipo_arquivo && !camposObrigatorios"
+                                            append-icon="fas fa-trash-alt"
+                                            @click:append="() => removerItem(item, arrUpload, 'id_arquivo')"
+                                        />
+                                    </v-col>
+
+                                    <v-divider class="border-opacity-100 mt-3 mb-3" color="primary"/>
+
+                                </v-row>
+                            </div>
+
+
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="adicionarAnexo">
+                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addAnexo">
                             Adicionar
                         </v-btn>
                     </v-card-actions>
@@ -938,7 +1102,7 @@ const cadastroRapido = (modulo) => {
 
         </v-row>
 
-        <v-dialog v-model="modalCadastroRapido" transition="dialog-top-transition" width="60%">
+        <v-dialog v-model="modalCadastroRapido" transition="dialog-top-transition" :width="tamanhoModal">
             <MedicamentoForm v-if="moduloCadastroRapido == 'medicamento'" @close_modal="fecharModalCadastroRapido" :isModal="true" :confUrl="false"/>
             <SuplementoForm v-else-if="moduloCadastroRapido == 'suplemento'" @close_modal="fecharModalCadastroRapido" :isModal="true" :confUrl="false"/>
             <DiagnosticoForm v-else-if="moduloCadastroRapido == 'diagnostico'" @close_modal="fecharModalCadastroRapido" :isModal="true" :confUrl="false"/>
@@ -961,4 +1125,11 @@ const cadastroRapido = (modulo) => {
     width: 100%;
     height: 100%;
 }
+
+.editable-name {
+    color: #2c3e50;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 </style>

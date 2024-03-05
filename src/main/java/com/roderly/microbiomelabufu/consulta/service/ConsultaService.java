@@ -1,7 +1,6 @@
 package com.roderly.microbiomelabufu.consulta.service;
 
-import com.roderly.microbiomelabufu.cadastros_gerais.diagnostico.repository.DiagnosticoRepository;
-import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.repository.MedicamentoRepository;
+import com.roderly.microbiomelabufu.common.Utilitarios.DateUtil;
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
 import com.roderly.microbiomelabufu.common.persistense.FilterService;
 import com.roderly.microbiomelabufu.consulta.dto.request.*;
@@ -9,6 +8,7 @@ import com.roderly.microbiomelabufu.consulta.dto.response.*;
 import com.roderly.microbiomelabufu.consulta.mapper.*;
 import com.roderly.microbiomelabufu.consulta.model.*;
 import com.roderly.microbiomelabufu.consulta.repository.*;
+import com.roderly.microbiomelabufu.infra.FileStorageProperties;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import com.roderly.microbiomelabufu.paciente.repository.PacienteRepository;
 import jakarta.persistence.EntityManager;
@@ -16,10 +16,21 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -44,6 +55,10 @@ public class ConsultaService {
     private PrescricaoMedicamentoRepository prescricaoMedicamentoRepository;
     @Autowired
     private PrescricaoSuplementoRepository prescricaoSuplementoRepository;
+    @Autowired
+    private ArquivoConsultaRepository arquivoConsultaRepository;
+    @Autowired
+    private FileStorageProperties fileStorageProperties;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -94,7 +109,63 @@ public class ConsultaService {
             }
         }
 
+        for (ArquivoConsultaRequest arquivoConsultaRequest : request.arrConsultaAnexos()){
+            if(arquivoConsultaRequest.id_arquivo() != null){
+                var arquivo = arquivoConsultaRepository.findById(arquivoConsultaRequest.id_arquivo())
+                        .orElseThrow(() -> new RuntimeException("Arquivo não encontrado"));
+                var arquivoAtualizado = ArquivoConsultaMapper.arquivoConsultaRequestToArquivoConsulta(arquivoConsultaRequest, arquivo);
+                arquivoConsultaRepository.save(arquivoAtualizado);
+            }
+        }
+
         return new ApiResponseDTO((long) consultaSalva.getId_consulta(), "A consulta foi salva!");
+    }
+
+
+    @Transactional
+    public void upload(List<Long> idConsultas, List<Long> idTiposArquivo, List<MultipartFile> files) throws IOException {
+
+        for (int i = 0; i < files.size(); i++) {
+            var arquivo = ArquivoConsultaMapper.uploadToArquivoConsulta(idConsultas.get(i), idTiposArquivo.get(i), files.get(i));
+            var arquivoSalvo = arquivoConsultaRepository.save(arquivo);
+            saveFile(files.get(i), arquivoSalvo.getId_arquivo());
+        }
+
+    }
+
+
+    public void saveFile(MultipartFile file, Long idArquivo) throws IOException {
+        Path directoryPath = Paths.get(fileStorageProperties.getFileStorageLocation()).resolve("arquivos_consulta");
+        Files.createDirectories(directoryPath);
+
+        String originalFileName = file.getOriginalFilename();
+        String fileExtension = DateUtil.extractFileExtension(originalFileName);
+
+        Path filePath = directoryPath.resolve(idArquivo + fileExtension);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+
+    public ResponseEntity<Resource> downloadFile(Long idArquivo) throws IOException {
+        ArquivoConsulta arquivo = arquivoConsultaRepository.findById(idArquivo)
+                .orElseThrow(() -> new RuntimeException("Arquivo não encontrado com id " + idArquivo));
+
+        String fileBasePath = fileStorageProperties.getFileStorageLocation();
+        String fileExtension = arquivo.getFormato();
+        String fileName = idArquivo + fileExtension;
+
+        Path filePath = Paths.get(fileBasePath, "arquivos_consulta", fileName);
+        Resource resource = new UrlResource(filePath.toUri());
+        if (!resource.exists() || !resource.isReadable()) {
+            throw new RuntimeException("Não foi possível ler o arquivo " + fileName);
+        }
+
+        String contentType = "application/octet-stream";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + arquivo.getNome_arquivo())
+                .body(resource);
     }
 
 
@@ -111,6 +182,7 @@ public class ConsultaService {
         Set<ConsultaDiagnosticoResponse> consultaDiagnosticosResponse = new HashSet<>();
         Set<PrescricaoMedicamentoResponse> prescricaoMedicamentosResponse = new HashSet<>();
         Set<PrescricaoSuplementoResponse> prescricaoSuplementosResponse = new HashSet<>();
+        Set<ArquivoConsultaReponse> arquivoConsultaReponse = new HashSet<>();
 
 
         var pacienteOpt = pacienteRepository.findById(id_paciente);
@@ -129,6 +201,7 @@ public class ConsultaService {
             consultaDiagnosticosResponse = ConsultaDiagnosticoMapper.consultaDiagnosticoToConsutoaDiagnosticoResponse(consulta.getConsultaDiagnosticos());
             prescricaoMedicamentosResponse = PrescricaoMedicamentoMapper.prescricaoMedicamentoToPrescricaoMedicamentoResponse(consulta.getPrescricaoMedicamentos());
             prescricaoSuplementosResponse = PrescricaoSuplementoMapper.prescricaoSuplementoToPrescricaoSuplementoResponse(consulta.getPrescricaoSuplementos());
+            arquivoConsultaReponse = ArquivoConsultaMapper.arquivoConsultaToArquivoConsultaResponse(consulta.getArquivosConsultas());
         }
 
         return new ConsultaCompletaResponse(
@@ -139,7 +212,8 @@ public class ConsultaService {
                 consultaInformacoesSaudeResponse,
                 consultaDiagnosticosResponse,
                 prescricaoMedicamentosResponse,
-                prescricaoSuplementosResponse
+                prescricaoSuplementosResponse,
+                arquivoConsultaReponse
         );
     }
 

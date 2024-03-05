@@ -78,6 +78,11 @@ export default createVuetify({
 		VSwitch      : {
 			color: 'azulEscuro',
 			inset: true
+		},
+		VFileInput   : {
+			variant: 'outlined',
+			color  : 'primary',
+			density: 'compact'
 		}
 
 	},

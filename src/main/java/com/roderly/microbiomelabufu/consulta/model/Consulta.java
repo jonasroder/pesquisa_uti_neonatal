@@ -60,4 +60,13 @@ public class Consulta {
     @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
     private Set<PrescricaoSuplemento> prescricaoSuplementos;
 
+    @OneToMany(mappedBy = "consulta")
+    @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
+    private Set<ArquivoConsulta> arquivosConsultas;
+
+
+    public Consulta(Long id_consulta) {
+        this.id_consulta = id_consulta;
+    }
+
 }

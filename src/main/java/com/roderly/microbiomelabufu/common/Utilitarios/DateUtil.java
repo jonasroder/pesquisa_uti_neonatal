@@ -16,4 +16,16 @@ public class DateUtil {
 
 
 
+    /**
+     * Extrai a extensão de um nome de arquivo.
+     * @param fileName O nome do arquivo do qual extrair a extensão.
+     * @return A extensão do arquivo, incluindo o ponto (por exemplo, ".jpg"), ou uma string vazia se o arquivo não tiver extensão.
+     */
+    public static String extractFileExtension(String fileName) {
+        if (fileName != null && fileName.contains(".")) {
+            return fileName.substring(fileName.lastIndexOf("."));
+        }
+        return "";
+    }
+
 }

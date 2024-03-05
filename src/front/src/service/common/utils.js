@@ -196,3 +196,19 @@ export const getMaskSettings = ({ maskType }) => {
 	return masks[maskType] || defaultMask;
 };
 
+
+
+/**
+ * Retorna as dimensões da tela do dispositivo do usuário.
+ * Esta função é útil para ajustes de layout responsivo ou para lógicas que dependam do tamanho da tela.
+ *
+ * @function getScreenSize
+ * @returns {Object} - Um objeto contendo as propriedades `width` e `height` que representam, respectivamente, a largura e a altura da tela do dispositivo em pixels.
+ */
+export const getScreenSize = () => {
+	const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+	const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+	return { width, height };
+};
+
