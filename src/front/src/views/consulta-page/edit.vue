@@ -491,6 +491,7 @@ const formularioAtividadeFisica = () => {
                     <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioPittsburgh">Formulário Qualidade de Sono Pittsburgh</v-btn>
                     <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioAlimentacao">Formulário Alimentação</v-btn>
                 </v-row>
+
                 <v-tooltip v-if="!id_consulta" text="Salve a consulta para liberar os formulários."/>
             </v-col>
 
