@@ -83,6 +83,10 @@ export default createVuetify({
 			variant: 'outlined',
 			color  : 'primary',
 			density: 'compact'
+		},
+		VTooltip     : {
+			activator: 'parent',
+			location : 'top'
 		}
 
 	},

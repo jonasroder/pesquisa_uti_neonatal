@@ -1,4 +1,4 @@
-package com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.request;
+package com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.response;
 
 public record MedicamentoListResponse(
         Long  id_medicamento,

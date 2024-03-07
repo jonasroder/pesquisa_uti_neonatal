@@ -426,6 +426,18 @@ const baixarAnexo = async (id_arquivo) => {
     loading.hide()
 }
 
+
+const formularioHamilton = () => {
+    const routeData = router.resolve({
+        name : 'FormularioHamilton-Page',
+        query: {
+            id_consulta: id_consulta.value
+        }
+    });
+
+    window.open(routeData.href, '_blank');
+}
+
 </script>
 
 <template>
@@ -459,11 +471,11 @@ const baixarAnexo = async (id_arquivo) => {
             </v-col>
 
             <v-col cols="12" md="3" lg="3">
-                <v-row class="justify-end mr-2">
+                <v-row class="justify-end mr-2" v-if="id_consulta">
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="formularioHamilton">Escala de Ansiedade de Hamilton</v-btn>
                     <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addAtividadeFisica">Formulário Atividade Física</v-btn>
                     <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addAlimentacao">Formulário Alimentação</v-btn>
                     <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addSono">Formulário Sono</v-btn>
-                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addEscalaHamilton">Formulário Escala de Hamilton</v-btn>
                 </v-row>
             </v-col>
         </v-row>
@@ -505,13 +517,10 @@ const baixarAnexo = async (id_arquivo) => {
                                     </v-col>
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
-                                        <v-tooltip text="Cadastrar novo medicamento">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('medicamento')">
-                                                    <v-icon size="small">fas fa-plus</v-icon>
-                                                </v-btn>
-                                            </template>
-                                        </v-tooltip>
+                                        <v-btn size="small" icon color="cinzaAzulado" @click="cadastroRapido('medicamento')">
+                                            <v-icon size="small">fas fa-plus</v-icon>
+                                            <v-tooltip text="Cadastrar novo medicamento"/>
+                                        </v-btn>
                                     </v-col>
                                 </v-row>
                             </div>
@@ -568,13 +577,10 @@ const baixarAnexo = async (id_arquivo) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-tooltip text="Adicionar novo medicamento de uso do paciente">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addMedicamentoUsoPaciente">
-                                    Adicionar
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
+                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addMedicamentoUsoPaciente">
+                            Adicionar
+                            <v-tooltip text="Adicionar novo medicamento de uso do paciente"/>
+                        </v-btn>
                     </v-card-actions>
 
                 </v-card>
@@ -592,13 +598,10 @@ const baixarAnexo = async (id_arquivo) => {
                                     </v-col>
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
-                                        <v-tooltip text="Cadastrar novo suplemento">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('suplemento')">
-                                                    <v-icon size="small">fas fa-plus</v-icon>
-                                                </v-btn>
-                                            </template>
-                                        </v-tooltip>
+                                        <v-btn size="small" icon color="cinzaAzulado" @click="cadastroRapido('suplemento')">
+                                            <v-icon size="small">fas fa-plus</v-icon>
+                                            <v-tooltip text="Cadastrar novo suplemento"/>
+                                        </v-btn>
                                     </v-col>
                                 </v-row>
                             </div>
@@ -655,13 +658,10 @@ const baixarAnexo = async (id_arquivo) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-tooltip text="Adicionar novo suplemento de uso do paciente">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addSuplementoUsoPaciente">
-                                    Adicionar
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
+                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addSuplementoUsoPaciente">
+                            Adicionar
+                            <v-tooltip text="Adicionar novo suplemento de uso do paciente"/>
+                        </v-btn>
                     </v-card-actions>
 
                 </v-card>
@@ -684,13 +684,10 @@ const baixarAnexo = async (id_arquivo) => {
                                     </v-col>
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
-                                        <v-tooltip text="Cadastrar nova informação de saúde">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('info_saude')">
-                                                    <v-icon size="small">fas fa-plus</v-icon>
-                                                </v-btn>
-                                            </template>
-                                        </v-tooltip>
+                                        <v-btn size="small" icon color="cinzaAzulado" @click="cadastroRapido('info_saude')">
+                                            <v-icon size="small">fas fa-plus</v-icon>
+                                            <v-tooltip text="Cadastrar nova informação de saúde"/>
+                                        </v-btn>
                                     </v-col>
                                 </v-row>
                             </div>
@@ -732,13 +729,10 @@ const baixarAnexo = async (id_arquivo) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-tooltip text="Adicionar nova informação do paciente">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addInformacaoSaude">
-                                    Adicionar
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
+                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addInformacaoSaude">
+                            Adicionar
+                            <v-tooltip text="Adicionar nova informação do paciente"/>
+                        </v-btn>
                     </v-card-actions>
 
                 </v-card>
@@ -756,13 +750,12 @@ const baixarAnexo = async (id_arquivo) => {
                                     </v-col>
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
-                                        <v-tooltip text="Cadastrar novo diagnóstico">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('diagnostico')">
-                                                    <v-icon size="small">fas fa-plus</v-icon>
-                                                </v-btn>
-                                            </template>
-                                        </v-tooltip>
+
+                                        <v-btn size="small" icon color="cinzaAzulado" @click="cadastroRapido('diagnostico')">
+                                            <v-icon size="small">fas fa-plus</v-icon>
+                                            <v-tooltip text="Cadastrar novo diagnóstico"/>
+                                        </v-btn>
+
                                     </v-col>
                                 </v-row>
                             </div>
@@ -795,13 +788,10 @@ const baixarAnexo = async (id_arquivo) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-tooltip text="Adicionar novo diagnóstico">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addConsultaDiagnostico">
-                                    Adicionar
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
+                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addConsultaDiagnostico">
+                            Adicionar
+                            <v-tooltip text="Adicionar novo diagnóstico"/>
+                        </v-btn>
                     </v-card-actions>
 
                 </v-card>
@@ -821,13 +811,10 @@ const baixarAnexo = async (id_arquivo) => {
                                     </v-col>
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
-                                        <v-tooltip text="Cadastrar novo medicamento">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('medicamento')">
-                                                    <v-icon size="small">fas fa-plus</v-icon>
-                                                </v-btn>
-                                            </template>
-                                        </v-tooltip>
+                                        <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('medicamento')">
+                                            <v-icon size="small">fas fa-plus</v-icon>
+                                            <v-tooltip text="Cadastrar novo medicamento"/>
+                                        </v-btn>
                                     </v-col>
                                 </v-row>
                             </div>
@@ -890,13 +877,10 @@ const baixarAnexo = async (id_arquivo) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-tooltip text="Adicionar nova prescrição de medicamento">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoMedicamento">
-                                    Adicionar
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
+                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoMedicamento">
+                            Adicionar
+                            <v-tooltip text="Adicionar nova prescrição de medicamento"/>
+                        </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -913,13 +897,10 @@ const baixarAnexo = async (id_arquivo) => {
                                     </v-col>
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
-                                        <v-tooltip text="Cadastrar novo suplemento">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('suplemento')">
-                                                    <v-icon size="small">fas fa-plus</v-icon>
-                                                </v-btn>
-                                            </template>
-                                        </v-tooltip>
+                                        <v-btn size="small" icon color="cinzaAzulado" @click="cadastroRapido('suplemento')">
+                                            <v-icon size="small">fas fa-plus</v-icon>
+                                            <v-tooltip text="Cadastrar novo suplemento"/>
+                                        </v-btn>
                                     </v-col>
                                 </v-row>
                             </div>
@@ -983,13 +964,10 @@ const baixarAnexo = async (id_arquivo) => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-tooltip text="Adicionar nova prescrição de suplemento">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoSuplemento">
-                                    Adicionar
-                                </v-btn>
-                            </template>
-                        </v-tooltip>
+                        <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoSuplemento">
+                            Adicionar
+                            <v-tooltip text="Adicionar nova prescrição de suplemento"/>
+                        </v-btn>
                     </v-card-actions>
 
                 </v-card>
@@ -1044,13 +1022,10 @@ const baixarAnexo = async (id_arquivo) => {
                                 </template>
 
                                 <template v-slot:[`item.action`]="{ item }">
-                                    <v-tooltip text="Remover Anexo">
-                                        <template v-slot:activator="{ props }">
-                                            <v-btn v-bind="props" class="ms-2" icon variant="elevated" size="small" color="cinzaAzulado" @click="() => removerItem(item, arrArquivos, 'id_arquivo')">
-                                                <v-icon class="scale-80">fas fa-trash-alt</v-icon>
-                                            </v-btn>
-                                        </template>
-                                    </v-tooltip>
+                                    <v-btn class="ms-2" icon variant="elevated" size="small" color="cinzaAzulado" @click="() => removerItem(item, arrArquivos, 'id_arquivo')">
+                                        <v-icon class="scale-80">fas fa-trash-alt</v-icon>
+                                        <v-tooltip text="Remover Anexo"/>
+                                    </v-btn>
                                 </template>
                             </v-data-table>
 
@@ -1094,6 +1069,7 @@ const baixarAnexo = async (id_arquivo) => {
                     <v-card-actions>
                         <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addAnexo">
                             Adicionar
+                            <v-tooltip text="Adicionar novo Anexo"/>
                         </v-btn>
                     </v-card-actions>
                 </v-card>

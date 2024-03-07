@@ -1,7 +1,7 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.medicamento.mapper;
 
 import com.roderly.microbiomelabufu.cadastros_gerais.fabricante_medicamento.model.FabricanteMedicamento;
-import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.request.MedicamentoListResponse;
+import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.response.MedicamentoListResponse;
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.request.MedicamentoRequest;
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.response.MedicamentoResponse;
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.model.Medicamento;

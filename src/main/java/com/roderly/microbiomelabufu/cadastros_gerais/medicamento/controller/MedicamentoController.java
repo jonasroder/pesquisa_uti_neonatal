@@ -1,6 +1,6 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.medicamento.controller;
 
-import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.request.MedicamentoListResponse;
+import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.response.MedicamentoListResponse;
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.request.MedicamentoRequest;
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.dto.response.MedicamentoResponse;
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.service.MedicamentoService;

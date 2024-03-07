@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.consulta.model;
 
+import com.roderly.microbiomelabufu.formulario_hamilton.model.FormularioHamilton;
 import com.roderly.microbiomelabufu.usuario.model.Usuario;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -63,6 +65,9 @@ public class Consulta {
     @OneToMany(mappedBy = "consulta")
     @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
     private Set<ArquivoConsulta> arquivosConsultas;
+
+    @OneToMany(mappedBy = "consulta")
+    private List<FormularioHamilton> formularioHamiltonSet;
 
 
     public Consulta(Long id_consulta) {
