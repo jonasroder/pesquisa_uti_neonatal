@@ -66,8 +66,8 @@ public class Consulta {
     @Filter(name = "isActiveFilter", condition = "is_active = :is_active")
     private Set<ArquivoConsulta> arquivosConsultas;
 
-    @OneToMany(mappedBy = "consulta")
-    private List<FormularioHamilton> formularioHamiltonSet;
+    @OneToOne(mappedBy = "consulta")
+    private FormularioHamilton formularioHamilton;
 
 
     public Consulta(Long id_consulta) {

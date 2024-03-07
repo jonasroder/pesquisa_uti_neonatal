@@ -2,6 +2,7 @@ package com.roderly.microbiomelabufu.formulario_hamilton.controller;
 
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.request.FormularioHamiltonRequest;
+import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.FormularioHamiltonPageResponse;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.FormularioHamiltonReponse;
 import com.roderly.microbiomelabufu.formulario_hamilton.service.FormularioHamiltonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class FormularioHamiltonController {
 
 
     @GetMapping("/load/{id_consulta}")
-    private ResponseEntity<FormularioHamiltonReponse> load(@PathVariable Long id_consulta) {
+    private ResponseEntity<FormularioHamiltonPageResponse> load(@PathVariable Long id_consulta) {
         var response = formularioHamiltonService.load(id_consulta);
         return ResponseEntity.ok(response);
     }

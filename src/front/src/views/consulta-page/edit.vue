@@ -438,6 +438,20 @@ const formularioHamilton = () => {
     window.open(routeData.href, '_blank');
 }
 
+
+const formularioAlimentacao = () => {
+    alert('Desenvolvimento Pendente');
+}
+
+
+const formularioPittsburgh = () => {
+    alert('Desenvolvimento Pendente');
+}
+
+
+const formularioAtividadeFisica = () => {
+    alert('Desenvolvimento Pendente');
+}
 </script>
 
 <template>
@@ -471,13 +485,15 @@ const formularioHamilton = () => {
             </v-col>
 
             <v-col cols="12" md="3" lg="3">
-                <v-row class="justify-end mr-2" v-if="id_consulta">
-                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="formularioHamilton">Escala de Ansiedade de Hamilton</v-btn>
-                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addAtividadeFisica">Formulário Atividade Física</v-btn>
-                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addAlimentacao">Formulário Alimentação</v-btn>
-                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="addSono">Formulário Sono</v-btn>
+                <v-row class="justify-end mr-2">
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioHamilton">Escala de Ansiedade de Hamilton</v-btn>
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioAtividadeFisica">Formulário Atividade Física</v-btn>
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioPittsburgh">Formulário Qualidade de Sono Pittsburgh</v-btn>
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioAlimentacao">Formulário Alimentação</v-btn>
                 </v-row>
+                <v-tooltip v-if="!id_consulta" text="Salve a consulta para liberar os formulários."/>
             </v-col>
+
         </v-row>
 
         <v-divider class="border-opacity-100 mt-2 mb-3" color="primary"/>
@@ -1094,12 +1110,6 @@ const formularioHamilton = () => {
 <style scoped>
 .scale-80 {
     scale: 0.8;
-}
-
-.fit-cover {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
 }
 
 .editable-name {

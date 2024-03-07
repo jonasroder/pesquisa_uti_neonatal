@@ -1,10 +1,15 @@
 package com.roderly.microbiomelabufu.formulario_hamilton.mapper;
 
 import com.roderly.microbiomelabufu.cadastros_gerais.escala_intensidade.model.EscalaIntensidade;
+import com.roderly.microbiomelabufu.common.Utilitarios.DateUtil;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.request.FormularioHamiltonRequest;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.FormularioHamiltonReponse;
+import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.PacienteFormularioResponse;
 import com.roderly.microbiomelabufu.formulario_hamilton.model.FormularioHamilton;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 public class FormularioHamiltonMapper {
 
@@ -50,21 +55,44 @@ public class FormularioHamiltonMapper {
     public static FormularioHamiltonReponse formularioHamiltonToFormularioHamiltonResponse(FormularioHamilton formulario){
         return new FormularioHamiltonReponse(
                 formulario.getId_formulario_hamilton(),
-                formulario.getConsulta().getId_consulta(),
-                formulario.getHumorAnsioso().getId_intensidade(),
-                formulario.getTensao().getId_intensidade(),
-                formulario.getMedos().getId_intensidade(),
-                formulario.getInsonia().getId_intensidade(),
-                formulario.getDificuldades_intelectuais().getId_intensidade(),
-                formulario.getHumor_deprimido().getId_intensidade(),
-                formulario.getSomatizacoes_motoras().getId_intensidade(),
-                formulario.getSomatizacoes_sensoriais().getId_intensidade(),
-                formulario.getSintomas_cardiovasculares().getId_intensidade(),
-                formulario.getSintomas_respiratorios().getId_intensidade(),
-                formulario.getSintomas_gastrointestinais().getId_intensidade(),
-                formulario.getSintomas_geniturinarios().getId_intensidade(),
-                formulario.getSintomas_neurovegetativos().getId_intensidade(),
-                formulario.getComportamento_entrevista().getId_intensidade()
+                formulario.getConsulta() != null ? formulario.getConsulta().getId_consulta() : null,
+                formulario.getHumorAnsioso() != null ? formulario.getHumorAnsioso().getId_intensidade() : null,
+                formulario.getTensao() != null ? formulario.getTensao().getId_intensidade() : null,
+                formulario.getMedos() != null ? formulario.getMedos().getId_intensidade() : null,
+                formulario.getInsonia() != null ? formulario.getInsonia().getId_intensidade() : null,
+                formulario.getDificuldades_intelectuais() != null ? formulario.getDificuldades_intelectuais().getId_intensidade() : null,
+                formulario.getHumor_deprimido() != null ? formulario.getHumor_deprimido().getId_intensidade() : null,
+                formulario.getSomatizacoes_motoras() != null ? formulario.getSomatizacoes_motoras().getId_intensidade() : null,
+                formulario.getSomatizacoes_sensoriais() != null ? formulario.getSomatizacoes_sensoriais().getId_intensidade() : null,
+                formulario.getSintomas_cardiovasculares() != null ? formulario.getSintomas_cardiovasculares().getId_intensidade() : null,
+                formulario.getSintomas_respiratorios() != null ? formulario.getSintomas_respiratorios().getId_intensidade() : null,
+                formulario.getSintomas_gastrointestinais() != null ? formulario.getSintomas_gastrointestinais().getId_intensidade() : null,
+                formulario.getSintomas_geniturinarios() != null ? formulario.getSintomas_geniturinarios().getId_intensidade() : null,
+                formulario.getSintomas_neurovegetativos() != null ? formulario.getSintomas_neurovegetativos().getId_intensidade() : null,
+                formulario.getComportamento_entrevista() != null ? formulario.getComportamento_entrevista().getId_intensidade() : null
+        );
+    }
+
+
+    public static PacienteFormularioResponse consultaToPacienteFormularioResponse(Consulta consulta){
+        assert consulta.getPaciente() != null;
+
+        var paciente = consulta.getPaciente();
+
+        var dataNascimento = paciente.getData_nascimento();
+        var idade = (dataNascimento != null) ? Period.between(dataNascimento, LocalDate.now()).getYears() : null;
+        var tipo_consulta = consulta.getId_tipo_consulta() == 1 ? "Consulta" : "Retorno";
+
+        return new PacienteFormularioResponse(
+                paciente.getId_paciente(),
+                paciente.getFotoPerfil() != null ? paciente.getFotoPerfil().getCaminho_arquivo() + "/" + paciente.getFotoPerfil().getId_foto_perfil() + ".jpeg" : null,
+                paciente.getNome() + " " + paciente.getSobrenome(),
+                idade,
+                paciente.getPlanoSaude() != null ? paciente.getPlanoSaude().getDescricao() : null,
+                paciente.getTelefone_1(),
+                paciente.getTelefone_2(),
+                DateUtil.LocalDateTimeToDateBR(consulta.getData_hora()),
+                tipo_consulta
         );
     }
 

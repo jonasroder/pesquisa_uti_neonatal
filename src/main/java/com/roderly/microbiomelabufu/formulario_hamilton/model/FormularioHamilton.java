@@ -19,7 +19,7 @@ public class FormularioHamilton {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_formulario_hamilton;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_consulta", referencedColumnName = "id_consulta")
     private Consulta consulta;
 

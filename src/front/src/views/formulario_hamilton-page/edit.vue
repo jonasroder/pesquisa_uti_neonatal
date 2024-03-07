@@ -3,11 +3,13 @@ import {useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {loading} from "@/plugins/loadingService";
-import {getIdFromUrl, getOptionsAutocomplete} from "@/service/common/utils"
+import {getIdFromUrl, getOptionsAutocomplete, formatarTelefone} from "@/service/common/utils"
 import {serviceSave, serviceLoad} from "@/service/formulario_hamilton";
+import defaultImagePath from "@/assets/no_image.png";
 
 const router             = useRouter();
 const id_consulta        = ref(getIdFromUrl('id_consulta'));
+const id_paciente        = ref("");
 const optionsIntensidade = ref([]);
 
 
@@ -15,8 +17,14 @@ onMounted(async () => {
     loading.show()
     await getOptionsEscalaIntensidade();
     if (id_consulta.value > 0) {
-        const data                = await serviceLoad(id_consulta.value);
-        formulario_hamilton.value = data;
+        const data = await serviceLoad(id_consulta.value);
+
+        paciente.value = data.paciente;
+        id_paciente.value = data.paciente.id_paciente;
+
+        if (data.formulario) {
+            formulario_hamilton.value = data.formulario;
+        }
     }
 
     loading.hide()
@@ -32,9 +40,22 @@ const getOptionsEscalaIntensidade = async () => {
 }
 
 
+const paciente = ref({
+    id_paciente  : null,
+    foto_perfil  : null,
+    nome         : null,
+    idade        : null,
+    plano_saude  : null,
+    telefone_1   : null,
+    telefone_2   : null,
+    data         : null,
+    tipo_consulta: null,
+})
+
+
 const formulario_hamilton = ref({
     id_formulario_hamilton       : null,
-    id_consulta                  : null,
+    id_consulta                  : id_consulta,
     id_humor_ansioso             : null,
     id_tensao                    : null,
     id_medos                     : null,
@@ -51,6 +72,7 @@ const formulario_hamilton = ref({
     id_comportamento_entrevista  : null,
 });
 
+
 const handleSave = async () => {
     loading.show()
 
@@ -65,9 +87,31 @@ const handleSave = async () => {
     loading.hide()
 }
 
+
 const handleBack = () => {
-    router.push({name: 'Ingrediente-List'});
+    router.push({
+        name : 'Consulta-Page',
+        query: {
+            id_paciente: id_paciente.value,
+            id_consulta: id_consulta.value
+        }
+    });
 };
+
+
+const getProfilePhoto = (path) => {
+    return path ? `${path}` : defaultImagePath;
+};
+
+
+const imprimirResultados = () => {
+    alert('Desenvolvimento Pendente');
+}
+
+
+const visualizarResultados = () => {
+    alert('Desenvolvimento Pendente');
+}
 
 </script>
 
@@ -76,6 +120,35 @@ const handleBack = () => {
                      subtitle="Você pode editar as informações a qualquer momento"
                      @handleSave="handleSave"
                      @handleBack="handleBack">
+        <v-row>
+            <v-col cols="12" md="3" lg="2" class="d-flex justify-center align-center">
+                <v-avatar size="130" class="ma-1">
+                    <img :src="getProfilePhoto(paciente.foto_perfil)" alt="foto perfil" class="fit-cover">
+                </v-avatar>
+            </v-col>
+
+            <v-col cols="12" md="6" lg="7">
+                <div class="text-h5 mb-2"><b>Paciente:</b> {{ paciente.nome }}</div>
+                <div class="text-subtitle-1 mb-2">
+                    <b>Idade:</b> {{ paciente.idade }}
+                    <span v-if="paciente.idade !== null">anos</span>
+                </div>
+                <div class="text-subtitle-1 mb-2">
+                    <b>Telefone:</b> {{ formatarTelefone(paciente.telefone_1) }}
+                    <span v-if="paciente.telefone_2">/ {{ formatarTelefone(paciente.telefone_2) }}</span>
+                </div>
+                <div class="text-subtitle-1 mb-2"><b>Plano de Saúde:</b> {{ paciente.plano_saude }}</div>
+                <div class="text-subtitle-1 mb-2"><b>{{ paciente.tipo_consulta }}:</b> {{ paciente.data }}</div>
+            </v-col>
+
+            <v-col cols="12" md="3" lg="3">
+                <v-row class="justify-end mr-2" v-if="id_consulta">
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="visualizarResultados">Visualizar Resultados</v-btn>
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" @click="imprimirResultados">Imprimir Resultados</v-btn>
+                </v-row>
+            </v-col>
+
+        </v-row>
 
         <v-row>
             <v-col cols="12">
