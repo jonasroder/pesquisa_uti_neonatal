@@ -9,7 +9,7 @@ const logout = () => {
 </script>
 
 <template>
-    <v-app-bar app class="border-b d-flex barra-superior">
+    <v-app-bar app class="border-b d-flex barra-superior" color="cyan-darken-3">
 
         <v-app-bar-nav-icon @click="$emit('toggle-drawer')"/>
         <v-toolbar-title>Saúde em Equilíbrio</v-toolbar-title>
@@ -24,3 +24,10 @@ const logout = () => {
     </v-app-bar>
 </template>
 
+
+<style>
+::v-deep .barra-superior {
+    background: linear-gradient(to right, #6fbfd9, #00bdda);
+}
+
+</style>

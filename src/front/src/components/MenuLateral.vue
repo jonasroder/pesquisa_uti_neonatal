@@ -49,7 +49,7 @@ const isActive = (route) => {
 
 
 <template>
-    <v-navigation-drawer v-model="localDrawerState">
+    <v-navigation-drawer v-model="localDrawerState"  color="cyan-lighten-4">
         <v-list>
             <v-list-item
                 :title="nomeUsuario"
