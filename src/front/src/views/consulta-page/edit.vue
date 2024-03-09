@@ -834,7 +834,7 @@ const formularioAtividadeFisica = () => {
                                     </v-col>
 
                                     <v-col xl="2" lg="2" md="2" sm="2" cols="3" class="text-right" size="small">
-                                        <v-btn v-bind="props" size="small" icon color="cinzaAzulado" @click="cadastroRapido('medicamento')">
+                                        <v-btn size="small" icon color="cinzaAzulado" @click="cadastroRapido('medicamento')">
                                             <v-icon size="small">fas fa-plus</v-icon>
                                             <v-tooltip text="Cadastrar novo medicamento"/>
                                         </v-btn>
@@ -987,7 +987,7 @@ const formularioAtividadeFisica = () => {
                         </div>
                     </v-card-item>
                     <v-card-actions>
-                        <v-btn v-bind="props" class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoSuplemento">
+                        <v-btn class="ms-2" variant="elevated" size="small" color="cinzaAzulado" @click="addPrescricaoSuplemento">
                             Adicionar
                             <v-tooltip text="Adicionar nova prescrição de suplemento"/>
                         </v-btn>

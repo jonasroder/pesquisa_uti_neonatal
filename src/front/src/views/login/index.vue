@@ -2,6 +2,7 @@
 import {serviceAuthenticateUser} from "@/service/login";
 import {reactive} from "vue";
 import {useRouter} from "vue-router";
+import { loading } from "@/plugins/loadingService.js";
 
 
 const router = useRouter();
@@ -12,14 +13,12 @@ const login  = reactive({
 
 
 const submitLogin = async () => {
-    try {
-        const response = await serviceAuthenticateUser(login);
-        if (response) {
-            router.push('/');
-        }
-    } catch (error) {
-        console.error("Erro ao realizar login:", error);
+    loading.show()
+    const response = await serviceAuthenticateUser(login);
+    if (response) {
+        router.push('/');
     }
+    loading.hide()
 }
 
 </script>

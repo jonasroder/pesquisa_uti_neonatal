@@ -4,6 +4,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roderly.microbiomelabufu.login.dto.response.UserDataResponse;
+import com.roderly.microbiomelabufu.login.mapper.AuthenticationMapper;
 import com.roderly.microbiomelabufu.usuario.model.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,13 +20,24 @@ import java.time.ZoneOffset;
 public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    public String generateToken(Usuario usario){
+    public String generateToken(Usuario usuario){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
+            UserDataResponse userDataResponse = AuthenticationMapper.usuarioToUserDataResponse(usuario);
+            String userJsonString;
+
+            try {
+                userJsonString = objectMapper.writeValueAsString(userDataResponse);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Erro ao converter dados do usuário para JSON", e);
+            }
+
+
             String token = JWT.create()
                     .withIssuer("auth-api")
-                    .withSubject(usario.getUsuario())
+                    .withSubject(userJsonString)
                     .withExpiresAt(getExpireTimeToken())
                     .sign(algorithm);
 
@@ -48,16 +63,16 @@ public class TokenService {
 
 
     public String refreshToken(String oldToken) {
-        // Primeiro, validar o token existente. Assumindo que `validateToken` retorna o nome de usuário se válido,
-        // ou uma string vazia caso contrário. Você pode ajustar conforme a lógica de validação que você tem.
         String usuario = this.validateToken(oldToken);
+        var userName = AuthenticationMapper.jsonUserDataFrontToUserNameRequest(usuario);
+
         if (usuario.isEmpty()) {
             throw new JWTVerificationException("Token inválido ou expirado");
         }
 
         // Se o token é válido, gerar um novo token
-        Usuario user = new Usuario(); // Você precisará obter o objeto Usuario do seu repositório
-        user.setUsuario(usuario);
+        Usuario user = new Usuario();
+        user.setUsuario(userName);
         return this.generateToken(user);
     }
 

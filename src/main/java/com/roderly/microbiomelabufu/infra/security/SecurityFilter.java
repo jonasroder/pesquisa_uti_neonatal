@@ -1,6 +1,7 @@
 package com.roderly.microbiomelabufu.infra.security;
 
 import com.roderly.microbiomelabufu.infra.GlobalExceptionHandler;
+import com.roderly.microbiomelabufu.login.mapper.AuthenticationMapper;
 import com.roderly.microbiomelabufu.usuario.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,8 +31,10 @@ public class SecurityFilter extends OncePerRequestFilter {
             var token = this.recoverToken(request);
             if (token != null) {
                 var usuario = tokenService.validateToken(token);
+                var userName = AuthenticationMapper.jsonUserDataFrontToUserNameRequest(usuario);
+
                 if (usuario != null && !usuario.isEmpty()) {
-                    UserDetails user = usuarioRepository.findByUsuario(usuario);
+                    UserDetails user = usuarioRepository.findByUsuario(userName);
                     var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
