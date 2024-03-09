@@ -48,31 +48,31 @@ public class Paciente {
     @OneToMany(mappedBy = "paciente")
     private List<Consulta> consultas = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_profissao", referencedColumnName = "id_profissao")
     private Profissao profissao;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_plano_saude", referencedColumnName = "id_plano_saude")
     private PlanoSaude planoSaude;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_estado_civil", referencedColumnName = "id_estado_civil")
     private EstadoCivil estadoCivil;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sexo", referencedColumnName = "id_sexo")
     private Sexo sexo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_etnia", referencedColumnName = "id_etnia")
     private Etnia etnia;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_escolaridade", referencedColumnName = "id_escolaridade")
     private Escolaridade escolaridade;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_religiao", referencedColumnName = "id_religiao")
     private Religiao religiao;
 

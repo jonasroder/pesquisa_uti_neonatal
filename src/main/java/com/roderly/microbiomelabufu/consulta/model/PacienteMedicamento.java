@@ -27,19 +27,19 @@ public class PacienteMedicamento {
     private String dosagem;
     private Boolean is_active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_consulta", referencedColumnName = "id_consulta")
     private Consulta consulta;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_medicamento", referencedColumnName = "id_medicamento")
     private Medicamento medicamento;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_frequencia", referencedColumnName = "id_frequencia")
     private Frequencia frequencia;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_periodo", referencedColumnName = "id_periodo")
     private Periodo periodo;
 

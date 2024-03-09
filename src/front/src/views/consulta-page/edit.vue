@@ -70,7 +70,6 @@ const carregarDadosConsulta = async () => {
     Object.assign(arrPrescricaoMedicamento, data.prescricaoMedicamentos);
     Object.assign(arrPrescricaoSuplemento, data.prescricaoSuplementos);
     Object.assign(arrArquivos, data.arquivosConsulta);
-    debugger
 }
 
 
@@ -445,7 +444,14 @@ const formularioAlimentacao = () => {
 
 
 const formularioPittsburgh = () => {
-    alert('Desenvolvimento Pendente');
+    const routeData = router.resolve({
+        name : 'FormularioPittsburgh-Page',
+        query: {
+            id_consulta: id_consulta.value
+        }
+    });
+
+    window.open(routeData.href, '_blank');
 }
 
 
@@ -487,8 +493,8 @@ const formularioAtividadeFisica = () => {
             <v-col cols="12" md="3" lg="3">
                 <v-row class="justify-end mr-2">
                     <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioHamilton">Escala de Ansiedade de Hamilton</v-btn>
-                    <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioAtividadeFisica">Formulário Atividade Física</v-btn>
                     <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioPittsburgh">Formulário Qualidade de Sono Pittsburgh</v-btn>
+                    <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioAtividadeFisica">Formulário Atividade Física</v-btn>
                     <v-btn class="mb-2" size="small" block color="azulEscuro" :disabled="!id_consulta" @click="formularioAlimentacao">Formulário Alimentação</v-btn>
                 </v-row>
 

@@ -23,11 +23,11 @@ public class ConsultaInformacaoSaude {
     private String valor;
     private Boolean is_active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_consulta", referencedColumnName = "id_consulta")
     private Consulta consulta;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_informacao_saude", referencedColumnName = "id_tipo_informacao_saude")
     private TipoInformacaoSaude tipoInformacaoSaude;
 }

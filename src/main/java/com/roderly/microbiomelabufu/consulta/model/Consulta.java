@@ -1,6 +1,7 @@
 package com.roderly.microbiomelabufu.consulta.model;
 
 import com.roderly.microbiomelabufu.formulario_hamilton.model.FormularioHamilton;
+import com.roderly.microbiomelabufu.formulario_pittsburgh.model.FormularioPittsburgh;
 import com.roderly.microbiomelabufu.usuario.model.Usuario;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
@@ -30,11 +31,11 @@ public class Consulta {
     private String sintomas;
     private Boolean is_active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     private Usuario medico;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_paciente", referencedColumnName = "id_paciente")
     private Paciente paciente;
 
@@ -68,6 +69,9 @@ public class Consulta {
 
     @OneToOne(mappedBy = "consulta")
     private FormularioHamilton formularioHamilton;
+
+    @OneToOne(mappedBy = "consulta")
+    private FormularioPittsburgh formularioPittsburgh;
 
 
     public Consulta(Long id_consulta) {

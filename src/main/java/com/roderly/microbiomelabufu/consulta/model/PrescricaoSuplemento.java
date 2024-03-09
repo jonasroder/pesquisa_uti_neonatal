@@ -27,19 +27,19 @@ public class PrescricaoSuplemento {
     private String instrucoes;
     private Boolean is_active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_consulta", referencedColumnName = "id_consulta")
     private Consulta consulta;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_suplemento", referencedColumnName = "id_suplemento")
     private Suplemento suplemento;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_frequencia", referencedColumnName = "id_frequencia")
     private Frequencia frequencia;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_periodo", referencedColumnName = "id_periodo")
     private Periodo periodo;
 

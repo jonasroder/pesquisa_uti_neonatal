@@ -21,11 +21,11 @@ public class ConsultaDiagnostico {
     private Long id_consulta_diagnostico;
     private Boolean is_active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_consulta", referencedColumnName = "id_consulta")
     private Consulta consulta;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_diagnostico", referencedColumnName = "id_diagnostico")
     private Diagnostico diagnostico;
 }

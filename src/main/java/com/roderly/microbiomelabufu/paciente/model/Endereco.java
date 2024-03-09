@@ -23,7 +23,7 @@ public class Endereco {
     private String cep;
     private String referencia;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_uf", referencedColumnName = "id_uf")
     private UF uf;
 
