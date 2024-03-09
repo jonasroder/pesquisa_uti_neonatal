@@ -2,19 +2,26 @@
 import {onMounted, ref, watch} from 'vue';
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
-import {getToken} from "@/service/common/tokenService";
+import {getToken, getSessionUserData} from "@/service/common/tokenService";
+
 
 const router      = useRouter();
 const menuLateral = ref([]);
+const userData    = ref({});
+const nomeUsuario = ref("");
+
 
 onMounted(async () => {
     if (!getToken()) {
         return;
     }
 
+    userData.value = getSessionUserData();
+    nomeUsuario.value = userData.value.nome_completo
+
     loading.show()
-    let cachedMenu = localStorage.getItem('cachedMenu');
-    menuLateral.value    = cachedMenu ? JSON.parse(cachedMenu) : null;
+    let cachedMenu    = localStorage.getItem('cachedMenu');
+    menuLateral.value = cachedMenu ? JSON.parse(cachedMenu) : null;
     loading.hide()
 });
 
@@ -42,11 +49,12 @@ const isActive = (route) => {
 
 
 <template>
-    <v-navigation-drawer v-model="localDrawerState" app>
+    <v-navigation-drawer v-model="localDrawerState">
         <v-list>
-            <v-list-item>
-                <v-list-subheader>Menu</v-list-subheader>
-            </v-list-item>
+            <v-list-item
+                :title="nomeUsuario"
+                subtitle="Logado"
+            ></v-list-item>
 
             <v-divider/>
 

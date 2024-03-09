@@ -64,15 +64,12 @@ public class TokenService {
 
     public String refreshToken(String oldToken) {
         String usuario = this.validateToken(oldToken);
-        var userName = AuthenticationMapper.jsonUserDataFrontToUserNameRequest(usuario);
+        var user = AuthenticationMapper.jsonUserDataFrontToUsuario(usuario);
 
         if (usuario.isEmpty()) {
             throw new JWTVerificationException("Token inválido ou expirado");
         }
 
-        // Se o token é válido, gerar um novo token
-        Usuario user = new Usuario();
-        user.setUsuario(userName);
         return this.generateToken(user);
     }
 

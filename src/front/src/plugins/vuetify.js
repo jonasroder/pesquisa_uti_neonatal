@@ -87,6 +87,9 @@ export default createVuetify({
 		VTooltip     : {
 			activator: 'parent',
 			location : 'top'
+		},
+		VBtn         : {
+			ripple: 'true',
 		}
 
 	},

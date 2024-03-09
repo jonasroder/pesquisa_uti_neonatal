@@ -1,32 +1,26 @@
 <script setup>
-import {ref} from "vue";
-import {getSessionUserData} from "@/service/common/tokenService";
+import {removeToken} from "@/service/common/tokenService";
+import router from '@/router';
 
-const userData = ref(getSessionUserData());
-
-console.log('userData: ' + userData.value);
-
+const logout = () => {
+    removeToken();
+    router.push('/login');
+}
 </script>
 
 <template>
-    <v-app-bar flat class="border-b d-flex" color="barrasSperior">
-        <!-- conteúdo do app bar -->
+    <v-app-bar app class="border-b d-flex barra-superior">
+
         <v-app-bar-nav-icon @click="$emit('toggle-drawer')"/>
+        <v-toolbar-title>Saúde em Equilíbrio</v-toolbar-title>
 
+        <v-spacer/>
 
-        <template #append>
-            <v-btn>
-                <v-badge dot color="info" class="mr-2">
-                    <v-icon icon="far  fa-bell"/>
-                </v-badge>
-            </v-btn>
-
-            <!--            <v-avatar>-->
-            <!--                <v-img cover src="#"></v-img>-->
-            <!--            </v-avatar>-->
-        </template>
+        <v-btn icon @click="logout">
+            <v-icon>fa-solid fa-arrow-right-from-bracket</v-icon>
+            <v-tooltip text="Sair"/>
+        </v-btn>
 
     </v-app-bar>
 </template>
-
 

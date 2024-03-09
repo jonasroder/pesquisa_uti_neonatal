@@ -27,7 +27,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu")
     private List<SubMenu> subMenuList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_vue_router", referencedColumnName = "id_vue_router")
     private VueRouter vueRouter;
 }

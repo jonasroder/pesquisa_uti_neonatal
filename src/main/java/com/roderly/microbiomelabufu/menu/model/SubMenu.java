@@ -19,11 +19,11 @@ public class SubMenu {
     private String title;
     private Boolean is_active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_vue_router", referencedColumnName = "id_vue_router")
     private VueRouter vueRouter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_menu", referencedColumnName = "id_menu")
     private Menu menu;
 }

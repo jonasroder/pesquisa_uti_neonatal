@@ -19,10 +19,16 @@ public class AuthenticationMapper {
     }
 
 
-    public static String jsonUserDataFrontToUserNameRequest(String userDataJson) {
+    public static Usuario jsonUserDataFrontToUsuario(String userDataJson) {
         try {
-            UserDataResponse userDataResponse = objectMapper.readValue(userDataJson, UserDataResponse.class);
-            return userDataResponse.usuario();
+            var userDataResponse = objectMapper.readValue(userDataJson, UserDataResponse.class);
+            var usuario = new Usuario();
+
+            usuario.setId_usuario(userDataResponse.id_usuario());
+            usuario.setUsuario(userDataResponse.usuario());
+            usuario.setNome_completo(userDataResponse.nome_completo());
+
+            return usuario;
         } catch (IOException e) {
             throw new RuntimeException("Falha ao deserializar o JSON do usuário", e);
         }

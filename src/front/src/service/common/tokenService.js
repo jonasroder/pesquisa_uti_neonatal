@@ -4,7 +4,6 @@ export const saveToken = (token) => {
 	const expiresAt = new Date().getTime() + (480 * 60 * 1000); // 8 horas em milissegundos
 	localStorage.setItem(TOKEN_KEY, token);
 	localStorage.setItem('tokenExpiresAt', expiresAt.toString());
-	decodeTokenAndStoreSession(token);
 };
 
 
@@ -22,7 +21,7 @@ export const getToken = () => {
 
 
 export const getSessionUserData = () => {
-	return localStorage.getItem('userData');
+	return JSON.parse(localStorage.getItem('userData'));
 };
 
 
@@ -35,13 +34,13 @@ export const removeToken = () => {
 };
 
 
-const decodeTokenAndStoreSession = (token) => {
+export const decodeTokenAndStoreSession = (token) => {
 	const base64Url = token.split('.')[1];
 	const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 	const payload = JSON.parse(atob(base64));
 	const dataUser = JSON.parse(payload.sub);
 	localStorage.removeItem('userData');
-	sessionStorage.setItem('userData', JSON.stringify(dataUser));
+	localStorage.setItem('userData', JSON.stringify(dataUser));
 
 	return dataUser;
 };

@@ -21,11 +21,11 @@ public class SuplementoIngrediente {
     private String dosagem;
     private Boolean is_active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_ingrediente")
     private Ingrediente ingrediente;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_suplemento")
     private Suplemento suplemento;
 

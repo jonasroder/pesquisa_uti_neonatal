@@ -1,6 +1,6 @@
 import axios from "axios";
 import { setNotification } from "@/plugins/notificationService";
-import { saveToken, removeToken } from "@/service/common/tokenService";
+import { saveToken, removeToken,decodeTokenAndStoreSession } from "@/service/common/tokenService";
 import { loadRoutes } from '@/router';
 
 export const serviceAuthenticateUser = async (data) => {
@@ -9,6 +9,7 @@ export const serviceAuthenticateUser = async (data) => {
 		const res = await axios.post('/authenticate/login', data);
 		saveToken(res.data.token);
 		await loadRoutes();
+		decodeTokenAndStoreSession(res.data.token);
 		return res.data;
 
 	} catch (e) {
