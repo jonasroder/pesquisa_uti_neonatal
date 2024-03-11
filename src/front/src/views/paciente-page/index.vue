@@ -101,6 +101,7 @@ const editarConsulta = (id_paciente, id_consulta) => {
 <template>
     <CardListagem title="Lista de Pacientes"
                   subtitle="Centralizando Informações para Cuidado Integral"
+                  botao="Novo Paciente"
                   @handleNew="handleNew">
 
         <v-card flat>
@@ -132,7 +133,9 @@ const editarConsulta = (id_paciente, id_consulta) => {
                 <!-- Coluna Nome -->
                 <template v-slot:[`item.nome`]="{ item }">
                     <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id_paciente)">
-                        <b>{{ item.nome }}</b> </a>
+                        <b>{{ item.nome }}</b>
+                        <v-tooltip text="Visualizar ou editar cadastro de paciente"/>
+                    </a>
                 </template>
 
                 <!-- Coluna Telefone -->
@@ -141,6 +144,7 @@ const editarConsulta = (id_paciente, id_consulta) => {
                         <a v-if="item.telefone_1" :href="`https://wa.me/+55${item.telefone_1.replace(/[^0-9]/g, '')}`" target="_blank">{{ formatarTelefone(item.telefone_1) }}</a>
                         <br v-if="item.telefone_1 && item.telefone_2">
                         <a v-if="item.telefone_2" :href="`https://wa.me/+55${item.telefone_2.replace(/[^0-9]/g, '')}`" target="_blank">{{ formatarTelefone(item.telefone_2) }}</a>
+                        <v-tooltip text="Abrir whatsapp"/>
                     </div>
                 </template>
 
@@ -151,6 +155,7 @@ const editarConsulta = (id_paciente, id_consulta) => {
                         <a href="#" class="editable-name" @click.prevent="editarConsulta(item.id_paciente, consulta.id_consulta)">
                             {{ `${consulta.tipo_consulta}: ${consulta.data}` }}
                         </a>
+                        <v-tooltip text="Visualizar Consulta"/>
                     </div>
                 </template>
 
