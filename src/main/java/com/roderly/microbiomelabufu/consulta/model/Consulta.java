@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.consulta.model;
 
+import com.roderly.microbiomelabufu.formulario_atividade_fisica.model.FormularioAtividadeFisica;
 import com.roderly.microbiomelabufu.formulario_hamilton.model.FormularioHamilton;
 import com.roderly.microbiomelabufu.formulario_pittsburgh.model.FormularioPittsburgh;
 import com.roderly.microbiomelabufu.usuario.model.Usuario;
@@ -72,6 +73,9 @@ public class Consulta {
 
     @OneToOne(mappedBy = "consulta")
     private FormularioPittsburgh formularioPittsburgh;
+
+    @OneToOne(mappedBy = "consulta")
+    private FormularioAtividadeFisica formularioAtividadeFisica;
 
 
     public Consulta(Long id_consulta) {

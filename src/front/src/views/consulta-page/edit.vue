@@ -456,7 +456,14 @@ const formularioPittsburgh = () => {
 
 
 const formularioAtividadeFisica = () => {
-    alert('Desenvolvimento Pendente');
+    const routeData = router.resolve({
+        name : 'FormularioAtividadeFisica-Page',
+        query: {
+            id_consulta: id_consulta.value
+        }
+    });
+
+    window.open(routeData.href, '_blank');
 }
 </script>
 
