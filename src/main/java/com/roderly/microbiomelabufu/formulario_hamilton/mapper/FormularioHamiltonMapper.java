@@ -1,6 +1,6 @@
 package com.roderly.microbiomelabufu.formulario_hamilton.mapper;
 
-import com.roderly.microbiomelabufu.cadastros_gerais.escala_intensidade.model.EscalaIntensidade;
+import com.roderly.microbiomelabufu.formulario_hamilton.model.EscalaIntensidade;
 import com.roderly.microbiomelabufu.common.Utilitarios.DateUtil;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.request.FormularioHamiltonRequest;

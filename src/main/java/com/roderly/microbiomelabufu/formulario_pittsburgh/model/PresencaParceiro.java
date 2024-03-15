@@ -1,4 +1,4 @@
-package com.roderly.microbiomelabufu.cadastros_gerais.qualidade_sono.model;
+package com.roderly.microbiomelabufu.formulario_pittsburgh.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,17 +10,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "qualidade_sono")
-@Entity(name = "QualidadeSono")
-public class QualidadeSono {
+@Table(name = "presenca_parceiro")
+@Entity(name = "PresencaParceiro")
+public class PresencaParceiro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_qualidade_sono ;
+    private Long id_presenca_parceiro ;
     private String descricao;
     private Boolean is_active;
 
-    public QualidadeSono(Long id_qualidade_sono ) {
-        this.id_qualidade_sono  = id_qualidade_sono ;
+    public PresencaParceiro(Long id_presenca_parceiro) {
+        this.id_presenca_parceiro = id_presenca_parceiro;
     }
+
 
 }

@@ -1,4 +1,4 @@
-package com.roderly.microbiomelabufu.cadastros_gerais.escala_intensidade.model;
+package com.roderly.microbiomelabufu.formulario_hamilton.model;
 
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import com.roderly.microbiomelabufu.formulario_hamilton.model.FormularioHamilton;

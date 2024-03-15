@@ -1,4 +1,4 @@
-package com.roderly.microbiomelabufu.cadastros_gerais.problema_entusiasmo.model;
+package com.roderly.microbiomelabufu.formulario_pittsburgh.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

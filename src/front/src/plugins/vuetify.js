@@ -74,6 +74,11 @@ export default createVuetify({
 		},
 		VRadio       : {
 			color: 'primary',
+
+		},
+		VRadioGroup  : {
+			color: 'primary',
+			inline: true
 		},
 		VSwitch      : {
 			color: 'azulEscuro',
@@ -90,7 +95,7 @@ export default createVuetify({
 		},
 		VBtn         : {
 			ripple: 'true',
-		}
+		},
 
 	},
 

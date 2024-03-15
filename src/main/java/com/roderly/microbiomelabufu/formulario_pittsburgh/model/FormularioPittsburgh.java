@@ -1,9 +1,5 @@
 package com.roderly.microbiomelabufu.formulario_pittsburgh.model;
 
-import com.roderly.microbiomelabufu.cadastros_gerais.frequencia_dificuldades.model.FrequenciaDificuldades;
-import com.roderly.microbiomelabufu.cadastros_gerais.presenca_parceiro.model.PresencaParceiro;
-import com.roderly.microbiomelabufu.cadastros_gerais.problema_entusiasmo.model.ProblemaEntusiasmo;
-import com.roderly.microbiomelabufu.cadastros_gerais.qualidade_sono.model.QualidadeSono;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Time;
 import java.time.LocalTime;
 
 @Getter

@@ -1,9 +1,9 @@
 package com.roderly.microbiomelabufu.formulario_pittsburgh.mapper;
 
-import com.roderly.microbiomelabufu.cadastros_gerais.frequencia_dificuldades.model.FrequenciaDificuldades;
-import com.roderly.microbiomelabufu.cadastros_gerais.presenca_parceiro.model.PresencaParceiro;
-import com.roderly.microbiomelabufu.cadastros_gerais.problema_entusiasmo.model.ProblemaEntusiasmo;
-import com.roderly.microbiomelabufu.cadastros_gerais.qualidade_sono.model.QualidadeSono;
+import com.roderly.microbiomelabufu.formulario_pittsburgh.model.FrequenciaDificuldades;
+import com.roderly.microbiomelabufu.formulario_pittsburgh.model.PresencaParceiro;
+import com.roderly.microbiomelabufu.formulario_pittsburgh.model.ProblemaEntusiasmo;
+import com.roderly.microbiomelabufu.formulario_pittsburgh.model.QualidadeSono;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import com.roderly.microbiomelabufu.formulario_pittsburgh.dto.request.FormularioPittsburghRequest;
 import com.roderly.microbiomelabufu.formulario_pittsburgh.dto.response.FormularioPittsburghResponse;

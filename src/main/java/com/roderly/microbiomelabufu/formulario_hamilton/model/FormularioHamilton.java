@@ -1,6 +1,5 @@
 package com.roderly.microbiomelabufu.formulario_hamilton.model;
 
-import com.roderly.microbiomelabufu.cadastros_gerais.escala_intensidade.model.EscalaIntensidade;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
