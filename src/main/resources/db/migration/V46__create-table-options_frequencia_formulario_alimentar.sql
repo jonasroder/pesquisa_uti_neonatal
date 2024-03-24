@@ -2,6 +2,10 @@ CREATE TABLE options_frequencia_formulario_alimentar
 (
     id_options_frequencia_formulario_alimentar BIGINT AUTO_INCREMENT PRIMARY KEY,
     descricao                                  VARCHAR(100) NOT NULL,
+    criado_em                                  DATETIME,
+    criado_por_id                              BIGINT,
+    alterado_em                                DATETIME,
+    alterado_por_id                            BIGINT,
     is_active                                  TINYINT DEFAULT 1
 );
 

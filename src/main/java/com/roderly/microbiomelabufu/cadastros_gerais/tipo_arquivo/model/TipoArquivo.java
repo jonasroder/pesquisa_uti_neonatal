@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.tipo_arquivo.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "tipo_arquivo")
 @Entity(name = "TipoArquivo")
-public class TipoArquivo {
+public class TipoArquivo extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_tipo_arquivo;

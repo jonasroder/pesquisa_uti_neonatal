@@ -15,5 +15,9 @@ CREATE TABLE formulario_hamilton
     sintomas_gastrointestinais TINYINT NOT NULL,
     sintomas_geniturinarios    TINYINT NOT NULL,
     sintomas_neurovegetativos  TINYINT NOT NULL,
-    comportamento_entrevista   TINYINT NOT NULL
+    comportamento_entrevista   TINYINT NOT NULL,
+    criado_em                  DATETIME,
+    criado_por_id              BIGINT,
+    alterado_em                DATETIME,
+    alterado_por_id            BIGINT
 );

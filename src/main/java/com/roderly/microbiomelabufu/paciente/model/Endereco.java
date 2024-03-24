@@ -2,6 +2,7 @@ package com.roderly.microbiomelabufu.paciente.model;
 
 import com.roderly.microbiomelabufu.cadastros_gerais.etnia.model.Etnia;
 import com.roderly.microbiomelabufu.cadastros_gerais.uf.model.UF;
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +12,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Endereco {
+public class Endereco extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_endereco;

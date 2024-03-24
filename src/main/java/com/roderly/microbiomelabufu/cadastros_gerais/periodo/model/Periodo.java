@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.periodo.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Periodo {
+public class Periodo extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_periodo;

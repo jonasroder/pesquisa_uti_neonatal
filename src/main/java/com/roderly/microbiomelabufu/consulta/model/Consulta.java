@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.consulta.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.formulario_alimentacao.model.FormularioAlimentar;
 import com.roderly.microbiomelabufu.formulario_atividade_fisica.model.FormularioAtividadeFisica;
 import com.roderly.microbiomelabufu.formulario_hamilton.model.FormularioHamilton;
@@ -23,7 +24,7 @@ import java.util.Set;
 @Table(name = "consulta")
 @Entity(name = "Consulta")
 @FilterDef(name = "isActiveFilter", parameters = @ParamDef(name = "is_active", type = Boolean.class))
-public class Consulta {
+public class Consulta extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_consulta;

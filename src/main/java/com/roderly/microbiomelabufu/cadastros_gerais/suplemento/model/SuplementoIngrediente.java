@@ -2,6 +2,7 @@ package com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model;
 
 
 import com.roderly.microbiomelabufu.cadastros_gerais.ingrediente.model.Ingrediente;
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SuplementoIngrediente {
+public class SuplementoIngrediente extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_suplemento_ingrediente;

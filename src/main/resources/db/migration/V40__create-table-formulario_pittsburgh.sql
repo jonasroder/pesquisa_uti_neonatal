@@ -27,5 +27,9 @@ CREATE TABLE formulario_pittsburgh
     contracoes_pernas            TINYINT,         -- Parceiro: Contrações ou puxões nas pernas
     desorientacao_sono           TINYINT,         -- Parceiro: Desorientação ou confusão durante o sono
     outras_alteracoes_sono       VARCHAR(255),    -- Parceiro: Outras alterações durante o sono
-    frequencia_outras_alteracoes TINYINT          -- Frequência das outras alterações durante o sono
+    frequencia_outras_alteracoes TINYINT,         -- Frequência das outras alterações durante o sono
+    criado_em                    DATETIME,
+    criado_por_id                BIGINT,
+    alterado_em                  DATETIME,
+    alterado_por_id              BIGINT
 );

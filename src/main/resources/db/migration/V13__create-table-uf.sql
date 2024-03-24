@@ -1,10 +1,13 @@
--- Criação da tabela de unidades federativas (UF)
 CREATE TABLE uf
 (
-    id_uf     BIGINT AUTO_INCREMENT PRIMARY KEY,
-    sigla     VARCHAR(2)   NOT NULL,
-    descricao VARCHAR(255) NOT NULL,
-    is_active TINYINT DEFAULT 1
+    id_uf           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    sigla           VARCHAR(2)   NOT NULL,
+    descricao       VARCHAR(255) NOT NULL,
+    criado_em       DATETIME,
+    criado_por_id   BIGINT,
+    alterado_em     DATETIME,
+    alterado_por_id BIGINT,
+    is_active       TINYINT DEFAULT 1
 );
 
 -- Inserts para a tabela de UF

@@ -7,5 +7,9 @@ CREATE TABLE consulta
     data_hora        DATETIME NOT NULL,
     observacoes      TEXT,
     sintomas         TEXT,
+    criado_em        DATETIME,
+    criado_por_id    BIGINT,
+    alterado_em      DATETIME,
+    alterado_por_id  BIGINT,
     is_active        TINYINT DEFAULT 1
 );

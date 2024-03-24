@@ -24,3 +24,7 @@ INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/ingr
 INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/ingrediente/edit', 'Ingrediente-Page', 'cadastros/ingrediente-page/edit.vue', 'Ingredientes', 1);
 INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/diagnostico/index', 'Diagnostico-List', 'cadastros/diagnostico-page/index.vue', 'Lista Diagnósticos', 1);
 INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/informacao_saude/index', 'InformacaoSaude-List', 'cadastros/informacao_saude-page/index.vue', 'Lista Informações Saúde', 1);
+INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/formulario_hamilton/edit', 'FormularioHamilton-Page', 'formulario_hamilton-page/edit.vue', 'Formulario Hamilton', 1);
+INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/formulario_pittsburgh/edit', 'FormularioPittsburgh-Page', 'formulario_pittsburgh-page/edit.vue', 'Formulario Pittsburgh', 1);
+INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/formulario_atividade_fisica/edit', 'FormularioAtividadeFisica-Page', 'formulario_atividade_fisica-page/edit.vue', 'Formulario Atividade Física', 1);
+INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/formulario_alimentar/edit', 'FormularioAlimentar-Page', 'formulario_alimentar-page/edit.vue', 'Formulário Alimentar', NULL);

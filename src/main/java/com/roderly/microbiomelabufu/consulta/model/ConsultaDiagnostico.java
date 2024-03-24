@@ -1,6 +1,7 @@
 package com.roderly.microbiomelabufu.consulta.model;
 
 import com.roderly.microbiomelabufu.cadastros_gerais.diagnostico.model.Diagnostico;
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import org.hibernate.annotations.ParamDef;
 @AllArgsConstructor
 @Table(name = "consulta_diagnostico")
 @Entity(name = "ConsultaDiagonostico")
-public class ConsultaDiagnostico {
+public class ConsultaDiagnostico extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_consulta_diagnostico;

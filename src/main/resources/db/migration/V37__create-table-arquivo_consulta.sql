@@ -8,5 +8,9 @@ CREATE TABLE arquivo_consulta
     tamanho         BIGINT,
     formato         VARCHAR(255),
     data_upload     DATETIME DEFAULT CURRENT_TIMESTAMP,
+    criado_em       DATETIME,
+    criado_por_id   BIGINT,
+    alterado_em     DATETIME,
+    alterado_por_id BIGINT,
     is_active       TINYINT  DEFAULT 1
 );

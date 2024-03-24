@@ -1,10 +1,14 @@
 CREATE TABLE diagnostico
 (
-    id_diagnostico BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome           VARCHAR(255) NOT NULL,
-    descricao      TEXT,
-    codigo_cid     VARCHAR(50),
-    is_active      TINYINT DEFAULT 1
+    id_diagnostico  BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome            VARCHAR(255) NOT NULL,
+    descricao       TEXT,
+    codigo_cid      VARCHAR(50),
+    criado_em       DATETIME,
+    criado_por_id   BIGINT,
+    alterado_em     DATETIME,
+    alterado_por_id BIGINT,
+    is_active       TINYINT DEFAULT 1
 );
 
 

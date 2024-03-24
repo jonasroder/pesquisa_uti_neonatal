@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.plano_saude.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "plano_saude")
 @Entity(name = "Plano_saude")
-public class PlanoSaude {
+public class PlanoSaude extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_plano_saude;

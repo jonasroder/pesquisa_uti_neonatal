@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.formulario_pittsburgh.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "presenca_parceiro")
 @Entity(name = "PresencaParceiro")
-public class PresencaParceiro {
+public class PresencaParceiro extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_presenca_parceiro ;

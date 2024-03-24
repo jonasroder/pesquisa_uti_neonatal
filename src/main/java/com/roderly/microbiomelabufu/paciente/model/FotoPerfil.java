@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.paciente.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "foto_perfil")
 @Entity(name = "FotoPerfil")
-public class FotoPerfil {
+public class FotoPerfil extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_foto_perfil;

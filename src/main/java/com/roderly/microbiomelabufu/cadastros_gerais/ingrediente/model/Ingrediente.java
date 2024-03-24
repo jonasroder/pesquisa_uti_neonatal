@@ -1,6 +1,7 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.ingrediente.model;
 
 import com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model.SuplementoIngrediente;
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "ingrediente")
 @Entity(name = "Ingrediente")
-public class Ingrediente {
+public class Ingrediente extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_ingrediente;

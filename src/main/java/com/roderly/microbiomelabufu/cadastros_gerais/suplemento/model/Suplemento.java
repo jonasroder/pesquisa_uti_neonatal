@@ -1,6 +1,7 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model;
 
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.consulta.model.PacienteMedicamento;
 import com.roderly.microbiomelabufu.consulta.model.PacienteSuplemento;
 import com.roderly.microbiomelabufu.consulta.model.PrescricaoSuplemento;
@@ -19,7 +20,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Suplemento {
+public class Suplemento extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_suplemento;

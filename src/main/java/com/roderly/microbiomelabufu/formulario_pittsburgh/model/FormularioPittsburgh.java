@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.formulario_pittsburgh.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Table(name = "formulario_pittsburgh")
 @Entity(name = "FormularioPittsburgh")
-public class FormularioPittsburgh {
+public class FormularioPittsburgh extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_formulario_pittsburgh;

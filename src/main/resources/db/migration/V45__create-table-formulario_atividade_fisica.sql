@@ -9,5 +9,9 @@ CREATE TABLE formulario_atividade_fisica
     tempo_caminhada_moderada       TIME,
     dias_caminhada_moderada        INT,
     tempo_sentado_dia_util         TIME,
-    tempo_sentado_fds              TIME
+    tempo_sentado_fds              TIME,
+    criado_em                      DATETIME,
+    criado_por_id                  BIGINT,
+    alterado_em                    DATETIME,
+    alterado_por_id                BIGINT
 );

@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.formulario_atividade_fisica.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Table(name = "formulario_atividade_fisica")
 @Entity(name = "FormularioAtividadeFisica")
-public class FormularioAtividadeFisica {
+public class FormularioAtividadeFisica extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_formulario_atividade_fisica;

@@ -8,6 +8,10 @@ CREATE TABLE usuario
     telefone_1      VARCHAR(20),
     telefone_2      VARCHAR(20),
     cpf             VARCHAR(11)  NOT NULL UNIQUE,
+    criado_em       DATETIME,
+    criado_por_id   BIGINT,
+    alterado_em     DATETIME,
+    alterado_por_id BIGINT,
     is_active       TINYINT DEFAULT 1
 );
 

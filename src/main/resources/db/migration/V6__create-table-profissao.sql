@@ -1,223 +1,165 @@
--- Criação da tabela de profissão
 CREATE TABLE profissao
 (
-    id_profissao BIGINT AUTO_INCREMENT PRIMARY KEY,
-    descricao    VARCHAR(255) NOT NULL,
-    is_active    TINYINT DEFAULT 1
+    id_profissao    BIGINT AUTO_INCREMENT PRIMARY KEY,
+    descricao       VARCHAR(255) NOT NULL,
+    criado_em       DATETIME,
+    criado_por_id   BIGINT,
+    alterado_em     DATETIME,
+    alterado_por_id BIGINT,
+    is_active       TINYINT DEFAULT 1
 );
+INSERT INTO profissao (descricao, is_active)
+VALUES ('Engenheiro', 1),
+       ('Médico', 1),
+       ('Advogado', 1),
+       ('Professor', 1),
+       ('Contador', 1),
+       ('Enfermeiro', 1),
+       ('Técnico de Informática', 1),
+       ('Desenvolvedor de Software', 1),
+       ('Analista de Sistemas', 1),
+       ('Designer Gráfico', 1),
+       ('Publicitário', 1),
+       ('Arquiteto', 1),
+       ('Engenheiro Civil', 1),
+       ('Engenheiro Eletricista', 1),
+       ('Engenheiro Mecânico', 1),
+       ('Psicólogo', 1),
+       ('Nutricionista', 1),
+       ('Fisioterapeuta', 1),
+       ('Dentista', 1),
+       ('Farmacêutico', 1),
+       ('Biólogo', 1),
+       ('Químico', 1),
+       ('Físico', 1),
+       ('Geólogo', 1),
+       ('Astrônomo', 1),
+       ('Militar', 1),
+       ('Policial', 1),
+       ('Bombeiro', 1),
+       ('Juiz', 1),
+       ('Promotor', 1),
+       ('Diplomata', 1),
+       ('Político', 1),
+       ('Empresário', 1),
+       ('Comerciante', 1),
+       ('Agricultor', 1),
+       ('Pecuarista', 1),
+       ('Zootecnista', 1),
+       ('Veterinário', 1),
+       ('Oceanógrafo', 1),
+       ('Meteorologista', 1),
+       ('Agrônomo', 1),
+       ('Biomédico', 1),
+       ('Sanitarista', 1),
+       ('Epidemiologista', 1),
+       ('Sociólogo', 1),
+       ('Antropólogo', 1),
+       ('Historiador', 1),
+       ('Geógrafo', 1),
+       ('Filósofo', 1),
+       ('Teólogo', 1),
+       ('Psicanalista', 1),
+       ('Psiquiatra', 1),
+       ('Pedagogo', 1),
+       ('Educador Físico', 1),
+       ('Artista Plástico', 1),
+       ('Escritor', 1),
+       ('Jornalista', 1),
+       ('Fotógrafo', 1),
+       ('Músico', 1),
+       ('Ator', 1),
+       ('Diretor de Cinema', 1),
+       ('Produtor Cultural', 1),
+       ('Chef de Cozinha', 1),
+       ('Nutrólogo', 1),
+       ('Personal Trainer', 1),
+       ('Coach', 1),
+       ('Consultor', 1),
+       ('Analista Financeiro', 1),
+       ('Economista', 1),
+       ('Operador de Mercado Financeiro', 1),
+       ('Trader', 1),
+       ('Corretor de Imóveis', 1),
+       ('Avaliador de Imóveis', 1),
+       ('Engenheiro de Petróleo', 1),
+       ('Engenheiro de Minas', 1),
+       ('Engenheiro Ambiental', 1),
+       ('Engenheiro Químico', 1),
+       ('Engenheiro de Produção', 1),
+       ('Engenheiro Naval', 1),
+       ('Engenheiro Aeronáutico', 1),
+       ('Engenheiro Agrícola', 1),
+       ('Engenheiro de Alimentos', 1),
+       ('Engenheiro de Segurança do Trabalho', 1),
+       ('Engenheiro de Software', 1),
+       ('Engenheiro Eletrônico', 1),
+       ('Engenheiro de Telecomunicações', 1),
+       ('Cientista de Dados', 1),
+       ('Analista de Dados', 1),
+       ('Analista de Negócios', 1),
+       ('Analista de Recursos Humanos', 1),
+       ('Recrutador', 1),
+       ('Gerente de Projetos', 1),
+       ('Diretor Executivo', 1),
+       ('Gerente de Marketing', 1),
+       ('Gerente de Vendas', 1),
+       ('Representante Comercial', 1),
+       ('Gerente de TI', 1),
+       ('Técnico em Eletrônica', 1),
+       ('Técnico em Eletrotécnica', 1),
+       ('Mecânico', 1),
+       ('Técnico em Mecânica', 1),
+       ('Eletricista', 1),
+       ('Técnico em Informática para Internet', 1),
+       ('Desenvolvedor Web', 1),
+       ('Desenvolvedor Mobile', 1),
+       ('Cientista Social', 1),
+       ('Secretária', 1),
+       ('Assistente Administrativo', 1),
+       ('Gerente de RH', 1),
+       ('Operador de Call Center', 1),
+       ('Professor Universitário', 1),
+       ('Pesquisador', 1),
+       ('Cirurgião', 1),
+       ('Cardiologista', 1),
+       ('Dermatologista', 1),
+       ('Ginecologista', 1),
+       ('Pediatra', 1),
+       ('Neurologista', 1),
+       ('Oftalmologista', 1),
+       ('Ortopedista', 1),
+       ('Psiquiatra', 1),
+       ('Radiologista', 1),
+       ('Anestesista', 1),
+       ('Otorrinolaringologista', 1),
+       ('Urologista', 1),
+       ('Endocrinologista', 1),
+       ('Gastroenterologista', 1),
+       ('Hematologista', 1),
+       ('Infectologista', 1),
+       ('Nefrologista', 1),
+       ('Pneumologista', 1),
+       ('Reumatologista', 1),
+       ('Cirurgião Plástico', 1),
+       ('Oncologista', 1),
+       ('Angiologista', 1),
+       ('Proctologista', 1),
+       ('Intensivista', 1),
+       ('Neurocirurgião', 1),
+       ('Cirurgião Cardíaco', 1),
+       ('Cirurgião Torácico', 1),
+       ('Cirurgião Vascular', 1),
+       ('Cirurgião de Cabeça e Pescoço', 1),
+       ('Cirurgião Pediátrico', 1),
+       ('Cirurgião do Aparelho Digestivo', 1),
+       ('Cirurgião Oncológico', 1),
+       ('Cirurgião Geral', 1),
+       ('Clínico Geral', 1),
+       ('Médico de Família', 1),
+       ('Geriatra', 1),
+       ('Médico do Trabalho', 1),
+       ('Médico Esportivo', 1),
+       ('Patologista', 1),
+       ('Radioterapeuta', 1);
 
-
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Médico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Advogado', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Professor', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Contador', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Enfermeiro', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Técnico de Informática', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Desenvolvedor de Software', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Analista de Sistemas', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Designer Gráfico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Publicitário', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Arquiteto', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro Civil', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro Eletricista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro Mecânico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Psicólogo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Nutricionista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Fisioterapeuta', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Dentista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Farmacêutico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Biólogo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Químico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Físico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Geólogo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Astrônomo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Militar', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Policial', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Bombeiro', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Advogado', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Juiz', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Promotor', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Diplomata', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Político', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Empresário', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Comerciante', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Agricultor', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Pecuarista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Zootecnista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Veterinário', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Oceanógrafo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Meteorologista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Agrônomo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Biomédico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Sanitarista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Epidemiologista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Sociólogo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Antropólogo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Historiador', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Geógrafo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Filósofo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Teólogo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Psicanalista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Psiquiatra', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Pedagogo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Educador Físico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Artista Plástico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Escritor', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Jornalista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Fotógrafo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Músico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Ator', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Diretor de Cinema', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Produtor Cultural', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Chef de Cozinha', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Nutrólogo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Personal Trainer', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Coach', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Consultor', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Analista Financeiro', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Economista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Operador de Mercado Financeiro', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Trader', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Corretor de Imóveis', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Avaliador de Imóveis', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro de Petróleo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro de Minas', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro Ambiental', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro Químico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro de Produção', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro Naval', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro Aeronáutico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro Agrícola', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro de Alimentos', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro de Segurança do Trabalho', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro de Software', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro Eletrônico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Engenheiro de Telecomunicações', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Cientista de Dados', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Analista de Dados', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Analista de Negócios', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Analista de Recursos Humanos', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Recrutador', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Gerente de Projetos', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Diretor Executivo', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Gerente de Marketing', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Gerente de Vendas', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Representante Comercial', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Gerente de TI', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Técnico em Eletrônica', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Técnico em Eletrotécnica', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Mecânico', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Técnico em Mecânica', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Eletricista', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Técnico em Informática para Internet', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Desenvolvedor Web', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Desenvolvedor Mobile', 1);
-INSERT INTO profissao (descricao, is_active)
-VALUES ('Cientista Social', 1);

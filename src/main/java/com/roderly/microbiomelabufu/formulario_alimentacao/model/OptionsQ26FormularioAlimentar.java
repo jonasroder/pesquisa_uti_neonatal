@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.formulario_alimentacao.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "options_q26_formulario_alimentar")
 @Entity
-public class OptionsQ26FormularioAlimentar {
+public class OptionsQ26FormularioAlimentar extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_options_q26;

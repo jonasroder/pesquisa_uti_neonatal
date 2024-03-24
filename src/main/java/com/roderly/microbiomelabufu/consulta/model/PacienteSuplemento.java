@@ -5,6 +5,7 @@ import com.roderly.microbiomelabufu.cadastros_gerais.frequencia.model.Frequencia
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.model.Medicamento;
 import com.roderly.microbiomelabufu.cadastros_gerais.periodo.model.Periodo;
 import com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model.Suplemento;
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +20,7 @@ import org.hibernate.annotations.ParamDef;
 @AllArgsConstructor
 @Table(name = "paciente_suplemento")
 @Entity(name = "PacienteSuplemento")
-public class PacienteSuplemento {
+public class PacienteSuplemento extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_paciente_suplemento;

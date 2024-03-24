@@ -39,5 +39,9 @@ CREATE TABLE formulario_alimentar
     R302J                   TINYINT NULL,
     R302K                   TINYINT NULL,
     R302L                   TINYINT NULL,
-    R302M                   TINYINT NULL
+    R302M                   TINYINT NULL,
+    criado_em               DATETIME,
+    criado_por_id           BIGINT,
+    alterado_em             DATETIME,
+    alterado_por_id         BIGINT
 );

@@ -24,6 +24,10 @@ CREATE TABLE paciente
     id_etnia           BIGINT,
     id_escolaridade    BIGINT,
     id_religiao        BIGINT,
+    criado_em          DATETIME,
+    criado_por_id      BIGINT,
+    alterado_em        DATETIME,
+    alterado_por_id    BIGINT,
     is_active          TINYINT DEFAULT 1
 );
 

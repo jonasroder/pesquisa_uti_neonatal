@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.formulario_hamilton.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import com.roderly.microbiomelabufu.formulario_hamilton.model.FormularioHamilton;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "escala_intensidade")
 @Entity(name = "EscalaIntensidade")
-public class EscalaIntensidade {
+public class EscalaIntensidade extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_intensidade;

@@ -6,5 +6,9 @@ CREATE TABLE foto_perfil
     tamanho         BIGINT,
     formato         VARCHAR(50),
     data_upload     DATETIME DEFAULT CURRENT_TIMESTAMP,
+    criado_em       DATETIME,
+    criado_por_id   BIGINT,
+    alterado_em     DATETIME,
+    alterado_por_id BIGINT,
     is_active       TINYINT  DEFAULT 1
 );

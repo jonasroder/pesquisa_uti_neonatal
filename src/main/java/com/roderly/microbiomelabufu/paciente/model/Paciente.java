@@ -8,6 +8,7 @@ import com.roderly.microbiomelabufu.cadastros_gerais.profissao.model.Profissao;
 import com.roderly.microbiomelabufu.cadastros_gerais.religiao.model.Religiao;
 import com.roderly.microbiomelabufu.cadastros_gerais.sexo.model.Sexo;
 import com.roderly.microbiomelabufu.cadastros_gerais.suplemento.model.Suplemento;
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "paciente")
 @Entity(name = "Paciente")
-public class Paciente {
+public class Paciente extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_paciente;

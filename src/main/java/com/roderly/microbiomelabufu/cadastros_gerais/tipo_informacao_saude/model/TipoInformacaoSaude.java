@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.tipo_informacao_saude.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.consulta.model.ConsultaDiagnostico;
 import com.roderly.microbiomelabufu.consulta.model.ConsultaInformacaoSaude;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TipoInformacaoSaude {
+public class TipoInformacaoSaude extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_tipo_informacao_saude;

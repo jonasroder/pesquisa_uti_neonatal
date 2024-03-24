@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.menu.model;
 
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "menu")
 @Entity(name = "Menu")
-public class Menu {
+public class Menu extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_menu;

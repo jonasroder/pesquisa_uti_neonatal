@@ -1,6 +1,7 @@
 package com.roderly.microbiomelabufu.cadastros_gerais.fabricante_medicamento.model;
 
 import com.roderly.microbiomelabufu.cadastros_gerais.medicamento.model.Medicamento;
+import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.consulta.model.PrescricaoMedicamento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "fabricante_medicamento")
 @Entity(name = "FabricanteMedicamento")
-public class FabricanteMedicamento {
+public class FabricanteMedicamento extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_fabricante_medicamento;

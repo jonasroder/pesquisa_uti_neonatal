@@ -3,6 +3,10 @@ CREATE TABLE tipo_informacao_saude
     id_tipo_informacao_saude BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome                     VARCHAR(255),
     descricao                TEXT,
+    criado_em                DATETIME,
+    criado_por_id            BIGINT,
+    alterado_em              DATETIME,
+    alterado_por_id          BIGINT,
     is_active                TINYINT DEFAULT 1
 );
 
