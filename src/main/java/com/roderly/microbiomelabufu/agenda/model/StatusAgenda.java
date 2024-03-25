@@ -16,9 +16,14 @@ import lombok.Setter;
 public class StatusAgenda extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_status_agenda;
+    private Long idStatusAgenda;
     private String nome;
     private String descricao;
-    private String cor_associada;
-    private Boolean is_active;
+    private String corAssociada;
+    private Boolean isActive;
+
+
+    public StatusAgenda(Long idStatusAgenda) {
+        this.idStatusAgenda = idStatusAgenda;
+    }
 }

@@ -18,6 +18,7 @@ import com.roderly.microbiomelabufu.paciente.repository.FotoPerfilRepository;
 import com.roderly.microbiomelabufu.paciente.repository.PacienteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,16 +33,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PacienteService {
-    @Autowired
-    FileStorageProperties fileStorageLocation;
-    @Autowired
-    PacienteRepository pacienteRepository;
-    @Autowired
-    EnderecoRepository enderecoRepository;
-    @Autowired
-    FotoPerfilRepository fotoPerfilRepository;
 
+    private final FileStorageProperties fileStorageLocation;
+    private final PacienteRepository pacienteRepository;
+    private final EnderecoRepository enderecoRepository;
+    private final FotoPerfilRepository fotoPerfilRepository;
 
     @Transactional
     public ApiResponseDTO savePaciente(PacienteCompletoRequest request) throws IOException {

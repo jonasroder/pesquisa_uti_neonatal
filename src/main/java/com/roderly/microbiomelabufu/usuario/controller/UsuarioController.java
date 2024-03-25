@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.usuario.controller;
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteCompletoResponse;
 import com.roderly.microbiomelabufu.usuario.dto.request.UsuarioCompletoRequest;
 import com.roderly.microbiomelabufu.usuario.mappper.UsuarioMapper;
 import com.roderly.microbiomelabufu.usuario.model.Usuario;
@@ -9,10 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/usuario")

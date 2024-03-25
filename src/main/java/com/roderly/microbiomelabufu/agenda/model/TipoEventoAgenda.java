@@ -21,4 +21,8 @@ public class TipoEventoAgenda  extends EntidadeRastreada {
     private String descricao;
     private String cor_associada;
     private Boolean is_active;
+
+    public TipoEventoAgenda(Long id_tipo_evento_agenda) {
+        this.id_tipo_evento_agenda = id_tipo_evento_agenda;
+    }
 }
