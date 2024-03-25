@@ -12,6 +12,7 @@ public record AgendaRequest(
         Boolean is_active,
         Long id_usuario,
         Long id_status_agenda,
-        Long id_tipo_evento_agenda
+        Long id_tipo_evento_agenda,
+        Long id_paciente
 ) {
 }

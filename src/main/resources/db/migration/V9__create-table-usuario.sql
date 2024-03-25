@@ -16,10 +16,11 @@ CREATE TABLE usuario
     is_active       TINYINT DEFAULT 1
 );
 
-INSERT INTO usuario (usuario, senha, is_active, nome_completo, telefone_1, telefone_2, cpf)
-VALUES ('jonasroder', '$2a$10$oBP684358Tg35ISnn9oP2O6N4mWjRhccWQ8IX9KlgX2cfLdThxO86', 1, 'Jonas Roder', null, null,
-        '00000000000');
-
-INSERT INTO usuario (usuario, senha, is_active, nome_completo, telefone_1, telefone_2, cpf)
-VALUES ('deniseroder', '$2a$10$dcq99u2wxKJ4T13HU79ZmuVzuVqzNHru3ivWppawXYH0jPY7YR1oG', 1, 'Denise Roder', null, null,
-        '11111111111');
+INSERT INTO usuario (usuario, senha, nome_completo, titulo, especialidade, telefone_1, telefone_2, cpf, criado_em,
+                     criado_por_id, alterado_em, alterado_por_id, is_active)
+VALUES ('jonasroder', '$2a$10$oBP684358Tg35ISnn9oP2O6N4mWjRhccWQ8IX9KlgX2cfLdThxO86', 'Jonas Roder', 'ADM',
+        'Programador', NULL, NULL, '00000000000', NULL, NULL, NULL, NULL, 1);
+INSERT INTO usuario (usuario, senha, nome_completo, titulo, especialidade, telefone_1, telefone_2, cpf, criado_em,
+                     criado_por_id, alterado_em, alterado_por_id, is_active)
+VALUES ('deniseroder', '$2a$10$dcq99u2wxKJ4T13HU79ZmuVzuVqzNHru3ivWppawXYH0jPY7YR1oG', 'Denise Roder', 'Dra',
+        'Pesquisador', NULL, NULL, '11111111111', NULL, NULL, NULL, NULL, 1);

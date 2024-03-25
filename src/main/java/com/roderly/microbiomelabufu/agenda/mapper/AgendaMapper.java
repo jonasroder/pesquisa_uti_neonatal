@@ -5,6 +5,7 @@ import com.roderly.microbiomelabufu.agenda.dto.response.UsuariosAgendaReponse;
 import com.roderly.microbiomelabufu.agenda.model.Agenda;
 import com.roderly.microbiomelabufu.agenda.model.StatusAgenda;
 import com.roderly.microbiomelabufu.agenda.model.TipoEventoAgenda;
+import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import com.roderly.microbiomelabufu.usuario.model.Usuario;
 
 public class AgendaMapper {
@@ -14,6 +15,7 @@ public class AgendaMapper {
         var usuario = request.id_usuario() != null ? new Usuario(request.id_usuario()) : null;
         var statusAgenda = request.id_status_agenda() != null ? new StatusAgenda(request.id_status_agenda()) : null;
         var tipoEvento = request.id_tipo_evento_agenda() != null ? new TipoEventoAgenda(request.id_tipo_evento_agenda()) : null;
+        var paciente = request.id_paciente() != null ? new Paciente(request.id_paciente()) : null;
 
         agenda.setId_evento(request.id_evento());
         agenda.setInicio(request.inicio());
@@ -25,6 +27,7 @@ public class AgendaMapper {
         agenda.setUsuario(usuario);
         agenda.setStatus_agenda(statusAgenda);
         agenda.setTipo_evento_agenda(tipoEvento);
+        agenda.setPaciente(paciente);
 
         return agenda;
     }

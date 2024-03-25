@@ -116,7 +116,7 @@ const fecharModalCadastroRapido = () => {
                         </v-col>
                     </v-row>
 
-                    <v-divider></v-divider>
+                    <v-divider/>
 
                     <v-card-text>
                         <v-row>
@@ -168,7 +168,7 @@ const fecharModalCadastroRapido = () => {
     </v-container>
 
     <v-dialog v-model="modalCadastroRapido" transition="dialog-top-transition" :width="tamanhoModal">
-        <ModalCadastroEventoAgenda  @close_modal="fecharModalCadastroRapido" :isModal="true"/>
+        <ModalCadastroEventoAgenda  @close_modal="fecharModalCadastroRapido"/>
     </v-dialog>
 
 </template>

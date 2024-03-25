@@ -1,5 +1,6 @@
 package com.roderly.microbiomelabufu.paciente.model;
 
+import com.roderly.microbiomelabufu.agenda.model.Agenda;
 import com.roderly.microbiomelabufu.cadastros_gerais.escolaridade.model.Escolaridade;
 import com.roderly.microbiomelabufu.cadastros_gerais.estado_civil.model.EstadoCivil;
 import com.roderly.microbiomelabufu.cadastros_gerais.etnia.model.Etnia;
@@ -79,6 +80,9 @@ public class Paciente extends EntidadeRastreada {
 
     @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
     private FotoPerfil fotoPerfil;
+
+    @OneToMany(mappedBy = "paciente", fetch = FetchType.LAZY)
+    private List<Agenda> agendas;
 
 
     public Paciente(Long id_paciente) {

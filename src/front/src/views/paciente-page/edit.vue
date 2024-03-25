@@ -2,7 +2,7 @@
 import CardFormulario from "@/components/CardFormulario.vue";
 import AvatarImageInput from '@/components/AvatarImageInput.vue';
 import {setNotification} from "@/plugins/notificationService";
-import {onMounted, reactive, ref} from "vue";
+import {defineProps, onMounted, reactive, ref} from "vue";
 import {serviceSave, serviceLoad, getEnderecoByCep} from "@/service/paciente";
 import {
     getIdFromUrl,
@@ -15,15 +15,23 @@ import {
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
 
+const props = defineProps({
+    confUrl: {
+        type   : Boolean,
+        default: true
+    }
+});
 
-const id          = ref(getIdFromUrl());
-const cpfDisabled = ref(false);
-const router      = useRouter();
+
+const id                 = ref(getIdFromUrl());
+const cpfDisabled        = ref(false);
+const router             = useRouter();
 const camposObrigatorios = ref(true);
+const emit               = defineEmits(['saved']);
 
-const maskCelular = reactive(getMaskSettings({maskType: 'celular'}));
-const maskCPF     = reactive(getMaskSettings({maskType: 'cpf'}));
-const maskCEP     = reactive(getMaskSettings({maskType: 'cep'}));
+const maskCelular        = reactive(getMaskSettings({maskType: 'celular'}));
+const maskCPF            = reactive(getMaskSettings({maskType: 'cpf'}));
+const maskCEP            = reactive(getMaskSettings({maskType: 'cep'}));
 
 
 const optionsProfissao     = ref([]);
@@ -41,7 +49,7 @@ onMounted(async () => {
 
     await getOpcoesAutocomplete();
 
-    if (id.value > 0) {
+    if (id.value > 0 && props.confUrl) {
         cpfDisabled.value = true;
         await getDadosPaciente();
     }
@@ -51,7 +59,7 @@ onMounted(async () => {
 
 
 const getDadosPaciente = async () => {
-    const data        = await serviceLoad(id.value);
+    const data = await serviceLoad(id.value);
 
     Object.assign(paciente, data.pacienteResponse);
     Object.assign(endereco, data.enderecoResponse);
@@ -155,7 +163,7 @@ const handleSave = async () => {
     paciente.telefone_1 = limparMascara(paciente.telefone_1);
     paciente.telefone_2 = limparMascara(paciente.telefone_2);
 
-    const verificacoes       = [{
+    const verificacoes = [{
         dados : paciente,
         campos: ['nome', 'cpf', 'telefone_1']
     }]
@@ -174,11 +182,13 @@ const handleSave = async () => {
 
     const res = await serviceSave(data);
     id.value  = res.id;
-    if (id.value > 0) {
+    if (id.value > 0 && props.confUrl) {
         paciente.id_paciente = res.id;
         cpfDisabled.value    = true;
         adicionarParametrosURL({id: res.id});
         await getDadosPaciente();
+    } else {
+        emit('close_modal');
     }
 
     loading.hide()

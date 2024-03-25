@@ -1,6 +1,7 @@
 package com.roderly.microbiomelabufu.agenda.model;
 
 import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
+import com.roderly.microbiomelabufu.paciente.model.Paciente;
 import com.roderly.microbiomelabufu.usuario.model.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,4 +39,8 @@ public class Agenda extends EntidadeRastreada {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_evento_agenda")
     private TipoEventoAgenda tipo_evento_agenda;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_paciente")
+    private Paciente paciente;
 }
