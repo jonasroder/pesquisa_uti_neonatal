@@ -5,7 +5,7 @@ import com.roderly.microbiomelabufu.common.Utilitarios.DateUtil;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.request.FormularioHamiltonRequest;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.FormularioHamiltonReponse;
-import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.PacienteFormularioResponse;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteFormularioResponse;
 import com.roderly.microbiomelabufu.formulario_hamilton.model.FormularioHamilton;
 
 import java.time.LocalDate;
@@ -75,10 +75,8 @@ public class FormularioHamiltonMapper {
 
 
     public static PacienteFormularioResponse consultaToPacienteFormularioResponse(Consulta consulta){
-        assert consulta.getPaciente() != null;
 
         var paciente = consulta.getPaciente();
-
         var dataNascimento = paciente.getData_nascimento();
         var idade = (dataNascimento != null) ? Period.between(dataNascimento, LocalDate.now()).getYears() : null;
         var tipo_consulta = consulta.getId_tipo_consulta() == 1 ? "Consulta" : "Retorno";

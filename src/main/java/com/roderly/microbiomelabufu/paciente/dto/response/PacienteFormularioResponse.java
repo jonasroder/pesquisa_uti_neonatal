@@ -1,4 +1,4 @@
-package com.roderly.microbiomelabufu.formulario_hamilton.dto.response;
+package com.roderly.microbiomelabufu.paciente.dto.response;
 
 public record PacienteFormularioResponse(
         Long id_paciente,

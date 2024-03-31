@@ -7,12 +7,8 @@ import com.roderly.microbiomelabufu.formulario_alimentacao.dto.response.Formular
 import com.roderly.microbiomelabufu.formulario_alimentacao.dto.response.FormularioAlimentarResponse;
 import com.roderly.microbiomelabufu.formulario_alimentacao.mapper.FormularioAlimentarMapper;
 import com.roderly.microbiomelabufu.formulario_alimentacao.repository.FormularioAlimentarRepository;
-import com.roderly.microbiomelabufu.formulario_hamilton.dto.request.FormularioHamiltonRequest;
-import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.FormularioHamiltonPageResponse;
-import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.FormularioHamiltonReponse;
-import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.PacienteFormularioResponse;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteFormularioResponse;
 import com.roderly.microbiomelabufu.formulario_hamilton.mapper.FormularioHamiltonMapper;
-import com.roderly.microbiomelabufu.formulario_hamilton.repository.FormularioHamiltonRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

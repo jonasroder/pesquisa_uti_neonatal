@@ -1,6 +1,7 @@
 package com.roderly.microbiomelabufu.agenda.service;
 
 import com.roderly.microbiomelabufu.agenda.dto.request.AgendaRequest;
+import com.roderly.microbiomelabufu.agenda.dto.response.AgendaResponse;
 import com.roderly.microbiomelabufu.agenda.dto.response.UsuariosAgendaReponse;
 import com.roderly.microbiomelabufu.agenda.mapper.AgendaMapper;
 import com.roderly.microbiomelabufu.agenda.repository.AgendaRepository;
@@ -41,5 +42,16 @@ public class AgendaService {
                 .map(AgendaMapper::usuariosToUsuariosAgendaRespopnse)
                 .toList();
     }
+
+
+    @Transactional
+    public  List<AgendaResponse> loadEvents(Long id_usuario){
+        var eventos = agendaRepository.findByUsuarioId(id_usuario);
+
+        return eventos.stream()
+                .map(AgendaMapper::agendaToAgendaResponse)
+                .toList();
+    }
+
 
 }

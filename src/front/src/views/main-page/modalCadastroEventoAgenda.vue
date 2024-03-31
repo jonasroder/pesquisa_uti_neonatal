@@ -1,40 +1,54 @@
 <script setup>
 import CardFormulario from "@/components/CardFormulario.vue";
-import {onMounted, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {loading} from "@/plugins/loadingService";
-import {formatarTelefone, getOptionsAutocomplete, getScreenSize} from "@/service/common/utils";
+import {
+    formatarTelefone, getOptionsAutocomplete, getScreenSize, verificarCamposObrigatorios
+} from "@/service/common/utils";
 import defaultImagePath from "@/assets/no_image.png";
 import PacienteForm from '@/views/paciente-page/edit.vue';
+import {serviceGetInfoBasica} from "@/service/paciente";
+import {serviceSave} from "@/service/agenda";
 
+const props = defineProps({
+    usuarioAgendaSelecionado: {
+        type   : [String, Number],
+        default: ''
+    }
+});
 
 const options_tipo_evento         = ref();
 const options_cpf                 = ref();
+const options_status_agenda       = ref();
 const modalCadastroRapidoPaciente = ref(false);
 const tamanhoModal                = ref("");
 const emit                        = defineEmits(['close_modal', 'saved']);
+const camposObrigatorios          = ref(true);
 
 
 const paciente = ref({
+    foto_perfil: null,
     nome       : null,
     idade      : null,
     telefone_1 : null,
     telefone_2 : null,
-    plano_saude: null
+    plano_saude: null,
 });
 
 
-const agenda = ref({
+const agenda = reactive({
     id_evento       : null,
     id_tipo_evento  : null,
     id_usuario      : null,
-    id_status_agenda: null,
+    id_status_agenda: 2,
     id_paciente     : null,
-    inicio          : null,
-    fim             : null,
+    data_evento     : null,
+    hora_inicio     : null,
+    hora_fim        : null,
     dia_inteiro     : null,
     url             : null,
     descricao       : null,
-    is_active       : null,
+    is_active       : true,
 });
 
 
@@ -54,10 +68,15 @@ const getAutoCompleteOptions = async () => {
         idColumn  : 'id_paciente',
         descColumn: 'cpf',
         tableName : 'paciente'
+    }), getOptionsAutocomplete({
+        idColumn  : 'id_status_agenda',
+        descColumn: 'nome',
+        tableName : 'status_agenda'
     })]);
 
-    options_tipo_evento.value = results[0];
-    options_cpf.value         = results[1];
+    options_tipo_evento.value   = results[0];
+    options_cpf.value           = results[1];
+    options_status_agenda.value = results[2];
 }
 
 
@@ -66,8 +85,26 @@ const getProfilePhoto = (path) => {
 };
 
 
-const handleSave = () => {
+const handleSave = async () => {
+    camposObrigatorios.value = true;
+    agenda.id_usuario        = props.usuarioAgendaSelecionado;
+
+    if (!verificarCamposObrigatorios(verificacoes)) {
+        camposObrigatorios.value = false;
+        loading.hide();
+        return;
+    }
+
+    const data = agenda;
+    await serviceSave(data);
+    emit('close_modal');
 };
+
+
+const verificacoes = [{
+    dados : agenda,
+    campos: ['id_usuario', 'data_evento', 'id_tipo_evento']
+}];
 
 
 const handleCloseModal = () => {
@@ -94,6 +131,15 @@ const fecharModalCadastroRapidoPaciente = async () => {
     modalCadastroRapidoPaciente.value = false
 }
 
+
+const buscarPacienteSelecionado = async (id_paciente) => {
+    if (!id_paciente) {
+        paciente.value = {};
+        return;
+    }
+    paciente.value = await serviceGetInfoBasica(id_paciente)
+}
+
 </script>
 
 
@@ -110,6 +156,7 @@ const fecharModalCadastroRapidoPaciente = async () => {
                         <v-autocomplete
                             label="Tipo do Evento"
                             :items="options_tipo_evento"
+                            :error="!agenda.id_tipo_evento && !camposObrigatorios"
                             v-model="agenda.id_tipo_evento"
                         />
                     </v-col>
@@ -118,7 +165,9 @@ const fecharModalCadastroRapidoPaciente = async () => {
                         <v-autocomplete
                             label="CPF do Paciente"
                             :items="options_cpf"
+                            itemTitle="label"
                             v-model="agenda.id_paciente"
+                            @update:modelValue="buscarPacienteSelecionado"
                         >
                             <template #append>
                                 <v-btn size="small" icon color="cinzaAzulado" @click="abrirModalAdicionarPaciente">
@@ -128,6 +177,7 @@ const fecharModalCadastroRapidoPaciente = async () => {
                             </template>
                         </v-autocomplete>
                     </v-col>
+
                 </v-row>
             </v-col>
 
@@ -143,7 +193,7 @@ const fecharModalCadastroRapidoPaciente = async () => {
                             <div class="text-h5 mb-2"><b>Paciente:</b> {{ paciente.nome }}</div>
                             <div class="text-subtitle-1 mb-2">
                                 <b>Idade:</b> {{ paciente.idade }}
-                                <span v-if="paciente.idade !== null">anos</span>
+                                <span v-if="paciente.idade">anos</span>
                             </div>
                             <div class="text-subtitle-1 mb-2">
                                 <b>Telefone:</b> {{ formatarTelefone(paciente.telefone_1) }}
@@ -157,32 +207,49 @@ const fecharModalCadastroRapidoPaciente = async () => {
 
             <v-divider/>
 
-            <v-col cols="12" sm="12" md="4" lg="4" xl="4" class="pb-0">
+            <v-col cols="12" sm="4" md="3">
                 <v-text-field
-                    label="Início"
-                    type="datetime-local"
-                    v-model="agenda.inicio"
-                />
-                <v-tooltip text="Data e hora inícial do evento"/>
+                    v-model="agenda.data_evento"
+                    label="Data do evento"
+                    :error="!agenda.data_evento && !camposObrigatorios"
+                    type="date"
+                ></v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="12" md="4" lg="4" xl="4" class="pb-0">
+            <v-col cols="12" sm="4" md="2">
                 <v-text-field
-                    label="Fim"
-                    type="datetime-local"
-                    v-model="agenda.fim"
-                    :disabled="agenda.dia_inteiro === true"
-                />
-                <v-tooltip text="Data e hora final do evento"/>
+                    v-model="agenda.hora_inicio"
+                    label="Hora Inicial"
+                    type="time"
+                    :disabled="agenda.dia_inteiro"
+                ></v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="12" md="4" lg="4" xl="4" class="pb-0 pt-0">
+            <v-col cols="12" sm="4" md="2">
+                <v-text-field
+                    v-model="agenda.hora_fim"
+                    label="Hora Final"
+                    type="time"
+                    :disabled="agenda.dia_inteiro"
+                ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="2" class="pb-0 pt-0">
                 <v-switch
                     class="d-flex justify-center"
                     :true-value="true"
                     :false-value="false"
                     label="Dia Inteiro"
                     v-model="agenda.dia_inteiro"
+                />
+            </v-col>
+
+            <v-col cols="12" sm="6" md="3">
+                <v-autocomplete
+                    label="Status"
+                    :items="options_status_agenda"
+                    :clearable="false"
+                    v-model="agenda.id_status_agenda"
                 />
             </v-col>
 

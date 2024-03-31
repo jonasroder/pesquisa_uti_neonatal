@@ -15,6 +15,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -34,34 +35,20 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class ConsultaService {
 
-
-    @Autowired
-    FilterService filterService;
-    @Autowired
-    private PacienteRepository pacienteRepository;
-    @Autowired
-    private ConsultaRepository consultaRepository;
-    @Autowired
-    private ConsultaDiagnosticoRepository consultaDiagnosticoRepository;
-    @Autowired
-    private PacienteMedicamentoRepository pacienteMedicamentoRepository;
-    @Autowired
-    private PacienteSuplementoRepository pacienteSuplementoRepository;
-    @Autowired
-    private ConsultaInformacaoSaudeRepository consultaInformacaoSaudeRepository;
-    @Autowired
-    private PrescricaoMedicamentoRepository prescricaoMedicamentoRepository;
-    @Autowired
-    private PrescricaoSuplementoRepository prescricaoSuplementoRepository;
-    @Autowired
-    private ArquivoConsultaRepository arquivoConsultaRepository;
-    @Autowired
-    private FileStorageProperties fileStorageProperties;
-
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final FilterService filterService;
+    private final PacienteRepository pacienteRepository;
+    private final ConsultaRepository consultaRepository;
+    private final ConsultaDiagnosticoRepository consultaDiagnosticoRepository;
+    private final PacienteMedicamentoRepository pacienteMedicamentoRepository;
+    private final PacienteSuplementoRepository pacienteSuplementoRepository;
+    private final ConsultaInformacaoSaudeRepository consultaInformacaoSaudeRepository;
+    private final PrescricaoMedicamentoRepository prescricaoMedicamentoRepository;
+    private final PrescricaoSuplementoRepository prescricaoSuplementoRepository;
+    private final ArquivoConsultaRepository arquivoConsultaRepository;
+    private final FileStorageProperties fileStorageProperties;
 
     @Transactional
     public ApiResponseDTO saveConsulta(ConsultaCompletoRequest request) throws IOException {
@@ -109,8 +96,8 @@ public class ConsultaService {
             }
         }
 
-        for (ArquivoConsultaRequest arquivoConsultaRequest : request.arrConsultaAnexos()){
-            if(arquivoConsultaRequest.id_arquivo() != null){
+        for (ArquivoConsultaRequest arquivoConsultaRequest : request.arrConsultaAnexos()) {
+            if (arquivoConsultaRequest.id_arquivo() != null) {
                 var arquivo = arquivoConsultaRepository.findById(arquivoConsultaRequest.id_arquivo())
                         .orElseThrow(() -> new RuntimeException("Arquivo não encontrado"));
                 var arquivoAtualizado = ArquivoConsultaMapper.arquivoConsultaRequestToArquivoConsulta(arquivoConsultaRequest, arquivo);

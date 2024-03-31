@@ -3,10 +3,7 @@ package com.roderly.microbiomelabufu.paciente.service;
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
 import com.roderly.microbiomelabufu.infra.FileStorageProperties;
 import com.roderly.microbiomelabufu.paciente.dto.request.PacienteCompletoRequest;
-import com.roderly.microbiomelabufu.paciente.dto.response.EnderecoResponse;
-import com.roderly.microbiomelabufu.paciente.dto.response.FotoPerfilResponse;
-import com.roderly.microbiomelabufu.paciente.dto.response.PacienteCompletoResponse;
-import com.roderly.microbiomelabufu.paciente.dto.response.PacienteListagemResponse;
+import com.roderly.microbiomelabufu.paciente.dto.response.*;
 import com.roderly.microbiomelabufu.paciente.mapper.EnderecoMapper;
 import com.roderly.microbiomelabufu.paciente.mapper.FotoPerfilMapper;
 import com.roderly.microbiomelabufu.paciente.mapper.PacienteMapper;
@@ -112,5 +109,11 @@ public class PacienteService {
         return pacientes.stream()
                 .map(PacienteMapper::pacienteToPacienteListagemResponse)
                 .collect(Collectors.toSet());
+    }
+
+
+    public PacienteInfoBasicaResponse getInfoBasicaPaciente(Long id_paciente){
+        var paciente = pacienteRepository.findById(id_paciente).orElseThrow(() -> new EntityNotFoundException("Paciente não encontrada com ID: " + id_paciente));
+        return PacienteMapper.pacienteToPacienteInfoBasicaResponse(paciente);
     }
 }

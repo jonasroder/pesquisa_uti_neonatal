@@ -32,12 +32,21 @@ export const getEnderecoByCep = async (cep) => {
 };
 
 
-
 export const serviceList = async () => {
 	try {
 		const response = await axios.get(`/api/paciente/list`);
 		return response.data;
 	} catch (e) {
 		return handleApiError(e, "Error on serviceList");
+	}
+};
+
+
+export const serviceGetInfoBasica= async (id) => {
+	try {
+		const response = await axios.get(`/api/paciente/get_info_basica/${id}`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on serviceGetInfoBasica");
 	}
 };

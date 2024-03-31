@@ -5,7 +5,7 @@ import com.roderly.microbiomelabufu.consulta.repository.ConsultaRepository;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.request.FormularioHamiltonRequest;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.FormularioHamiltonPageResponse;
 import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.FormularioHamiltonReponse;
-import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.PacienteFormularioResponse;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteFormularioResponse;
 import com.roderly.microbiomelabufu.formulario_hamilton.mapper.FormularioHamiltonMapper;
 import com.roderly.microbiomelabufu.formulario_hamilton.repository.FormularioHamiltonRepository;
 import jakarta.persistence.EntityNotFoundException;

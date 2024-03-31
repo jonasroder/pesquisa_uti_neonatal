@@ -5,7 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptLocale from '@fullcalendar/core/locales/pt-br';
-import {servicebuscarUsuariosAgenda} from "@/service/agenda";
+import {servicebuscarEventosCalendario, servicebuscarUsuariosAgenda} from "@/service/agenda";
 import {loading} from "@/plugins/loadingService";
 import {getScreenSize} from "@/service/common/utils";
 import ModalCadastroEventoAgenda from "@/views/main-page/modalCadastroEventoAgenda.vue";
@@ -13,10 +13,10 @@ import ModalCadastroEventoAgenda from "@/views/main-page/modalCadastroEventoAgen
 
 const calendarEvents             = ref([]);
 const usuario_agenda_selecionado = ref(null);
-const usuarios_agenda            = ref([]);
+const usuarios_agenda            = ref();
 const modalCadastroRapido        = ref(false);
 const tamanhoModal               = ref("");
-
+const fullCalendarRef            = ref(null);
 
 onMounted(async () => {
     loading.show()
@@ -70,8 +70,22 @@ const calendarOptions = ref({
     select       : handleDateSelect,
 });
 
-const selecionarMedico = (itemId) => {
+const selecionarMedico = async (itemId) => {
     usuario_agenda_selecionado.value = itemId;
+    const eventos                    = await servicebuscarEventosCalendario(usuario_agenda_selecionado.value);
+
+    const eventosFormatados = eventos.map(evento => ({
+        title : evento.tipo_evento,
+        start : `${evento.data_evento}T${evento.hora_inicio}`,
+        end   : `${evento.data_evento}T${evento.hora_fim}`,
+        allDay: evento.dia_inteiro === true,
+        color : evento.tipo_evento_cor_associada
+    }));
+
+    const calendarApi = fullCalendarRef.value.getApi();
+    calendarApi.removeAllEvents();
+    calendarApi.addEventSource(eventosFormatados);
+    debugger
 }
 
 
@@ -123,7 +137,7 @@ const fecharModalCadastroRapido = () => {
                             <v-col cols="10">
                                 <v-card class="elevation-3 fill-height">
                                     <v-card-text>
-                                        <FullCalendar :options="calendarOptions"/>
+                                        <FullCalendar ref="fullCalendarRef" :options="calendarOptions"/>
                                     </v-card-text>
                                 </v-card>
                             </v-col>
@@ -168,7 +182,8 @@ const fecharModalCadastroRapido = () => {
     </v-container>
 
     <v-dialog v-model="modalCadastroRapido" transition="dialog-top-transition" :width="tamanhoModal">
-        <ModalCadastroEventoAgenda  @close_modal="fecharModalCadastroRapido"/>
+        <ModalCadastroEventoAgenda @close_modal="fecharModalCadastroRapido" :usuarioAgendaSelecionado="usuario_agenda_selecionado"/>
+        />
     </v-dialog>
 
 </template>

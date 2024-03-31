@@ -6,6 +6,7 @@ import com.roderly.microbiomelabufu.consulta.dto.response.ConsultaCompletaRespon
 import com.roderly.microbiomelabufu.consulta.service.ConsultaService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@Transactional
+@RequiredArgsConstructor
 @RequestMapping("/api/consulta")
 public class ConsultaController {
 
-    @Autowired
-    private ConsultaService consultaService;
+    private final ConsultaService consultaService;
 
     @GetMapping("/load/{id_paciente}/{id_consulta}")
     public ResponseEntity<ConsultaCompletaResponse> getDadosConsulta(@PathVariable Long id_paciente, @PathVariable Long id_consulta) {

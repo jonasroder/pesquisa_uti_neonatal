@@ -11,6 +11,8 @@ import com.roderly.microbiomelabufu.common.Utilitarios.DateUtil;
 import com.roderly.microbiomelabufu.consulta.dto.response.ConsultasPacienteBasicoResponse;
 import com.roderly.microbiomelabufu.consulta.model.Consulta;
 import com.roderly.microbiomelabufu.paciente.dto.request.PacienteRequest;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteFormularioResponse;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteInfoBasicaResponse;
 import com.roderly.microbiomelabufu.paciente.dto.response.PacienteResponse;
 import com.roderly.microbiomelabufu.paciente.dto.response.PacienteListagemResponse;
 import com.roderly.microbiomelabufu.paciente.model.Paciente;
@@ -119,6 +121,22 @@ public class PacienteMapper {
                 consulta.getId_consulta(),
                 DateUtil.LocalDateTimeToDateBR(consulta.getData_hora()),
                 tipo_consulta
+        );
+    }
+
+
+    public  static PacienteInfoBasicaResponse pacienteToPacienteInfoBasicaResponse(Paciente paciente){
+        LocalDate dataNascimento = paciente.getData_nascimento();
+        Integer idade = (dataNascimento != null) ? Period.between(dataNascimento, LocalDate.now()).getYears() : null;
+
+        return new PacienteInfoBasicaResponse(
+                paciente.getId_paciente(),
+                paciente.getFotoPerfil() != null ? paciente.getFotoPerfil().getCaminho_arquivo() + "/" + paciente.getFotoPerfil().getId_foto_perfil() + ".jpeg" : null,
+                paciente.getNome() + " " + paciente.getSobrenome(),
+                idade,
+                paciente.getPlanoSaude() != null ? paciente.getPlanoSaude().getDescricao() : null,
+                paciente.getTelefone_1(),
+                paciente.getTelefone_2()
         );
     }
 

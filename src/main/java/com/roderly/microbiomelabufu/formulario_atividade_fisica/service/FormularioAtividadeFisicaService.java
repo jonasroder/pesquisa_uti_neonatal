@@ -7,7 +7,7 @@ import com.roderly.microbiomelabufu.formulario_atividade_fisica.dto.response.For
 import com.roderly.microbiomelabufu.formulario_atividade_fisica.dto.response.FormularioAtividadeFisicaResponse;
 import com.roderly.microbiomelabufu.formulario_atividade_fisica.mapper.FormularioAtividadeFisicaMapper;
 import com.roderly.microbiomelabufu.formulario_atividade_fisica.repository.FormularioAtividadeFisicaRepository;
-import com.roderly.microbiomelabufu.formulario_hamilton.dto.response.PacienteFormularioResponse;
+import com.roderly.microbiomelabufu.paciente.dto.response.PacienteFormularioResponse;
 import com.roderly.microbiomelabufu.formulario_hamilton.mapper.FormularioHamiltonMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

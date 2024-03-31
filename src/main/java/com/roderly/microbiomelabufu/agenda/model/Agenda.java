@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -21,8 +23,9 @@ public class Agenda extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_evento;
-    private LocalDateTime inicio;
-    private LocalDateTime fim;
+    private LocalDate data_evento;
+    private LocalTime hora_inicio;
+    private LocalTime hora_fim;
     private Boolean dia_inteiro;
     private String url;
     private String descricao;
@@ -37,7 +40,7 @@ public class Agenda extends EntidadeRastreada {
     private StatusAgenda status_agenda;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_evento_agenda")
+    @JoinColumn(name = "id_tipo_evento")
     private TipoEventoAgenda tipo_evento_agenda;
 
     @ManyToOne(fetch = FetchType.LAZY)
