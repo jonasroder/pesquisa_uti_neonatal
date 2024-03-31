@@ -51,7 +51,6 @@ const selecionarMedico = async (itemId) => {
     usuario_agenda_selecionado.value = itemId;
     eventoSelecionado.value          = null;
     await carregarDadosAgenda();
-
 }
 
 
@@ -64,7 +63,7 @@ const carregarDadosAgenda = async () => {
         start : `${evento.data_evento}T${evento.hora_inicio}`,
         end   : `${evento.data_evento}T${evento.hora_fim}`,
         allDay: evento.dia_inteiro === true,
-        color : evento.tipo_evento_cor_associada,
+        color : evento.status_agenda_cor_associada,
         evento: evento
     }));
 
