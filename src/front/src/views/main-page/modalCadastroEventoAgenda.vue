@@ -14,8 +14,10 @@ const props = defineProps({
     usuarioAgendaSelecionado: {
         type   : [String, Number],
         default: ''
-    }
+    },
+    eventoSelecionado       : {type: Object}
 });
+
 
 const options_tipo_evento         = ref();
 const options_cpf                 = ref();
@@ -55,6 +57,12 @@ const agenda = reactive({
 onMounted(async () => {
     loading.show()
     await getAutoCompleteOptions();
+
+    if(props.eventoSelecionado){
+        Object.assign(agenda, props.eventoSelecionado);
+        await buscarPacienteSelecionado(agenda.id_paciente);
+    }
+
     loading.hide()
 });
 

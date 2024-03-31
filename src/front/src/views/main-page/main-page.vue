@@ -17,6 +17,7 @@ const usuarios_agenda            = ref();
 const modalCadastroRapido        = ref(false);
 const tamanhoModal               = ref("");
 const fullCalendarRef            = ref(null);
+const eventoSelecionado          = ref();
 
 onMounted(async () => {
     loading.show()
@@ -24,33 +25,9 @@ onMounted(async () => {
     loading.hide()
 });
 
-
-const handleDateClick = (arg) => {
-    let title = prompt('Digite o título do evento:');
-    if (title) {
-        calendarEvents.value.push({
-            title,
-            start : arg.date,
-            allDay: arg.allDay
-        });
-    }
-};
-
-
-const handleDateSelect = (selectInfo) => {
-    let title       = prompt('Digite o título do evento:');
-    let calendarApi = selectInfo.view.calendar;
-
-    calendarApi.unselect();
-
-    if (title) {
-        calendarApi.addEvent({
-            title,
-            start : selectInfo.startStr,
-            end   : selectInfo.endStr,
-            allDay: selectInfo.allDay
-        });
-    }
+const handleEventClick = ({event}) => {
+    eventoSelecionado.value = event._def.extendedProps.evento;
+    cadastroRapido();
 };
 
 
@@ -64,28 +41,36 @@ const calendarOptions = ref({
     initialView  : 'dayGridMonth',
     locale       : ptLocale,
     events       : calendarEvents.value,
-    dateClick    : handleDateClick,
     selectable   : true,
     selectMirror : true,
-    select       : handleDateSelect,
+    eventClick   : handleEventClick,
 });
+
 
 const selecionarMedico = async (itemId) => {
     usuario_agenda_selecionado.value = itemId;
-    const eventos                    = await servicebuscarEventosCalendario(usuario_agenda_selecionado.value);
+    eventoSelecionado.value          = null;
+    await carregarDadosAgenda();
+
+}
+
+
+const carregarDadosAgenda = async () => {
+
+    const eventos = await servicebuscarEventosCalendario(usuario_agenda_selecionado.value);
 
     const eventosFormatados = eventos.map(evento => ({
         title : evento.tipo_evento,
         start : `${evento.data_evento}T${evento.hora_inicio}`,
         end   : `${evento.data_evento}T${evento.hora_fim}`,
         allDay: evento.dia_inteiro === true,
-        color : evento.tipo_evento_cor_associada
+        color : evento.tipo_evento_cor_associada,
+        evento: evento
     }));
 
     const calendarApi = fullCalendarRef.value.getApi();
     calendarApi.removeAllEvents();
     calendarApi.addEventSource(eventosFormatados);
-    debugger
 }
 
 
@@ -109,8 +94,13 @@ const cadastroRapido = () => {
 }
 
 
-const fecharModalCadastroRapido = () => {
+const fecharModalCadastroRapido = async () => {
+    loading.show()
+
+    await carregarDadosAgenda();
     modalCadastroRapido.value = false
+
+    loading.hide()
 }
 
 
@@ -170,7 +160,6 @@ const fecharModalCadastroRapido = () => {
                                         </template>
                                     </v-hover>
 
-
                                 </v-card>
                             </v-col>
                         </v-row>
@@ -182,7 +171,7 @@ const fecharModalCadastroRapido = () => {
     </v-container>
 
     <v-dialog v-model="modalCadastroRapido" transition="dialog-top-transition" :width="tamanhoModal">
-        <ModalCadastroEventoAgenda @close_modal="fecharModalCadastroRapido" :usuarioAgendaSelecionado="usuario_agenda_selecionado"/>
+        <ModalCadastroEventoAgenda @close_modal="fecharModalCadastroRapido" :eventoSelecionado="eventoSelecionado" :usuarioAgendaSelecionado="usuario_agenda_selecionado"/>
         />
     </v-dialog>
 
