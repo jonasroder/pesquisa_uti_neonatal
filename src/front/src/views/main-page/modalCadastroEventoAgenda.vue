@@ -58,7 +58,7 @@ onMounted(async () => {
     loading.show()
     await getAutoCompleteOptions();
 
-    if(props.eventoSelecionado){
+    if (props.eventoSelecionado) {
         Object.assign(agenda, props.eventoSelecionado);
         await buscarPacienteSelecionado(agenda.id_paciente);
     }
@@ -198,16 +198,33 @@ const buscarPacienteSelecionado = async (id_paciente) => {
                             </v-avatar>
                         </v-col>
                         <v-col cols="12" md="7" lg="8">
+
                             <div class="text-h5 mb-2"><b>Paciente:</b> {{ paciente.nome }}</div>
-                            <div class="text-subtitle-1 mb-2">
+
+                            <div class="text-body-2 mb-2">
                                 <b>Idade:</b> {{ paciente.idade }}
                                 <span v-if="paciente.idade">anos</span>
                             </div>
-                            <div class="text-subtitle-1 mb-2">
-                                <b>Telefone:</b> {{ formatarTelefone(paciente.telefone_1) }}
-                                <span v-if="paciente.telefone_2">/ {{ formatarTelefone(paciente.telefone_2) }}</span>
+
+                            <div class="mb-2">
+                                <b>Telefone: </b>
+                                <a v-if="paciente.telefone_1"
+                                   class="text-body-2"
+                                   :href="`https://wa.me/+55${paciente.telefone_1.replace(/[^0-9]/g, '')}`"
+                                   target="_blank">
+                                    {{ formatarTelefone(paciente.telefone_1) }}
+                                </a>
+                                <span v-if="paciente.telefone_2" class="mx-1">/</span>
+                                <a v-if="paciente.telefone_2"
+                                   class="text-body-2"
+                                   :href="`https://wa.me/+55${paciente.telefone_2.replace(/[^0-9]/g, '')}`"
+                                   target="_blank">
+                                    {{ formatarTelefone(paciente.telefone_2) }}
+                                </a>
                             </div>
-                            <div class="text-subtitle-1 mb-2"><b>Plano de Saúde:</b> {{ paciente.plano_saude }}</div>
+
+
+                            <div class="text-body-2 mb-2"><b>Plano de Saúde:</b> {{ paciente.plano_saude }}</div>
                         </v-col>
                     </v-row>
                 </v-card>
