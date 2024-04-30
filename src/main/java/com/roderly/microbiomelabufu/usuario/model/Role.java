@@ -23,7 +23,6 @@ public class Role  extends EntidadeRastreada {
     @Column(unique = true)
     private String nome;
 
-    private Boolean is_active;
 
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)

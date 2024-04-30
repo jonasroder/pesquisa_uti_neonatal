@@ -23,7 +23,6 @@ public class VueRouter extends EntidadeRastreada {
     private String name;
     private String component;
     private String title;
-    private Boolean is_active;
 
     @OneToMany(mappedBy = "vueRouter")
     private List<SubMenu> subMenuList;

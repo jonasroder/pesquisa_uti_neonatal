@@ -1,6 +1,5 @@
 package com.roderly.microbiomelabufu.usuario.controller;
 import com.roderly.microbiomelabufu.common.dto.ApiResponseDTO;
-import com.roderly.microbiomelabufu.paciente.dto.response.PacienteCompletoResponse;
 import com.roderly.microbiomelabufu.usuario.dto.request.UsuarioCompletoRequest;
 import com.roderly.microbiomelabufu.usuario.mappper.UsuarioMapper;
 import com.roderly.microbiomelabufu.usuario.model.Usuario;

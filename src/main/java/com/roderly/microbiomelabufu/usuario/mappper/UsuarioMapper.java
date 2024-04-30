@@ -14,7 +14,6 @@ public class UsuarioMapper {
         usuario.setTelefone_1(user.telefone_1());
         usuario.setTelefone_2(user.telefone_2());
         usuario.setCpf(user.cpf());
-        usuario.setIs_active(user.is_active());
 
         return usuario;
     }

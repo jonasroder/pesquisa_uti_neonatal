@@ -1,23 +1,17 @@
 package com.roderly.microbiomelabufu.usuario.model;
 
-import com.roderly.microbiomelabufu.cadastros_gerais.profissao.model.Profissao;
 import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
-import com.roderly.microbiomelabufu.consulta.model.Consulta;
-import com.roderly.microbiomelabufu.paciente.model.Endereco;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Getter
@@ -38,10 +32,6 @@ public class Usuario extends EntidadeRastreada implements UserDetails {
     private String telefone_1;
     private String telefone_2;
     private String cpf;
-    private Boolean is_active;
-
-    @OneToMany(mappedBy = "medico", fetch = FetchType.LAZY)
-    private List<Consulta> consultas;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private Set<UsuarioRole> usuarioRoles;

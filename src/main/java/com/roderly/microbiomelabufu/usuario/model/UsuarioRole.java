@@ -26,5 +26,4 @@ public class UsuarioRole  extends EntidadeRastreada {
     @JoinColumn(name = "id_role", referencedColumnName = "id_role")
     private Role role;
 
-    private Boolean is_active;
 }

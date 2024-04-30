@@ -7,33 +7,37 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 
-
 @MappedSuperclass
 public abstract class EntidadeRastreada {
 
     @Column(name = "criado_em", updatable = false)
-    private LocalDateTime criado_em;
-    private LocalDateTime alterado_em;
+    private LocalDateTime criadoEm;
+
+    @Column(name = "alterado_em")
+    private LocalDateTime alteradoEm;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "alterado_por_id")
-    private Usuario alterado_por_id;
+    private Usuario alteradoPor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "criado_por_id", updatable = false)
-    private Usuario criado_por_id;
+    private Usuario criadoPor;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
 
     @PrePersist
     protected void aoCriar() {
-        criado_em = LocalDateTime.now();
-        criado_por_id = getUsuarioAutenticado();
+        criadoEm = LocalDateTime.now();
+        criadoPor = getUsuarioAutenticado();
+        isActive = true;
     }
 
     @PreUpdate
     protected void aoAtualizar() {
-        alterado_em = LocalDateTime.now();
-        alterado_por_id = getUsuarioAutenticado();
+        alteradoEm = LocalDateTime.now();
+        alteradoPor = getUsuarioAutenticado();
     }
 
     private Usuario getUsuarioAutenticado() {

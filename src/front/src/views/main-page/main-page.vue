@@ -5,7 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptLocale from '@fullcalendar/core/locales/pt-br';
-import {servicebuscarEventosCalendario, servicebuscarUsuariosAgenda} from "@/service/agenda";
+import {servicebuscarEventosCalendario} from "@/service/agenda";
 import {loading} from "@/plugins/loadingService";
 import {getScreenSize} from "@/service/common/utils";
 import ModalCadastroEventoAgenda from "@/views/main-page/modalCadastroEventoAgenda.vue";
@@ -21,7 +21,7 @@ const eventoSelecionado          = ref();
 
 onMounted(async () => {
     loading.show()
-    usuarios_agenda.value = await servicebuscarUsuariosAgenda();
+    //usuarios_agenda.value = await servicebuscarUsuariosAgenda();
     loading.hide()
 });
 

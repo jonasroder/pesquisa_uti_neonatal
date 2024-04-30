@@ -22,8 +22,6 @@ public class Menu extends EntidadeRastreada {
     private String icon;
     private String title;
     private String activator;
-    private Boolean is_active;
-
 
     @OneToMany(mappedBy = "menu")
     private List<SubMenu> subMenuList;

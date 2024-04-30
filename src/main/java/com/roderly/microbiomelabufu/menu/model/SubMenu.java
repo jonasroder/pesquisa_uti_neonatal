@@ -18,7 +18,6 @@ public class SubMenu extends EntidadeRastreada {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_sub_menu;
     private String title;
-    private Boolean is_active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_vue_router", referencedColumnName = "id_vue_router")
