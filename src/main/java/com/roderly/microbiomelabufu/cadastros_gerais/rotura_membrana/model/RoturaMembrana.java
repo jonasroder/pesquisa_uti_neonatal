@@ -1,6 +1,5 @@
-package com.roderly.microbiomelabufu.cadastros_gerais.sexo.model;
+package com.roderly.microbiomelabufu.cadastros_gerais.rotura_membrana.model;
 
-import com.roderly.microbiomelabufu.common.persistense.EntidadeRastreada;
 import com.roderly.microbiomelabufu.neonato.model.Neonato;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,19 +9,17 @@ import lombok.Setter;
 
 import java.util.Set;
 
-
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "sexo")
-public class Sexo extends EntidadeRastreada {
+@Table(name = "rotura_membrana")
+public class RoturaMembrana {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_sexo")
-    private Long idSexo;
+    @Column(name = "id_rotura_membrana")
+    private Long idRoturaMembrana;
 
     @Column(name = "codigo")
     private Long codigo;
@@ -30,10 +27,10 @@ public class Sexo extends EntidadeRastreada {
     @Column(name = "descricao")
     private String descricao;
 
-    @OneToMany(mappedBy = "sexo")
-    private Set<Neonato> pacientes;
+    @OneToMany(mappedBy = "roturaMembrana")
+    private Set<Neonato> neonatoSet;
 
-    public Sexo(Long idSexo) {
-        this.idSexo = idSexo;
+    public RoturaMembrana(Long idRoturaMembrana) {
+        this.idRoturaMembrana = idRoturaMembrana;
     }
 }

@@ -12,7 +12,7 @@ const logout = () => {
     <v-app-bar app class="border-b d-flex barra-superior" color="cyan-darken-3">
 
         <v-app-bar-nav-icon @click="$emit('toggle-drawer')"/>
-        <v-toolbar-title>Saúde em Equilíbrio</v-toolbar-title>
+        <v-toolbar-title>Grupo de Pesquisa em Epidemiologia Neonatal</v-toolbar-title>
 
         <v-spacer/>
 

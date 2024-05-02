@@ -16,7 +16,7 @@ const submitLogin = async () => {
     loading.show()
     const response = await serviceAuthenticateUser(login);
     if (response) {
-        router.push('/');
+        router.push({name: 'Neonato-List'});
     }
     loading.hide()
 }
@@ -27,14 +27,14 @@ const submitLogin = async () => {
     <v-row align="center" justify="center" class="fill-height">
 
         <v-col cols="12" md="5">
-            <v-img :src="require('../../assets/logo_grande.png')" alt="Image" contain></v-img>
+            <v-img :src="require('../../assets/logo_login_uti.png')" alt="Image" contain></v-img>
         </v-col>
 
         <v-col cols="12" md="5" class="d-flex align-center">
             <v-row justify="center">
                 <v-col cols="12" md="7">
                     <div class="text-center mb-4">
-                        <h3>Bem-vindo ao Portal de Pesquisa Saúde em Equilíbrio</h3>
+                        <h3>Bem-vindo ao Portal de Pesquisa em Epidemiologia Neonatal</h3>
                         <p>Por favor, entre com seu usuário e senha para acessar o banco de dados de pesquisa.</p>
                     </div>
 

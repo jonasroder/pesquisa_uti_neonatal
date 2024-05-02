@@ -11,7 +11,7 @@ CREATE TABLE vue_router
 
 INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/', 'Home', 'main-page/main-page.vue', 'Home', 1);
 INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/login', 'Login-Page', 'login/index.vue', 'Saúde em Equilíbrio - Login', 1);
-INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/paciente/edit', 'Paciente-Page', 'paciente-page/edit.vue', 'Cadastrar Paciente', 1);
+INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/neonato/edit', 'Neonato-Page', 'neonato-page/edit.vue', 'Cadastrar Neonato', 1);
 INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/paciente/index', 'Paciente-List', 'paciente-page/index.vue', 'Lista Pacientes', 1);
 INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/consulta/edit', 'Consulta-Page', 'consulta-page/edit.vue', 'Consulta', 1);
 INSERT INTO vue_router (`path`, name, component, title, is_active) VALUES('/medicamento/index', 'Medicamento-List', 'cadastros/medicamento-page/index.vue', 'Lista Medicamento', 1);

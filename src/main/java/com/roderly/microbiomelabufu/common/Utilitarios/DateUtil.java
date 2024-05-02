@@ -1,17 +1,31 @@
 package com.roderly.microbiomelabufu.common.Utilitarios;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateUtil {
+
     /**
      * Converte um LocalDateTime para uma string no formato de data brasileiro (dd/MM/yyyy).
      * @param dateTime O LocalDateTime a ser formatado.
      * @return Uma string representando a data no formato brasileiro.
      */
-    public static String LocalDateTimeToDateBR(LocalDateTime dateTime) {
+    public static String LocalDateToDateBR(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return dateTime.format(formatter);
+    }
+
+
+
+    /**
+     * Converte um LocalDate para uma string no formato de data brasileiro (dd/MM/yyyy).
+     * @param date O LocalDate a ser formatado.
+     * @return Uma string representando a data no formato brasileiro.
+     */
+    public static String LocalDateToDateBR(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return date.format(formatter);
     }
 
 

@@ -6,8 +6,8 @@ import {
     formatarTelefone, getOptionsAutocomplete, getScreenSize, verificarCamposObrigatorios
 } from "@/service/common/utils";
 import defaultImagePath from "@/assets/no_image.png";
-import PacienteForm from '@/views/paciente-page/edit.vue';
-import {serviceGetInfoBasica} from "@/service/paciente";
+import PacienteForm from '@/views/neonato-page/edit.vue';
+import {serviceGetInfoBasica} from "@/service/neonato";
 import {serviceSave} from "@/service/agenda";
 
 const props = defineProps({

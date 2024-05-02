@@ -25,13 +25,12 @@ public abstract class EntidadeRastreada {
     private Usuario criadoPor;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive = true;
 
     @PrePersist
     protected void aoCriar() {
         criadoEm = LocalDateTime.now();
         criadoPor = getUsuarioAutenticado();
-        isActive = true;
     }
 
     @PreUpdate
