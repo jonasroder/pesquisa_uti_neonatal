@@ -61,6 +61,6 @@ jobs:
 
       - name: Transferir JAR para o Servidor via SSH
         run: cat build/libs/pesquisa_uti_neonatal-0.0.1-SNAPSHOT.jar | ssh -o StrictHostKeyChecking=no -i temp_key root@${{ secrets.SERVER_IP }} 'cat > /home/pesquisa_uti_neonatal/app/pesquisa_uti_neonatal-0.0.1-SNAPSHOT.jar'
-#
-#      - name: Restart Application Service
-#        run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "sudo systemctl restart microbiome-lab.service"
+
+      - name: Restart Application Service
+        run: ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "sudo systemctl restart pesquisa_uti_neonatal.service"

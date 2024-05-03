@@ -81,7 +81,7 @@ const handleNew = () => {
 <template>
     <CardListagem title="Lista de Neonatos"
                   subtitle="Centralizando Informações para Cuidado Integral"
-                  botao="Novo Neonato"
+                  botao="Cadastrar Neonato"
                   @handleNew="handleNew">
 
         <v-card flat>
