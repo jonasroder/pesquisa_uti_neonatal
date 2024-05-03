@@ -88,7 +88,7 @@ tasks.register('runDevMode', Exec) {
 
 tasks.register('runProductionJar', Exec) {
 	workingDir = 'build/libs'
-	commandLine 'java', '-jar', 'microbiome-lab-ufu-0.0.1-SNAPSHOT.jar', '-tf'
+	commandLine 'java', '-jar', 'pesquisa_uti_neonatal-0.0.1-SNAPSHOT.jar', '-tf'
 }
 
 
