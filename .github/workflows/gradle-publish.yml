@@ -1,4 +1,4 @@
-name: Java and Vue CI
+name: Deploy JAR UTI Neonatal
 
 on:
   push:
