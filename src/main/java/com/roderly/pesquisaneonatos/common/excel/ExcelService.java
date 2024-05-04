@@ -10,11 +10,13 @@ import java.util.List;
 
 public class ExcelService {
 
-    public <T> byte[] generateExcelReport(List<T> dataList, List<ExcelColumnMapping> columnMappings) throws IOException {
+    public byte[] generateExcelReport(List<ExcelSheetData<?>> sheetDataList) throws IOException {
         try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            Sheet sheet = workbook.createSheet("Data Sheet");
-            createHeaderRow(sheet, columnMappings);
-            fillDataRows(sheet, dataList, columnMappings);
+            for (ExcelSheetData<?> sheetData : sheetDataList) {
+                Sheet sheet = workbook.createSheet(sheetData.getSheetName());
+                createHeaderRow(sheet, sheetData.getColumnMappings());
+                fillDataRows(sheet, sheetData.getData(), sheetData.getColumnMappings());
+            }
             workbook.write(out);
             return out.toByteArray();
         }

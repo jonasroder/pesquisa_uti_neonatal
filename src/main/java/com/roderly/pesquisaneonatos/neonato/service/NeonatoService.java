@@ -2,6 +2,7 @@ package com.roderly.pesquisaneonatos.neonato.service;
 
 import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.common.excel.ExcelService;
+import com.roderly.pesquisaneonatos.common.excel.ExcelSheetData;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -62,7 +64,11 @@ public class NeonatoService {
 
         var mappings = ExcelHelper.createColumnMappings();
 
-        var excelFile = new ExcelService().generateExcelReport(neonatoList, mappings);
+        List<ExcelSheetData<?>> sheetDataList = new ArrayList<>();
+        sheetDataList.add(new ExcelSheetData<>("Neonatos", neonatoList, mappings));
+        sheetDataList.add(new ExcelSheetData<>("Neonatos Teste 2", neonatoList, mappings));
+
+        var excelFile = new ExcelService().generateExcelReport(sheetDataList);
 
         return excelFile;
     }
