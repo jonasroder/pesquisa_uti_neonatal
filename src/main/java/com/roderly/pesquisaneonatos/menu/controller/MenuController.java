@@ -4,6 +4,7 @@ import com.roderly.pesquisaneonatos.menu.dto.response.MenuLateralResponse;
 import com.roderly.pesquisaneonatos.menu.dto.response.VueRouterResponse;
 import com.roderly.pesquisaneonatos.menu.service.MenuService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,11 @@ import java.util.List;
 
 @RestController
 @Transactional
+@RequiredArgsConstructor
 @RequestMapping("/api/menu")
 public class MenuController {
 
-    @Autowired
-    MenuService menuService;
+    private  final MenuService menuService;
 
     @GetMapping("/load")
     public ResponseEntity <List<MenuLateralResponse>> getMenuLateral() {
