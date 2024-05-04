@@ -1,10 +1,11 @@
 import axios from "axios";
-import {handleApiError} from  "@/service/common/handleApiError"
-import { setNotification } from "@/plugins/notificationService";
+import {handleApiError} from "@/service/common/handleApiError"
+import {setNotification} from "@/plugins/notificationService";
+import {downloadFile} from "@/service/common/utils";
 
 export const serviceSave = async (data) => {
 	try {
-		let res= await axios.post('/api/neonato/save', data);
+		let res = await axios.post('/api/neonato/save', data);
 		setNotification(res.data.message, 'success');
 		return res.data;
 
@@ -34,11 +35,14 @@ export const serviceList = async () => {
 };
 
 
-export const serviceGetInfoBasica= async (id) => {
+export const serviceDownloadDataExcel = async () => {
 	try {
-		const response = await axios.get(`/api/paciente/get_info_basica/${id}`);
-		return response.data;
-	} catch (e) {
-		return handleApiError(e, "Error on serviceGetInfoBasica");
+		const response = await axios.get(`/api/neonato/download`, {
+			responseType: 'blob'
+		});
+		downloadFile(response.data, 'neonatos.xlsx');
+	} catch (error) {
+		console.error("Error on serviceDownloadDataExcel", error);
+		handleApiError(error, "Error on serviceDownloadDataExcel");
 	}
 };

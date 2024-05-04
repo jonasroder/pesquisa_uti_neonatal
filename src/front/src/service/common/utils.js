@@ -212,3 +212,22 @@ export const getScreenSize = () => {
 	return { width, height };
 };
 
+
+
+/**
+ * Função genérica para baixar arquivos do servidor.
+ * @param {Blob} blob O blob de dados do arquivo a ser baixado.
+ * @param {string} filename Nome do arquivo a ser usado no download.
+ */
+export const downloadFile = (blob, filename) => {
+	const url = window.URL.createObjectURL(new Blob([blob]));
+	const link = document.createElement('a');
+	link.href = url;
+	link.setAttribute('download', filename);
+	document.body.appendChild(link);
+	link.click();
+
+	// Limpeza após o download
+	link.parentNode.removeChild(link);
+	window.URL.revokeObjectURL(url);
+};

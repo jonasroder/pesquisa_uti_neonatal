@@ -14,7 +14,9 @@ import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
+import com.roderly.pesquisaneonatos.neonato.excel.NeonatoReportData;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
+import org.springframework.security.core.parameters.P;
 
 public class NeonatoMapper {
 
@@ -26,7 +28,7 @@ public class NeonatoMapper {
         var localNascimento = request.idLocalNascimento() != null ? new LocalNascimento(request.idLocalNascimento()) : null;
         var idadeGestacional = request.idIdadeGestacional() != null ? new IdadeGestacional(request.idIdadeGestacional()) : null;
         var tipoParto = request.idTipoParto() != null ? new TipoParto(request.idTipoParto()) : null;
-        var roturaMembrana =request.idRoturaMembrana() != null ? new RoturaMembrana(request.idRoturaMembrana()) : null;
+        var roturaMembrana = request.idRoturaMembrana() != null ? new RoturaMembrana(request.idRoturaMembrana()) : null;
         var sitioMalFormacao = request.idSitioMalformacao() != null ? new SitioMalformacao(request.idSitioMalformacao()) : null;
         var sitioCirurgia = request.idSitioCirurgia() != null ? new SitioCirurgia(request.idSitioCirurgia()) : null;
         var causaObito = request.idCausaObito() != null ? new CausaObito(request.idCausaObito()) : null;
@@ -87,12 +89,11 @@ public class NeonatoMapper {
     }
 
 
-
     public static NeonatoListResponse convertNeonatoToNeonatoListResponse(Neonato neonato) {
 
-        var dataNascimento  = neonato.getDataNascimento() != null ? DateUtil.LocalDateToDateBR(neonato.getDataNascimento()) : null;
-        var dataInternacao  = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
-        var dataDesfecho    = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
+        var dataNascimento = neonato.getDataNascimento() != null ? DateUtil.LocalDateToDateBR(neonato.getDataNascimento()) : null;
+        var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
+        var dataDesfecho = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
 
         return new NeonatoListResponse(
                 neonato.getIdNeonato(),
@@ -102,5 +103,45 @@ public class NeonatoMapper {
                 dataInternacao,
                 dataDesfecho
         );
+    }
+
+
+    public static NeonatoReportData convertNeonatoToNeonatoReportData(Neonato neonato) {
+
+        var dataNascimento = neonato.getDataNascimento() != null ? DateUtil.LocalDateToDateBR(neonato.getDataNascimento()) : null;
+        var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
+        var dataDesfecho = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
+        var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
+        var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho());
+
+        var report = new NeonatoReportData();
+
+        report.setAno(ano);
+        report.setNomeMae(neonato.getNomeMae());
+        report.setProntuario(neonato.getProntuario());
+        report.setDataNascimento(dataNascimento);
+        report.setDataInternacao(dataInternacao);
+        report.setDataDesfecho(dataDesfecho);
+        report.setDiasInternacao(diasInternacao);
+        report.setObito(neonato.getObito() ? 1L : 0L);
+        report.setRiscoInfeccio(neonato.getRiscoInfeccio() ? 1L : 0L);
+        report.setSepseClinica(neonato.getSepseClinica() ? 1L : 0L);
+        report.setApgar1(neonato.getApgar1());
+        report.setApgar5(neonato.getApgar5());
+        report.setPesoGramas(neonato.getPesoGramas());
+        report.setSexoCodigo(neonato.getSexo() != null ? neonato.getSexo().getCodigo() : null);
+        report.setCausaObitoCodigo(neonato.getCausaObito() != null ? neonato.getCausaObito().getCodigo() : null);
+        report.setPesoNascimentoCodigo(neonato.getPesoNascimento() != null ? neonato.getPesoNascimento().getCodigo() : null);
+        report.setLocalNascimentoCodigo(neonato.getLocalNascimento() != null ? neonato.getLocalNascimento().getCodigo() : null);
+        report.setMotivoInternacaoCodigo(neonato.getMotivoInternacao() != null ? neonato.getMotivoInternacao().getCodigo() : null);
+        report.setIdadeGestacionalCodigo(neonato.getIdadeGestacional() != null ? neonato.getIdadeGestacional().getCodigo() : null);
+        report.setTipoPartoCodigo(neonato.getTipoParto() != null ? neonato.getTipoParto().getCodigo() : null);
+        report.setRoturaMembranaCodigo(neonato.getRoturaMembrana() != null ? neonato.getRoturaMembrana().getCodigo() : null);
+        report.setMalformacao(neonato.getSitioMalformacao() != null ? 1L : 0L);
+        report.setSitioMalformacaoCodigo(neonato.getSitioMalformacao() != null ? neonato.getSitioMalformacao().getCodigo() : null);
+        report.setCirurgia(neonato.getSitioCirurgia() != null ? 1L : 0L);
+        report.setSitioCirurgiaCodigo(neonato.getSitioCirurgia() != null ? neonato.getSitioCirurgia().getCodigo() : null);
+
+        return report;
     }
 }

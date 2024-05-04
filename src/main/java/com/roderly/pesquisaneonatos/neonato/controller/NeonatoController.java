@@ -6,6 +6,8 @@ import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.service.NeonatoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,10 +42,17 @@ public class NeonatoController {
         return ResponseEntity.ok(list);
     }
 
-//
-//    @GetMapping("/get_info_basica/{id}")
-//    public ResponseEntity<PacienteInfoBasicaResponse> getInfoBasicaPaciente(@PathVariable Long id) {
-//        var response = pacienteService.getInfoBasicaPaciente(id);
-//        return ResponseEntity.ok(response);
-//    }
+
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadExcel() throws IOException {
+        byte[] excelFile = neonatoService.generateExcelReport();
+
+        var headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=neonatos.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(excelFile);
+    }
 }

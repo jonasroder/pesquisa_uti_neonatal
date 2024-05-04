@@ -2,10 +2,8 @@
 import {ref, onMounted} from 'vue';
 import CardListagem from "@/components/CardListagem.vue";
 import {loading} from "@/plugins/loadingService";
-import {serviceList} from "@/service/neonato";
+import {serviceList, serviceDownloadDataExcel} from "@/service/neonato";
 import {useRouter} from "vue-router";
-// import {formatarTelefone} from "@/service/common/utils"
-// import defaultImagePath from "@/assets/no_image.png";
 
 
 const data   = ref([]);
@@ -61,19 +59,11 @@ const handleNew = () => {
     router.push({name: 'Neonato-Page'});
 }
 
-//
-// const editarConsulta = (id_paciente, id_consulta) => {
-//     const routeData = router.resolve({
-//         name : 'Consulta-Page',
-//         query: {
-//             id_paciente: id_paciente,
-//             id_consulta: id_consulta
-//         }
-//     });
-//
-//     window.open(routeData.href, '_blank');
-// }
-//
+
+const verProntuario = (idNeonato) => {
+    alert(`Desenvolvimento Pendente - idNeonato : ${idNeonato}`);
+}
+
 
 </script>
 
@@ -83,6 +73,10 @@ const handleNew = () => {
                   subtitle="Centralizando Informações para Cuidado Integral"
                   botao="Cadastrar Neonato"
                   @handleNew="handleNew">
+
+        <v-btn color="cinzaAzulado" @click="serviceDownloadDataExcel()">
+            baixar
+        </v-btn>
 
         <v-card flat>
             <v-card-title class="d-flex align-center pe-2">
@@ -115,7 +109,7 @@ const handleNew = () => {
                 <!-- Botão nova consulta -->
                 <template v-slot:[`item.action`]="{ item }">
                     <v-col class="text-right align-center">
-                        <v-btn color="cinzaAzulado" @click="createNewConsulta(item.idNeonato)">
+                        <v-btn color="cinzaAzulado" @click="verProntuario(item.idNeonato)">
                             Prontuário
                         </v-btn>
                     </v-col>

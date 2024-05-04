@@ -42,4 +42,36 @@ public class DateUtil {
         return "";
     }
 
+
+
+    /**
+     * Calcula a diferença em dias entre duas datas.
+     * @param dataInicio A data de início.
+     * @param dataFim A data de fim.
+     * @return A diferença em dias ou null se as datas não forem válidas.
+     */
+    public static Integer calcularDiferencaDias(LocalDate dataInicio, LocalDate dataFim) {
+        if (dataInicio != null && dataFim != null) {
+            return Math.toIntExact(dataFim.toEpochDay() - dataInicio.toEpochDay());
+        } else {
+            return null;
+        }
+    }
+
+
+
+    /**
+     * Calcula a diferença em dias entre duas datas e horas.
+     * @param dataInicio A data e hora de início.
+     * @param dataFim A data e hora de fim.
+     * @return A diferença em dias ou null se as datas não forem válidas.
+     */
+    public static Integer calcularDiferencaDias(LocalDateTime dataInicio, LocalDateTime dataFim) {
+        if (dataInicio != null && dataFim != null) {
+            return Math.toIntExact(dataFim.toLocalDate().toEpochDay() - dataInicio.toLocalDate().toEpochDay());
+        } else {
+            return null;
+        }
+    }
+
 }
