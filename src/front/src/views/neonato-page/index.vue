@@ -24,7 +24,6 @@ const headers = ref([{
     key  : 'nomeMae',
     align: 'start',
     class: 'text--primary',
-    width: '30%'
 }, {
     title: 'Prontuário',
     key  : 'prontuario',
@@ -41,9 +40,6 @@ const headers = ref([{
     title: 'Data de Desfecho',
     key  : 'dataDesfecho',
     align: 'start'
-}, {
-    key  : 'action',
-    align: 'center'
 }]);
 
 
@@ -61,7 +57,10 @@ const handleNew = () => {
 
 
 const verProntuario = (idNeonato) => {
-    alert(`Desenvolvimento Pendente - idNeonato : ${idNeonato}`);
+    router.push({
+        name : 'Prontuario-Page',
+        query: {id: idNeonato}
+    });
 }
 
 
@@ -101,21 +100,17 @@ const verProntuario = (idNeonato) => {
                 <template v-slot:[`item.nomeMae`]="{ item }">
                     <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.idNeonato)">
                         <b>{{ item.nomeMae }}</b>
-                        <v-tooltip text="Visualizar ou editar cadastro de neonato"/>
+                        <v-tooltip text="Visualizar ou editar cadastro do neonato"/>
                     </a>
                 </template>
 
-
-                <!-- Botão nova consulta -->
-                <template v-slot:[`item.action`]="{ item }">
-                    <v-col class="text-right align-center">
-                        <v-btn color="cinzaAzulado" @click="verProntuario(item.idNeonato)">
-                            Prontuário
-                        </v-btn>
-                    </v-col>
-
+                <!-- Coluna Prontuário -->
+                <template v-slot:[`item.prontuario`]="{ item }">
+                    <a href="#" class="editable-name" @click.prevent="verProntuario(item.idNeonato)">
+                        <b>{{ item.nomeMae }}</b>
+                        <v-tooltip text="Visualizar ou editar prontuário do neonato"/>
+                    </a>
                 </template>
-
 
             </v-data-table>
         </v-card>

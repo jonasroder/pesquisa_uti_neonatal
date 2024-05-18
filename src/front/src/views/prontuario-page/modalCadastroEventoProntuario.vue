@@ -1,152 +1,129 @@
 <script setup>
 import CardFormulario from "@/components/CardFormulario.vue";
-import {onMounted, reactive, ref} from "vue";
-import {loading} from "@/plugins/loadingService";
-import {
-    formatarTelefone, getOptionsAutocomplete, getScreenSize, verificarCamposObrigatorios
-} from "@/service/common/utils";
-import defaultImagePath from "@/assets/no_image.png";
-import PacienteForm from '@/views/neonato-page/edit.vue';
-import {serviceGetInfoBasica} from "@/service/neonato";
-import {serviceSave} from "@/service/agenda";
+// import {onMounted, reactive, ref} from "vue";
+// import {loading} from "@/plugins/loadingService";
+// import {
+//     formatarTelefone, getOptionsAutocomplete, getScreenSize, verificarCamposObrigatorios
+// } from "@/service/common/utils";
+// import defaultImagePath from "@/assets/no_image.png";
+//
+// const props = defineProps({
+//     usuarioAgendaSelecionado: {
+//         type   : [String, Number],
+//         default: ''
+//     },
+//     eventoSelecionado       : {type: Object}
+// });
+//
+//
+// const options_tipo_evento         = ref();
+// const options_cpf                 = ref();
+// const options_status_agenda       = ref();
+// const modalCadastroRapidoPaciente = ref(false);
+// const tamanhoModal                = ref("");
+// const emit                        = defineEmits(['close_modal', 'saved']);
+// const camposObrigatorios          = ref(true);
+//
+//
+// const paciente = ref({
+//     foto_perfil: null,
+//     nome       : null,
+//     idade      : null,
+//     telefone_1 : null,
+//     telefone_2 : null,
+//     plano_saude: null,
+// });
+//
+//
+// const agenda = reactive({
+//     id_evento       : null,
+//     id_tipo_evento  : null,
+//     id_usuario      : null,
+//     id_status_agenda: 2,
+//     id_paciente     : null,
+//     data_evento     : null,
+//     hora_inicio     : null,
+//     hora_fim        : null,
+//     dia_inteiro     : null,
+//     url             : null,
+//     descricao       : null,
+//     is_active       : true,
+// });
 
-const props = defineProps({
-    usuarioAgendaSelecionado: {
-        type   : [String, Number],
-        default: ''
-    },
-    eventoSelecionado       : {type: Object}
-});
+//
+// onMounted(async () => {
+//     loading.show()
+//     await getAutoCompleteOptions();
+//
+//     if (props.eventoSelecionado) {
+//         Object.assign(agenda, props.eventoSelecionado);
+//     }
+//
+//     loading.hide()
+// });
+//
 
+// const getAutoCompleteOptions = async () => {
+//     const results = await Promise.all([getOptionsAutocomplete({
+//         idColumn  : 'id_tipo_evento_agenda',
+//         descColumn: 'nome',
+//         tableName : 'tipo_evento_agenda'
+//     }), getOptionsAutocomplete({
+//         idColumn  : 'id_paciente',
+//         descColumn: 'cpf',
+//         tableName : 'paciente'
+//     }), getOptionsAutocomplete({
+//         idColumn  : 'id_status_agenda',
+//         descColumn: 'nome',
+//         tableName : 'status_agenda'
+//     })]);
+//
+//     options_tipo_evento.value   = results[0];
+//     options_cpf.value           = results[1];
+//     options_status_agenda.value = results[2];
+// }
+//
+//
+// const getProfilePhoto = (path) => {
+//     return path ? `${path}` : defaultImagePath;
+// };
+//
 
-const options_tipo_evento         = ref();
-const options_cpf                 = ref();
-const options_status_agenda       = ref();
-const modalCadastroRapidoPaciente = ref(false);
-const tamanhoModal                = ref("");
-const emit                        = defineEmits(['close_modal', 'saved']);
-const camposObrigatorios          = ref(true);
-
-
-const paciente = ref({
-    foto_perfil: null,
-    nome       : null,
-    idade      : null,
-    telefone_1 : null,
-    telefone_2 : null,
-    plano_saude: null,
-});
-
-
-const agenda = reactive({
-    id_evento       : null,
-    id_tipo_evento  : null,
-    id_usuario      : null,
-    id_status_agenda: 2,
-    id_paciente     : null,
-    data_evento     : null,
-    hora_inicio     : null,
-    hora_fim        : null,
-    dia_inteiro     : null,
-    url             : null,
-    descricao       : null,
-    is_active       : true,
-});
-
-
-onMounted(async () => {
-    loading.show()
-    await getAutoCompleteOptions();
-
-    if (props.eventoSelecionado) {
-        Object.assign(agenda, props.eventoSelecionado);
-        await buscarPacienteSelecionado(agenda.id_paciente);
-    }
-
-    loading.hide()
-});
-
-
-const getAutoCompleteOptions = async () => {
-    const results = await Promise.all([getOptionsAutocomplete({
-        idColumn  : 'id_tipo_evento_agenda',
-        descColumn: 'nome',
-        tableName : 'tipo_evento_agenda'
-    }), getOptionsAutocomplete({
-        idColumn  : 'id_paciente',
-        descColumn: 'cpf',
-        tableName : 'paciente'
-    }), getOptionsAutocomplete({
-        idColumn  : 'id_status_agenda',
-        descColumn: 'nome',
-        tableName : 'status_agenda'
-    })]);
-
-    options_tipo_evento.value   = results[0];
-    options_cpf.value           = results[1];
-    options_status_agenda.value = results[2];
-}
-
-
-const getProfilePhoto = (path) => {
-    return path ? `${path}` : defaultImagePath;
-};
-
-
-const handleSave = async () => {
-    camposObrigatorios.value = true;
-    agenda.id_usuario        = props.usuarioAgendaSelecionado;
-
-    if (!verificarCamposObrigatorios(verificacoes)) {
-        camposObrigatorios.value = false;
-        loading.hide();
-        return;
-    }
-
-    const data = agenda;
-    await serviceSave(data);
-    emit('close_modal');
-};
+// const handleSave = async () => {
+//     camposObrigatorios.value = true;
+//     agenda.id_usuario        = props.usuarioAgendaSelecionado;
+//
+//     if (!verificarCamposObrigatorios(verificacoes)) {
+//         camposObrigatorios.value = false;
+//         loading.hide();
+//         return;
+//     }
+//
+//     const data = agenda;
+//     await serviceSave(data);
+//     emit('close_modal');
+// };
 
 
-const verificacoes = [{
-    dados : agenda,
-    campos: ['id_usuario', 'data_evento', 'id_tipo_evento']
-}];
+// const verificacoes = [{
+//     dados : agenda,
+//     campos: ['id_usuario', 'data_evento', 'id_tipo_evento']
+// }];
 
 
-const handleCloseModal = () => {
-    emit('close_modal');
-};
+// const handleCloseModal = () => {
+//     emit('close_modal');
+// };
+//
+//
+//
+// const fecharModalCadastroRapidoPaciente = async () => {
+//     await getAutoCompleteOptions();
+//     modalCadastroRapidoPaciente.value = false
+// }
+//
+//
 
-
-const abrirModalAdicionarPaciente = () => {
-    modalCadastroRapidoPaciente.value = true;
-    const screenWidth                 = getScreenSize().width;
-
-    if (screenWidth < 600) {
-        tamanhoModal.value = "90%";
-    } else if (screenWidth >= 600 && screenWidth <= 1200) {
-        tamanhoModal.value = '80%';
-    } else {
-        tamanhoModal.value = '60%';
-    }
-};
-
-
-const fecharModalCadastroRapidoPaciente = async () => {
-    await getAutoCompleteOptions();
-    modalCadastroRapidoPaciente.value = false
-}
-
-
-const buscarPacienteSelecionado = async (id_paciente) => {
-    if (!id_paciente) {
-        paciente.value = {};
-        return;
-    }
-    paciente.value = await serviceGetInfoBasica(id_paciente)
-}
 
 </script>
 

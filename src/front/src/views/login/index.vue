@@ -1,8 +1,8 @@
 <script setup>
 import {serviceAuthenticateUser} from "@/service/login";
-import {reactive} from "vue";
+import {onMounted, reactive} from "vue";
 import {useRouter} from "vue-router";
-import { loading } from "@/plugins/loadingService.js";
+import {loading} from "@/plugins/loadingService.js";
 
 
 const router = useRouter();
@@ -12,14 +12,27 @@ const login  = reactive({
 });
 
 
+onMounted(() => {
+    window.addEventListener('keydown', handleEnter);
+});
+
+
 const submitLogin = async () => {
     loading.show()
     const response = await serviceAuthenticateUser(login);
     if (response) {
         router.push({name: 'Neonato-List'});
+        window.removeEventListener('keydown', handleEnter);
     }
     loading.hide()
 }
+
+
+const handleEnter = (event) => {
+    if (event.key === 'Enter' && login.usuario !== "" && login.senha !== "") {
+        submitLogin();
+    }
+};
 
 </script>
 
@@ -30,7 +43,7 @@ const submitLogin = async () => {
             <v-img :src="require('../../assets/logo_login_uti.png')" alt="Image" contain></v-img>
         </v-col>
 
-        <v-col cols="12" md="5" class="d-flex align-center">
+        <v-col cols="12" md="5" class="d-flex align-center pa-3">
             <v-row justify="center">
                 <v-col cols="12" md="7">
                     <div class="text-center mb-4">
@@ -58,7 +71,9 @@ const submitLogin = async () => {
                         />
                     </v-col>
 
-                    <v-btn color="primary" block @click="submitLogin">FAZER LOGIN</v-btn>
+                    <v-col cols="12">
+                        <v-btn color="primary" block @click="submitLogin">FAZER LOGIN</v-btn>
+                    </v-col>
                 </v-col>
             </v-row>
         </v-col>
