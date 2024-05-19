@@ -142,16 +142,14 @@ watch(abaPagina, (newVal) => {
 
 <template>
     <card-formulario title="Prontuário do Neonato"
-                     subtitle="Você pode editar o formulário a qualquer momento"
-                     @handleSave="handleSave"
-                     @handleBack="handleBack">
+                     subtitle="Você pode editar o formulário a qualquer momento">
 
         <v-container class="pa-0">
 
             <v-card>
                 <v-tabs v-model="abaPagina" bg-color="primary">
-                    <v-tab value="1">Procedimentos</v-tab>
-                    <v-tab value="2">Isolados</v-tab>
+                    <v-tab value="1"><b>Procedimentos</b></v-tab>
+                    <v-tab value="2"><b>Isolados</b></v-tab>
                 </v-tabs>
 
                 <v-card-text>

@@ -11,10 +11,14 @@ defineProps({
         type   : String,
         default: ''
     },
-    isModal : {
-        type   : Boolean,
-        default: false
-    }
+    createButton: {
+        type: String,
+        default: 'Novo Cadastro'
+    },
+    showCreateButton: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const {smAndDown} = useDisplay();
@@ -46,6 +50,13 @@ onBeforeUnmount(() => {
                                 <small class="text-subtitle-1">{{ $props.subtitle }}</small>
                             </v-card-title>
                         </v-col>
+
+                        <v-col cols="12" sm="12" md="4" lg="2" v-if="$props.showCreateButton">
+                            <div class="d-flex justify-end mt-3 mr-2">
+                                <v-btn class="mr-2" color="azulEscuro" @click="$emit('handleNew')">{{ $props.createButton }}</v-btn>
+                            </div>
+                        </v-col>
+
                     </v-row>
 
                     <v-divider></v-divider>

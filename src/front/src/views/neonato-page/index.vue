@@ -1,9 +1,9 @@
 <script setup>
 import {ref, onMounted} from 'vue';
-import CardListagem from "@/components/CardListagem.vue";
 import {loading} from "@/plugins/loadingService";
 import {serviceList, serviceDownloadDataExcel} from "@/service/neonato";
 import {useRouter} from "vue-router";
+import CardFormulario from "@/components/CardFormulario.vue";
 
 
 const data   = ref([]);
@@ -68,10 +68,11 @@ const verProntuario = (idNeonato) => {
 
 
 <template>
-    <CardListagem title="Lista de Neonatos"
-                  subtitle="Centralizando Informações para Cuidado Integral"
-                  botao="Cadastrar Neonato"
-                  @handleNew="handleNew">
+    <CardFormulario title="Lista de Neonatos"
+                    subtitle="Centralizando Informações para Cuidado Integral"
+                    :showCreateButton="true"
+                    createButton="Cadastrar Neonato"
+                    @handleNew="handleNew">
 
         <v-btn color="cinzaAzulado" @click="serviceDownloadDataExcel()">
             baixar
@@ -114,7 +115,7 @@ const verProntuario = (idNeonato) => {
 
             </v-data-table>
         </v-card>
-    </CardListagem>
+    </CardFormulario>
 </template>
 
 
