@@ -3,10 +3,7 @@ import {onMounted, reactive, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {serviceSave, serviceLoad} from "@/service/neonato";
 import {
-    getIdFromUrl,
-    adicionarParametrosURL,
-    verificarCamposObrigatorios,
-    getOptionsAutocomplete
+    getIdFromUrl, adicionarParametrosURL, verificarCamposObrigatorios, getOptionsAutocomplete
 } from "@/service/common/utils";
 import {loading} from "@/plugins/loadingService.js";
 import CardFormulario from "@/components/CardFormulario.vue";
