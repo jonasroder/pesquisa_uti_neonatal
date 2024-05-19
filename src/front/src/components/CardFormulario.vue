@@ -1,7 +1,7 @@
 <template>
-    <v-container>
+    <v-container :class="paddingConf">
         <v-row justify="center" align="center" class="d-flex  pa-0 fill-height border border-sm border-opacity-100 border-barrasSperior rounded">
-            <v-col cols="12">
+            <v-col cols="12" :class="paddingConf">
                 <v-card>
                     <v-row class="mb-2">
                         <v-col cols="12" sm="12" md="8" lg="10">
@@ -23,7 +23,7 @@
 
                     <v-divider></v-divider>
 
-                    <v-card-text>
+                    <v-card-text :class="paddingConf">
                         <v-form>
                             <slot></slot>
                         </v-form>
@@ -36,7 +36,8 @@
 </template>
 
 <script setup>
-import {defineProps} from 'vue';
+import {defineProps, onBeforeUnmount, onMounted, ref} from 'vue';
+import {useDisplay} from "vuetify";
 
 defineProps({
     title   : {
@@ -51,5 +52,21 @@ defineProps({
         type: Boolean,
         default: false
     }
+});
+
+const { smAndDown } = useDisplay();
+const paddingConf = ref(smAndDown.value ? 'pa-0' : '');
+
+const updatePaddingConf = () => {
+    paddingConf.value = smAndDown.value ? 'pa-0' : '';
+};
+
+onMounted(() => {
+    window.addEventListener('resize', updatePaddingConf);
+    updatePaddingConf(); // Chamada inicial para definir o valor correto
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', updatePaddingConf);
 });
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -12,10 +12,12 @@ import {loading} from "@/plugins/loadingService";
 import ModalCadastroEventoAgenda from "@/views/prontuario-page/modalCadastroEventoProntuario.vue";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {useRouter} from "vue-router";
+import {getIdFromUrl} from "@/service/common/utils";
 
 
+const id                  = ref(getIdFromUrl());
 const calendarEvents      = ref([]);
-//const eventosProntuario   = ref();
+const abaPagina           = ref();
 const modalCadastroRapido = ref(false);
 const tamanhoModal        = ref("");
 const fullCalendarRef     = ref(null);
@@ -24,6 +26,7 @@ const router              = useRouter();
 
 onMounted(async () => {
     loading.show()
+    console.log(id)
     //eventosProntuario.value = await serviceLoad();
     loading.hide()
 });
@@ -35,18 +38,22 @@ const handleEventClick = ({event}) => {
 
 
 const calendarOptions = ref({
-    plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
+    plugins      : [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
     headerToolbar: {
-        left: 'prev,next today',
+        left  : 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        right : 'dayGridMonth,timeGridWeek' //,timeGridDay,listWeek
     },
-    initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
-    locale: ptLocale,
-    events: calendarEvents.value,
-    selectable: true,
-    selectMirror: true,
-    eventClick: handleEventClick,
+    titleFormat  : {
+        month: 'short',
+        year : 'numeric'
+    },
+    initialView  : 'dayGridMonth',
+    locale       : ptLocale,
+    events       : calendarEvents.value,
+    selectable   : true,
+    selectMirror : true,
+    eventClick   : handleEventClick,
     contentHeight: 'auto',
 });
 
@@ -116,6 +123,16 @@ const handleBack = () => {
     router.push({name: 'Neonato-List'});
 };
 
+
+watch(abaPagina, (newVal) => {
+    if (newVal === '1') {
+        setTimeout(() => {
+            const calendarApi = fullCalendarRef.value.getApi();
+            calendarApi.render();
+        }, 10);
+    }
+});
+
 </script>
 
 <template>
@@ -124,18 +141,30 @@ const handleBack = () => {
                      @handleSave="handleSave"
                      @handleBack="handleBack">
 
-        <v-container>
+        <v-container class="pa-0">
 
-            <v-row>
-                <v-col cols="12" class="fill-height">
-                    <v-card class="elevation-3">
-                        <v-card-text>
+            <v-card>
+                <v-tabs v-model="abaPagina" bg-color="primary">
+                    <v-tab value="1">Procedimentos</v-tab>
+                    <v-tab value="2">Isolados</v-tab>
+                </v-tabs>
+
+                <v-card-text>
+                    <v-window v-model="abaPagina">
+
+                        <v-window-item value="1">
                             <FullCalendar ref="fullCalendarRef" :options="calendarOptions"/>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
+                        </v-window-item>
 
-            </v-row>
+                        <v-window-item value="2">
+                            <div>Two</div>
+                        </v-window-item>
+                    </v-window>
+
+
+                </v-card-text>
+            </v-card>
+
 
         </v-container>
 
