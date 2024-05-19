@@ -1,11 +1,5 @@
 <script setup>
-import {removeToken} from "@/service/common/tokenService";
-import router from '@/router';
 
-const logout = () => {
-    removeToken();
-    router.push('/login');
-}
 </script>
 
 <template>
@@ -16,11 +10,9 @@ const logout = () => {
 
         <v-spacer/>
 
-        <v-btn icon @click="logout">
-            <v-icon>fa-solid fa-arrow-right-from-bracket</v-icon>
-            <v-tooltip text="Sair"/>
-        </v-btn>
 
+        <v-btn class="mr-2" variant="elevated" color="cinzaAzulado" @click="handleBack">Voltar</v-btn>
+        <v-btn color="azulEscuro" variant="elevated" @click="handleSave">Salvar</v-btn>
     </v-app-bar>
 </template>
 

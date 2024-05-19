@@ -5,6 +5,8 @@ import {useRouter} from "vue-router";
 import {getToken, getSessionUserData} from "@/service/common/tokenService";
 
 
+import {removeToken} from "@/service/common/tokenService";
+
 const router      = useRouter();
 const menuLateral = ref([]);
 const userData    = ref({});
@@ -16,7 +18,7 @@ onMounted(async () => {
         return;
     }
 
-    userData.value = getSessionUserData();
+    userData.value    = getSessionUserData();
     nomeUsuario.value = userData.value.nome_completo
 
     loading.show()
@@ -45,16 +47,27 @@ const isActive = (route) => {
 }
 
 
+const logout = () => {
+    removeToken();
+    router.push('/login');
+};
+
 </script>
 
 
 <template>
-    <v-navigation-drawer v-model="localDrawerState"  color="cyan-lighten-4">
+    <v-navigation-drawer v-model="localDrawerState" color="cyan-lighten-4">
         <v-list>
-            <v-list-item
-                :title="nomeUsuario"
-                subtitle="Logado"
-            ></v-list-item>
+            <v-list-item>
+                <div>
+                    <v-list-item-title class="d-flex align-center justify-space-between">
+                        {{ nomeUsuario }}
+                        <v-icon @click="logout">fa-solid fa-arrow-right-from-bracket</v-icon>
+                    </v-list-item-title>
+                    <v-list-item-subtitle>Logado</v-list-item-subtitle>
+                </div>
+            </v-list-item>
+
 
             <v-divider/>
 

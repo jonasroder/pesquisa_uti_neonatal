@@ -163,6 +163,8 @@ const handleBack = () => {
     router.push({name: 'Neonato-List'});
 };
 
+console.log(handleBack);
+console.log(handleSave)
 
 const apgarRules = ref([v => {
     if (v === '' || v == null) return true;
@@ -176,9 +178,7 @@ const apgarRules = ref([v => {
 
 <template>
     <card-formulario title="Cadastro de Neonato"
-                     subtitle="Você pode editar o formulário a qualquer momento"
-                     @handleSave="handleSave"
-                     @handleBack="handleBack">
+                     subtitle="Você pode editar o formulário a qualquer momento">
 
         <v-row>
             <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
