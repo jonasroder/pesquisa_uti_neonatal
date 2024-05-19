@@ -1,4 +1,3 @@
-
 <script setup>
 import {defineProps, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useDisplay} from "vuetify";

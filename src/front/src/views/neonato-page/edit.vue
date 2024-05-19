@@ -1,21 +1,20 @@
 <script setup>
-import CardFormulario from "@/components/CardFormulario.vue";
-//import {setNotification} from "@/plugins/notificationService";
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref} from 'vue';
+import {useRouter} from 'vue-router';
 import {serviceSave, serviceLoad} from "@/service/neonato";
 import {
-    getIdFromUrl, adicionarParametrosURL, verificarCamposObrigatorios, getOptionsAutocomplete
-} from "@/service/common/utils"
+    getIdFromUrl,
+    adicionarParametrosURL,
+    verificarCamposObrigatorios,
+    getOptionsAutocomplete
+} from "@/service/common/utils";
 import {loading} from "@/plugins/loadingService.js";
-import {useRouter} from "vue-router";
+import CardFormulario from "@/components/CardFormulario.vue";
 
-
-const id                 = ref(getIdFromUrl());
-const cpfDisabled        = ref(false);
-const router             = useRouter();
-const camposObrigatorios = ref(true);
-
-
+const id                      = ref(getIdFromUrl());
+const cpfDisabled             = ref(false);
+const router                  = useRouter();
+const camposObrigatorios      = ref(true);
 const optionsSexo             = ref([]);
 const optionsPesoNascimento   = ref([]);
 const optionsLocalNascimento  = ref([]);
@@ -27,22 +26,48 @@ const optionsSitioMalformacao = ref([]);
 const optionsSitioCirurgia    = ref([]);
 const optionsCausaObito       = ref([]);
 
+const neonato = reactive({
+    idNeonato         : null,
+    nomeMae           : null,
+    prontuario        : null,
+    dataNascimento    : null,
+    dataInternacao    : null,
+    dataDesfecho      : null,
+    obito             : false,
+    apgar1            : null,
+    apgar5            : null,
+    pesoGramas        : null,
+    idSexo            : null,
+    idPesoNascimento  : null,
+    idMotivoInternacao: null,
+    idLocalNascimento : null,
+    idIdadeGestacional: null,
+    idTipoParto       : null,
+    idRoturaMembrana  : null,
+    idSitioMalformacao: null,
+    idSitioCirurgia   : null,
+    idCausaObito      : null,
+    riscoInfeccioso   : false,
+    sepseClinica      : false,
+});
+
+const emit = defineEmits(['set-back-action', 'set-save-action']);
 
 onMounted(async () => {
-    loading.show()
-
+    loading.show();
     await getOpcoesAutocomplete();
 
     if (id.value > 0) {
         await getDadosNeonato();
     }
 
-    loading.hide()
+    // Emit events to set back and save actions in parent component
+    emit('set-back-action', handleBack);
+    emit('set-save-action', handleSave);
+    loading.hide();
 });
 
-
 const getOpcoesAutocomplete = async () => {
-
     const results = await Promise.all([getOptionsAutocomplete({
         idColumn  : 'id_sexo',
         descColumn: 'descricao',
@@ -95,43 +120,17 @@ const getOpcoesAutocomplete = async () => {
     optionsSitioMalformacao.value = results[7];
     optionsSitioCirurgia.value    = results[8];
     optionsCausaObito.value       = results[9];
-}
-
-const neonato = reactive({
-    idNeonato         : null,
-    nomeMae           : null,
-    prontuario        : null,
-    dataNascimento    : null,
-    dataInternacao    : null,
-    dataDesfecho      : null,
-    obito             : false,
-    apgar1            : null,
-    apgar5            : null,
-    pesoGramas        : null,
-    idSexo            : null,
-    idPesoNascimento  : null,
-    idMotivoInternacao: null,
-    idLocalNascimento : null,
-    idIdadeGestacional: null,
-    idTipoParto       : null,
-    idRoturaMembrana  : null,
-    idSitioMalformacao: null,
-    idSitioCirurgia   : null,
-    idCausaObito      : null,
-    riscoInfeccioso   : false,
-    sepseClinica      : false,
-});
-
+};
 
 const handleSave = async () => {
-    loading.show()
+    loading.show();
 
     camposObrigatorios.value = true;
 
     const verificacoes = [{
         dados : neonato,
         campos: ['prontuario', 'nomeMae']
-    }]
+    }];
 
     if (!verificarCamposObrigatorios(verificacoes)) {
         camposObrigatorios.value = false;
@@ -149,22 +148,17 @@ const handleSave = async () => {
         await getDadosNeonato();
     }
 
-    loading.hide()
+    loading.hide();
 };
 
-
 const getDadosNeonato = async () => {
-    const resp = await serviceLoad(id.value)
-    Object.assign(neonato, resp)
-}
-
+    const resp = await serviceLoad(id.value);
+    Object.assign(neonato, resp);
+};
 
 const handleBack = () => {
     router.push({name: 'Neonato-List'});
 };
-
-console.log(handleBack);
-console.log(handleSave)
 
 const apgarRules = ref([v => {
     if (v === '' || v == null) return true;
@@ -173,8 +167,8 @@ const apgarRules = ref([v => {
     if (v === '' || v == null) return true;
     return (v >= 0 && v <= 10) || 'O valor deve estar entre 0 e 10.';
 }]);
-
 </script>
+
 
 <template>
     <card-formulario title="Cadastro de Neonato"
