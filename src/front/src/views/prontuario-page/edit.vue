@@ -16,6 +16,7 @@ import {getIdFromUrl} from "@/service/common/utils";
 
 
 const id                  = ref(getIdFromUrl());
+const emit                = defineEmits(['set-back-action', 'set-save-action']);
 const calendarEvents      = ref([]);
 const abaPagina           = ref();
 const modalCadastroRapido = ref(false);
@@ -28,6 +29,10 @@ onMounted(async () => {
     loading.show()
     console.log(id)
     //eventosProntuario.value = await serviceLoad();
+
+
+    emit('set-back-action', handleBack);
+    emit('set-save-action', handleSave);
     loading.hide()
 });
 
@@ -115,7 +120,7 @@ const calendarOptions = ref({
 //
 
 const handleSave = async () => {
-
+    alert("entrei")
 }
 
 
@@ -157,7 +162,7 @@ watch(abaPagina, (newVal) => {
                         </v-window-item>
 
                         <v-window-item value="2">
-                            <div>Two</div>
+                            <div>Desenvolver adicionar isolados por coleta</div>
                         </v-window-item>
                     </v-window>
 

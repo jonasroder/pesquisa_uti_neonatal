@@ -27,7 +27,7 @@ const updatePaddingConf = () => {
 
 onMounted(() => {
     window.addEventListener('resize', updatePaddingConf);
-    updatePaddingConf(); // Chamada inicial para definir o valor correto
+    updatePaddingConf();
 });
 
 onBeforeUnmount(() => {

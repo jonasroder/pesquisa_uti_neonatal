@@ -9,6 +9,7 @@ import {loading} from "@/plugins/loadingService.js";
 import CardFormulario from "@/components/CardFormulario.vue";
 
 const id                      = ref(getIdFromUrl());
+const emit                    = defineEmits(['set-back-action', 'set-save-action']);
 const cpfDisabled             = ref(false);
 const router                  = useRouter();
 const camposObrigatorios      = ref(true);
@@ -22,6 +23,7 @@ const optionsRoturaMembrana   = ref([]);
 const optionsSitioMalformacao = ref([]);
 const optionsSitioCirurgia    = ref([]);
 const optionsCausaObito       = ref([]);
+
 
 const neonato = reactive({
     idNeonato         : null,
@@ -48,7 +50,6 @@ const neonato = reactive({
     sepseClinica      : false,
 });
 
-const emit = defineEmits(['set-back-action', 'set-save-action']);
 
 onMounted(async () => {
     loading.show();
@@ -58,11 +59,11 @@ onMounted(async () => {
         await getDadosNeonato();
     }
 
-    // Emit events to set back and save actions in parent component
     emit('set-back-action', handleBack);
     emit('set-save-action', handleSave);
     loading.hide();
 });
+
 
 const getOpcoesAutocomplete = async () => {
     const results = await Promise.all([getOptionsAutocomplete({
@@ -119,6 +120,7 @@ const getOpcoesAutocomplete = async () => {
     optionsCausaObito.value       = results[9];
 };
 
+
 const handleSave = async () => {
     loading.show();
 
@@ -148,14 +150,17 @@ const handleSave = async () => {
     loading.hide();
 };
 
+
 const getDadosNeonato = async () => {
     const resp = await serviceLoad(id.value);
     Object.assign(neonato, resp);
 };
 
+
 const handleBack = () => {
     router.push({name: 'Neonato-List'});
 };
+
 
 const apgarRules = ref([v => {
     if (v === '' || v == null) return true;
