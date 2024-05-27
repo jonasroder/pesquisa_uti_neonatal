@@ -1,13 +1,10 @@
 package com.roderly.pesquisaneonatos.prontuario.model;
 
 import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
-import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -16,18 +13,27 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tipo_evento")
-public class TipoEvento  extends EntidadeRastreada {
+public class TipoEvento extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tipo_evento")
     private Long idTipoEvento;
 
-    @Column(name = "codigo")
+    @Column(name = "codigo", nullable = false, unique = true)
     private Long codigo;
 
-    @Column(name = "descricao")
+    @Column(name = "descricao", nullable = false)
     private String descricao;
 
-    @OneToMany(mappedBy = "tipoEvento", fetch = FetchType.LAZY)
-    private Set<Evento> eventos;
+    @Column(name = "cor_associada")
+    private String corAssociada;
+
+    @OneToMany(mappedBy = "tipoEvento", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Evento> eventos = new HashSet<>();
+
+
+    public TipoEvento(Long idTipoEvento) {
+        this.idTipoEvento = idTipoEvento;
+    }
+
 }

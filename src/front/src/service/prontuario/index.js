@@ -1,7 +1,6 @@
 import axios from "axios";
 import {handleApiError} from "@/service/common/handleApiError"
-//import {setNotification} from "@/plugins/notificationService";
-//import {downloadFile} from "@/service/common/utils";
+import {setNotification} from "@/plugins/notificationService";
 
 
 export const serviceLoad = async (id) => {
@@ -10,5 +9,17 @@ export const serviceLoad = async (id) => {
 		return response.data;
 	} catch (e) {
 		return handleApiError(e, "Error on serviceLoad");
+	}
+};
+
+
+export const serviceSaveEvento = async (data) => {
+	try {
+		let res = await axios.post('/api/prontuario/save_evento', data);
+		setNotification(res.data.message, 'success');
+		return res.data;
+
+	} catch (e) {
+		return handleApiError(e, "Error on serviceSave");
 	}
 };

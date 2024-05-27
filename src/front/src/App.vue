@@ -15,10 +15,17 @@ const toggleDrawer = () => {
     console.log(drawer.value);
 };
 
-const backAction = ref(() => {
+const backAction  = ref(() => {
 });
-const saveAction = ref(() => {
+
+const saveAction  = ref(() => {
 });
+
+const showButtons = ref(true);
+
+const setShowButtons = (value) => {
+    showButtons.value = value;
+};
 
 const handleBack = () => {
     backAction.value();
@@ -39,11 +46,11 @@ const setSaveAction = (action) => {
 
 <template>
     <v-app v-if="!isLoginPage">
-        <barra-superior @toggle-drawer="toggleDrawer" @handle-save="handleSave" @handle-back="handleBack"/>
+        <barra-superior @toggle-drawer="toggleDrawer" @handle-save="handleSave" @handle-back="handleBack" :show-buttons="showButtons"/>
         <menu-lateral :drawer="drawer" :key="drawer"/>
         <v-main class="d-flex">
             <v-container>
-                <router-view @set-back-action="setBackAction" @set-save-action="setSaveAction"/>
+                <router-view @set-back-action="setBackAction" @set-save-action="setSaveAction" @set-show-buttons="setShowButtons"/>
             </v-container>
         </v-main>
     </v-app>

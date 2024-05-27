@@ -33,6 +33,7 @@ public class NeonatoMapper {
         var sitioCirurgia = request.idSitioCirurgia() != null ? new SitioCirurgia(request.idSitioCirurgia()) : null;
         var causaObito = request.idCausaObito() != null ? new CausaObito(request.idCausaObito()) : null;
 
+
         var neonato = new Neonato();
         neonato.setIdNeonato(request.idNeonato());
         neonato.setNomeMae(request.nomeMae());

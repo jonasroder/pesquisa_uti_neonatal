@@ -61,6 +61,7 @@ onMounted(async () => {
 
     emit('set-back-action', handleBack);
     emit('set-save-action', handleSave);
+    emit('set-show-buttons', true);
     loading.hide();
 });
 

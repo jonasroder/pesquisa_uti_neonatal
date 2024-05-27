@@ -2,6 +2,8 @@ package com.roderly.pesquisaneonatos.common.persistense;
 
 import com.roderly.pesquisaneonatos.usuario.model.Usuario;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -24,6 +26,8 @@ public abstract class EntidadeRastreada {
     @JoinColumn(name = "criado_por_id", updatable = false)
     private Usuario criadoPor;
 
+    @Getter
+    @Setter
     @Column(name = "is_active")
     private Boolean isActive = true;
 

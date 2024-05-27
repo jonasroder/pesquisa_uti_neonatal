@@ -1,14 +1,15 @@
 package com.roderly.pesquisaneonatos.prontuario.controller;
 
 
-import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
+import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
+import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
+import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.service.ProntuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/prontuario")
@@ -19,9 +20,16 @@ public class ProntuarioController {
 
 
     @GetMapping("/load/{id}")
-    public ResponseEntity<String> load(@PathVariable Long id) {
-        //var response = prontuarioService.load(id);
-        return ResponseEntity.ok("txt");
+    public ResponseEntity<ProntuarioResponse> load(@PathVariable Long id) {
+        var response = prontuarioService.load(id);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping("/save_evento")
+    public ResponseEntity<ApiResponseDTO> salvarEvento(@RequestBody EventoRequest request) throws IOException {
+        ApiResponseDTO response = prontuarioService.salvarEvento(request);
+        return ResponseEntity.ok(response);
     }
 
 }
