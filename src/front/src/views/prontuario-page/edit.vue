@@ -73,8 +73,8 @@ const calendarOptions = ref({
     plugins      : [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
     headerToolbar: {
         left  : 'prev,next today',
-        center: 'title',
-        right : 'dayGridMonth,timeGridWeek' //,timeGridDay,listWeek
+        center: '',
+        right : 'title' //,timeGridDay,listWeek,dayGridMonth,timeGridWeek
     },
     titleFormat  : {
         month: 'short',
