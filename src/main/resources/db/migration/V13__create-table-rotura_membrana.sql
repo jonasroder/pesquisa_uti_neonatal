@@ -10,7 +10,7 @@ CREATE TABLE rotura_membrana
     is_active          TINYINT DEFAULT 1
 );
 
-INSERT INTO rotura_membrana (codigo, descricao, criado_em, alterado_em, is_active)
-VALUES (0, '< 48 horas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (1, '≥ 48 horas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (2, 'Não informado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+INSERT INTO rotura_membrana (codigo, descricao,       criado_em,         alterado_em,       is_active)
+VALUES                      (0,      '< 48 horas',    CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                            (1,      '≥ 48 horas',    CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                            (2,      'Não informado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        );

@@ -10,9 +10,9 @@ CREATE TABLE tipo_parto
     is_active       TINYINT DEFAULT 1
 );
 
-INSERT INTO tipo_parto (codigo, descricao, criado_em, alterado_em, is_active)
-VALUES (0, 'Normal', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (1, 'Cesárea', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (2, 'Não informado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+INSERT INTO tipo_parto (codigo, descricao,       criado_em,         alterado_em,       is_active)
+VALUES                 (0,      'Normal',        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                       (1,      'Cesárea',       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                       (2,      'Não informado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        );
 
 

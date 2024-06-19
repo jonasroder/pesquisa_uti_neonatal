@@ -12,14 +12,13 @@ CREATE TABLE tipo_evento
 );
 
 
-INSERT INTO tipo_evento (codigo, descricao, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active,
-                         cor_associada)
-VALUES (1, 'Medicação com Antibiótico', NOW(), 1, NOW(), 1, 1, '#FF5733'), -- Vermelho
-       (2, 'Dreno', NOW(), 1, NOW(), 1, 1, '#FFBD33'),                     -- Laranja
-       (3, 'Intubação', NOW(), 1, NOW(), 1, 1, '#FF33A1'),                 -- Rosa
-       (4, 'Cateter/Sonda Vesical', NOW(), 1, NOW(), 1, 1, '#33FF57'),     -- Verde
-       (5, 'Nutrição Parenteral', NOW(), 1, NOW(), 1, 1, '#33FFBD'),       -- Verde água
-       (6, 'CVC PICC', NOW(), 1, NOW(), 1, 1, '#3357FF'),                  -- Azul
-       (7, 'CVC Umbilical', NOW(), 1, NOW(), 1, 1, '#8A33FF'),             -- Roxo
-       (8, 'CVC Flebotomia', NOW(), 1, NOW(), 1, 1, '#FF33E3'),            -- Magenta
-       (9, 'Cirurgia', NOW(), 1, NOW(), 1, 1, '#FF8A33'); -- Laranja escuro
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(1, 'Medicação com Antibiótico', '#FF5733', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(2, 'Dreno', '#FFC300', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(3, 'Intubação', '#C70039', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(4, 'Cateter/Sonda Vesical', '#900C3F', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(5, 'Nutrição Parenteral', '#581845', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(6, 'CVC PICC', '#1F618D', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(7, 'CVC Umbilical', '#28B463', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(8, 'CVC Flebotomia', '#DAF7A6', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(9, 'Cirurgia', '#FF8A33', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(10, 'Coleta', '#8E44AD', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);

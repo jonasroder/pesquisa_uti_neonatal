@@ -9,11 +9,9 @@ CREATE TABLE role
     is_active       TINYINT DEFAULT 1
 );
 
-INSERT INTO role (nome, is_active)
-VALUES ('ADMIN', 1);
-INSERT INTO role (nome, is_active)
-VALUES ('MEDICO', 1);
-INSERT INTO role (nome, is_active)
-VALUES ('RECEPCIONISTA', 1);
-INSERT INTO role (nome, is_active)
-VALUES ('PACIENTE', 1);
+-- Inserindo dados na tabela role
+INSERT INTO role (nome,            is_active)
+VALUES           ('ADMIN',         1        ),
+                 ('MEDICO',        1        ),
+                 ('RECEPCIONISTA', 1        ),
+                 ('PACIENTE',      1        );

@@ -11,7 +11,7 @@ CREATE TABLE causa_obito
 );
 
 
-INSERT INTO causa_obito (codigo, descricao, criado_em, alterado_em, is_active)
-VALUES (0, 'Insuficiência cardíaca', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (1, 'Complicações respiratórias', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (2, 'Infecção generalizada', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+INSERT INTO causa_obito (codigo, descricao,                    criado_em,         alterado_em,       is_active)
+VALUES                  (0,      'Insuficiência cardíaca',     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                        (1,      'Complicações respiratórias', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                        (2,      'Infecção generalizada',      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        );

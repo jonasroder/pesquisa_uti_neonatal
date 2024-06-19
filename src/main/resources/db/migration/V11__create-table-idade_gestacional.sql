@@ -10,10 +10,10 @@ CREATE TABLE idade_gestacional
     is_active            TINYINT DEFAULT 1
 );
 
-INSERT INTO idade_gestacional (codigo, descricao, criado_em, alterado_em, is_active)
-VALUES (0, '≤ 28 semanas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (1, '28 a menos de 32 semanas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (2, '32 a menos de 37 semanas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (3, '≥ 37 semanas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (5, 'Não informado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+INSERT INTO idade_gestacional (codigo, descricao,                  criado_em,         alterado_em,       is_active)
+VALUES                        (0,      '≤ 28 semanas',             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                              (1,      '28 a menos de 32 semanas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                              (2,      '32 a menos de 37 semanas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                              (3,      '≥ 37 semanas',             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                              (5,      'Não informado',            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        );
 

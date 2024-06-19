@@ -10,7 +10,7 @@ CREATE TABLE sexo
     is_active       TINYINT DEFAULT 1
 );
 
-INSERT INTO sexo (codigo, descricao, criado_em, alterado_em, is_active)
-VALUES (0, 'Masculino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (1, 'Feminino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-       (2, 'Não Informado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+INSERT INTO sexo (codigo, descricao,       criado_em,         alterado_em,       is_active)
+VALUES           (0,      'Masculino',     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                 (1,      'Feminino',      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        ),
+                 (2,      'Não Informado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1        );

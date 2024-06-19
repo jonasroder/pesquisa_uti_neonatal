@@ -1,9 +1,9 @@
 CREATE TABLE evento
 (
     id_evento       BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_tipo_evento  BIGINT       NOT NULL,
+    id_tipo_evento  BIGINT NOT NULL,
     id_neonato      BIGINT,
-    data_evento     DATE         NOT NULL,
+    data_evento     DATE   NOT NULL,
     hora_inicio     TIME,
     hora_fim        TIME,
     dia_inteiro     TINYINT DEFAULT 0,
