@@ -7,7 +7,6 @@ import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.mapper.ProntuarioMapper;
-import com.roderly.pesquisaneonatos.prontuario.projection.ColetaIsoladoProjection;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoEntidadeRepository;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoRepository;
 import jakarta.persistence.EntityNotFoundException;

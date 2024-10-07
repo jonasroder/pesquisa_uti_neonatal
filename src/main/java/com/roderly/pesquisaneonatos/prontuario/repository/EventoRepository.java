@@ -2,7 +2,6 @@ package com.roderly.pesquisaneonatos.prontuario.repository;
 
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.model.Evento;
-import com.roderly.pesquisaneonatos.prontuario.projection.ColetaIsoladoProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
