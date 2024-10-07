@@ -17,6 +17,7 @@ const props = defineProps({
 const optionsTipoEvento     = ref();
 const optionsAntimicrobiano = ref();
 const optionsSitioCirurgia  = ref();
+const optionsSitioColeta = ref();
 const emit                  = defineEmits(['close_modal', 'saved']);
 const camposObrigatorios    = ref(true);
 const idTipoEvento          = ref();
@@ -39,7 +40,7 @@ const data = reactive({
 onMounted(async () => {
     loading.show()
 
-    await Promise.all([getOptionsTipoEvento(), getOptionsAntimicrobiano(), getOptionsSitioCirurgia()]);
+    await Promise.all([getOptionsTipoEvento(), getOptionsAntimicrobiano(), getOptionsSitioCirurgia(), getOptionsSitioColeta()]);
 
     if (props.eventoSelecionado) {
         Object.assign(data, props.eventoSelecionado);
@@ -76,6 +77,15 @@ const getOptionsSitioCirurgia = async () => {
 }
 
 
+const getOptionsSitioColeta = async () => {
+    optionsSitioColeta.value = await getOptionsAutocomplete({
+        idColumn  : 'id_sitio_coleta',
+        descColumn: 'descricao',
+        tableName : 'sitio_coleta'
+    });
+}
+
+
 const handleSave = async () => {
     camposObrigatorios.value = true;
     data.tipoEntidade        = definirTipoEntidade(data.idTipoEvento);
@@ -98,6 +108,8 @@ const definirTipoEntidade = (idTipoEvento) => {
             return "antimicrobiano";
         case 9:
             return "sitio_cirurgia";
+        case 10:
+            return "sitio_coleta";
         default:
             return null;
     }
@@ -145,6 +157,14 @@ const handleCloseModal = () => {
                     <v-autocomplete
                         label="Sítio"
                         :items="optionsSitioCirurgia"
+                        v-model="data.idEntidade"
+                    />
+                </v-col>
+
+                <v-col cols="12" class="pb-0" v-if="data.idTipoEvento === 10">
+                    <v-autocomplete
+                        label="Sítio"
+                        :items="optionsSitioColeta"
                         v-model="data.idEntidade"
                     />
                 </v-col>

@@ -3,6 +3,7 @@ package com.roderly.pesquisaneonatos.prontuario.controller;
 
 import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
+import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.service.ProntuarioService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/prontuario")
@@ -31,5 +33,13 @@ public class ProntuarioController {
         ApiResponseDTO response = prontuarioService.salvarEvento(request);
         return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping("/load_coletas_prontuario/{id}")
+    public ResponseEntity<List<ColetaIsoladoResponse>> loadColetasProntuario(@PathVariable Long id) {
+        var response = prontuarioService.loadColetasProntuario(id);
+        return ResponseEntity.ok(response);
+    }
+
 
 }

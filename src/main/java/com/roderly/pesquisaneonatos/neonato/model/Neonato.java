@@ -104,7 +104,6 @@ public class Neonato extends EntidadeRastreada {
     @JoinColumn(name = "id_sitio_cirurgia", referencedColumnName = "id_sitio_cirurgia")
     private SitioCirurgia sitioCirurgia;
 
-
     public Neonato(Long idNeonato) {
         this.idNeonato = idNeonato;
     }

@@ -13,6 +13,16 @@ export const serviceLoad = async (id) => {
 };
 
 
+export const serviceLoadColetaIsolado = async (id) => {
+	try {
+		const response = await axios.get(`/api/prontuario/load_coletas_prontuario/${id}`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on serviceLoad");
+	}
+};
+
+
 export const serviceSaveEvento = async (data) => {
 	try {
 		let res = await axios.post('/api/prontuario/save_evento', data);

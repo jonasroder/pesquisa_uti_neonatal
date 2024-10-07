@@ -6,9 +6,10 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptLocale from '@fullcalendar/core/locales/pt-br';
-import {serviceLoad} from "@/service/prontuario";
+import {serviceLoad, serviceLoadColetaIsolado} from "@/service/prontuario";
 import {loading} from "@/plugins/loadingService";
 import ModalCadastroEventoAgenda from "@/views/prontuario-page/modalCadastroEventoProntuario.vue";
+import ColetaIsolado from "@/views/prontuario-page/coletaIsolado.vue";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {useRouter} from "vue-router";
 import {getIdFromUrl} from "@/service/common/utils";
@@ -24,6 +25,7 @@ const eventoSelecionado   = ref();
 const router              = useRouter();
 const nomeMae             = ref();
 const prontuario          = ref();
+const coletasIsolados     = ref();
 
 onMounted(async () => {
     loading.show()
@@ -108,6 +110,8 @@ const carregarDadosAgenda = async () => {
     const calendarApi = fullCalendarRef.value.getApi();
     calendarApi.removeAllEvents();
     calendarApi.addEventSource(eventosFormatados);
+
+    coletasIsolados.value = await serviceLoadColetaIsolado(id.value);
 }
 
 
@@ -170,7 +174,7 @@ watch(abaPagina, (newVal) => {
                         </v-window-item>
 
                         <v-window-item value="2">
-                            <div>Desenvolver adicionar isolados por coleta</div>
+                            <ColetaIsolado :coletasIsolados="coletasIsolados"/>
                         </v-window-item>
                     </v-window>
                 </v-card-text>

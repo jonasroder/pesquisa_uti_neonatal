@@ -4,8 +4,10 @@ import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
+import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.mapper.ProntuarioMapper;
+import com.roderly.pesquisaneonatos.prontuario.projection.ColetaIsoladoProjection;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoEntidadeRepository;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,4 +51,7 @@ public class ProntuarioService {
         return new ApiResponseDTO((long) eventoSalvo.getIdEvento(), "O registro foi Salvo!");
     }
 
+    public List<ColetaIsoladoResponse> loadColetasProntuario(Long id) {
+        return eventoRepository.findColetaIsoladoByIdNeonato(id);
+    }
 }
