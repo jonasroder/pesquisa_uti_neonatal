@@ -112,6 +112,18 @@ const carregarDadosAgenda = async () => {
     calendarApi.addEventSource(eventosFormatados);
 
     coletasIsolados.value = await serviceLoadColetaIsolado(id.value);
+
+    for (const coleta of coletasIsolados.value) {
+        coleta.antibiogramaIsolado = [
+            {
+                id_antibiograma              : "",
+                id_coleta                    : "",
+                id_antimicrobiano            : "",
+                id_resistencia_microorganismo: "",
+            }
+        ];
+    }
+
 }
 
 

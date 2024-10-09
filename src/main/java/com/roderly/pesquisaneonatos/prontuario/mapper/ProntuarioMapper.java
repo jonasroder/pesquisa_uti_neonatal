@@ -2,10 +2,16 @@ package com.roderly.pesquisaneonatos.prontuario.mapper;
 
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
+import com.roderly.pesquisaneonatos.prontuario.dto.response.AntibiogramaIsoladoResponse;
+import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
+import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoSemAntibiogramasResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.EventoResponse;
+import com.roderly.pesquisaneonatos.prontuario.model.AntibiogramaIsolado;
 import com.roderly.pesquisaneonatos.prontuario.model.Evento;
 import com.roderly.pesquisaneonatos.prontuario.model.EventoEntidade;
 import com.roderly.pesquisaneonatos.prontuario.model.TipoEvento;
+
+import java.util.List;
 
 public class ProntuarioMapper {
 
@@ -60,4 +66,25 @@ public class ProntuarioMapper {
                 evento.getIsActive()
         );
     }
+
+
+    public static ColetaIsoladoResponse mapToColetaIsoladoResponse(
+            ColetaIsoladoSemAntibiogramasResponse coletaSemAntibiogramas,
+            List<AntibiogramaIsolado> antibiogramas
+    ) {
+        return new ColetaIsoladoResponse(
+                coletaSemAntibiogramas.idEvento(),
+                coletaSemAntibiogramas.idEventoEntidade(),
+                coletaSemAntibiogramas.dataEvento(),
+                coletaSemAntibiogramas.observacao(),
+                coletaSemAntibiogramas.idSitioColeta(),
+                coletaSemAntibiogramas.descricao(),
+                coletaSemAntibiogramas.id_isolado_coleta(),
+                coletaSemAntibiogramas.id_microorganismo(),
+                coletaSemAntibiogramas.id_perfil_resistencia_microorganismo(),
+                coletaSemAntibiogramas.id_mecanismo_resistencia_microorganismo(),
+                antibiogramas // Preenchendo a lista de antibiogramas
+        );
+    }
+
 }

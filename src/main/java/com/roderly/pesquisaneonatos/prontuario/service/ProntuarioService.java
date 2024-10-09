@@ -7,6 +7,7 @@ import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.mapper.ProntuarioMapper;
+import com.roderly.pesquisaneonatos.prontuario.repository.AntibiogramaIsoladoRepository;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoEntidadeRepository;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +25,7 @@ public class ProntuarioService {
     private final EventoRepository eventoRepository;
     private final EventoEntidadeRepository eventoEntidadeRepository;
     private final NeonatoRepository neonatoRepository;
+    private final AntibiogramaIsoladoRepository antibiogramaIsoladoRepository;
 
     public ProntuarioResponse load(Long id) {
         var neonato = neonatoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Neonato não encontrado com ID: " + id));
@@ -38,6 +40,7 @@ public class ProntuarioService {
     }
 
 
+
     public ApiResponseDTO salvarEvento(EventoRequest request) throws IOException {
         var evento = ProntuarioMapper.eventoRequestToEvento(request);
         var eventoSalvo = eventoRepository.save(evento);
@@ -50,7 +53,23 @@ public class ProntuarioService {
         return new ApiResponseDTO((long) eventoSalvo.getIdEvento(), "O registro foi Salvo!");
     }
 
-    public List<ColetaIsoladoResponse> loadColetasProntuario(Long id) {
-        return eventoRepository.findColetaIsoladoByIdNeonato(id);
+
+
+    public List<ColetaIsoladoResponse> loadColetasProntuario(Long idNeonato) {
+        // Busca inicial das coletas sem antibiogramas
+        var coletasSemAntibiogramas = eventoRepository.findColetaIsoladoByIdNeonato(idNeonato);
+
+        // Mapeia as coletas e preenche os antibiogramas usando o mapper
+        return coletasSemAntibiogramas.stream()
+                .map(coletaSemAntibiograma -> {
+                    // Busca os antibiogramas para cada coleta de isolado
+                    var antibiogramas = antibiogramaIsoladoRepository.findByIsoladoColetaId(coletaSemAntibiograma.id_isolado_coleta());
+
+                    // Mapeia a coletaSemAntibiograma para ColetaIsoladoResponse com antibiogramas
+                    return ProntuarioMapper.mapToColetaIsoladoResponse(coletaSemAntibiograma, antibiogramas);
+                })
+                .collect(Collectors.toList());
     }
+
+
 }
