@@ -2,19 +2,18 @@ package com.roderly.pesquisaneonatos.prontuario.model;
 
 import com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.model.Antimicrobiano;
 import com.roderly.pesquisaneonatos.cadastros_gerais.resistencia_microorganismo.model.ResistenciaMicroorganismo;
+import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "antibiograma_isolado")
-public class AntibiogramaIsolado {
+public class AntibiogramaIsolado extends EntidadeRastreada {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,20 +35,6 @@ public class AntibiogramaIsolado {
     @JoinColumn(name = "id_resistencia_microorganismo", referencedColumnName = "id_resistencia_microorganismo", nullable = false)
     private ResistenciaMicroorganismo resistenciaMicroorganismo;
 
-    @Column(name = "criado_em")
-    private LocalDateTime criadoEm;
-
-    @Column(name = "criado_por_id")
-    private Long criadoPorId;
-
-    @Column(name = "alterado_em")
-    private LocalDateTime alteradoEm;
-
-    @Column(name = "alterado_por_id")
-    private Long alteradoPorId;
-
-    @Column(name = "is_active")
-    private Boolean isActive;
 
     public AntibiogramaIsolado(Long idAntibiogramaIsolado) {
         this.idAntibiogramaIsolado = idAntibiogramaIsolado;

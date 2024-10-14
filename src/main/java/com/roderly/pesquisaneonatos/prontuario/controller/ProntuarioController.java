@@ -2,6 +2,7 @@ package com.roderly.pesquisaneonatos.prontuario.controller;
 
 
 import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
+import com.roderly.pesquisaneonatos.prontuario.dto.request.ColetaIsoladoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
@@ -41,5 +42,11 @@ public class ProntuarioController {
         return ResponseEntity.ok(response);
     }
 
+
+    @PostMapping("/save_coleta")
+    public ResponseEntity<ApiResponseDTO> salvarColetaIsolado(@RequestBody List<ColetaIsoladoRequest> request) throws IOException {
+        ApiResponseDTO response = prontuarioService.salvarColetaIsolado(request);
+        return ResponseEntity.ok(response);
+    }
 
 }

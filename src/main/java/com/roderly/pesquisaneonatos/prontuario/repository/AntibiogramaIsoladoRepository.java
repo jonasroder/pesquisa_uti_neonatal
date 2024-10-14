@@ -1,6 +1,5 @@
 package com.roderly.pesquisaneonatos.prontuario.repository;
 
-import com.roderly.pesquisaneonatos.prontuario.dto.response.AntibiogramaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.model.AntibiogramaIsolado;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

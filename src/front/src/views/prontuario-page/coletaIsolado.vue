@@ -1,30 +1,55 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import {loading} from "@/plugins/loadingService";
 import {getOptionsAutocomplete} from "@/service/common/utils";
+import {serviceLoadColetaIsolado} from "@/service/prontuario";
 
 
 const props = defineProps({
-    coletasIsolados: {
-        type   : Array,
-        default: () => []
+    idNeonato         : {
+        type   : [String, Number],
+        default: ''
+    },
+    onSave            : {
+        type    : Function,
+        required: true
+    },
+    camposObrigatorios: {
+        type   : Boolean,
+        default: true
     }
 });
 
-
-onMounted(async () => {
-    loading.show();
-    await getOpcoesAutocomplete();
-    loading.hide();
-});
-
-
-const coletasIsolados            = ref(props.coletasIsolados);
 const optionsMicroorganismos     = ref();
 const optionsAntimicrobianos     = ref();
 const optionsResistencia         = ref();
 const optionsPerfilResistencia   = ref();
 const optionsMecanismoReistencia = ref();
+const coletasIsolados            = ref([{
+    idMicroorganismo                    : null,
+    idMecanismoResistenciaMicroorganismo: null,
+    idPerfilResistenciaMicroorganismo   : null,
+    antibiogramas                       : []
+}]);
+
+
+
+onMounted(async () => {
+    loading.show();
+    await Promise.all([getOpcoesAutocomplete(), carregarDadosIsolados()]);
+    loading.hide();
+});
+
+
+const carregarDadosIsolados = async () => {
+    coletasIsolados.value = await serviceLoadColetaIsolado(props.idNeonato);
+
+    for (const coleta of coletasIsolados.value) {
+        if (coleta.antibiogramas.length === 0) {
+            adicionarAntibiograma(coleta);
+        }
+    }
+};
 
 
 
@@ -54,18 +79,25 @@ const getOpcoesAutocomplete = async () => {
     optionsMicroorganismos.value     = results[0];
     optionsAntimicrobianos.value     = results[1];
     optionsResistencia.value         = results[2];
-    optionsPerfilResistencia.value   = results[2];
-    optionsMecanismoReistencia.value = results[3];
+    optionsPerfilResistencia.value   = results[3];
+    optionsMecanismoReistencia.value = results[4];
 };
 
+
+
 const adicionarAntibiograma = (coleta) => {
-    coleta.antibiogramaIsolado.push({
-        id_antibiograma              : "",
-        id_coleta                    : "",
-        id_antimicrobiano            : "",
-        id_resistencia_microorganismo: "",
+    coleta.antibiogramas.push({
+        idAntibiogramaIsolado      : null,
+        idAntimicrobiano           : null,
+        idResistenciaMicroorganismo: null,
+        isActive                   : 1,
     });
 }
+
+
+watch(coletasIsolados, () => {
+    props.onSave(coletasIsolados.value); // Quando o pai invocar o save, passamos os dados de volta
+});
 
 </script>
 
@@ -74,7 +106,7 @@ const adicionarAntibiograma = (coleta) => {
         <v-col cols="12">
             <v-row>
                 <!-- Itera sobre o array coletasIsolados e cria um card para cada item -->
-                <v-col v-for="(coleta, index) in coletasIsolados" :key="index" cols="12" md="4">
+                <v-col v-for="(coleta, index) in coletasIsolados" :key="index" cols="12" md="4" class="mb-4">
                     <v-card>
                         <v-card-title>
                             {{ coleta.dataEvento }}
@@ -92,7 +124,8 @@ const adicionarAntibiograma = (coleta) => {
                             <v-autocomplete
                                 label="Isolado"
                                 :items="optionsMicroorganismos"
-                                v-model="coleta.idEvento"
+                                v-model="coleta.idMicroorganismo"
+                                :error="!coleta.idMicroorganismo && !props.camposObrigatorios"
                             />
                         </v-col>
 
@@ -106,12 +139,13 @@ const adicionarAntibiograma = (coleta) => {
 
                         </v-card-subtitle>
 
-                        <v-row v-for="(antibiograma, i) in coleta.antibiogramaIsolado" :key="i" class="ma-0 pb-0">
+                        <v-row v-for="(antibiograma, i) in coleta.antibiogramas" :key="i" class="ma-0 pb-0">
                             <v-col cols="12" sm="12" md="7" lg="7" xl="7" class="pb-0">
                                 <v-autocomplete
                                     label="Antimicrobiano"
                                     :items="optionsAntimicrobianos"
-                                    v-model="antibiograma.id_antimicrobiano"
+                                    v-model="antibiograma.idAntimicrobiano"
+                                    :error="!antibiograma.idAntimicrobiano && !props.camposObrigatorios"
                                 />
                             </v-col>
 
@@ -119,7 +153,8 @@ const adicionarAntibiograma = (coleta) => {
                                 <v-autocomplete
                                     label="Resistencia"
                                     :items="optionsResistencia"
-                                    v-model="antibiograma.id_resistencia_microorganismo"
+                                    v-model="antibiograma.idResistenciaMicroorganismo"
+                                    :error="!antibiograma.idResistenciaMicroorganismo && !props.camposObrigatorios"
                                 />
                             </v-col>
 
@@ -129,11 +164,11 @@ const adicionarAntibiograma = (coleta) => {
                         </v-row>
 
                         <v-card-subtitle>
-                            Classificação pelo perfil de resistência
+                            Perfil de resistência
                         </v-card-subtitle>
 
                         <v-col cols="12">
-                            <v-radio-group inline v-model="coleta.selectedValue">
+                            <v-radio-group inline v-model="coleta.idPerfilResistenciaMicroorganismo">
                                 <v-radio
                                     v-for="option in optionsPerfilResistencia"
                                     :key="option.value"
@@ -148,7 +183,7 @@ const adicionarAntibiograma = (coleta) => {
                         </v-card-subtitle>
 
                         <v-col cols="12">
-                            <v-radio-group inline v-model="coleta.selectedValue3">
+                            <v-radio-group inline v-model="coleta.idMecanismoResistenciaMicroorganismo">
                                 <v-radio
                                     v-for="option in optionsMecanismoReistencia"
                                     :key="option.value"

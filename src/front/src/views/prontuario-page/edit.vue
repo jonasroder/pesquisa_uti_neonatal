@@ -6,26 +6,36 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptLocale from '@fullcalendar/core/locales/pt-br';
-import {serviceLoad, serviceLoadColetaIsolado} from "@/service/prontuario";
+import {serviceLoad, serviceSaveIsoladoColeta} from "@/service/prontuario";
 import {loading} from "@/plugins/loadingService";
 import ModalCadastroEventoAgenda from "@/views/prontuario-page/modalCadastroEventoProntuario.vue";
 import ColetaIsolado from "@/views/prontuario-page/coletaIsolado.vue";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {useRouter} from "vue-router";
-import {getIdFromUrl} from "@/service/common/utils";
+import {getIdFromUrl, verificarCamposObrigatorios} from "@/service/common/utils";
 
 
-const id                  = ref(getIdFromUrl());
-const emit                = defineEmits(['set-back-action', 'set-save-action', 'set-show-buttons']);
-const calendarEvents      = ref([]);
-const abaPagina           = ref();
-const modalCadastroRapido = ref(false);
-const fullCalendarRef     = ref(null);
-const eventoSelecionado   = ref();
-const router              = useRouter();
-const nomeMae             = ref();
-const prontuario          = ref();
-const coletasIsolados     = ref();
+const id                    = ref(getIdFromUrl());
+const emit                  = defineEmits(['set-back-action', 'set-save-action', 'set-show-buttons']);
+const calendarEvents        = ref([]);
+const abaPagina             = ref();
+const modalCadastroRapido   = ref(false);
+const fullCalendarRef       = ref(null);
+const eventoSelecionado     = ref();
+const router                = useRouter();
+const nomeMae               = ref();
+const prontuario            = ref();
+const carregarDadosIsolados = ref(false);
+const camposObrigatorios    = ref(true);
+
+const coletaData = ref([{
+    idMicroorganismo                    : null,
+    idMecanismoResistenciaMicroorganismo: null,
+    idPerfilResistenciaMicroorganismo   : null,
+    antibiogramas                       : []
+}]);
+
+
 
 onMounted(async () => {
     loading.show()
@@ -35,13 +45,17 @@ onMounted(async () => {
     emit('set-back-action', handleBack);
     emit('set-save-action', handleSave);
     emit('set-show-buttons', false);
+
     loading.hide()
 });
+
+
 
 const handleEventClick = ({event}) => {
     eventoSelecionado.value   = event._def.extendedProps.evento;
     modalCadastroRapido.value = true;
 };
+
 
 
 const data = reactive({
@@ -56,6 +70,7 @@ const data = reactive({
     observaco       : null,
     is_active       : true,
 });
+
 
 
 const cadastroRapido = ({
@@ -93,6 +108,7 @@ const calendarOptions = ref({
 });
 
 
+
 const carregarDadosAgenda = async () => {
     const data       = await serviceLoad(id.value);
     nomeMae.value    = data.neonato.nomeMae
@@ -110,21 +126,8 @@ const carregarDadosAgenda = async () => {
     const calendarApi = fullCalendarRef.value.getApi();
     calendarApi.removeAllEvents();
     calendarApi.addEventSource(eventosFormatados);
-
-    coletasIsolados.value = await serviceLoadColetaIsolado(id.value);
-
-    for (const coleta of coletasIsolados.value) {
-        coleta.antibiogramaIsolado = [
-            {
-                id_antibiograma              : "",
-                id_coleta                    : "",
-                id_antimicrobiano            : "",
-                id_resistencia_microorganismo: "",
-            }
-        ];
-    }
-
 }
+
 
 
 const fecharModalCadastroRapido = async () => {
@@ -135,9 +138,50 @@ const fecharModalCadastroRapido = async () => {
 }
 
 
+
 const handleSave = async () => {
-    alert("entrei")
-}
+    loading.show();
+
+    for (const coleta of coletaData.value) {
+
+        const verificacoes = [{
+            dados : coleta,
+            campos: ['idMicroorganismo']
+        }];
+
+        if (!verificarCamposObrigatorios(verificacoes)) {
+            camposObrigatorios.value = false;
+            loading.hide();
+            return;
+        }
+
+        for (const antibiograma of coleta.antibiogramas) {
+            const verificacoes = [{
+                dados : antibiograma,
+                campos: ['idResistenciaMicroorganismo', 'idAntimicrobiano']
+            }];
+
+            if (!verificarCamposObrigatorios(verificacoes)) {
+                camposObrigatorios.value = false;
+                loading.hide();
+                return;
+            }
+        }
+    }
+
+    const status = await serviceSaveIsoladoColeta(coletaData.value);
+
+    if (status.success) carregarDadosIsolados.value = !carregarDadosIsolados.value;
+
+    loading.hide();
+};
+
+
+
+const saveColetasIsolados = (coletas) => {
+    coletaData.value = coletas; // Recebe os dados do componente filho
+};
+
 
 
 const handleBack = () => {
@@ -145,13 +189,17 @@ const handleBack = () => {
 };
 
 
+
 const ocultarBotoesNavBar = () => {
     emit('set-show-buttons', false);
 };
 
 
+
 const mostrarBotoesNavBar = () => {
     emit('set-show-buttons', true);
+
+    carregarDadosIsolados.value = !carregarDadosIsolados.value;
 };
 
 
@@ -185,8 +233,8 @@ watch(abaPagina, (newVal) => {
                             <FullCalendar ref="fullCalendarRef" :options="calendarOptions"/>
                         </v-window-item>
 
-                        <v-window-item value="2">
-                            <ColetaIsolado :coletasIsolados="coletasIsolados"/>
+                        <v-window-item value="2">  <!-- Passamos a prop reativa "carregar" para o filho -->
+                            <ColetaIsolado :key="carregarDadosIsolados" :idNeonato="id" :onSave="saveColetasIsolados" :camposObrigatorios="camposObrigatorios"/>
                         </v-window-item>
                     </v-window>
                 </v-card-text>

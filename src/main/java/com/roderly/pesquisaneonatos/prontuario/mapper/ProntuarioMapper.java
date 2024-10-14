@@ -1,17 +1,22 @@
 package com.roderly.pesquisaneonatos.prontuario.mapper;
 
+import com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.model.Antimicrobiano;
+import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.model.MecanismoResistenciaMicroorganismo;
+import com.roderly.pesquisaneonatos.cadastros_gerais.microorganismo.model.Microorganismo;
+import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.model.PerfilResistenciaMicroorganismo;
+import com.roderly.pesquisaneonatos.cadastros_gerais.resistencia_microorganismo.model.ResistenciaMicroorganismo;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
+import com.roderly.pesquisaneonatos.prontuario.dto.request.AntibiogramaIsoladoRequest;
+import com.roderly.pesquisaneonatos.prontuario.dto.request.ColetaIsoladoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.AntibiogramaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoSemAntibiogramasResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.EventoResponse;
-import com.roderly.pesquisaneonatos.prontuario.model.AntibiogramaIsolado;
-import com.roderly.pesquisaneonatos.prontuario.model.Evento;
-import com.roderly.pesquisaneonatos.prontuario.model.EventoEntidade;
-import com.roderly.pesquisaneonatos.prontuario.model.TipoEvento;
+import com.roderly.pesquisaneonatos.prontuario.model.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProntuarioMapper {
 
@@ -31,6 +36,7 @@ public class ProntuarioMapper {
     }
 
 
+
     public static EventoEntidade eventoAndEventoRequestToEventoEntidade(EventoRequest request, Evento evento) {
         var eventoEntidade = new EventoEntidade();
         eventoEntidade.setIdEventoEntidade(request.idEventoEntidade());
@@ -40,6 +46,7 @@ public class ProntuarioMapper {
 
         return eventoEntidade;
     }
+
 
 
     public static EventoResponse eventoToEventoResponse(Evento evento) {
@@ -68,10 +75,20 @@ public class ProntuarioMapper {
     }
 
 
+
     public static ColetaIsoladoResponse mapToColetaIsoladoResponse(
             ColetaIsoladoSemAntibiogramasResponse coletaSemAntibiogramas,
-            List<AntibiogramaIsolado> antibiogramas
-    ) {
+            List<AntibiogramaIsolado> antibiogramas) {
+
+        // Mapeia a lista de AntibiogramaIsolado para AntibiogramaIsoladoResponse
+        List<AntibiogramaIsoladoResponse> antibiogramaIsolado = antibiogramas
+                .stream()
+                .map(ProntuarioMapper::antibiogramaIsoladoToAntibiogramaIsoladoResponse)
+                .collect(Collectors.toList());
+
+        var idPerfilResistenciaMicroorganismo = coletaSemAntibiogramas.idPerfilResistenciaMicroorganismo() != null ? coletaSemAntibiogramas.idPerfilResistenciaMicroorganismo() : 1L;
+        var idMecanismoResistenciaMicroorganismo = coletaSemAntibiogramas.idMecanismoResistenciaMicroorganismo()  != null ? coletaSemAntibiogramas.idMecanismoResistenciaMicroorganismo() : 1L;
+
         return new ColetaIsoladoResponse(
                 coletaSemAntibiogramas.idEvento(),
                 coletaSemAntibiogramas.idEventoEntidade(),
@@ -79,12 +96,62 @@ public class ProntuarioMapper {
                 coletaSemAntibiogramas.observacao(),
                 coletaSemAntibiogramas.idSitioColeta(),
                 coletaSemAntibiogramas.descricao(),
-                coletaSemAntibiogramas.id_isolado_coleta(),
-                coletaSemAntibiogramas.id_microorganismo(),
-                coletaSemAntibiogramas.id_perfil_resistencia_microorganismo(),
-                coletaSemAntibiogramas.id_mecanismo_resistencia_microorganismo(),
-                antibiogramas // Preenchendo a lista de antibiogramas
+                coletaSemAntibiogramas.idIsoladoColeta(),
+                coletaSemAntibiogramas.idMicroorganismo(),
+                idPerfilResistenciaMicroorganismo,
+                idMecanismoResistenciaMicroorganismo,
+                antibiogramaIsolado // Lista de AntibiogramaIsoladoResponse preenchida
         );
     }
 
+
+
+    public static AntibiogramaIsoladoResponse antibiogramaIsoladoToAntibiogramaIsoladoResponse(AntibiogramaIsolado antibiogramaIsolado) {
+
+        var idIsoladoColeta = antibiogramaIsolado.getIsoladoColeta() != null ? antibiogramaIsolado.getIsoladoColeta().getIdIsoladoColeta() : null;
+        var idAntimicrobiano = antibiogramaIsolado.getAntimicrobiano() != null ? antibiogramaIsolado.getAntimicrobiano().getIdAntimicrobiano() : null;
+        var idResistenciaMicroorganismo = antibiogramaIsolado.getResistenciaMicroorganismo() != null ? antibiogramaIsolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo() : null;
+
+        return new AntibiogramaIsoladoResponse(
+                antibiogramaIsolado.getIdAntibiogramaIsolado(),
+                idIsoladoColeta,
+                idAntimicrobiano,
+                idResistenciaMicroorganismo,
+                antibiogramaIsolado.getIsActive()
+        );
+    }
+
+
+    public static IsoladoColeta coletaIsoladoRequestToIsoladoColeta(ColetaIsoladoRequest request){
+
+        var idEvento = new Evento(request.idEvento());
+        var idMicroorganismo = new Microorganismo(request.idMicroorganismo());
+        var idPerfilResistenciaMicroorganismo = new PerfilResistenciaMicroorganismo(request.idPerfilResistenciaMicroorganismo());
+        var idMecanismoResistenciaMicroorganismo = new MecanismoResistenciaMicroorganismo(request.idMecanismoResistenciaMicroorganismo());
+
+        var isoladoColeta = new IsoladoColeta();
+        isoladoColeta.setIdIsoladoColeta(request.idIsoladoColeta());
+        isoladoColeta.setEvento(idEvento);
+        isoladoColeta.setMicroorganismo(idMicroorganismo);
+        isoladoColeta.setPerfilResistenciaMicroorganismo(idPerfilResistenciaMicroorganismo);
+        isoladoColeta.setMecanismoResistenciaMicroorganismo(idMecanismoResistenciaMicroorganismo);
+
+        return isoladoColeta;
+    }
+
+
+    public static AntibiogramaIsolado antibiogramaIsoladoRequestToAntibiograma(AntibiogramaIsoladoRequest request, IsoladoColeta isoladoColeta){
+
+        var isolado = new IsoladoColeta(isoladoColeta.getIdIsoladoColeta());
+        var antimicrobiano = new Antimicrobiano(request.idAntimicrobiano());
+        var reistenciaMicroorganismo = new ResistenciaMicroorganismo(request.idResistenciaMicroorganismo());
+
+        var antibiogramaIsolado = new AntibiogramaIsolado();
+        antibiogramaIsolado.setIdAntibiogramaIsolado(request.idAntibiogramaIsolado());
+        antibiogramaIsolado.setIsoladoColeta(isolado);
+        antibiogramaIsolado.setAntimicrobiano(antimicrobiano);
+        antibiogramaIsolado.setResistenciaMicroorganismo(reistenciaMicroorganismo);
+
+        return antibiogramaIsolado;
+    }
 }

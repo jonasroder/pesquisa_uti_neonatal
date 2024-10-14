@@ -3,7 +3,7 @@ import {defineProps} from 'vue';
 
 const props = defineProps({
     showButtons: {
-        type: Boolean,
+        type   : Boolean,
         default: true,
     },
 });
@@ -17,10 +17,9 @@ const props = defineProps({
         <v-spacer/>
 
         <!-- Conditionally render the buttons based on the URL -->
-        <template v-if="props.showButtons">
-            <v-btn class="mr-2" variant="elevated" color="cinzaAzulado" @click="$emit('handle-back')">Voltar</v-btn>
-            <v-btn color="azulEscuro" variant="elevated" @click="$emit('handle-save')">Salvar</v-btn>
-        </template>
+        <v-btn class="mr-2" variant="elevated" color="cinzaAzulado" @click="$emit('handle-back')">Voltar</v-btn>
+        <v-btn v-if="props.showButtons" color="azulEscuro" variant="elevated" @click="$emit('handle-save')">Salvar</v-btn>
+
     </v-app-bar>
 </template>
 

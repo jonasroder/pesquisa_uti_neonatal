@@ -33,3 +33,15 @@ export const serviceSaveEvento = async (data) => {
 		return handleApiError(e, "Error on serviceSave");
 	}
 };
+
+
+export const serviceSaveIsoladoColeta = async (data) => {
+	try {
+		let res = await axios.post('/api/prontuario/save_coleta', data);
+		setNotification(res.data.message, 'success');
+		return res.data;
+
+	} catch (e) {
+		return handleApiError(e, "Error on serviceSave");
+	}
+};

@@ -26,13 +26,14 @@ public class NeonatoService {
     public ApiResponseDTO save (NeonatoRequest request) throws IOException {
         var prontuarioExistente = neonatoRepository.findByProntuario(request.prontuario());
         if (prontuarioExistente.isPresent() && request.idNeonato() == null) {
-            return new ApiResponseDTO(null, "Número do prontuário já existente!");
+            return ApiResponseDTO.failure("Número do prontuário já existente!");
         }
 
         var neonato = NeonatoMapper.convertNeonatoRequestToNeonato(request);
         var neonatoSalvo = neonatoRepository.save(neonato);
 
-        return new ApiResponseDTO((long) neonatoSalvo.getIdNeonato(), "O registro foi Salvo!");
+        return new ApiResponseDTO(neonatoSalvo.getIdNeonato(), "O registro foi salvo!");
+
     }
 
 
@@ -67,9 +68,7 @@ public class NeonatoService {
         sheetDataList.add(new ExcelSheetData<>("Neonatos", neonatoList, mappings));
         sheetDataList.add(new ExcelSheetData<>("Neonatos Teste 2", neonatoList, mappings));
 
-        var excelFile = new ExcelService().generateExcelReport(sheetDataList);
-
-        return excelFile;
+        return new ExcelService().generateExcelReport(sheetDataList);
     }
 
 

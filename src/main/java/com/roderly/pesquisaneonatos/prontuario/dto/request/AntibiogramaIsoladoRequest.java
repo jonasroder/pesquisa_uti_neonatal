@@ -1,6 +1,6 @@
-package com.roderly.pesquisaneonatos.prontuario.dto.response;
+package com.roderly.pesquisaneonatos.prontuario.dto.request;
 
-public record AntibiogramaIsoladoResponse(
+public record AntibiogramaIsoladoRequest(
         Long idAntibiogramaIsolado,
         Long idIsoladoColeta,
         Long idAntimicrobiano,
