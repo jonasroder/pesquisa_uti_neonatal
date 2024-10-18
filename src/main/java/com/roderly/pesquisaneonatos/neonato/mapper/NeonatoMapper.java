@@ -14,10 +14,16 @@ import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
-import com.roderly.pesquisaneonatos.neonato.excel.NeonatoReportData;
+import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoControleReportData;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
-import org.springframework.security.core.parameters.P;
+import com.roderly.pesquisaneonatos.neonato.service.NeonatoService;
+import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
+import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
+import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
+@RequiredArgsConstructor
 public class NeonatoMapper {
 
     public static Neonato convertNeonatoRequestToNeonato(NeonatoRequest request) {
@@ -107,7 +113,7 @@ public class NeonatoMapper {
     }
 
 
-    public static NeonatoReportData convertNeonatoToNeonatoReportData(Neonato neonato) {
+    public static NeonatoGrupoControleReportData convertToNeonatoGrupoControleReportData(Neonato neonato, List<EventoCountProjection> eventos, Long diasUsoATB, Long diasUsoATF, List<ClasseAntimicrobianoCountProjection> classeAntimicrobiano, NeonatoService neonatoService) {
 
         var dataNascimento = neonato.getDataNascimento() != null ? DateUtil.LocalDateToDateBR(neonato.getDataNascimento()) : null;
         var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
@@ -115,33 +121,124 @@ public class NeonatoMapper {
         var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
         var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho());
 
-        var report = new NeonatoReportData();
+        var flebotomia = neonatoService.getEventoTipoDias(eventos, 8L);
+        var cvu = neonatoService.getEventoTipoDias(eventos, 7L);
+        var picc = neonatoService.getEventoTipoDias(eventos, 6L);
+        var intubacao = neonatoService.getEventoTipoDias(eventos, 3L);
+        var sonda = neonatoService.getEventoTipoDias(eventos, 4L);
+        var nutricaoParenteral = neonatoService.getEventoTipoDias(eventos, 5L);
+        var dreno = neonatoService.getEventoTipoDias(eventos, 2L);
+
+        var aminoglicosideos = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 1L);
+        var ansamicinas = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 2L);
+        var betalactamicos = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 3L);
+        var carbapenemicos = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 4L);
+        var cefalosporinasPrimeiraGeracao = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 5L);
+        var cefalosporinasSegundaGeracao = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 6L);
+        var cefalosporinasTerceiraGeracao = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 7L);
+        var cefalosporinasQuartaGeracao = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 8L);
+        var cefalosporinasQuintaGeracao = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 9L);
+        var glicilciclinas = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 10L);
+        var glicopeptideos = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 11L);
+        var inibidoresDeFolato = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 12L);
+        var lincosamidas = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 13L);
+        var macrolideos = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 14L);
+        var nitrofuranicos = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 15L);
+        var nitroimidazois = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 16L);
+        var polimixinas = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 17L);
+        var quinolonas = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 18L);
+        var tetraciclinas = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 19L);
+        var azois = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 20L);
+        var equinocandinas = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 21L);
+        var polienos = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 22L);
+
+        var report = new NeonatoGrupoControleReportData();
 
         report.setAno(ano);
-        report.setNomeMae(neonato.getNomeMae());
         report.setProntuario(neonato.getProntuario());
         report.setDataNascimento(dataNascimento);
         report.setDataInternacao(dataInternacao);
         report.setDataDesfecho(dataDesfecho);
         report.setDiasInternacao(diasInternacao);
         report.setObito(neonato.getObito() ? 1L : 0L);
-        report.setRiscoInfeccio(neonato.getRiscoInfeccio() ? 1L : 0L);
-        report.setSepseClinica(neonato.getSepseClinica() ? 1L : 0L);
-        report.setApgar1(neonato.getApgar1());
-        report.setApgar5(neonato.getApgar5());
-        report.setPesoGramas(neonato.getPesoGramas());
-        report.setSexoCodigo(neonato.getSexo() != null ? neonato.getSexo().getCodigo() : null);
-        report.setCausaObitoCodigo(neonato.getCausaObito() != null ? neonato.getCausaObito().getCodigo() : null);
-        report.setPesoNascimentoCodigo(neonato.getPesoNascimento() != null ? neonato.getPesoNascimento().getCodigo() : null);
         report.setLocalNascimentoCodigo(neonato.getLocalNascimento() != null ? neonato.getLocalNascimento().getCodigo() : null);
+        report.setSexoCodigo(neonato.getSexo() != null ? neonato.getSexo().getCodigo() : null);
         report.setMotivoInternacaoCodigo(neonato.getMotivoInternacao() != null ? neonato.getMotivoInternacao().getCodigo() : null);
+        report.setPesoGramas(neonato.getPesoGramas());
+        report.setPesoNascimentoCodigo(neonato.getPesoNascimento() != null ? neonato.getPesoNascimento().getCodigo() : null);
         report.setIdadeGestacionalCodigo(neonato.getIdadeGestacional() != null ? neonato.getIdadeGestacional().getCodigo() : null);
         report.setTipoPartoCodigo(neonato.getTipoParto() != null ? neonato.getTipoParto().getCodigo() : null);
         report.setRoturaMembranaCodigo(neonato.getRoturaMembrana() != null ? neonato.getRoturaMembrana().getCodigo() : null);
         report.setMalformacao(neonato.getSitioMalformacao() != null ? 1L : 0L);
-        report.setSitioMalformacaoCodigo(neonato.getSitioMalformacao() != null ? neonato.getSitioMalformacao().getCodigo() : null);
         report.setCirurgia(neonato.getSitioCirurgia() != null ? 1L : 0L);
-        report.setSitioCirurgiaCodigo(neonato.getSitioCirurgia() != null ? neonato.getSitioCirurgia().getCodigo() : null);
+
+        report.setFlebotomia(flebotomia.evento());
+        report.setDiasFlebotomia(flebotomia.diasEvento());
+        report.setCVU(cvu.evento());
+        report.setDiasCVU(cvu.diasEvento());
+        report.setPICC(picc.evento());
+        report.setDiasPICC(picc.diasEvento());
+        report.setIntubacao(intubacao.evento());
+        report.setDiasIntubacao(intubacao.diasEvento());
+        report.setSonda(sonda.evento());
+        report.setDiasSonda(sonda.diasEvento());
+        report.setNutricaoParenteral(nutricaoParenteral.evento());
+        report.setDiasNutricaoParenteral(nutricaoParenteral.diasEvento());
+        report.setDreno(dreno.evento());
+        report.setDiasDreno(dreno.diasEvento());
+
+        report.setUsoATB(diasUsoATB > 0 ? 1L : 0L);
+        report.setDiasUsoATB(diasUsoATB);
+        report.setAminoglicosideos(aminoglicosideos.evento());
+        report.setDiasAminoglicosideos(aminoglicosideos.diasEvento());
+        report.setAnsamicinas(ansamicinas.evento());
+        report.setDiasAnsamicinas(ansamicinas.diasEvento());
+        report.setBetalactamicos(betalactamicos.evento());
+        report.setDiasBetalactamicos(betalactamicos.diasEvento());
+        report.setCarbapenemicos(carbapenemicos.evento());
+        report.setDiasCarbapenemicos(carbapenemicos.diasEvento());
+        report.setCefalosporinasPrimeiraGeracao(cefalosporinasPrimeiraGeracao.diasEvento());
+        report.setDiasCefalosporinasPrimeiraGeracao(cefalosporinasPrimeiraGeracao.evento());
+        report.setCefalosporinasSegundaGeracao(cefalosporinasSegundaGeracao.evento());
+        report.setDiasCefalosporinasSegundaGeracao(cefalosporinasSegundaGeracao.diasEvento());
+        report.setCefalosporinasTerceiraGeracao(cefalosporinasTerceiraGeracao.evento());
+        report.setDiasCefalosporinasTerceiraGeracao(cefalosporinasTerceiraGeracao.diasEvento());
+        report.setCefalosporinasQuartaGeracao(cefalosporinasQuartaGeracao.evento());
+        report.setDiasCefalosporinasQuartaGeracao(cefalosporinasQuartaGeracao.diasEvento());
+        report.setCefalosporinasQuintaGeracao(cefalosporinasQuintaGeracao.evento());
+        report.setDiasCefalosporinasQuintaGeracao(cefalosporinasQuintaGeracao.diasEvento());
+        report.setGlicilciclinas(glicilciclinas.evento());
+        report.setDiasGlicilciclinas(glicilciclinas.diasEvento());
+        report.setGlicopeptideos(glicopeptideos.evento());
+        report.setDiasGlicopeptideos(glicopeptideos.diasEvento());
+        report.setInibidoresDeFolato(inibidoresDeFolato.evento());
+        report.setDiasInibidoresDeFolato(inibidoresDeFolato.diasEvento());
+        report.setLincosamidas(lincosamidas.evento());
+        report.setDiasLincosamidas(lincosamidas.diasEvento());
+        report.setMacrolideos(macrolideos.evento());
+        report.setDiasMacrolideos(macrolideos.diasEvento());
+        report.setNitrofuranicos(nitrofuranicos.evento());
+        report.setDiasNitrofuranicos(nitrofuranicos.diasEvento());
+        report.setNitroimidazolicos(nitroimidazois.evento());
+        report.setDiasNitroimidazolicos(nitroimidazois.diasEvento());
+        report.setPolimixinas(polimixinas.evento());
+        report.setDiasPolimixinas(polimixinas.diasEvento());
+        report.setQuinolonas(quinolonas.evento());
+        report.setDiasQuinolonas(quinolonas.diasEvento());
+        report.setTetraciclinas(tetraciclinas.evento());
+        report.setDiasTetraciclinas(tetraciclinas.diasEvento());
+
+
+        report.setUsoATF(diasUsoATF > 0 ? 1L : 0L);
+        report.setDiasUsoATF(diasUsoATF);
+        report.setAzois(azois.evento());
+        report.setDiasAzois(azois.diasEvento());
+        report.setEquinocandinas(equinocandinas.evento());
+        report.setDiasEquinocandinas(equinocandinas.diasEvento());
+        report.setPolienos(polienos.evento());
+        report.setDiasPolienos(polienos.diasEvento());
+
+        report.setMotivoObito(neonato.getCausaObito() != null ? neonato.getCausaObito().getCodigo() : null);
 
         return report;
     }

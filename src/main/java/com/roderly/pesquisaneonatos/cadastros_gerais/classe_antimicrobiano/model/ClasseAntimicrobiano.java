@@ -1,5 +1,6 @@
 package com.roderly.pesquisaneonatos.cadastros_gerais.classe_antimicrobiano.model;
 
+import com.roderly.pesquisaneonatos.cadastros_gerais.tipo_antimicrobiano.model.TipoAntimicrobiano;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,10 @@ public class ClasseAntimicrobiano {
 
     @Column(name = "descricao")
     private String descricao;
+
+    @ManyToOne
+    @JoinColumn(name = "id_tipo_antimicrobiano", referencedColumnName = "id_tipo_antimicrobiano")
+    private TipoAntimicrobiano tipoAntimicrobiano;
 
     public ClasseAntimicrobiano(Long idClasseAntimicrobano) {
         this.idClasseAntimicrobano = idClasseAntimicrobano;

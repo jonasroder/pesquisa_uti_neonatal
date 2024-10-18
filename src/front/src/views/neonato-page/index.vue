@@ -108,7 +108,7 @@ const verProntuario = (idNeonato) => {
                 <!-- Coluna Prontuário -->
                 <template v-slot:[`item.prontuario`]="{ item }">
                     <a href="#" class="editable-name" @click.prevent="verProntuario(item.idNeonato)">
-                        <b>{{ item.nomeMae }}</b>
+                        <b>{{ item.prontuario }}</b>
                         <v-tooltip text="Visualizar ou editar prontuário do neonato"/>
                     </a>
                 </template>

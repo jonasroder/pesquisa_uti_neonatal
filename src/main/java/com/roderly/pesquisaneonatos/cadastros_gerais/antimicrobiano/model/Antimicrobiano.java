@@ -1,14 +1,12 @@
 package com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.model;
 
 import com.roderly.pesquisaneonatos.cadastros_gerais.classe_antimicrobiano.model.ClasseAntimicrobiano;
-import com.roderly.pesquisaneonatos.neonato.model.Neonato;
+import com.roderly.pesquisaneonatos.cadastros_gerais.via_administracao.model.ViaAdministracao;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Set;
 
 
 @Getter
@@ -32,6 +30,10 @@ public class Antimicrobiano {
     @ManyToOne
     @JoinColumn(name = "id_classe_antimicrobiano", referencedColumnName = "id_classe_antimicrobiano")
     private ClasseAntimicrobiano classeAntimicrobiano;
+
+    @ManyToOne
+    @JoinColumn(name = "id_via_administracao", referencedColumnName = "id_via_administracao")
+    private ViaAdministracao viaAdministracao;
 
     public Antimicrobiano(Long idAntimicrobiano) {
         this.idAntimicrobiano = idAntimicrobiano;

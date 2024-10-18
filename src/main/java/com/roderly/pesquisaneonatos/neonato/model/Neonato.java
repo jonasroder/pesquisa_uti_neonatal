@@ -11,6 +11,7 @@ import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_cirurgia.model.SitioC
 import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model.SitioMalformacao;
 import com.roderly.pesquisaneonatos.cadastros_gerais.tipo_parto.model.TipoParto;
 import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
+import com.roderly.pesquisaneonatos.prontuario.model.Evento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -103,6 +106,10 @@ public class Neonato extends EntidadeRastreada {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sitio_cirurgia", referencedColumnName = "id_sitio_cirurgia")
     private SitioCirurgia sitioCirurgia;
+
+    @OneToMany(mappedBy = "neonato", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Evento> eventoList = new ArrayList<>();
+
 
     public Neonato(Long idNeonato) {
         this.idNeonato = idNeonato;

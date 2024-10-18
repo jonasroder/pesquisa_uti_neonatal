@@ -12,7 +12,7 @@ CREATE TABLE tipo_evento
 );
 
 
-INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(1, 'Medicação com Antibiótico', '#FF5733', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
+INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(1, 'Medicação', '#FF5733', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
 INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(2, 'Dreno', '#FFC300', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
 INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(3, 'Intubação', '#C70039', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
 INSERT INTO tipo_evento (codigo, descricao, cor_associada, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active) VALUES(4, 'Cateter/Sonda Vesical', '#900C3F', '2024-06-01 13:53:49', 1, '2024-06-01 13:53:49', 1, 1);
