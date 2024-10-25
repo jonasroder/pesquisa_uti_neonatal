@@ -1,6 +1,7 @@
 package com.roderly.pesquisaneonatos.neonato.dto.request;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record NeonatoRequest(
         Long idNeonato,
@@ -21,9 +22,9 @@ public record NeonatoRequest(
         Long idTipoParto,
         Long idRoturaMembrana,
         Long idSitioMalformacao,
-        Long idSitioCirurgia,
         Long idCausaObito,
         Boolean riscoInfeccioso,
-        Boolean sepseClinica
+        Boolean sepseClinica,
+        List<NeonatoAusenciaUTIRequest> ausenciaUTI
 ) {
 }

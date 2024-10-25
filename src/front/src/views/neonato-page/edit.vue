@@ -8,6 +8,7 @@ import {
 import {loading} from "@/plugins/loadingService.js";
 import CardFormulario from "@/components/CardFormulario.vue";
 
+
 const id                      = ref(getIdFromUrl());
 const emit                    = defineEmits(['set-back-action', 'set-save-action']);
 const cpfDisabled             = ref(false);
@@ -48,6 +49,11 @@ const neonato = reactive({
     idCausaObito      : null,
     riscoInfeccioso   : false,
     sepseClinica      : false,
+    ausenciaUTI       : [{
+        idNeonatosAusenciaUti: null,
+        dataSaidaUti         : null,
+        dataRetornoUti       : null,
+    }]
 });
 
 
@@ -170,6 +176,17 @@ const apgarRules = ref([v => {
     if (v === '' || v == null) return true;
     return (v >= 0 && v <= 10) || 'O valor deve estar entre 0 e 10.';
 }]);
+
+
+const adicionarPeriodoAusencia = async () => {
+    neonato.ausenciaUTI.push({
+        idNeonatosAusenciaUti: null,
+        dataSaidaUti         : null,
+        dataRetornoUti       : null,
+    })
+};
+
+
 </script>
 
 
@@ -303,14 +320,6 @@ const apgarRules = ref([v => {
             </v-col>
 
             <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Sítio Cirurgia"
-                    :items="optionsSitioCirurgia"
-                    v-model="neonato.idSitioCirurgia"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
                 <v-text-field
                     label="Data do Desfecho"
                     type="date"
@@ -326,9 +335,6 @@ const apgarRules = ref([v => {
                 />
             </v-col>
 
-        </v-row>
-
-        <v-row>
             <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
                 <v-radio-group v-model="neonato.riscoInfeccioso" inline label="Risco Infeccioso">
                     <v-radio label="Sim" :value="true"/>
@@ -348,6 +354,44 @@ const apgarRules = ref([v => {
                     <v-radio label="Sim" :value="true"/>
                     <v-radio label="Não" :value="false"/>
                 </v-radio-group>
+            </v-col>
+        </v-row>
+
+        <v-row>
+            <v-col cols="6">
+            <v-col cols="12" class="d-flex align-center pb-1">
+                <h4 class="mr-2">Períodos de Ausência na UTI</h4>
+                <v-btn size="x-small" icon color="cinzaAzulado" @click="adicionarPeriodoAusencia">
+                    <v-icon size="small">fas fa-plus</v-icon>
+                    <v-tooltip text="Adicionar novo Período"/>
+                </v-btn>
+            </v-col>
+
+            <v-col cols="12" class="pb-2">
+                <v-divider></v-divider>
+            </v-col>
+
+            <v-row v-for="(ausencia, i) in neonato.ausenciaUTI" :key="i" class="ma-0 pb-0">
+                <v-col cols="12" sm="12" md="6" lg="6" xl="6" class="pb-0">
+                    <v-text-field
+                        label="Data Saída UTI"
+                        type="date"
+                        v-model="ausencia.dataSaidaUti"
+                    />
+                </v-col>
+
+                <v-col cols="12" sm="12" md="6" lg="6" xl="6" class="pb-0">
+                    <v-text-field
+                        label="Data Retorno UTI"
+                        type="date"
+                        v-model="ausencia.dataRetornoUti"
+                    />
+                </v-col>
+
+                <v-col cols="12" class="pb-0" v-if="neonato.ausenciaUTI > 1 || neonato.ausenciaUTI.length !== i+1">
+                    <v-divider class="mb-5 pb-0"></v-divider>
+                </v-col>
+            </v-row>
             </v-col>
         </v-row>
 

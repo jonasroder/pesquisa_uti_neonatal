@@ -8,6 +8,7 @@ import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.excel.ExcelHelper;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
+import com.roderly.pesquisaneonatos.neonato.repository.NeonatoAusenciaUTIRepository;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class NeonatoService {
 
     private final NeonatoRepository neonatoRepository;
+    private final NeonatoAusenciaUTIRepository neonatoAusenciaUtiRepository;
 
     public ApiResponseDTO save(NeonatoRequest request) throws IOException {
         var prontuarioExistente = neonatoRepository.findByProntuario(request.prontuario());
@@ -35,6 +37,13 @@ public class NeonatoService {
 
         var neonato = NeonatoMapper.convertNeonatoRequestToNeonato(request);
         var neonatoSalvo = neonatoRepository.save(neonato);
+
+        var ausenciasUti = request.ausenciaUTI().stream()
+                .filter(ausenciaRequest -> ausenciaRequest.dataSaidaUti() != null || ausenciaRequest.dataRetornoUti() != null)
+                .map(ausenciaRequest -> NeonatoMapper.neonatoAusenciaUTIrequestToNeonatoAusenciaUTI(ausenciaRequest, neonatoSalvo))
+                .toList();
+
+        neonatoAusenciaUtiRepository.saveAll(ausenciasUti);
 
         return new ApiResponseDTO(neonatoSalvo.getIdNeonato(), "O registro foi salvo!");
 
@@ -95,7 +104,7 @@ public class NeonatoService {
     }
 
 
-    public EventoTipoDiasResponse getClasseAnimicrobianoDias(List<ClasseAntimicrobianoCountProjection> antimicrobianos, Long idClasseAntimicrobiano){
+    public EventoTipoDiasResponse getClasseAnimicrobianoDias(List<ClasseAntimicrobianoCountProjection> antimicrobianos, Long idClasseAntimicrobiano) {
         return antimicrobianos.stream()
                 .filter(evento -> evento.getIdClasseAntimicrobiano().equals(idClasseAntimicrobiano))
                 .findFirst()

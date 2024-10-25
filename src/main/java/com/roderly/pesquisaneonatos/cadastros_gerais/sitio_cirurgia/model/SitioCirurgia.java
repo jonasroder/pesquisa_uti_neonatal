@@ -27,8 +27,6 @@ public class SitioCirurgia {
     @Column(name = "descricao")
     private String descricao;
 
-    @OneToMany(mappedBy = "sitioCirurgia")
-    private Set<Neonato> neonatoSet;
 
     public SitioCirurgia(Long idSitioCirurgia) {
         this.idSitioCirurgia = idSitioCirurgia;

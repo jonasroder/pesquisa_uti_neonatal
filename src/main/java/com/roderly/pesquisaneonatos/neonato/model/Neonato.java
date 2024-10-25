@@ -103,13 +103,11 @@ public class Neonato extends EntidadeRastreada {
     @JoinColumn(name = "id_sitio_malformacao", referencedColumnName = "id_sitio_malformacao")
     private SitioMalformacao sitioMalformacao;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sitio_cirurgia", referencedColumnName = "id_sitio_cirurgia")
-    private SitioCirurgia sitioCirurgia;
-
-    @OneToMany(mappedBy = "neonato", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "neonato", fetch = FetchType.LAZY)
     private List<Evento> eventoList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "neonato", fetch = FetchType.LAZY)
+    private List<NeonatoAusenciaUTI> ausenciasUti = new ArrayList<>();
 
     public Neonato(Long idNeonato) {
         this.idNeonato = idNeonato;

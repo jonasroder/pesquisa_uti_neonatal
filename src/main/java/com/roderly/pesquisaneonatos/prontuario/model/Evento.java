@@ -3,12 +3,13 @@ package com.roderly.pesquisaneonatos.prontuario.model;
 import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter

@@ -11,11 +11,14 @@ import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_cirurgia.model.SitioC
 import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model.SitioMalformacao;
 import com.roderly.pesquisaneonatos.cadastros_gerais.tipo_parto.model.TipoParto;
 import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
+import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoAusenciaUTIRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
+import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoAusenciaUTIResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoControleReportData;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
+import com.roderly.pesquisaneonatos.neonato.model.NeonatoAusenciaUTI;
 import com.roderly.pesquisaneonatos.neonato.service.NeonatoService;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
@@ -36,7 +39,6 @@ public class NeonatoMapper {
         var tipoParto = request.idTipoParto() != null ? new TipoParto(request.idTipoParto()) : null;
         var roturaMembrana = request.idRoturaMembrana() != null ? new RoturaMembrana(request.idRoturaMembrana()) : null;
         var sitioMalFormacao = request.idSitioMalformacao() != null ? new SitioMalformacao(request.idSitioMalformacao()) : null;
-        var sitioCirurgia = request.idSitioCirurgia() != null ? new SitioCirurgia(request.idSitioCirurgia()) : null;
         var causaObito = request.idCausaObito() != null ? new CausaObito(request.idCausaObito()) : null;
 
 
@@ -61,14 +63,30 @@ public class NeonatoMapper {
         neonato.setTipoParto(tipoParto);
         neonato.setRoturaMembrana(roturaMembrana);
         neonato.setSitioMalformacao(sitioMalFormacao);
-        neonato.setSitioCirurgia(sitioCirurgia);
         neonato.setCausaObito(causaObito);
 
         return neonato;
     }
 
 
+    public static NeonatoAusenciaUTI neonatoAusenciaUTIrequestToNeonatoAusenciaUTI(NeonatoAusenciaUTIRequest request, Neonato neonato) {
+
+        var ausenciaUti = new NeonatoAusenciaUTI();
+        ausenciaUti.setIdNeonatosAusenciaUti(request.idNeonatosAusenciaUti());
+        ausenciaUti.setNeonato(neonato);
+        ausenciaUti.setDataSaidaUti(request.dataSaidaUti());
+        ausenciaUti.setDataRetornoUti(request.dataRetornoUti());
+
+        return ausenciaUti;
+    }
+
+
     public static NeonatoResponse convertNeonatoToNeonatoResponse(Neonato neonato) {
+
+        var ausenciasUti = neonato.getAusenciasUti().stream()
+                .map(NeonatoMapper::convertNeonatoAusenciaUTIToNeonatoAusenciaUTIResponse)
+                .toList();
+
         return new NeonatoResponse(
                 neonato.getIdNeonato(),
                 neonato.getNomeMae(),
@@ -88,10 +106,19 @@ public class NeonatoMapper {
                 neonato.getTipoParto() != null ? neonato.getTipoParto().getIdTipoParto() : null,
                 neonato.getRoturaMembrana() != null ? neonato.getRoturaMembrana().getIdRoturaMembrana() : null,
                 neonato.getSitioMalformacao() != null ? neonato.getSitioMalformacao().getIdSitioMalformacao() : null,
-                neonato.getSitioCirurgia() != null ? neonato.getSitioCirurgia().getIdSitioCirurgia() : null,
                 neonato.getCausaObito() != null ? neonato.getCausaObito().getIdCausaObito() : null,
                 neonato.getRiscoInfeccio(),
-                neonato.getSepseClinica()
+                neonato.getSepseClinica(),
+                ausenciasUti
+        );
+    }
+
+
+    public static NeonatoAusenciaUTIResponse convertNeonatoAusenciaUTIToNeonatoAusenciaUTIResponse(NeonatoAusenciaUTI ausenciaUTI) {
+        return new NeonatoAusenciaUTIResponse(
+                ausenciaUTI.getIdNeonatosAusenciaUti(),
+                ausenciaUTI.getDataSaidaUti(),
+                ausenciaUTI.getDataRetornoUti()
         );
     }
 
@@ -170,7 +197,7 @@ public class NeonatoMapper {
         report.setTipoPartoCodigo(neonato.getTipoParto() != null ? neonato.getTipoParto().getCodigo() : null);
         report.setRoturaMembranaCodigo(neonato.getRoturaMembrana() != null ? neonato.getRoturaMembrana().getCodigo() : null);
         report.setMalformacao(neonato.getSitioMalformacao() != null ? 1L : 0L);
-        report.setCirurgia(neonato.getSitioCirurgia() != null ? 1L : 0L);
+        //report.setCirurgia(neonato.getSitioCirurgia() != null ? 1L : 0L);
 
         report.setFlebotomia(flebotomia.evento());
         report.setDiasFlebotomia(flebotomia.diasEvento());
