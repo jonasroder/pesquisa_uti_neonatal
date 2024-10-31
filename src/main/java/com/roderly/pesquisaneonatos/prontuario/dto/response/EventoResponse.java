@@ -14,6 +14,8 @@ public record EventoResponse(
         Long idEntidade,
         Boolean diaInteiro,
         String observacao,
-        Boolean is_active
+        Boolean is_active,
+        Long idEventoViaAdministracao,
+        Long idViaAdministracao
 ) {
 }

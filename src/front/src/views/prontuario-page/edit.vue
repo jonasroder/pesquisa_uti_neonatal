@@ -156,16 +156,9 @@ const handleSave = async () => {
         }
 
         for (const antibiograma of coleta.antibiogramas) {
-            const verificacoes = [{
-                dados : antibiograma,
-                campos: ['idResistenciaMicroorganismo', 'idAntimicrobiano']
-            }];
-
-            if (!verificarCamposObrigatorios(verificacoes)) {
-                camposObrigatorios.value = false;
-                loading.hide();
-                return;
-            }
+           if(antibiograma.idResistenciaMicroorganismo === null || antibiograma.idAntimicrobiano === null) {
+               antibiograma.isActive = false;
+           }
         }
     }
 

@@ -16,7 +16,7 @@ public class NeonatoGrupoControleReportData {
     String dataNascimento;
     String dataInternacao;
     String dataDesfecho;
-    Integer diasInternacao;
+    Long diasInternacao;
     Long obito;
     Long localNascimentoCodigo;
     Long sexoCodigo;

@@ -33,4 +33,13 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     List<ColetaIsoladoSemAntibiogramasResponse> findColetaIsoladoByIdNeonato(@Param("idNeonato") Long idNeonato);
 
 
+    @Query(value = """            
+            SELECT COALESCE(COUNT(e.id_evento), 0) AS nEventos
+            FROM evento e
+            WHERE e.id_tipo_evento = 9
+            AND e.id_neonato = :idNeonato
+            AND e.is_active = true
+            """, nativeQuery = true)
+    Long getCirugiasNeonato(@Param("idNeonato") Long idNeonato);
+
 }

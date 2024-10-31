@@ -26,13 +26,13 @@ public class AntibiogramaIsolado extends EntidadeRastreada {
     private IsoladoColeta isoladoColeta;
 
     // Relacionamento com Antimicrobiano
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_antimicrobiano", referencedColumnName = "id_antimicrobiano", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "id_antimicrobiano", referencedColumnName = "id_antimicrobiano", nullable = true)
     private Antimicrobiano antimicrobiano;
 
     // Relacionamento com ResistenciaMicroorganismo
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_resistencia_microorganismo", referencedColumnName = "id_resistencia_microorganismo", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "id_resistencia_microorganismo", referencedColumnName = "id_resistencia_microorganismo", nullable = true)
     private ResistenciaMicroorganismo resistenciaMicroorganismo;
 
 

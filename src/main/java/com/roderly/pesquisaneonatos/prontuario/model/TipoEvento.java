@@ -28,7 +28,7 @@ public class TipoEvento extends EntidadeRastreada {
     @Column(name = "cor_associada")
     private String corAssociada;
 
-    @OneToMany(mappedBy = "tipoEvento", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tipoEvento", fetch = FetchType.LAZY)
     private Set<Evento> eventos = new HashSet<>();
 
 

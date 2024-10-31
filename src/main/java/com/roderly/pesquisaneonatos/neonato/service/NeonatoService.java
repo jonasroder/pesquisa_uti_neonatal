@@ -3,19 +3,24 @@ package com.roderly.pesquisaneonatos.neonato.service;
 import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.common.excel.ExcelService;
 import com.roderly.pesquisaneonatos.common.excel.ExcelSheetData;
+import com.roderly.pesquisaneonatos.neonato.dto.projections.DiasAusenciaUTIProjection;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.excel.ExcelHelper;
+import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoControleReportData;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoAusenciaUTIRepository;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.EventoTipoDiasResponse;
+import com.roderly.pesquisaneonatos.prontuario.repository.EventoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.temporal.ChronoUnit;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +33,7 @@ public class NeonatoService {
 
     private final NeonatoRepository neonatoRepository;
     private final NeonatoAusenciaUTIRepository neonatoAusenciaUtiRepository;
+    private final EventoRepository eventoRepository;
 
     public ApiResponseDTO save(NeonatoRequest request) throws IOException {
         var prontuarioExistente = neonatoRepository.findByProntuario(request.prontuario());
@@ -68,21 +74,9 @@ public class NeonatoService {
 
     public byte[] generateExcelReport() throws IOException {
 
-        var idsNeonatosControle = neonatoRepository.findIdsNeonatosControle();
-        var neonatos = neonatoRepository.findAllById(idsNeonatosControle);
+        var neonatosControle = getReportGrupoControle();
+        var mappings = ExcelHelper.createGrupoControleColumnMapping();
 
-        var neonatosControle = neonatos.stream()
-                .map(neonato -> {
-                    var eventos = neonatoRepository.findEventoCountsByNeonato(neonato.getIdNeonato());
-                    var classesAntimicrobianos = neonatoRepository.findClasseAntimicrobianoCountsByNeonato(neonato.getIdNeonato());
-                    var diasUsoATB = neonatoRepository.getDiasUsoAnimicrobiano(neonato.getIdNeonato(), 1L);
-                    var diasUsoATF = neonatoRepository.getDiasUsoAnimicrobiano(neonato.getIdNeonato(), 2L);
-
-                    return NeonatoMapper.convertToNeonatoGrupoControleReportData(neonato, eventos, diasUsoATB, diasUsoATF, classesAntimicrobianos, this);
-                })
-                .collect(Collectors.toList());
-
-        var mappings = ExcelHelper.createColumnMappings();
 
         List<ExcelSheetData<?>> sheetDataList = new ArrayList<>();
         sheetDataList.add(new ExcelSheetData<>("Grupo Controle", neonatosControle, mappings));
@@ -116,4 +110,31 @@ public class NeonatoService {
     }
 
 
+    public long calcularDiasForaUTI(Long idNeonato) {
+        List<DiasAusenciaUTIProjection> diasForaUti = neonatoAusenciaUtiRepository.findDiasAusenciaUTI(idNeonato);
+
+        return diasForaUti.isEmpty() ? 0 :
+                diasForaUti.stream()
+                        .mapToLong(projection -> ChronoUnit.DAYS.between(projection.getDataSaida(), projection.getDataRetorno()))
+                        .sum();
+    }
+
+
+    public List<NeonatoGrupoControleReportData> getReportGrupoControle() {
+        var idsNeonatosControle = neonatoRepository.findIdsNeonatosControle();
+        var neonatos = neonatoRepository.findAllById(idsNeonatosControle);
+
+        return neonatos.stream()
+                .map(neonato -> {
+                    var eventos = neonatoRepository.findEventoCountsByNeonato(neonato.getIdNeonato());
+                    var classesAntimicrobianos = neonatoRepository.findClasseAntimicrobianoCountsByNeonato(neonato.getIdNeonato());
+                    var diasUsoATB = neonatoRepository.getDiasUsoAnimicrobiano(neonato.getIdNeonato(), 1L);
+                    var diasUsoATF = neonatoRepository.getDiasUsoAnimicrobiano(neonato.getIdNeonato(), 2L);
+                    var diasForaUti = calcularDiasForaUTI(neonato.getIdNeonato());
+                    var cirurgiaNeonato = eventoRepository.getCirugiasNeonato(neonato.getIdNeonato()) > 0 ? 1L : 0L;
+
+                    return NeonatoMapper.convertToNeonatoGrupoControleReportData(neonato, diasForaUti, cirurgiaNeonato, eventos, diasUsoATB, diasUsoATF, classesAntimicrobianos, this);
+                })
+                .collect(Collectors.toList());
+    }
 }

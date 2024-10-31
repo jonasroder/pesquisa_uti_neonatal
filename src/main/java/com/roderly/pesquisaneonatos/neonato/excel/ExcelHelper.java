@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ExcelHelper {
 
-    public static List<ExcelColumnMapping> createColumnMappings() {
+    public static List<ExcelColumnMapping> createGrupoControleColumnMapping() {
         List<ExcelColumnMapping> columnMappings = new ArrayList<>();
         columnMappings.add(new ExcelColumnMapping("ANO", "getAno"));
         columnMappings.add(new ExcelColumnMapping("PRONTUÁRIO", "getProntuario"));

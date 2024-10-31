@@ -140,13 +140,14 @@ public class NeonatoMapper {
     }
 
 
-    public static NeonatoGrupoControleReportData convertToNeonatoGrupoControleReportData(Neonato neonato, List<EventoCountProjection> eventos, Long diasUsoATB, Long diasUsoATF, List<ClasseAntimicrobianoCountProjection> classeAntimicrobiano, NeonatoService neonatoService) {
+    public static NeonatoGrupoControleReportData convertToNeonatoGrupoControleReportData(Neonato neonato, Long diasForaUti, Long cirurgiaNeonato, List<EventoCountProjection> eventos, Long diasUsoATB, Long diasUsoATF, List<ClasseAntimicrobianoCountProjection> classeAntimicrobiano, NeonatoService neonatoService) {
 
         var dataNascimento = neonato.getDataNascimento() != null ? DateUtil.LocalDateToDateBR(neonato.getDataNascimento()) : null;
         var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
         var dataDesfecho = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
         var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
-        var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho());
+        var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L) - diasForaUti;
+
 
         var flebotomia = neonatoService.getEventoTipoDias(eventos, 8L);
         var cvu = neonatoService.getEventoTipoDias(eventos, 7L);
@@ -197,7 +198,7 @@ public class NeonatoMapper {
         report.setTipoPartoCodigo(neonato.getTipoParto() != null ? neonato.getTipoParto().getCodigo() : null);
         report.setRoturaMembranaCodigo(neonato.getRoturaMembrana() != null ? neonato.getRoturaMembrana().getCodigo() : null);
         report.setMalformacao(neonato.getSitioMalformacao() != null ? 1L : 0L);
-        //report.setCirurgia(neonato.getSitioCirurgia() != null ? 1L : 0L);
+        report.setCirurgia(cirurgiaNeonato);
 
         report.setFlebotomia(flebotomia.evento());
         report.setDiasFlebotomia(flebotomia.diasEvento());

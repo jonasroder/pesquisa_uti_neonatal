@@ -46,11 +46,14 @@ public class Evento extends EntidadeRastreada {
     @Column(name = "observacao")
     private String observacao;
 
-    @OneToOne(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "evento")
     private EventoEntidade eventoEntidade;
 
-    @OneToOne(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "evento")
     private IsoladoColeta isoladoColeta;
+
+    @OneToOne(mappedBy = "evento")
+    private EventoViaAdministracao eventoViaAdministracao;
 
 
     public Evento(Long idEvento) {

@@ -90,7 +90,7 @@ const adicionarAntibiograma = (coleta) => {
         idAntibiogramaIsolado      : null,
         idAntimicrobiano           : null,
         idResistenciaMicroorganismo: null,
-        isActive                   : 1,
+        isActive                   : true,
     });
 }
 
@@ -130,7 +130,7 @@ watch(coletasIsolados, () => {
                         </v-col>
 
                         <v-card-subtitle class="d-flex justify-space-between pb-1">
-                            Antibiograma
+                            Antibiogramas
 
                             <v-btn size="x-small" icon color="cinzaAzulado" @click="adicionarAntibiograma(coleta)">
                                 <v-icon size="small">fas fa-plus</v-icon>
@@ -145,7 +145,6 @@ watch(coletasIsolados, () => {
                                     label="Antimicrobiano"
                                     :items="optionsAntimicrobianos"
                                     v-model="antibiograma.idAntimicrobiano"
-                                    :error="!antibiograma.idAntimicrobiano && !props.camposObrigatorios"
                                 />
                             </v-col>
 
@@ -154,7 +153,6 @@ watch(coletasIsolados, () => {
                                     label="Resistencia"
                                     :items="optionsResistencia"
                                     v-model="antibiograma.idResistenciaMicroorganismo"
-                                    :error="!antibiograma.idResistenciaMicroorganismo && !props.camposObrigatorios"
                                 />
                             </v-col>
 

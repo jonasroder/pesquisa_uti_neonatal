@@ -11,10 +11,7 @@ import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.mapper.ProntuarioMapper;
-import com.roderly.pesquisaneonatos.prontuario.repository.AntibiogramaIsoladoRepository;
-import com.roderly.pesquisaneonatos.prontuario.repository.EventoEntidadeRepository;
-import com.roderly.pesquisaneonatos.prontuario.repository.EventoRepository;
-import com.roderly.pesquisaneonatos.prontuario.repository.IsoladoColetaRepository;
+import com.roderly.pesquisaneonatos.prontuario.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,8 +29,7 @@ public class ProntuarioService {
     private final NeonatoRepository neonatoRepository;
     private final AntibiogramaIsoladoRepository antibiogramaIsoladoRepository;
     private final IsoladoColetaRepository isoladoColetaRepository;
-    private final AntimicrobianoRepository antimicrobianoRepository;
-    private final ResistenciaMicroorganismoRepository resistenciaMicroorganismoRepository;
+    private final EventoViaAdministracaoRepository eventoViaAdministracaoRepository;
 
     public ProntuarioResponse load(Long id) {
         var neonato = neonatoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Neonato não encontrado com ID: " + id));
@@ -48,52 +44,48 @@ public class ProntuarioService {
     }
 
 
-
     public ApiResponseDTO salvarEvento(EventoRequest request) throws IOException {
         var evento = ProntuarioMapper.eventoRequestToEvento(request);
         var eventoSalvo = eventoRepository.save(evento);
 
-        if (request.idEntidade() != null) {
+        if (request.idEntidade() != null && eventoSalvo.getIdEvento() != null) {
             var eventoEntidade = ProntuarioMapper.eventoAndEventoRequestToEventoEntidade(request, eventoSalvo);
-            var eventoEntidadeSalvo = eventoEntidadeRepository.save(eventoEntidade);
+            eventoEntidadeRepository.save(eventoEntidade);
+        }
+
+        if (request.idViaAdministracao() != null && eventoSalvo.getIdEvento() != null) {
+            var eventoViaAdministracao = ProntuarioMapper.eventoToeventoViaAdministracao(eventoSalvo, request.idEventoViaAdministracao(), request.idViaAdministracao());
+            eventoViaAdministracaoRepository.save(eventoViaAdministracao);
         }
 
         return new ApiResponseDTO(eventoSalvo.getIdEvento(), "O registro foi Salvo!");
     }
 
 
-
     public List<ColetaIsoladoResponse> loadColetasProntuario(Long idNeonato) {
-        // Busca inicial das coletas sem antibiogramas
         var coletasSemAntibiogramas = eventoRepository.findColetaIsoladoByIdNeonato(idNeonato);
 
-        // Mapeia as coletas e preenche os antibiogramas usando o mapper
         return coletasSemAntibiogramas.stream()
                 .map(coletaSemAntibiograma -> {
-                    // Busca os antibiogramas para cada coleta de isolado
                     var antibiogramas = antibiogramaIsoladoRepository.findByIsoladoColetaId(coletaSemAntibiograma.idIsoladoColeta());
-
-                    // Mapeia a coletaSemAntibiograma para ColetaIsoladoResponse com antibiogramas
                     return ProntuarioMapper.mapToColetaIsoladoResponse(coletaSemAntibiograma, antibiogramas);
                 })
                 .collect(Collectors.toList());
     }
 
 
-
     public ApiResponseDTO salvarColetaIsolado(List<ColetaIsoladoRequest> request) throws IOException {
 
         for (ColetaIsoladoRequest coletaIsoladoRequest : request) {
             var isoladoColeta = ProntuarioMapper.coletaIsoladoRequestToIsoladoColeta(coletaIsoladoRequest);
-            var isolado = isoladoColetaRepository.save(isoladoColeta); // Salva o IsoladoColeta
+            var isolado = isoladoColetaRepository.save(isoladoColeta);
 
             for (AntibiogramaIsoladoRequest antibiogramaIsolado : coletaIsoladoRequest.antibiogramas()) {
-                // Verifica se os IDs de antimicrobiano e resistência do microorganismo não são nulos
-                if (antibiogramaIsolado.idAntimicrobiano() == null || antibiogramaIsolado.idResistenciaMicroorganismo() == null) {
-                    continue; // Se qualquer um dos IDs for nulo, ignora este antibiograma
+
+                if ((antibiogramaIsolado.idAntimicrobiano() == null && antibiogramaIsolado.idResistenciaMicroorganismo() == null) && antibiogramaIsolado.idAntibiogramaIsolado() == null) {
+                    continue;
                 }
 
-                // Mapeia o antibiograma e salva no banco
                 var antibiograma = ProntuarioMapper.antibiogramaIsoladoRequestToAntibiograma(antibiogramaIsolado, isolado);
                 antibiogramaIsoladoRepository.save(antibiograma);
             }

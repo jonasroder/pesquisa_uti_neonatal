@@ -5,6 +5,7 @@ import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_micro
 import com.roderly.pesquisaneonatos.cadastros_gerais.microorganismo.model.Microorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.model.PerfilResistenciaMicroorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.resistencia_microorganismo.model.ResistenciaMicroorganismo;
+import com.roderly.pesquisaneonatos.cadastros_gerais.via_administracao.model.ViaAdministracao;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.AntibiogramaIsoladoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.ColetaIsoladoRequest;
@@ -36,7 +37,6 @@ public class ProntuarioMapper {
     }
 
 
-
     public static EventoEntidade eventoAndEventoRequestToEventoEntidade(EventoRequest request, Evento evento) {
         var eventoEntidade = new EventoEntidade();
         eventoEntidade.setIdEventoEntidade(request.idEventoEntidade());
@@ -48,7 +48,6 @@ public class ProntuarioMapper {
     }
 
 
-
     public static EventoResponse eventoToEventoResponse(Evento evento) {
         var idNeonato = evento.getNeonato() != null ? evento.getNeonato().getIdNeonato() : null;
         var idTipoEvento = evento.getTipoEvento() != null ? evento.getTipoEvento().getIdTipoEvento() : null;
@@ -57,6 +56,8 @@ public class ProntuarioMapper {
         var idEventoEntidade = evento.getEventoEntidade() != null ? evento.getEventoEntidade().getIdEventoEntidade() : null;
         var tipoEntidade = evento.getEventoEntidade() != null ? evento.getEventoEntidade().getTipoEntidade() : null;
         var getIdEntidade = evento.getEventoEntidade() != null ? evento.getEventoEntidade().getIdEntidade() : null;
+        var idEventoViaAdministracao = evento.getEventoViaAdministracao() != null ? evento.getEventoViaAdministracao().getIdEventoViaAdministracao() : null;
+        var idViaAdministracao = evento.getEventoViaAdministracao() != null ? evento.getEventoViaAdministracao().getViaAdministracao().getIdViaAdministracao() : null;
 
         return new EventoResponse(
                 evento.getIdEvento(),
@@ -70,10 +71,11 @@ public class ProntuarioMapper {
                 getIdEntidade,
                 evento.getDiaInteiro(),
                 evento.getObservacao(),
-                evento.getIsActive()
+                evento.getIsActive(),
+                idEventoViaAdministracao,
+                idViaAdministracao
         );
     }
-
 
 
     public static ColetaIsoladoResponse mapToColetaIsoladoResponse(
@@ -87,7 +89,7 @@ public class ProntuarioMapper {
                 .collect(Collectors.toList());
 
         var idPerfilResistenciaMicroorganismo = coletaSemAntibiogramas.idPerfilResistenciaMicroorganismo() != null ? coletaSemAntibiogramas.idPerfilResistenciaMicroorganismo() : 1L;
-        var idMecanismoResistenciaMicroorganismo = coletaSemAntibiogramas.idMecanismoResistenciaMicroorganismo()  != null ? coletaSemAntibiogramas.idMecanismoResistenciaMicroorganismo() : 1L;
+        var idMecanismoResistenciaMicroorganismo = coletaSemAntibiogramas.idMecanismoResistenciaMicroorganismo() != null ? coletaSemAntibiogramas.idMecanismoResistenciaMicroorganismo() : 1L;
 
         return new ColetaIsoladoResponse(
                 coletaSemAntibiogramas.idEvento(),
@@ -100,10 +102,9 @@ public class ProntuarioMapper {
                 coletaSemAntibiogramas.idMicroorganismo(),
                 idPerfilResistenciaMicroorganismo,
                 idMecanismoResistenciaMicroorganismo,
-                antibiogramaIsolado // Lista de AntibiogramaIsoladoResponse preenchida
+                antibiogramaIsolado
         );
     }
-
 
 
     public static AntibiogramaIsoladoResponse antibiogramaIsoladoToAntibiogramaIsoladoResponse(AntibiogramaIsolado antibiogramaIsolado) {
@@ -122,7 +123,7 @@ public class ProntuarioMapper {
     }
 
 
-    public static IsoladoColeta coletaIsoladoRequestToIsoladoColeta(ColetaIsoladoRequest request){
+    public static IsoladoColeta coletaIsoladoRequestToIsoladoColeta(ColetaIsoladoRequest request) {
 
         var idEvento = new Evento(request.idEvento());
         var idMicroorganismo = new Microorganismo(request.idMicroorganismo());
@@ -140,18 +141,30 @@ public class ProntuarioMapper {
     }
 
 
-    public static AntibiogramaIsolado antibiogramaIsoladoRequestToAntibiograma(AntibiogramaIsoladoRequest request, IsoladoColeta isoladoColeta){
+    public static AntibiogramaIsolado antibiogramaIsoladoRequestToAntibiograma(AntibiogramaIsoladoRequest request, IsoladoColeta isoladoColeta) {
 
-        var isolado = new IsoladoColeta(isoladoColeta.getIdIsoladoColeta());
-        var antimicrobiano = new Antimicrobiano(request.idAntimicrobiano());
-        var reistenciaMicroorganismo = new ResistenciaMicroorganismo(request.idResistenciaMicroorganismo());
+        var antimicrobiano = request.idAntimicrobiano() != null ? new Antimicrobiano(request.idAntimicrobiano()) : null;
+        var resistenciaMicroorganismo = request.idResistenciaMicroorganismo() != null ? new ResistenciaMicroorganismo(request.idResistenciaMicroorganismo()) : null;
 
         var antibiogramaIsolado = new AntibiogramaIsolado();
         antibiogramaIsolado.setIdAntibiogramaIsolado(request.idAntibiogramaIsolado());
-        antibiogramaIsolado.setIsoladoColeta(isolado);
+        antibiogramaIsolado.setIsoladoColeta(isoladoColeta);
         antibiogramaIsolado.setAntimicrobiano(antimicrobiano);
-        antibiogramaIsolado.setResistenciaMicroorganismo(reistenciaMicroorganismo);
+        antibiogramaIsolado.setResistenciaMicroorganismo(resistenciaMicroorganismo);
 
         return antibiogramaIsolado;
+    }
+
+
+    public static EventoViaAdministracao eventoToeventoViaAdministracao(Evento evento, Long idEventoViaAdministracao, Long idViaAdministracao) {
+
+        var viaAdministracao = new ViaAdministracao(idViaAdministracao);
+        var eventoViaAdministracao = new EventoViaAdministracao();
+
+        eventoViaAdministracao.setIdEventoViaAdministracao(idEventoViaAdministracao);
+        eventoViaAdministracao.setEvento(evento);
+        eventoViaAdministracao.setViaAdministracao(viaAdministracao);
+
+        return  eventoViaAdministracao;
     }
 }

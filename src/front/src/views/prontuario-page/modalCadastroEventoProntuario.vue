@@ -5,6 +5,7 @@ import {loading} from "@/plugins/loadingService";
 import {getOptionsAutocomplete, verificarCamposObrigatorios} from "@/service/common/utils";
 import {serviceSaveEvento} from "@/service/prontuario";
 
+
 const props = defineProps({
     idNeonato        : {
         type   : [String, Number],
@@ -14,33 +15,36 @@ const props = defineProps({
 });
 
 
-const optionsTipoEvento     = ref();
-const optionsAntimicrobiano = ref();
-const optionsSitioCirurgia  = ref();
-const optionsSitioColeta = ref();
-const emit                  = defineEmits(['close_modal', 'saved']);
-const camposObrigatorios    = ref(true);
-const idTipoEvento          = ref();
+const optionsTipoEvento       = ref();
+const optionsAntimicrobiano   = ref();
+const optionsSitioCirurgia    = ref();
+const optionsSitioColeta      = ref();
+const optionsViaAdministracao = ref();
+const emit                    = defineEmits(['close_modal', 'saved']);
+const camposObrigatorios      = ref(true);
+const idTipoEvento            = ref();
 
 
 const data = reactive({
-    idEvento        : null,
-    idNeonato       : null,
-    dataEvento      : null,
-    idTipoEvento    : null,
-    idEventoEntidade: null,
-    tipoEntidade    : null,
-    idEntidade      : null,
-    diaInteiro      : null,
-    observacao      : null,
-    is_active       : true,
+    idEvento                : null,
+    idNeonato               : null,
+    dataEvento              : null,
+    idTipoEvento            : null,
+    idEventoEntidade        : null,
+    tipoEntidade            : null,
+    idEntidade              : null,
+    diaInteiro              : null,
+    observacao              : null,
+    is_active               : true,
+    idEventoViaAdministracao: null,
+    idViaAdministracao      : null,
 });
 
 
 onMounted(async () => {
     loading.show()
 
-    await Promise.all([getOptionsTipoEvento(), getOptionsAntimicrobiano(), getOptionsSitioCirurgia(), getOptionsSitioColeta()]);
+    await Promise.all([getOptionsTipoEvento(), getOptionsAntimicrobiano(), getOptionsSitioCirurgia(), getOptionsSitioColeta(), getOptionsViaAdministracao()]);
 
     if (props.eventoSelecionado) {
         Object.assign(data, props.eventoSelecionado);
@@ -82,6 +86,15 @@ const getOptionsSitioColeta = async () => {
         idColumn  : 'id_sitio_coleta',
         descColumn: 'descricao',
         tableName : 'sitio_coleta'
+    });
+}
+
+
+const getOptionsViaAdministracao = async () => {
+    optionsViaAdministracao.value = await getOptionsAutocomplete({
+        idColumn  : 'id_via_administracao',
+        descColumn: 'descricao',
+        tableName : 'via_administracao'
     });
 }
 
@@ -150,6 +163,15 @@ const handleCloseModal = () => {
                         label="Antibiótico"
                         :items="optionsAntimicrobiano"
                         v-model="data.idEntidade"
+                    />
+                </v-col>
+
+
+                <v-col cols="12" class="pb-0" v-if="data.idTipoEvento === 1">
+                    <v-autocomplete
+                        label="Via Administração"
+                        :items="optionsViaAdministracao"
+                        v-model="data.idViaAdministracao"
                     />
                 </v-col>
 
