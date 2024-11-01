@@ -16,7 +16,7 @@ public interface NeonatoAusenciaUTIRepository extends JpaRepository<NeonatoAusen
             
             SELECT  nau.data_saida_uti as dataSaida,
                     nau.data_retorno_uti as dataRetorno
-            FROM neonatos_ausencia_uti nau
+            FROM neonato_ausencia_uti nau
             WHERE nau.id_neonato = :idNeonato
             AND nau.data_saida_uti IS NOT NULL
             AND nau.data_retorno_uti IS NOT NULL

@@ -144,6 +144,7 @@ const handleSave = async () => {
         return;
     }
 
+    debugger
     const res = await serviceSave(neonato);
 
     if (res.id > 0) {
@@ -316,6 +317,8 @@ const adicionarPeriodoAusencia = async () => {
                     label="Sítio Malformação Congênita"
                     :items="optionsSitioMalformacao"
                     v-model="neonato.idSitioMalformacao"
+                    multiple
+                    chips
                 />
             </v-col>
 

@@ -12,13 +12,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "neonatos_ausencia_uti")
+@Table(name = "neonato_ausencia_uti")
 public class NeonatoAusenciaUTI extends EntidadeRastreada {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_neonatos_ausencia_uti")
-    private Long idNeonatosAusenciaUti;
+    @Column(name = "id_neonato_ausencia_uti")
+    private Long idNeonatoAusenciaUti;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_neonato", referencedColumnName = "id_neonato", nullable = false)
@@ -30,7 +30,7 @@ public class NeonatoAusenciaUTI extends EntidadeRastreada {
     @Column(name = "data_retorno_uti")
     private LocalDate dataRetornoUti;
 
-    public NeonatoAusenciaUTI(Long idNeonatosAusenciaUti) {
-        this.idNeonatosAusenciaUti = idNeonatosAusenciaUti;
+    public NeonatoAusenciaUTI(Long idNeonatoAusenciaUti) {
+        this.idNeonatoAusenciaUti = idNeonatoAusenciaUti;
     }
 }

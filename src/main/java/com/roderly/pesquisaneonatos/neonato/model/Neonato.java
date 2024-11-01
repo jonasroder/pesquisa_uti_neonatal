@@ -7,8 +7,6 @@ import com.roderly.pesquisaneonatos.cadastros_gerais.motivo_internacao.model.Mot
 import com.roderly.pesquisaneonatos.cadastros_gerais.peso_nascimento.model.PesoNascimento;
 import com.roderly.pesquisaneonatos.cadastros_gerais.rotura_membrana.model.RoturaMembrana;
 import com.roderly.pesquisaneonatos.cadastros_gerais.sexo.model.Sexo;
-import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_cirurgia.model.SitioCirurgia;
-import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model.SitioMalformacao;
 import com.roderly.pesquisaneonatos.cadastros_gerais.tipo_parto.model.TipoParto;
 import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import com.roderly.pesquisaneonatos.prontuario.model.Evento;
@@ -99,15 +97,17 @@ public class Neonato extends EntidadeRastreada {
     @JoinColumn(name = "id_rotura_membrana", referencedColumnName = "id_rotura_membrana")
     private RoturaMembrana roturaMembrana;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sitio_malformacao", referencedColumnName = "id_sitio_malformacao")
-    private SitioMalformacao sitioMalformacao;
+
+
 
     @OneToMany(mappedBy = "neonato", fetch = FetchType.LAZY)
     private List<Evento> eventoList = new ArrayList<>();
 
     @OneToMany(mappedBy = "neonato", fetch = FetchType.LAZY)
-    private List<NeonatoAusenciaUTI> ausenciasUti = new ArrayList<>();
+    private List<NeonatoSitioMalformacao> neonatoMalformacaoList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "neonato", fetch = FetchType.LAZY)
+    private List<NeonatoAusenciaUTI> neonatoAusenciaUtiList = new ArrayList<>();
 
     public Neonato(Long idNeonato) {
         this.idNeonato = idNeonato;

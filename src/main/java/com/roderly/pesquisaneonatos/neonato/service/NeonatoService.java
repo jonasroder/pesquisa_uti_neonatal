@@ -9,14 +9,17 @@ import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.excel.ExcelHelper;
 import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoControleReportData;
+import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoInfectadoReportData;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoAusenciaUTIRepository;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
+import com.roderly.pesquisaneonatos.neonato.repository.NeonatoSitioMalformacaoRepository;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.EventoTipoDiasResponse;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,16 +27,20 @@ import java.time.temporal.ChronoUnit;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class NeonatoService {
 
     private final NeonatoRepository neonatoRepository;
     private final NeonatoAusenciaUTIRepository neonatoAusenciaUtiRepository;
     private final EventoRepository eventoRepository;
+    private final NeonatoSitioMalformacaoRepository neonatoSitioMalformacaoRepository;
+
 
     public ApiResponseDTO save(NeonatoRequest request) throws IOException {
         var prontuarioExistente = neonatoRepository.findByProntuario(request.prontuario());
@@ -48,11 +55,18 @@ public class NeonatoService {
                 .filter(ausenciaRequest -> ausenciaRequest.dataSaidaUti() != null || ausenciaRequest.dataRetornoUti() != null)
                 .map(ausenciaRequest -> NeonatoMapper.neonatoAusenciaUTIrequestToNeonatoAusenciaUTI(ausenciaRequest, neonatoSalvo))
                 .toList();
-
         neonatoAusenciaUtiRepository.saveAll(ausenciasUti);
 
-        return new ApiResponseDTO(neonatoSalvo.getIdNeonato(), "O registro foi salvo!");
 
+        var malformacaoList = request.idSitioMalformacao().stream()
+                .map(idStioMalformacao -> NeonatoMapper.neonatoToNeonatoSitioMalformacao(idStioMalformacao, neonatoSalvo))
+                .toList();
+
+        //Deleta as opções antigas do autocomplete para salvar e/ou atualizar
+        neonatoSitioMalformacaoRepository.deleteByNeonato(neonatoSalvo);
+        neonatoSitioMalformacaoRepository.saveAll(malformacaoList);
+
+        return new ApiResponseDTO(neonatoSalvo.getIdNeonato(), "O registro foi salvo!");
     }
 
 
@@ -128,8 +142,8 @@ public class NeonatoService {
                 .map(neonato -> {
                     var eventos = neonatoRepository.findEventoCountsByNeonato(neonato.getIdNeonato());
                     var classesAntimicrobianos = neonatoRepository.findClasseAntimicrobianoCountsByNeonato(neonato.getIdNeonato());
-                    var diasUsoATB = neonatoRepository.getDiasUsoAnimicrobiano(neonato.getIdNeonato(), 1L);
-                    var diasUsoATF = neonatoRepository.getDiasUsoAnimicrobiano(neonato.getIdNeonato(), 2L);
+                    var diasUsoATB = neonatoRepository.getDiasUsoAntimicrobiano(neonato.getIdNeonato(), 1L);
+                    var diasUsoATF = neonatoRepository.getDiasUsoAntimicrobiano(neonato.getIdNeonato(), 2L);
                     var diasForaUti = calcularDiasForaUTI(neonato.getIdNeonato());
                     var cirurgiaNeonato = eventoRepository.getCirugiasNeonato(neonato.getIdNeonato()) > 0 ? 1L : 0L;
 
@@ -137,4 +151,14 @@ public class NeonatoService {
                 })
                 .collect(Collectors.toList());
     }
+
+
+    public List<NeonatoGrupoInfectadoReportData> getReportGrupoInfectado() {
+        var idsNeonatosControle = neonatoRepository.findIdsNeonatosControle();
+        var neonatos = neonatoRepository.findAllById(idsNeonatosControle);
+
+        return Collections.emptyList();
+    }
+
+
 }

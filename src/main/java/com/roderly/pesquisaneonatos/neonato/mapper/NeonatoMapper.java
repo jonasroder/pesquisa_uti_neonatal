@@ -7,7 +7,6 @@ import com.roderly.pesquisaneonatos.cadastros_gerais.motivo_internacao.model.Mot
 import com.roderly.pesquisaneonatos.cadastros_gerais.peso_nascimento.model.PesoNascimento;
 import com.roderly.pesquisaneonatos.cadastros_gerais.rotura_membrana.model.RoturaMembrana;
 import com.roderly.pesquisaneonatos.cadastros_gerais.sexo.model.Sexo;
-import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_cirurgia.model.SitioCirurgia;
 import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model.SitioMalformacao;
 import com.roderly.pesquisaneonatos.cadastros_gerais.tipo_parto.model.TipoParto;
 import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
@@ -19,12 +18,15 @@ import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoControleReportData;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import com.roderly.pesquisaneonatos.neonato.model.NeonatoAusenciaUTI;
+import com.roderly.pesquisaneonatos.neonato.model.NeonatoSitioMalformacao;
 import com.roderly.pesquisaneonatos.neonato.service.NeonatoService;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class NeonatoMapper {
@@ -38,7 +40,6 @@ public class NeonatoMapper {
         var idadeGestacional = request.idIdadeGestacional() != null ? new IdadeGestacional(request.idIdadeGestacional()) : null;
         var tipoParto = request.idTipoParto() != null ? new TipoParto(request.idTipoParto()) : null;
         var roturaMembrana = request.idRoturaMembrana() != null ? new RoturaMembrana(request.idRoturaMembrana()) : null;
-        var sitioMalFormacao = request.idSitioMalformacao() != null ? new SitioMalformacao(request.idSitioMalformacao()) : null;
         var causaObito = request.idCausaObito() != null ? new CausaObito(request.idCausaObito()) : null;
 
 
@@ -62,7 +63,6 @@ public class NeonatoMapper {
         neonato.setIdadeGestacional(idadeGestacional);
         neonato.setTipoParto(tipoParto);
         neonato.setRoturaMembrana(roturaMembrana);
-        neonato.setSitioMalformacao(sitioMalFormacao);
         neonato.setCausaObito(causaObito);
 
         return neonato;
@@ -72,7 +72,7 @@ public class NeonatoMapper {
     public static NeonatoAusenciaUTI neonatoAusenciaUTIrequestToNeonatoAusenciaUTI(NeonatoAusenciaUTIRequest request, Neonato neonato) {
 
         var ausenciaUti = new NeonatoAusenciaUTI();
-        ausenciaUti.setIdNeonatosAusenciaUti(request.idNeonatosAusenciaUti());
+        ausenciaUti.setIdNeonatoAusenciaUti(request.idNeonatosAusenciaUti());
         ausenciaUti.setNeonato(neonato);
         ausenciaUti.setDataSaidaUti(request.dataSaidaUti());
         ausenciaUti.setDataRetornoUti(request.dataRetornoUti());
@@ -81,10 +81,29 @@ public class NeonatoMapper {
     }
 
 
+    public static NeonatoSitioMalformacao neonatoToNeonatoSitioMalformacao(Long idSitioMalformacao, Neonato neonato) {
+
+        var sitioMalformacao = new SitioMalformacao(idSitioMalformacao);
+
+        var neonatoSitioMalformacao = new NeonatoSitioMalformacao();
+        neonatoSitioMalformacao.setNeonato(neonato);
+        neonatoSitioMalformacao.setSitioMalformacao(sitioMalformacao);
+
+        return neonatoSitioMalformacao;
+    }
+
     public static NeonatoResponse convertNeonatoToNeonatoResponse(Neonato neonato) {
 
-        var ausenciasUti = neonato.getAusenciasUti().stream()
-                .map(NeonatoMapper::convertNeonatoAusenciaUTIToNeonatoAusenciaUTIResponse)
+        var sitiosMalformacao = neonato.getNeonatoMalformacaoList().stream()
+                .map(neonatoSitioMalformacao -> neonatoSitioMalformacao.getSitioMalformacao().getIdSitioMalformacao())
+                .toList();
+
+        var ausenciasUti = neonato.getNeonatoAusenciaUtiList().stream()
+                .map(ausenciaUTI -> new NeonatoAusenciaUTIResponse(
+                        ausenciaUTI.getIdNeonatoAusenciaUti(),
+                        ausenciaUTI.getDataSaidaUti(),
+                        ausenciaUTI.getDataRetornoUti()
+                ))
                 .toList();
 
         return new NeonatoResponse(
@@ -105,20 +124,11 @@ public class NeonatoMapper {
                 neonato.getIdadeGestacional() != null ? neonato.getIdadeGestacional().getIdIdadeGestacional() : null,
                 neonato.getTipoParto() != null ? neonato.getTipoParto().getIdTipoParto() : null,
                 neonato.getRoturaMembrana() != null ? neonato.getRoturaMembrana().getIdRoturaMembrana() : null,
-                neonato.getSitioMalformacao() != null ? neonato.getSitioMalformacao().getIdSitioMalformacao() : null,
+                sitiosMalformacao,
                 neonato.getCausaObito() != null ? neonato.getCausaObito().getIdCausaObito() : null,
                 neonato.getRiscoInfeccio(),
                 neonato.getSepseClinica(),
                 ausenciasUti
-        );
-    }
-
-
-    public static NeonatoAusenciaUTIResponse convertNeonatoAusenciaUTIToNeonatoAusenciaUTIResponse(NeonatoAusenciaUTI ausenciaUTI) {
-        return new NeonatoAusenciaUTIResponse(
-                ausenciaUTI.getIdNeonatosAusenciaUti(),
-                ausenciaUTI.getDataSaidaUti(),
-                ausenciaUTI.getDataRetornoUti()
         );
     }
 
@@ -197,7 +207,7 @@ public class NeonatoMapper {
         report.setIdadeGestacionalCodigo(neonato.getIdadeGestacional() != null ? neonato.getIdadeGestacional().getCodigo() : null);
         report.setTipoPartoCodigo(neonato.getTipoParto() != null ? neonato.getTipoParto().getCodigo() : null);
         report.setRoturaMembranaCodigo(neonato.getRoturaMembrana() != null ? neonato.getRoturaMembrana().getCodigo() : null);
-        report.setMalformacao(neonato.getSitioMalformacao() != null ? 1L : 0L);
+        report.setMalformacao(neonato.getNeonatoMalformacaoList().isEmpty() ? 0L : 1L);
         report.setCirurgia(cirurgiaNeonato);
 
         report.setFlebotomia(flebotomia.evento());

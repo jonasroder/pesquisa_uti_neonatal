@@ -21,7 +21,7 @@ public record NeonatoResponse(
         Long idIdadeGestacional,
         Long idTipoParto,
         Long idRoturaMembrana,
-        Long idSitioMalformacao,
+        List<Long> idSitioMalformacao,
         Long idCausaObito,
         Boolean riscoInfeccioso,
         Boolean sepseClinica,

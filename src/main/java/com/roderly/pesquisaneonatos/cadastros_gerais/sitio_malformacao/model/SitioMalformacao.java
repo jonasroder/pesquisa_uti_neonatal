@@ -1,12 +1,15 @@
 package com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model;
 
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
+import com.roderly.pesquisaneonatos.prontuario.model.Evento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -26,9 +29,6 @@ public class SitioMalformacao {
 
     @Column(name = "descricao")
     private String descricao;
-
-    @OneToMany(mappedBy = "sitioMalformacao")
-    private Set<Neonato> neonatoSet;
 
     public SitioMalformacao(Long idSitioMalformacao) {
         this.idSitioMalformacao = idSitioMalformacao;

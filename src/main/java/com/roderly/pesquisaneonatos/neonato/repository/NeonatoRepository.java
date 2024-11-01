@@ -63,7 +63,7 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long> {
             AND e.id_neonato = :idNeonato
             AND ca.id_tipo_antimicrobiano = :idTipoAntimicrobiano
             """, nativeQuery = true)
-    Long getDiasUsoAnimicrobiano(@Param("idNeonato") Long idNeonato, @Param("idTipoAntimicrobiano") Long idTipoAntimicrobiano);
+    Long getDiasUsoAntimicrobiano(@Param("idNeonato") Long idNeonato, @Param("idTipoAntimicrobiano") Long idTipoAntimicrobiano);
 
 
 }
