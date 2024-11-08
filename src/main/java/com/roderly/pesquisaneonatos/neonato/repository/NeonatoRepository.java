@@ -66,5 +66,12 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long> {
     Long getDiasUsoAntimicrobiano(@Param("idNeonato") Long idNeonato, @Param("idTipoAntimicrobiano") Long idTipoAntimicrobiano);
 
 
+    @Query("""
+        SELECT DISTINCT e.neonato.idNeonato
+        FROM IsoladoColeta ic
+        JOIN Evento e ON e.idEvento = ic.evento.idEvento
+        """)
+    List<Long> findIdsNeonatosInfectados();
+
 }
 

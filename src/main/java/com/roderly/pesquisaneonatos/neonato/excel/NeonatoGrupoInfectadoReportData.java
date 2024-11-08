@@ -13,6 +13,7 @@ import lombok.Setter;
 public class NeonatoGrupoInfectadoReportData {
     Integer ano;
     String prontuario;
+    String paciente;
     String dataNascimento;
     String dataInternacao;
     String dataDesfecho;
@@ -25,75 +26,67 @@ public class NeonatoGrupoInfectadoReportData {
     Long pesoNascimentoCodigo;
     Long idadeGestacionalCodigo;
     Long tipoPartoCodigo;
-
-
     Long roturaMembranaCodigo;
+    Long apgar1;
+    Long apgar5;
+
     Long malformacao;
+    Long sitioMalformacao1;
+    Long sitioMalformacao2;
+    Long sitioMalformacao3;
+    Long sitioMalformacao4;
+    Long sitioMalformacao5;
+
     Long cirurgia;
+    Long cirurgiaPrevia;
+    Long sitioCirurgia1;
+    String dataCirurgia1;
+    Long sitioCirurgia2;
+    String dataCirurgia2;
+    Long sitioCirurgia3;
+    String dataCirurgia3;
+    Long sitioCirurgia4;
+    String dataCirurgia4;
+    Long sitioCirurgia5;
+    String dataCirurgia5;
+    Long sitioCirurgia6;
+    String dataCirurgia6;
+    Long sitioCirurgia7;
+    String dataCirurgia7;
+    Long sitioCirurgia8;
+    String dataCirurgia8;
+    Long sitioCirurgia9;
+    String dataCirurgia9;
+    Long sitioCirurgia10;
+    String dataCirurgia10;
 
-    Long flebotomia;
-    Long diasFlebotomia;
-    Long CVU;
-    Long diasCVU;
-    Long PICC;
-    Long diasPICC;
-    Long intubacao;
-    Long diasIntubacao;
-    Long sonda;
-    Long diasSonda;
-    Long nutricaoParenteral;
-    Long diasNutricaoParenteral;
-    Long dreno;
-    Long diasDreno;
-    Long usoATB;
-    Long diasUsoATB;
-    Long usoATF;
-    Long diasUsoATF;
+    int usoFlebotomia;
+    int diasTotaisFlebotomia;
+    int diasFlebotomia1Infencao;
 
-    Long aminoglicosideos;
-    Long diasAminoglicosideos;
-    Long ansamicinas;
-    Long diasAnsamicinas;
-    Long betalactamicos;
-    Long diasBetalactamicos;
-    Long carbapenemicos;
-    Long diasCarbapenemicos;
-    Long cefalosporinasPrimeiraGeracao;
-    Long diasCefalosporinasPrimeiraGeracao;
-    Long cefalosporinasSegundaGeracao;
-    Long diasCefalosporinasSegundaGeracao;
-    Long cefalosporinasTerceiraGeracao;
-    Long diasCefalosporinasTerceiraGeracao;
-    Long cefalosporinasQuartaGeracao;
-    Long diasCefalosporinasQuartaGeracao;
-    Long cefalosporinasQuintaGeracao;
-    Long diasCefalosporinasQuintaGeracao;
-    Long glicilciclinas;
-    Long diasGlicilciclinas;
-    Long glicopeptideos;
-    Long diasGlicopeptideos;
-    Long inibidoresDeFolato;
-    Long diasInibidoresDeFolato;
-    Long lincosamidas;
-    Long diasLincosamidas;
-    Long macrolideos;
-    Long diasMacrolideos;
-    Long nitrofuranicos;
-    Long diasNitrofuranicos;
-    Long nitroimidazolicos;
-    Long diasNitroimidazolicos;
-    Long polimixinas;
-    Long diasPolimixinas;
-    Long quinolonas;
-    Long diasQuinolonas;
-    Long tetraciclinas;
-    Long diasTetraciclinas;
-    Long azois;
-    Long diasAzois;
-    Long equinocandinas;
-    Long diasEquinocandinas;
-    Long polienos;
-    Long diasPolienos;
+    int usoCvu;
+    int diasTotaisCvu;
+    int diasCvu1Infencao;
 
-    Long motivoObito;
+    int usoPicc;
+    int diasTotaisPicc;
+    int diasPicc1Infencao;
+
+    int usoEntubacao;
+    int diasTotaisEntubacao;
+    int diasEntubacao1Infencao;
+
+    int usoSondaVesical;
+    int diasTotaisSondaVesical;
+    int diasSondaVesical1Infencao;
+
+    int usoNutricaoParenteral;
+    int diasTotaisNutricaoParenteral;
+    int diasNutricaoParenteral1Infencao;
+
+    int usoDreno;
+    int diasTotaisDreno;
+    int diasDreno1Infencao;
+
+
 }

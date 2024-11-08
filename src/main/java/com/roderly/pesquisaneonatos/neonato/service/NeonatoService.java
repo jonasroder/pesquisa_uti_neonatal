@@ -17,19 +17,22 @@ import com.roderly.pesquisaneonatos.neonato.repository.NeonatoSitioMalformacaoRe
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.EventoTipoDiasResponse;
+import com.roderly.pesquisaneonatos.prontuario.model.Evento;
+import com.roderly.pesquisaneonatos.prontuario.repository.EventoEntidadeRepository;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.temporal.ChronoUnit;
-
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -40,6 +43,8 @@ public class NeonatoService {
     private final NeonatoAusenciaUTIRepository neonatoAusenciaUtiRepository;
     private final EventoRepository eventoRepository;
     private final NeonatoSitioMalformacaoRepository neonatoSitioMalformacaoRepository;
+    private final EventoEntidadeRepository eventoEntidadeRepository;
+    private final EntityManager entityManager;
 
 
     public ApiResponseDTO save(NeonatoRequest request) throws IOException {
@@ -89,12 +94,14 @@ public class NeonatoService {
     public byte[] generateExcelReport() throws IOException {
 
         var neonatosControle = getReportGrupoControle();
-        var mappings = ExcelHelper.createGrupoControleColumnMapping();
+        var mappingGrupoControle = ExcelHelper.createGrupoControleColumnMapping();
 
+        var neonatosInfectados = getReportGrupoInfectado();
+        var mappingGrupoInfectado = ExcelHelper.createGrupoInfectadoColumnMapping();
 
         List<ExcelSheetData<?>> sheetDataList = new ArrayList<>();
-        sheetDataList.add(new ExcelSheetData<>("Grupo Controle", neonatosControle, mappings));
-        sheetDataList.add(new ExcelSheetData<>("Grupo Infectado", neonatosControle, mappings));
+        sheetDataList.add(new ExcelSheetData<>("Grupo Controle", neonatosControle, mappingGrupoControle));
+        sheetDataList.add(new ExcelSheetData<>("Grupo Infectado", neonatosInfectados, mappingGrupoInfectado));
 
         return new ExcelService().generateExcelReport(sheetDataList);
     }
@@ -149,15 +156,66 @@ public class NeonatoService {
 
                     return NeonatoMapper.convertToNeonatoGrupoControleReportData(neonato, diasForaUti, cirurgiaNeonato, eventos, diasUsoATB, diasUsoATF, classesAntimicrobianos, this);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
     public List<NeonatoGrupoInfectadoReportData> getReportGrupoInfectado() {
-        var idsNeonatosControle = neonatoRepository.findIdsNeonatosControle();
+        var idsNeonatosControle = neonatoRepository.findIdsNeonatosInfectados();
         var neonatos = neonatoRepository.findAllById(idsNeonatosControle);
 
-        return Collections.emptyList();
+        return neonatos.stream()
+                .map(neonato -> {
+                    var diasForaUti = calcularDiasForaUTI(neonato.getIdNeonato());
+
+                    return NeonatoMapper.convertToNeonatoGrupoInfectadoReportData(neonato, diasForaUti, this);
+                })
+                .toList();
+    }
+
+
+    public List<Evento> filtrarListaEventosPorTipo(List<Evento> eventos, Long tipo) {
+        return eventos.stream()
+                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(tipo) && evento.getTipoEvento().getIsActive())
+                .toList();
+    }
+
+
+    public LocalDate getDataPrimeiraInfeccao(List<Evento> eventos) {
+        return eventos.stream()
+                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getTipoEvento().getIsActive())
+                .map(Evento::getDataEvento)
+                .min(LocalDate::compareTo)
+                .orElse(null);
+    }
+
+
+    public Long getExistenciaEventoPrevioInfeccao(List<Evento> eventos, LocalDate dataInfeccao) {
+        boolean exists = eventos.stream()
+                .anyMatch(evento -> evento.getTipoEvento().getIsActive() &&
+                        evento.getDataEvento().isBefore(dataInfeccao));
+
+        return exists ? 1L : 0L;
+    }
+
+
+    public int getDiasEventoAteInfeccao(List<Evento> eventos, LocalDate dataInfeccao) {
+        return (int) eventos.stream()
+                .filter(evento -> evento.getTipoEvento().getIsActive() &&
+                        evento.getDataEvento().isBefore(dataInfeccao))
+                .count();
+    }
+
+
+    public Long getCodigoCadastro(String tipoEntidade, String pkTipoEntidade, Long idEntidade) {
+        String queryStr = "SELECT codigo FROM " + tipoEntidade + " WHERE " + pkTipoEntidade + " = " + idEntidade;
+
+        try {
+            Query query = entityManager.createNativeQuery(queryStr);
+            return (Long) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
 

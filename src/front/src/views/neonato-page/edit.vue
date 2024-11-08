@@ -44,7 +44,7 @@ const neonato = reactive({
     idIdadeGestacional: null,
     idTipoParto       : null,
     idRoturaMembrana  : null,
-    idSitioMalformacao: null,
+    idSitioMalformacao: [],
     idSitioCirurgia   : null,
     idCausaObito      : null,
     riscoInfeccioso   : false,
