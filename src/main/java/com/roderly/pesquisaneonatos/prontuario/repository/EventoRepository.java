@@ -29,8 +29,10 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
             "LEFT JOIN SitioColeta sc ON sc.idSitioColeta = ee.idEntidade " +
             "LEFT JOIN IsoladoColeta ic ON ic.evento.idEvento = e.idEvento " +
             "WHERE e.tipoEvento.idTipoEvento = 10 AND e.isActive = true " +
-            "AND e.neonato.idNeonato = :idNeonato")
+            "AND e.neonato.idNeonato = :idNeonato " +
+            "ORDER BY e.dataEvento ASC")
     List<ColetaIsoladoSemAntibiogramasResponse> findColetaIsoladoByIdNeonato(@Param("idNeonato") Long idNeonato);
+
 
 
     @Query(value = """            

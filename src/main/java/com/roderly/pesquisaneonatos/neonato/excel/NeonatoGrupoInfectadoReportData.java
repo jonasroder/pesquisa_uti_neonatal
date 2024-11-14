@@ -1,9 +1,12 @@
 package com.roderly.pesquisaneonatos.neonato.excel;
 
+import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model.SitioMalformacao;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 
 @Getter
@@ -31,62 +34,31 @@ public class NeonatoGrupoInfectadoReportData {
     Long apgar5;
 
     Long malformacao;
-    Long sitioMalformacao1;
-    Long sitioMalformacao2;
-    Long sitioMalformacao3;
-    Long sitioMalformacao4;
-    Long sitioMalformacao5;
+    List<SitioMalformacao> SitioMalformacoes;
 
-    Long cirurgia;
-    Long cirurgiaPrevia;
-    Long sitioCirurgia1;
-    String dataCirurgia1;
-    Long sitioCirurgia2;
-    String dataCirurgia2;
-    Long sitioCirurgia3;
-    String dataCirurgia3;
-    Long sitioCirurgia4;
-    String dataCirurgia4;
-    Long sitioCirurgia5;
-    String dataCirurgia5;
-    Long sitioCirurgia6;
-    String dataCirurgia6;
-    Long sitioCirurgia7;
-    String dataCirurgia7;
-    Long sitioCirurgia8;
-    String dataCirurgia8;
-    Long sitioCirurgia9;
-    String dataCirurgia9;
-    Long sitioCirurgia10;
-    String dataCirurgia10;
+    ProcedimentosDiasInfeccao Cirurgia;
+    List<DataCodigoCirurgia> ColunasCirurgia;
 
-    int usoFlebotomia;
-    int diasTotaisFlebotomia;
-    int diasFlebotomia1Infencao;
+    ProcedimentosDiasInfeccao Flebotomia;
+    ProcedimentosDiasInfeccao Cvu;
+    ProcedimentosDiasInfeccao Picc;
+    ProcedimentosDiasInfeccao Entubacao;
+    ProcedimentosDiasInfeccao SondaVesical;
+    ProcedimentosDiasInfeccao NutricaoParenteral;
+    ProcedimentosDiasInfeccao Dreno;
 
-    int usoCvu;
-    int diasTotaisCvu;
-    int diasCvu1Infencao;
+    int riscoInfeccioso;
+    int sepseClinica;
 
-    int usoPicc;
-    int diasTotaisPicc;
-    int diasPicc1Infencao;
-
-    int usoEntubacao;
-    int diasTotaisEntubacao;
-    int diasEntubacao1Infencao;
-
-    int usoSondaVesical;
-    int diasTotaisSondaVesical;
-    int diasSondaVesical1Infencao;
-
-    int usoNutricaoParenteral;
-    int diasTotaisNutricaoParenteral;
-    int diasNutricaoParenteral1Infencao;
-
-    int usoDreno;
-    int diasTotaisDreno;
-    int diasDreno1Infencao;
+    List<ColetaEpisodio> ColetaSangue;
+    List<ColetaEpisodio> ColetaSecOcular;
+    List<ColetaEpisodio> ColetaLiqPleural;
+    List<ColetaEpisodio> ColetaLCR;
+    List<ColetaEpisodio> ColetaLiqAscitico;
+    List<ColetaEpisodio> ColetaUrina;
+    List<ColetaEpisodio> ColetaSecrecaoPulmonar;
+    List<ColetaEpisodio> ColetaPontaCateter;
+    List<ColetaEpisodio> ColetaSwabAnal;
 
 
 }

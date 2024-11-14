@@ -16,13 +16,17 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long> {
 
 
     @Query("""
-            SELECT DISTINCT n.idNeonato
-            FROM Neonato n
-            LEFT JOIN n.eventoList e ON e.tipoEvento.idTipoEvento = 10
-            LEFT JOIN e.isoladoColeta ic
-            WHERE ic.idIsoladoColeta IS NULL
-            """)
+        SELECT n.idNeonato
+        FROM Neonato n
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM n.eventoList e
+            JOIN e.isoladoColeta ic
+            WHERE e.tipoEvento.idTipoEvento = 10
+        )
+        """)
     List<Long> findIdsNeonatosControle();
+
 
 
     @Query(value = """

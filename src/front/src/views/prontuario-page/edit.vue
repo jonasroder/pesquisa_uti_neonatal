@@ -12,7 +12,7 @@ import ModalCadastroEventoAgenda from "@/views/prontuario-page/modalCadastroEven
 import ColetaIsolado from "@/views/prontuario-page/coletaIsolado.vue";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {useRouter} from "vue-router";
-import {getIdFromUrl, verificarCamposObrigatorios} from "@/service/common/utils";
+import {getIdFromUrl} from "@/service/common/utils";
 
 
 const id                    = ref(getIdFromUrl());
@@ -26,7 +26,6 @@ const router                = useRouter();
 const nomeMae               = ref();
 const prontuario            = ref();
 const carregarDadosIsolados = ref(false);
-const camposObrigatorios    = ref(true);
 
 const coletaData = ref([{
     idMicroorganismo                    : null,
@@ -142,23 +141,15 @@ const fecharModalCadastroRapido = async () => {
 const handleSave = async () => {
     loading.show();
 
+    coletaData.value = coletaData.value.filter(coleta => {
+        if (coleta.idMicroorganismo != null) return coleta;
+    });
+
     for (const coleta of coletaData.value) {
-
-        const verificacoes = [{
-            dados : coleta,
-            campos: ['idMicroorganismo']
-        }];
-
-        if (!verificarCamposObrigatorios(verificacoes)) {
-            camposObrigatorios.value = false;
-            loading.hide();
-            return;
-        }
-
         for (const antibiograma of coleta.antibiogramas) {
-           if(antibiograma.idResistenciaMicroorganismo === null || antibiograma.idAntimicrobiano === null) {
-               antibiograma.isActive = false;
-           }
+            if (antibiograma.idResistenciaMicroorganismo === null || antibiograma.idAntimicrobiano === null) {
+                antibiograma.isActive = false;
+            }
         }
     }
 
@@ -227,7 +218,7 @@ watch(abaPagina, (newVal) => {
                         </v-window-item>
 
                         <v-window-item value="2">  <!-- Passamos a prop reativa "carregar" para o filho -->
-                            <ColetaIsolado :key="carregarDadosIsolados" :idNeonato="id" :onSave="saveColetasIsolados" :camposObrigatorios="camposObrigatorios"/>
+                            <ColetaIsolado :key="carregarDadosIsolados" :idNeonato="id" :onSave="saveColetasIsolados"/>
                         </v-window-item>
                     </v-window>
                 </v-card-text>

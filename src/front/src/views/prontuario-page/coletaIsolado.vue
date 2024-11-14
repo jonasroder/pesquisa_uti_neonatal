@@ -13,10 +13,6 @@ const props = defineProps({
     onSave            : {
         type    : Function,
         required: true
-    },
-    camposObrigatorios: {
-        type   : Boolean,
-        default: true
     }
 });
 
@@ -125,7 +121,6 @@ watch(coletasIsolados, () => {
                                 label="Isolado"
                                 :items="optionsMicroorganismos"
                                 v-model="coleta.idMicroorganismo"
-                                :error="!coleta.idMicroorganismo && !props.camposObrigatorios"
                             />
                         </v-col>
 

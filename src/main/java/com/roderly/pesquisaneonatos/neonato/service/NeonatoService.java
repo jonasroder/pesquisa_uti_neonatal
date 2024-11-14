@@ -1,5 +1,7 @@
 package com.roderly.pesquisaneonatos.neonato.service;
 
+import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model.SitioMalformacao;
+import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
 import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.common.excel.ExcelService;
 import com.roderly.pesquisaneonatos.common.excel.ExcelSheetData;
@@ -7,10 +9,9 @@ import com.roderly.pesquisaneonatos.neonato.dto.projections.DiasAusenciaUTIProje
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
-import com.roderly.pesquisaneonatos.neonato.excel.ExcelHelper;
-import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoControleReportData;
-import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoInfectadoReportData;
+import com.roderly.pesquisaneonatos.neonato.excel.*;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
+import com.roderly.pesquisaneonatos.neonato.model.NeonatoSitioMalformacao;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoAusenciaUTIRepository;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoSitioMalformacaoRepository;
@@ -18,7 +19,6 @@ import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobi
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.EventoTipoDiasResponse;
 import com.roderly.pesquisaneonatos.prontuario.model.Evento;
-import com.roderly.pesquisaneonatos.prontuario.repository.EventoEntidadeRepository;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,8 +31,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -43,7 +43,6 @@ public class NeonatoService {
     private final NeonatoAusenciaUTIRepository neonatoAusenciaUtiRepository;
     private final EventoRepository eventoRepository;
     private final NeonatoSitioMalformacaoRepository neonatoSitioMalformacaoRepository;
-    private final EventoEntidadeRepository eventoEntidadeRepository;
     private final EntityManager entityManager;
 
 
@@ -181,21 +180,42 @@ public class NeonatoService {
     }
 
 
-    public LocalDate getDataPrimeiraInfeccao(List<Evento> eventos) {
+    public List<Evento> buscarColetasInfeccao(List<Evento> eventos) {
         return eventos.stream()
-                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getTipoEvento().getIsActive())
-                .map(Evento::getDataEvento)
-                .min(LocalDate::compareTo)
-                .orElse(null);
+                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getTipoEvento().getIsActive() && evento.getIsoladoColeta() != null)
+                .toList();
+    }
+
+    public ProcedimentosDiasInfeccao getProcedimentosDiasInfeccao(List<Evento> eventos, List<LocalDate> datasInfeccao) {
+        var procedimentosDiasInfeccao = new ProcedimentosDiasInfeccao();
+
+        procedimentosDiasInfeccao.setUso(eventos.isEmpty() ? 0 : 1);
+        procedimentosDiasInfeccao.setDiasTotaisUso(eventos.size());
+
+        // Processa dias até a infecção e dias após a infecção para cada episódio
+        for (int i = 0; i < 7; i++) {
+            if (i < datasInfeccao.size() && datasInfeccao.get(i) != null) {
+                LocalDate dataInfeccao = datasInfeccao.get(i);
+
+                // Define os dias até a infecção
+                procedimentosDiasInfeccao.setDiasAteInfecao(i + 1, getDiasEventoAteInfeccao(eventos, dataInfeccao));
+
+                // Define os dias após a infecção
+                procedimentosDiasInfeccao.setDiasAposInfecao(i + 1, getDiasEventoAposInfeccao(eventos, dataInfeccao));
+            }
+        }
+
+        return procedimentosDiasInfeccao;
     }
 
 
-    public Long getExistenciaEventoPrevioInfeccao(List<Evento> eventos, LocalDate dataInfeccao) {
-        boolean exists = eventos.stream()
-                .anyMatch(evento -> evento.getTipoEvento().getIsActive() &&
-                        evento.getDataEvento().isBefore(dataInfeccao));
-
-        return exists ? 1L : 0L;
+    public LinkedHashSet<LocalDate> getDatasInfeccoes(List<Evento> eventos) {
+        return eventos.stream()
+                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getTipoEvento().getIsActive())
+                .map(Evento::getDataEvento)
+                .sorted()
+                .limit(7)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 
@@ -203,6 +223,14 @@ public class NeonatoService {
         return (int) eventos.stream()
                 .filter(evento -> evento.getTipoEvento().getIsActive() &&
                         evento.getDataEvento().isBefore(dataInfeccao))
+                .count();
+    }
+
+
+    public int getDiasEventoAposInfeccao(List<Evento> eventos, LocalDate dataInfeccao) {
+        return (int) eventos.stream()
+                .filter(evento -> evento.getTipoEvento().getIsActive() &&
+                        evento.getDataEvento().isAfter(dataInfeccao))
                 .count();
     }
 
@@ -216,6 +244,110 @@ public class NeonatoService {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+
+    public List<Evento> filtrarListaColetasPorLocal(List<Evento> eventos, Long sitioColeta) {
+        return eventos.stream()
+                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getEventoEntidade().getIdEntidade().equals(sitioColeta) && evento.getTipoEvento().getIsActive())
+                .toList();
+    }
+
+
+    public List<ColetaEpisodio> listaEpisodiosColeta(List<Evento> eventos) {
+
+        List<ColetaEpisodio> episodios = new ArrayList<>();
+
+        var dataEventos = eventos.stream()
+                .filter(evento -> evento.getDataEvento() != null)
+                .collect(Collectors.groupingBy(
+                        Evento::getDataEvento,
+                        TreeMap::new,
+                        Collectors.toList()
+                ));
+
+        for (Map.Entry<LocalDate, List<Evento>> entry : dataEventos.entrySet()) {
+            LocalDate data = entry.getKey();
+            List<Evento> eventosDoDia = entry.getValue();
+
+            // Conta apenas os eventos que possuem isolados
+            long nColetasComIsolados = eventosDoDia.stream()
+                    .filter(evento -> evento.getIsoladoColeta() != null)
+                    .count();
+
+            var infeccaoMista = nColetasComIsolados > 1 ? 1 : 0;
+            var coleta = new ColetaEpisodio();
+
+            coleta.setDataInfeccao(DateUtil.LocalDateToDateBR(data));
+            coleta.setNumeroIsolados((int) nColetasComIsolados); // Define o número de eventos com isolados
+
+            // Verifica se há pelo menos um evento no dia e define o primeiro isolado, se presente
+            if (!eventosDoDia.isEmpty()) {
+                Evento primeiroEvento = eventosDoDia.get(0);
+                if (primeiroEvento.getIsoladoColeta() != null) {
+                    var isoladoColeta = primeiroEvento.getIsoladoColeta();
+
+                    if (isoladoColeta.getMicroorganismo() != null) {
+                        coleta.setEspecieIsolada(isoladoColeta.getMicroorganismo().getCodigo());
+                    }
+                    if (isoladoColeta.getPerfilResistenciaMicroorganismo() != null) {
+                        coleta.setPerfilResistencia(isoladoColeta.getPerfilResistenciaMicroorganismo().getCodigo());
+                    }
+                    if (isoladoColeta.getMecanismoResistenciaMicroorganismo() != null) {
+                        coleta.setMecanismoResistencia(isoladoColeta.getMecanismoResistenciaMicroorganismo().getCodigo());
+                    }
+                }
+            }
+
+            coleta.setInfeccaoMista(infeccaoMista);
+
+            // Verifica se há pelo menos dois eventos com isolados para acessar o segundo isolado
+            if (nColetasComIsolados > 1 && eventosDoDia.size() > 1) {
+                Evento segundoEvento = eventosDoDia.get(1);
+                if (segundoEvento.getIsoladoColeta() != null) {
+                    var isoladoColeta2 = segundoEvento.getIsoladoColeta();
+
+                    if (isoladoColeta2.getMicroorganismo() != null) {
+                        coleta.setEspecieIsolada2(isoladoColeta2.getMicroorganismo().getCodigo());
+                    }
+                    if (isoladoColeta2.getPerfilResistenciaMicroorganismo() != null) {
+                        coleta.setPerfilResistenciaEspecie2(isoladoColeta2.getPerfilResistenciaMicroorganismo().getCodigo());
+                    }
+                    if (isoladoColeta2.getMecanismoResistenciaMicroorganismo() != null) {
+                        coleta.setMecanismoResistenciaEspecie2(isoladoColeta2.getMecanismoResistenciaMicroorganismo().getCodigo());
+                    }
+                }
+            }
+
+            episodios.add(coleta);
+        }
+
+        return episodios;
+    }
+
+
+    public List<SitioMalformacao> getColunasMalformacao(List<NeonatoSitioMalformacao> malformacaoList) {
+        return malformacaoList.stream()
+                .map(NeonatoSitioMalformacao::getSitioMalformacao)
+                .toList();
+    }
+
+
+    public List<DataCodigoCirurgia> getColunasCirurgias(List<Evento> cirurgias) {
+
+        List<DataCodigoCirurgia> colunasCirurgias = new ArrayList<>();
+
+        for (Evento evento : cirurgias) {
+            var dataEvento = evento.getDataEvento();
+            var codigoSitioCirurgia = getCodigoCadastro("sitio_cirurgia", "id_sitio_cirurgia", evento.getEventoEntidade().getIdEntidade());
+
+            var cirurgia = new DataCodigoCirurgia();
+            cirurgia.setDataCirurgia(DateUtil.LocalDateToDateBR(dataEvento));
+            cirurgia.setCodigoSitioCirurgia(codigoSitioCirurgia);
+            colunasCirurgias.add(cirurgia);
+        }
+
+        return colunasCirurgias;
     }
 
 

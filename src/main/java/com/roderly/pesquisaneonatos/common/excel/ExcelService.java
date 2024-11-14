@@ -39,10 +39,49 @@ public class ExcelService {
             Row row = sheet.createRow(rowIndex++);
             for (int i = 0; i < columnMappings.size(); i++) {
                 ExcelColumnMapping mapping = columnMappings.get(i);
-                String methodName = mapping.getProperty();
+                String[] methodParts = mapping.getProperty().split("_");
+
                 try {
-                    Method method = dataItem.getClass().getMethod(methodName);
-                    Object value = method.invoke(dataItem);
+                    Object value = null;
+                    if (methodParts.length == 3) {
+                        // Caso onde existe um índice para uma lista
+                        String listMethod = methodParts[0];
+                        int index = Integer.parseInt(methodParts[1]);
+                        String internalMethod = methodParts[2];
+
+                        // Acessa a lista usando o nome do metodo
+                        Method getListMethod = dataItem.getClass().getMethod("get" + capitalize(listMethod));
+                        List<?> list = (List<?>) getListMethod.invoke(dataItem);
+
+                        // Verifica se o índice está dentro do tamanho da lista
+                        if (list != null && list.size() > index) {
+                            Object listItem = list.get(index);
+
+                            // Acessa o campo interno do objeto na lista
+                            Method getInternalMethod = listItem.getClass().getMethod("get" + capitalize(internalMethod));
+                            value = getInternalMethod.invoke(listItem);
+                        }
+                    } else if (methodParts.length == 2) {
+                        // Caso onde o metodo acessa diretamente um campo de uma classe sem índice de lista
+                        String mainObjectMethod = methodParts[0];
+                        String internalField = methodParts[1];
+
+                        // Acessa o objeto interno na classe principal
+                        Method mainMethod = dataItem.getClass().getMethod("get" + capitalize(mainObjectMethod));
+                        Object internalObject = mainMethod.invoke(dataItem);
+
+                        if (internalObject != null) {
+                            // Acessa o campo dentro do objeto
+                            Method internalMethod = internalObject.getClass().getMethod("get" + capitalize(internalField));
+                            value = internalMethod.invoke(internalObject);
+                        }
+                    } else {
+                        // Caso simples onde não há índice (propriedade direta)
+                        String methodName = mapping.getProperty();
+                        Method method = dataItem.getClass().getMethod("get" + capitalize(methodName));
+                        value = method.invoke(dataItem);
+                    }
+
                     if (value != null) {
                         Cell cell = row.createCell(i);
                         setCellValue(cell, value);
@@ -72,5 +111,10 @@ public class ExcelService {
         style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         return style;
+    }
+
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 }
