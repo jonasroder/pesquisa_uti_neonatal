@@ -1,5 +1,7 @@
 package com.roderly.pesquisaneonatos.neonato.service;
 
+import com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.model.Antimicrobiano;
+import com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.repository.AntimicrobianoRepository;
 import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model.SitioMalformacao;
 import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
 import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
@@ -43,8 +45,10 @@ public class NeonatoService {
     private final NeonatoAusenciaUTIRepository neonatoAusenciaUtiRepository;
     private final EventoRepository eventoRepository;
     private final NeonatoSitioMalformacaoRepository neonatoSitioMalformacaoRepository;
+    private final AntimicrobianoRepository antimicrobianoRepository;
     private final EntityManager entityManager;
 
+    private List<Antimicrobiano> antimicrobianos;
 
     public ApiResponseDTO save(NeonatoRequest request) throws IOException {
         var prontuarioExistente = neonatoRepository.findByProntuario(request.prontuario());
@@ -91,6 +95,8 @@ public class NeonatoService {
 
 
     public byte[] generateExcelReport() throws IOException {
+
+        antimicrobianos = antimicrobianoRepository.findAll();
 
         var neonatosControle = getReportGrupoControle();
         var mappingGrupoControle = ExcelHelper.createGrupoControleColumnMapping();
@@ -193,7 +199,7 @@ public class NeonatoService {
         procedimentosDiasInfeccao.setDiasTotaisUso(eventos.size());
 
         // Processa dias até a infecção e dias após a infecção para cada episódio
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             if (i < datasInfeccao.size() && datasInfeccao.get(i) != null) {
                 LocalDate dataInfeccao = datasInfeccao.get(i);
 
@@ -214,7 +220,6 @@ public class NeonatoService {
                 .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getTipoEvento().getIsActive())
                 .map(Evento::getDataEvento)
                 .sorted()
-                .limit(7)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -230,7 +235,7 @@ public class NeonatoService {
     public int getDiasEventoAposInfeccao(List<Evento> eventos, LocalDate dataInfeccao) {
         return (int) eventos.stream()
                 .filter(evento -> evento.getTipoEvento().getIsActive() &&
-                        evento.getDataEvento().isAfter(dataInfeccao))
+                        !evento.getDataEvento().isBefore(dataInfeccao))
                 .count();
     }
 
@@ -289,6 +294,7 @@ public class NeonatoService {
 
                     if (isoladoColeta.getMicroorganismo() != null) {
                         coleta.setEspecieIsolada(isoladoColeta.getMicroorganismo().getCodigo());
+                        coleta.setTipoIsolado(isoladoColeta.getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
                     }
                     if (isoladoColeta.getPerfilResistenciaMicroorganismo() != null) {
                         coleta.setPerfilResistencia(isoladoColeta.getPerfilResistenciaMicroorganismo().getCodigo());
@@ -309,6 +315,7 @@ public class NeonatoService {
 
                     if (isoladoColeta2.getMicroorganismo() != null) {
                         coleta.setEspecieIsolada2(isoladoColeta2.getMicroorganismo().getCodigo());
+                        coleta.setTipoIsolado2(isoladoColeta2.getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
                     }
                     if (isoladoColeta2.getPerfilResistenciaMicroorganismo() != null) {
                         coleta.setPerfilResistenciaEspecie2(isoladoColeta2.getPerfilResistenciaMicroorganismo().getCodigo());
@@ -350,5 +357,267 @@ public class NeonatoService {
         return colunasCirurgias;
     }
 
+
+    public List<MedicamentosDiasInfeccao> getMedicamentosEpisodiosInfeccao(List<Evento> episodios, List<LocalDate> datasInfeccao) {
+        List<MedicamentosDiasInfeccao> medicamentosDias = new ArrayList<>();
+
+        for (int i = 0; i < NeonatoMapper.numeroAnalisesInfeccoes; i++) {
+            if (i < datasInfeccao.size() && datasInfeccao.get(i) != null) {
+                var dataInfeccao = datasInfeccao.get(i);
+
+                var eventosAteInfeccao = getEventosAteInfeccao(episodios, dataInfeccao);
+                var eventosAposInfeccao = getEventosAposInfeccao(episodios, dataInfeccao);
+
+                var antibioticosPre = getTipoMedicacao(eventosAteInfeccao, antimicrobianos, 1L);
+                var antibioticosPos = getTipoMedicacao(eventosAposInfeccao, antimicrobianos, 1L);
+                var antifungicosPre = getTipoMedicacao(eventosAteInfeccao, antimicrobianos, 2L);
+                var antifungicosPos = getTipoMedicacao(eventosAposInfeccao, antimicrobianos, 2L);
+
+                var aminoglicosideosPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 1L);
+                var aminoglicosideosPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 1L);
+
+                var ansamicinasPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 2L);
+                var ansamicinasPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 2L);
+
+                var betalactamicosPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 3L);
+                var betalactamicosPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 3L);
+
+                var carbapenemicosPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 4L);
+                var carbapenemicosPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 4L);
+
+                var cefalosporinasPrimeiraGeracaoPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 5L);
+                var cefalosporinasPrimeiraGeracaoPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 5L);
+
+                var cefalosporinasSegundaGeracaoPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 6L);
+                var cefalosporinasSegundaGeracaoPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 6L);
+
+                var cefalosporinasTerceiraGeracaoPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 7L);
+                var cefalosporinasTerceiraGeracaoPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 7L);
+
+                var cefalosporinasQuartaGeracaoPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 8L);
+                var cefalosporinasQuartaGeracaoPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 8L);
+
+                var cefalosporinasQuintaGeracaoPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 9L);
+                var cefalosporinasQuintaGeracaoPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 9L);
+
+                var glicilciclinasPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 10L);
+                var glicilciclinasPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 10L);
+
+                var glicopeptideosPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 11L);
+                var glicopeptideosPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 11L);
+
+                var inibidoresDeFolatoPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 12L);
+                var inibidoresDeFolatoPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 12L);
+
+                var lincosamidasPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 13L);
+                var lincosamidasPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 13L);
+
+                var macrolideosPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 14L);
+                var macrolideosPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 14L);
+
+                var nitrofuranicosPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 15L);
+                var nitrofuranicosPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 15L);
+
+                var nitroimidazoisPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 16L);
+                var nitroimidazoisPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 16L);
+
+                var polimixinasPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 17L);
+                var polimixinasPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 17L);
+
+                var quinolonasPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 18L);
+                var quinolonasPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 18L);
+
+                var tetraciclinasPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 19L);
+                var tetraciclinasPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 19L);
+
+                var azoisPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 20L);
+                var azoisPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 20L);
+
+                var equinocandinasPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 21L);
+                var equinocandinasPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 21L);
+
+                var polienosPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 22L);
+                var polienosPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 22L);
+
+                var medicamentos = new MedicamentosDiasInfeccao();
+
+                medicamentos.setUsoAtbPrevio(antibioticosPre.isEmpty() ? 0 : 1);
+                medicamentos.setUsoAtfPrevio(antifungicosPre.isEmpty() ? 0 : 1);
+                medicamentos.setUsoAtbApos(antibioticosPos.isEmpty() ? 0 : 1);
+                medicamentos.setUsoAtfApos(antifungicosPos.isEmpty() ? 0 : 1);
+                medicamentos.setUso3MaisAtbPrevio(antibioticosPre.size() >= 3 ? 1 : 0);
+                medicamentos.setUso3MaisAtfPrevio(antifungicosPre.size() >= 3 ? 1 : 0);
+                medicamentos.setUso3MaisAtbApos(antibioticosPos.size() >= 3 ? 1 : 0);
+                medicamentos.setUso3MaisAtfApos(antifungicosPos.size() >= 3 ? 1 : 0);
+                medicamentos.setNomesAtbPrevio(getDescricaoAntimicrobianos(antibioticosPre, antimicrobianos));
+                medicamentos.setNomesAtfPrevio(getDescricaoAntimicrobianos(antifungicosPre, antimicrobianos));
+                medicamentos.setNomesAtbApos(getDescricaoAntimicrobianos(antibioticosPos, antimicrobianos));
+                medicamentos.setNomesAtfApos(getDescricaoAntimicrobianos(antifungicosPos, antimicrobianos));
+                medicamentos.setDiasTotaisAtbPrevio(contarEventosDatasUnicas(antibioticosPre));
+                medicamentos.setDiasTotaisAtfPrevio(contarEventosDatasUnicas(antifungicosPre));
+                medicamentos.setDiasTotaisAtbApos(contarEventosDatasUnicas(antibioticosPos));
+                medicamentos.setDiasTotaisAtfApos(contarEventosDatasUnicas(antifungicosPos));
+                medicamentos.setUsoAminoglicosideos(aminoglicosideosPos.isEmpty() && aminoglicosideosPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisAminoglicosideosPrevio(contarEventosDatasUnicas(aminoglicosideosPre));
+                medicamentos.setDiasTotaisAminoglicosideosApos(contarEventosDatasUnicas(aminoglicosideosPos));
+
+                medicamentos.setUsoAnsamicinas(ansamicinasPos.isEmpty() && ansamicinasPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisAnsamicinasPrevio(contarEventosDatasUnicas(ansamicinasPre));
+                medicamentos.setDiasTotaisAnsamicinasApos(contarEventosDatasUnicas(ansamicinasPos));
+
+                medicamentos.setUsoBetalactamicos(betalactamicosPos.isEmpty() && betalactamicosPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisBetalactamicosPrevio(contarEventosDatasUnicas(betalactamicosPre));
+                medicamentos.setDiasTotaisBetalactamicosApos(contarEventosDatasUnicas(betalactamicosPos));
+
+                medicamentos.setUsoCarbapenemicos(carbapenemicosPos.isEmpty() && carbapenemicosPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisCarbapenemicosPrevio(contarEventosDatasUnicas(carbapenemicosPre));
+                medicamentos.setDiasTotaisCarbapenemicosApos(contarEventosDatasUnicas(carbapenemicosPos));
+
+                medicamentos.setUsoCefalosporinasPrimeiraGeracao(cefalosporinasPrimeiraGeracaoPos.isEmpty() && cefalosporinasPrimeiraGeracaoPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisCefalosporinasPrimeiraGeracaoPrevio(contarEventosDatasUnicas(cefalosporinasPrimeiraGeracaoPre));
+                medicamentos.setDiasTotaisCefalosporinasPrimeiraGeracaoApos(contarEventosDatasUnicas(cefalosporinasPrimeiraGeracaoPos));
+
+                medicamentos.setUsoCefalosporinasSegundaGeracao(cefalosporinasSegundaGeracaoPos.isEmpty() && cefalosporinasSegundaGeracaoPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisCefalosporinasSegundaGeracaoPrevio(contarEventosDatasUnicas(cefalosporinasSegundaGeracaoPre));
+                medicamentos.setDiasTotaisCefalosporinasSegundaGeracaoApos(contarEventosDatasUnicas(cefalosporinasSegundaGeracaoPos));
+
+                medicamentos.setUsoCefalosporinasTerceiraGeracao(cefalosporinasTerceiraGeracaoPos.isEmpty() && cefalosporinasTerceiraGeracaoPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisCefalosporinasTerceiraGeracaoPrevio(contarEventosDatasUnicas(cefalosporinasTerceiraGeracaoPre));
+                medicamentos.setDiasTotaisCefalosporinasTerceiraGeracaoApos(contarEventosDatasUnicas(cefalosporinasTerceiraGeracaoPos));
+
+                medicamentos.setUsoCefalosporinasQuartaGeracao(cefalosporinasQuartaGeracaoPos.isEmpty() && cefalosporinasQuartaGeracaoPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisCefalosporinasQuartaGeracaoPrevio(contarEventosDatasUnicas(cefalosporinasQuartaGeracaoPre));
+                medicamentos.setDiasTotaisCefalosporinasQuartaGeracaoApos(contarEventosDatasUnicas(cefalosporinasQuartaGeracaoPos));
+
+                medicamentos.setUsoCefalosporinasQuintaGeracao(cefalosporinasQuintaGeracaoPos.isEmpty() && cefalosporinasQuintaGeracaoPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisCefalosporinasQuintaGeracaoPrevio(contarEventosDatasUnicas(cefalosporinasQuintaGeracaoPre));
+                medicamentos.setDiasTotaisCefalosporinasQuintaGeracaoApos(contarEventosDatasUnicas(cefalosporinasQuintaGeracaoPos));
+
+                medicamentos.setUsoGlicilciclinas(glicilciclinasPos.isEmpty() && glicilciclinasPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisGlicilciclinasPrevio(contarEventosDatasUnicas(glicilciclinasPre));
+                medicamentos.setDiasTotaisGlicilciclinasApos(contarEventosDatasUnicas(glicilciclinasPos));
+
+                medicamentos.setUsoGlicopeptideos(glicopeptideosPos.isEmpty() && glicopeptideosPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisGlicopeptideosPrevio(contarEventosDatasUnicas(glicopeptideosPre));
+                medicamentos.setDiasTotaisGlicopeptideosApos(contarEventosDatasUnicas(glicopeptideosPos));
+
+                medicamentos.setUsoInibidoresDeFolato(inibidoresDeFolatoPos.isEmpty() && inibidoresDeFolatoPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisInibidoresDeFolatoPrevio(contarEventosDatasUnicas(inibidoresDeFolatoPre));
+                medicamentos.setDiasTotaisInibidoresDeFolatoApos(contarEventosDatasUnicas(inibidoresDeFolatoPos));
+
+                medicamentos.setUsoLincosamidas(lincosamidasPos.isEmpty() && lincosamidasPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisLincosamidasPrevio(contarEventosDatasUnicas(lincosamidasPre));
+                medicamentos.setDiasTotaisLincosamidasApos(contarEventosDatasUnicas(lincosamidasPos));
+
+                medicamentos.setUsoMacrolideos(macrolideosPos.isEmpty() && macrolideosPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisMacrolideosPrevio(contarEventosDatasUnicas(macrolideosPre));
+                medicamentos.setDiasTotaisMacrolideosApos(contarEventosDatasUnicas(macrolideosPos));
+
+                medicamentos.setUsoNitrofuranicos(nitrofuranicosPos.isEmpty() && nitrofuranicosPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisNitrofuranicosPrevio(contarEventosDatasUnicas(nitrofuranicosPre));
+                medicamentos.setDiasTotaisNitrofuranicosApos(contarEventosDatasUnicas(nitrofuranicosPos));
+
+                medicamentos.setUsoNitroimidazois(nitroimidazoisPos.isEmpty() && nitroimidazoisPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisNitroimidazoisPrevio(contarEventosDatasUnicas(nitroimidazoisPre));
+                medicamentos.setDiasTotaisNitroimidazoisApos(contarEventosDatasUnicas(nitroimidazoisPos));
+
+                medicamentos.setUsoPolimixinas(polimixinasPos.isEmpty() && polimixinasPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisPolimixinasPrevio(contarEventosDatasUnicas(polimixinasPre));
+                medicamentos.setDiasTotaisPolimixinasApos(contarEventosDatasUnicas(polimixinasPos));
+
+                medicamentos.setUsoQuinolonas(quinolonasPos.isEmpty() && quinolonasPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisQuinolonasPrevio(contarEventosDatasUnicas(quinolonasPre));
+                medicamentos.setDiasTotaisQuinolonasApos(contarEventosDatasUnicas(quinolonasPos));
+
+                medicamentos.setUsoTetraciclinas(tetraciclinasPos.isEmpty() && tetraciclinasPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisTetraciclinasPrevio(contarEventosDatasUnicas(tetraciclinasPre));
+                medicamentos.setDiasTotaisTetraciclinasApos(contarEventosDatasUnicas(tetraciclinasPos));
+
+                medicamentos.setUsoAzois(azoisPos.isEmpty() && azoisPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisAzoisPrevio(contarEventosDatasUnicas(azoisPre));
+                medicamentos.setDiasTotaisAzoisApos(contarEventosDatasUnicas(azoisPos));
+
+                medicamentos.setUsoEquinocandinas(equinocandinasPos.isEmpty() && equinocandinasPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisEquinocandinasPrevio(contarEventosDatasUnicas(equinocandinasPre));
+                medicamentos.setDiasTotaisEquinocandinasApos(contarEventosDatasUnicas(equinocandinasPos));
+
+                medicamentos.setUsoPolienos(polienosPos.isEmpty() && polienosPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisPolienosPrevio(contarEventosDatasUnicas(polienosPre));
+                medicamentos.setDiasTotaisPolienosApos(contarEventosDatasUnicas(polienosPos));
+
+                medicamentosDias.add(medicamentos);
+            }
+        }
+
+        return medicamentosDias;
+    }
+
+
+    public List<Evento> getEventosAteInfeccao(List<Evento> eventos, LocalDate dataInfeccao) {
+        return eventos.stream()
+                .filter(evento -> evento.getTipoEvento().getIsActive() &&
+                        evento.getDataEvento().isBefore(dataInfeccao))
+                .toList();
+    }
+
+
+    public List<Evento> getEventosAposInfeccao(List<Evento> eventos, LocalDate dataInfeccao) {
+        return eventos.stream()
+                .filter(evento -> evento.getTipoEvento().getIsActive() &&
+                        !evento.getDataEvento().isBefore(dataInfeccao))
+                .toList();
+    }
+
+
+    public List<Evento> getTipoMedicacao(List<Evento> eventos, List<Antimicrobiano> antimicrobianos, Long idTipoMedicacao) {
+        return eventos.stream()
+                .filter(evento -> {
+                    return antimicrobianos.stream()
+                            .filter(antimicrobiano -> antimicrobiano.getIdAntimicrobiano().equals(evento.getEventoEntidade().getIdEntidade()))
+                            .anyMatch(antimicrobiano ->
+                                    antimicrobiano.getClasseAntimicrobiano() != null &&
+                                            antimicrobiano.getClasseAntimicrobiano().getTipoAntimicrobiano() != null &&
+                                            idTipoMedicacao.equals(antimicrobiano.getClasseAntimicrobiano().getTipoAntimicrobiano().getCodigo())
+                            );
+                })
+                .toList();
+    }
+
+
+    public List<Evento> getEventosPorClasseAntimicrobiano(List<Evento> eventos, List<Antimicrobiano> antimicrobianos, Long idClasseAntimicrobiano) {
+        return eventos.stream()
+                .filter(evento ->
+                        antimicrobianos.stream()
+                                .filter(antimicrobiano -> antimicrobiano.getIdAntimicrobiano().equals(evento.getEventoEntidade().getIdEntidade()))
+                                .anyMatch(antimicrobiano ->
+                                        antimicrobiano.getClasseAntimicrobiano() != null &&
+                                                antimicrobiano.getClasseAntimicrobiano().getIdClasseAntimicrobano().equals(idClasseAntimicrobiano)
+                                )
+                )
+                .toList();
+    }
+
+
+    public String getDescricaoAntimicrobianos(List<Evento> eventos, List<Antimicrobiano> antimicrobianos) {
+        return eventos.stream()
+                .map(evento ->
+                        antimicrobianos.stream()
+                                .filter(antimicrobiano -> antimicrobiano.getIdAntimicrobiano().equals(evento.getEventoEntidade().getIdEntidade()))
+                                .findFirst()
+                                .map(Antimicrobiano::getDescricao)
+                                .orElse(null)
+                )
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.joining(", "));
+    }
+
+
+    public Integer contarEventosDatasUnicas(List<Evento> eventos) {
+        return (int) eventos.stream()
+                .map(Evento::getDataEvento)
+                .distinct()
+                .count();
+    }
 
 }

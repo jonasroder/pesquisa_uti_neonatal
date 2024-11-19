@@ -20,6 +20,9 @@ public class ProcedimentosDiasInfeccao {
     Integer diasAteInfecao5;
     Integer diasAteInfecao6;
     Integer diasAteInfecao7;
+    Integer diasAteInfecao8;
+    Integer diasAteInfecao9;
+    Integer diasAteInfecao10;
 
     Integer diasAposInfecao1;
     Integer diasAposInfecao2;
@@ -28,6 +31,9 @@ public class ProcedimentosDiasInfeccao {
     Integer diasAposInfecao5;
     Integer diasAposInfecao6;
     Integer diasAposInfecao7;
+    Integer diasAposInfecao8;
+    Integer diasAposInfecao9;
+    Integer diasAposInfecao10;
 
     public void setDiasAteInfecao(int episodio, int dias) {
         switch (episodio) {
@@ -38,6 +44,9 @@ public class ProcedimentosDiasInfeccao {
             case 5 -> this.diasAteInfecao5 = dias;
             case 6 -> this.diasAteInfecao6 = dias;
             case 7 -> this.diasAteInfecao7 = dias;
+            case 8 -> this.diasAteInfecao8 = dias;
+            case 9 -> this.diasAteInfecao9 = dias;
+            case 10 -> this.diasAteInfecao10 = dias;
         }
     }
 
@@ -50,6 +59,9 @@ public class ProcedimentosDiasInfeccao {
             case 5 -> this.diasAposInfecao5 = dias;
             case 6 -> this.diasAposInfecao6 = dias;
             case 7 -> this.diasAposInfecao7 = dias;
+            case 8 -> this.diasAposInfecao8 = dias;
+            case 9 -> this.diasAposInfecao9 = dias;
+            case 10 -> this.diasAposInfecao10 = dias;
         }
     }
 }

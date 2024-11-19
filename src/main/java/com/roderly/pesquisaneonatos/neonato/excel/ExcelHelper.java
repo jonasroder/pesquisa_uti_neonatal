@@ -1,6 +1,7 @@
 package com.roderly.pesquisaneonatos.neonato.excel;
 
 import com.roderly.pesquisaneonatos.common.excel.ExcelColumnMapping;
+import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +125,7 @@ public class ExcelHelper {
 
 
     public static List<ExcelColumnMapping> createGrupoInfectadoColumnMapping() {
+
         List<ExcelColumnMapping> columnMappings = new ArrayList<>();
         columnMappings.add(new ExcelColumnMapping("ANO", "ano"));
         columnMappings.add(new ExcelColumnMapping("PRONTUÁRIO", "prontuario"));
@@ -153,7 +155,7 @@ public class ExcelHelper {
         //Cirurgias
         columnMappings.add(new ExcelColumnMapping("CIRURGIA", "Cirurgia_uso"));
         columnMappings.add(new ExcelColumnMapping("Nº CIRURGIAS", "Cirurgia_diasTotaisUso"));
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             columnMappings.add(new ExcelColumnMapping("CIRURGIAS ATÉ A " + i + "ª INFECÇÃO", "Cirurgia_diasAteInfecao" + i));
             columnMappings.add(new ExcelColumnMapping("CIRURGIAS APÓS A " + i + "ª INFECÇÃO", "Cirurgia_diasAposInfecao" + i));
         }
@@ -165,7 +167,7 @@ public class ExcelHelper {
         //Flebotomia
         columnMappings.add(new ExcelColumnMapping("USO FLEBOTOMIA", "Flebotomia_uso"));
         columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS FLEBOTOMIA", "Flebotomia_diasTotaisUso"));
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             columnMappings.add(new ExcelColumnMapping("DIAS FLEBOTOMIAS ATÉ A " + i + "ª INFECÇÃO", "Flebotomia_diasAteInfecao" + i));
             columnMappings.add(new ExcelColumnMapping("DIAS FLEBOTOMIAS APÓS A " + i + "ª INFECÇÃO", "Flebotomia_diasAposInfecao" + i));
         }
@@ -173,7 +175,7 @@ public class ExcelHelper {
         //CVU
         columnMappings.add(new ExcelColumnMapping("USO CVU", "Cvu_uso"));
         columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS CVU", "Cvu_diasTotaisUso"));
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             columnMappings.add(new ExcelColumnMapping("DIAS CVU ATÉ A " + i + "ª INFECÇÃO", "Cvu_diasAteInfecao" + i));
             columnMappings.add(new ExcelColumnMapping("DIAS CVU APÓS A " + i + "ª INFECÇÃO", "Cvu_diasAposInfecao" + i));
         }
@@ -181,7 +183,7 @@ public class ExcelHelper {
         //Picc
         columnMappings.add(new ExcelColumnMapping("USO PICC", "Picc_uso"));
         columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS PICC", "Picc_diasTotaisUso"));
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             columnMappings.add(new ExcelColumnMapping("DIAS PICC ATÉ A " + i + "ª INFECÇÃO", "Picc_diasAteInfecao" + i));
             columnMappings.add(new ExcelColumnMapping("DIAS PICC APÓS A " + i + "ª INFECÇÃO", "Picc_diasAposInfecao" + i));
         }
@@ -189,7 +191,7 @@ public class ExcelHelper {
         //Entubacao
         columnMappings.add(new ExcelColumnMapping("USO ENTUBAÇÃO", "Entubacao_uso"));
         columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS ENTUBAÇÃO", "Entubacao_diasTotaisUso"));
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             columnMappings.add(new ExcelColumnMapping("DIAS ENTUBAÇÃO ATÉ A " + i + "ª INFECÇÃO", "Entubacao_diasAteInfecao" + i));
             columnMappings.add(new ExcelColumnMapping("DIAS ENTUBAÇÃO APÓS A " + i + "ª INFECÇÃO", "Entubacao_diasAposInfecao" + i));
         }
@@ -197,7 +199,7 @@ public class ExcelHelper {
         //Sonda Vesical
         columnMappings.add(new ExcelColumnMapping("USO SONDA VESICAL", "SondaVesical_uso"));
         columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS SONDA VESICAL", "SondaVesical_diasTotaisUso"));
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             columnMappings.add(new ExcelColumnMapping("DIAS SONDA VESICAL ATÉ A " + i + "ª INFECÇÃO", "SondaVesical_diasAteInfecao" + i));
             columnMappings.add(new ExcelColumnMapping("DIAS SONDA VESICAL APÓS A " + i + "ª INFECÇÃO", "SondaVesical_diasAposInfecao" + i));
         }
@@ -205,7 +207,7 @@ public class ExcelHelper {
         //Nutrição parenteral
         columnMappings.add(new ExcelColumnMapping("USO NUTRIÇÃO PARENTERAL", "NutricaoParenteral_uso"));
         columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS NUTRIÇÃO PARENTERAL", "NutricaoParenteral_diasTotaisUso"));
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             columnMappings.add(new ExcelColumnMapping("DIAS NUTRIÇÃO PARENTERAL ATÉ A " + i + "ª INFECÇÃO", "NutricaoParenteral_diasAteInfecao" + i));
             columnMappings.add(new ExcelColumnMapping("DIAS NUTRIÇÃO PARENTERAL APÓS A " + i + "ª INFECÇÃO", "NutricaoParenteral_diasAposInfecao" + i));
         }
@@ -213,7 +215,7 @@ public class ExcelHelper {
         //Nutrição parenteral
         columnMappings.add(new ExcelColumnMapping("USO DRENO", "Dreno_uso"));
         columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS DRENO", "Dreno_diasTotaisUso"));
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             columnMappings.add(new ExcelColumnMapping("DIAS DRENO ATÉ A " + i + "ª INFECÇÃO", "Dreno_diasAteInfecao" + i));
             columnMappings.add(new ExcelColumnMapping("DIAS DRENO APÓS A " + i + "ª INFECÇÃO", "Dreno_diasAposInfecao" + i));
         }
@@ -226,10 +228,12 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - DATA DA COLETA", "ColetaSangue_" + i + "_dataInfeccao"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - NÚMERO DE ISOLADOS", "ColetaSangue_" + i + "_numeroIsolados"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - ESPÉCIE ISOLADA", "ColetaSangue_" + i + "_especieIsolada"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - CLASSIFICAÇÃO ISOLADO", "ColetaSangue_" + i + "_tipoIsolado"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - PERFIL RESISTÊNCIA", "ColetaSangue_" + i + "_perfilResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - MECANISMO RESISTÊNCIA", "ColetaSangue_" + i + "_mecanismoResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - INFECÇÃO MISTA", "ColetaSangue_" + i + "_infeccaoMista"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - 2ª ESPÉCIE ISOLADA", "ColetaSangue_" + i + "_especieIsolada2"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - CLASSIFICAÇÃO ISOLADO 2", "ColetaSangue_" + i + "_tipoIsolado2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - PERFIL RESISTÊNCIA ESPÉCIE 2", "ColetaSangue_" + i + "_perfilResistenciaEspecie2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SANGUE - MECANISMO RESISTÊNCIA ESPÉCIE 2", "ColetaSangue_" + i + "_mecanismoResistenciaEspecie2"));
         }
@@ -239,10 +243,12 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - DATA DA COLETA", "ColetaSecOcular_" + i + "_dataInfeccao"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - NÚMERO DE ISOLADOS", "ColetaSecOcular_" + i + "_numeroIsolados"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - ESPÉCIE ISOLADA", "ColetaSecOcular_" + i + "_especieIsolada"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - CLASSIFICAÇÃO ISOLADO", "ColetaSecOcular_" + i + "_tipoIsolado"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - PERFIL RESISTÊNCIA", "ColetaSecOcular_" + i + "_perfilResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - MECANISMO RESISTÊNCIA", "ColetaSecOcular_" + i + "_mecanismoResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - INFECÇÃO MISTA", "ColetaSecOcular_" + i + "_infeccaoMista"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - 2ª ESPÉCIE ISOLADA", "ColetaSecOcular_" + i + "_especieIsolada2"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - CLASSIFICAÇÃO ISOLADO 2", "ColetaSecOcular_" + i + "_tipoIsolado2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - PERFIL RESISTÊNCIA ESPÉCIE 2", "ColetaSecOcular_" + i + "_perfilResistenciaEspecie2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SEC OCULAR - MECANISMO RESISTÊNCIA ESPÉCIE 2", "ColetaSecOcular_" + i + "_mecanismoResistenciaEspecie2"));
         }
@@ -252,10 +258,12 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - DATA DA COLETA", "ColetaLiqPleural_" + i + "_dataInfeccao"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - NÚMERO DE ISOLADOS", "ColetaLiqPleural_" + i + "_numeroIsolados"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - ESPÉCIE ISOLADA", "ColetaLiqPleural_" + i + "_especieIsolada"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - CLASSIFICAÇÃO ISOLADO", "ColetaLiqPleural_" + i + "_tipoIsolado"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - PERFIL RESISTÊNCIA", "ColetaLiqPleural_" + i + "_perfilResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - MECANISMO RESISTÊNCIA", "ColetaLiqPleural_" + i + "_mecanismoResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - INFECÇÃO MISTA", "ColetaLiqPleural_" + i + "_infeccaoMista"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - 2ª ESPÉCIE ISOLADA", "ColetaLiqPleural_" + i + "_especieIsolada2"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - CLASSIFICAÇÃO ISOLADO 2", "ColetaLiqPleural_" + i + "_tipoIsolado2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - PERFIL RESISTÊNCIA ESPÉCIE 2", "ColetaLiqPleural_" + i + "_perfilResistenciaEspecie2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ PLEURAL - MECANISMO RESISTÊNCIA ESPÉCIE 2", "ColetaLiqPleural_" + i + "_mecanismoResistenciaEspecie2"));
         }
@@ -265,10 +273,12 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - DATA DA COLETA", "ColetaLCR_" + i + "_dataInfeccao"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - NÚMERO DE ISOLADOS", "ColetaLCR_" + i + "_numeroIsolados"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - ESPÉCIE ISOLADA", "ColetaLCR_" + i + "_especieIsolada"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - CLASSIFICAÇÃO ISOLADO", "ColetaLCR_" + i + "_tipoIsolado"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - PERFIL RESISTÊNCIA", "ColetaLCR_" + i + "_perfilResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - MECANISMO RESISTÊNCIA", "ColetaLCR_" + i + "_mecanismoResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - INFECÇÃO MISTA", "ColetaLCR_" + i + "_infeccaoMista"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - 2ª ESPÉCIE ISOLADA", "ColetaLCR_" + i + "_especieIsolada2"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - CLASSIFICAÇÃO ISOLADO 2", "ColetaLCR_" + i + "_tipoIsolado2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - PERFIL RESISTÊNCIA ESPÉCIE 2", "ColetaLCR_" + i + "_perfilResistenciaEspecie2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LCR - MECANISMO RESISTÊNCIA ESPÉCIE 2", "ColetaLCR_" + i + "_mecanismoResistenciaEspecie2"));
         }
@@ -278,10 +288,12 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - DATA DA COLETA", "ColetaLiqAscitico_" + i + "_dataInfeccao"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - NÚMERO DE ISOLADOS", "ColetaLiqAscitico_" + i + "_numeroIsolados"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - ESPÉCIE ISOLADA", "ColetaLiqAscitico_" + i + "_especieIsolada"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - CLASSIFICAÇÃO ISOLADO", "ColetaLiqAscitico_" + i + "_tipoIsolado"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - PERFIL RESISTÊNCIA", "ColetaLiqAscitico_" + i + "_perfilResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - MECANISMO RESISTÊNCIA", "ColetaLiqAscitico_" + i + "_mecanismoResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - INFECÇÃO MISTA", "ColetaLiqAscitico_" + i + "_infeccaoMista"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - 2ª ESPÉCIE ISOLADA", "ColetaLiqAscitico_" + i + "_especieIsolada2"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - CLASSIFICAÇÃO ISOLADO 2", "ColetaLiqAscitico_" + i + "_tipoIsolado2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - PERFIL RESISTÊNCIA ESPÉCIE 2", "ColetaLiqAscitico_" + i + "_perfilResistenciaEspecie2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA LÍQ ASCÍTICO - MECANISMO RESISTÊNCIA ESPÉCIE 2", "ColetaLiqAscitico_" + i + "_mecanismoResistenciaEspecie2"));
         }
@@ -291,10 +303,12 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - DATA DA COLETA", "ColetaUrina_" + i + "_dataInfeccao"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - NÚMERO DE ISOLADOS", "ColetaUrina_" + i + "_numeroIsolados"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - ESPÉCIE ISOLADA", "ColetaUrina_" + i + "_especieIsolada"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - CLASSIFICAÇÃO ISOLADO", "ColetaUrina_" + i + "_tipoIsolado"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - PERFIL RESISTÊNCIA", "ColetaUrina_" + i + "_perfilResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - MECANISMO RESISTÊNCIA", "ColetaUrina_" + i + "_mecanismoResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - INFECÇÃO MISTA", "ColetaUrina_" + i + "_infeccaoMista"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - 2ª ESPÉCIE ISOLADA", "ColetaUrina_" + i + "_especieIsolada2"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - CLASSIFICAÇÃO ISOLADO 2", "ColetaUrina_" + i + "_tipoIsolado2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - PERFIL RESISTÊNCIA ESPÉCIE 2", "ColetaUrina_" + i + "_perfilResistenciaEspecie2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA URINA - MECANISMO RESISTÊNCIA ESPÉCIE 2", "ColetaUrina_" + i + "_mecanismoResistenciaEspecie2"));
         }
@@ -304,10 +318,12 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SECREÇÃO PULMONAR - DATA DA COLETA", "ColetaSecrecaoPulmonar_" + i + "_dataInfeccao"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SECREÇÃO PULMONAR - NÚMERO DE ISOLADOS", "ColetaSecrecaoPulmonar_" + i + "_numeroIsolados"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SECREÇÃO PULMONAR - ESPÉCIE ISOLADA", "ColetaSecrecaoPulmonar_" + i + "_especieIsolada"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP SECREÇÃO PULMONAR - CLASSIFICAÇÃO ISOLADO", "ColetaSecrecaoPulmonar_" + i + "_tipoIsolado"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SECREÇÃO PULMONAR - PERFIL RESISTÊNCIA", "ColetaSecrecaoPulmonar_" + i + "_perfilResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SECREÇÃO PULMONAR - MECANISMO RESISTÊNCIA", "ColetaSecrecaoPulmonar_" + i + "_mecanismoResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SECREÇÃO PULMONAR - INFECÇÃO MISTA", "ColetaSecrecaoPulmonar_" + i + "_infeccaoMista"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SECREÇÃO PULMONAR - 2ª ESPÉCIE ISOLADA", "ColetaSecrecaoPulmonar_" + i + "_especieIsolada2"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP SECREÇÃO PULMONAR - CLASSIFICAÇÃO ISOLADO 2", "ColetaSecrecaoPulmonar_" + i + "_tipoIsolado2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SECREÇÃO PULMONAR - PERFIL RESISTÊNCIA ESPÉCIE 2", "ColetaSecrecaoPulmonar_" + i + "_perfilResistenciaEspecie2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SECREÇÃO PULMONAR - MECANISMO RESISTÊNCIA ESPÉCIE 2", "ColetaSecrecaoPulmonar_" + i + "_mecanismoResistenciaEspecie2"));
         }
@@ -317,10 +333,12 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - DATA DA COLETA", "ColetaPontaCateter_" + i + "_dataInfeccao"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - NÚMERO DE ISOLADOS", "ColetaPontaCateter_" + i + "_numeroIsolados"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - ESPÉCIE ISOLADA", "ColetaPontaCateter_" + i + "_especieIsolada"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - CLASSIFICAÇÃO ISOLADO", "ColetaPontaCateter_" + i + "_tipoIsolado"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - PERFIL RESISTÊNCIA", "ColetaPontaCateter_" + i + "_perfilResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - MECANISMO RESISTÊNCIA", "ColetaPontaCateter_" + i + "_mecanismoResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - INFECÇÃO MISTA", "ColetaPontaCateter_" + i + "_infeccaoMista"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - 2ª ESPÉCIE ISOLADA", "ColetaPontaCateter_" + i + "_especieIsolada2"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - CLASSIFICAÇÃO ISOLADO 2", "ColetaPontaCateter_" + i + "_tipoIsolado2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - PERFIL RESISTÊNCIA ESPÉCIE 2", "ColetaPontaCateter_" + i + "_perfilResistenciaEspecie2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA PONTA CATETER - MECANISMO RESISTÊNCIA ESPÉCIE 2", "ColetaPontaCateter_" + i + "_mecanismoResistenciaEspecie2"));
         }
@@ -330,14 +348,123 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - DATA DA COLETA", "ColetaSwabAnal_" + i + "_dataInfeccao"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - NÚMERO DE ISOLADOS", "ColetaSwabAnal_" + i + "_numeroIsolados"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - ESPÉCIE ISOLADA", "ColetaSwabAnal_" + i + "_especieIsolada"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - CLASSIFICAÇÃO ISOLADO", "ColetaSwabAnal_" + i + "_tipoIsolado"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - PERFIL RESISTÊNCIA", "ColetaSwabAnal_" + i + "_perfilResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - MECANISMO RESISTÊNCIA", "ColetaSwabAnal_" + i + "_mecanismoResistencia"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - INFECÇÃO MISTA", "ColetaSwabAnal_" + i + "_infeccaoMista"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - 2ª ESPÉCIE ISOLADA", "ColetaSwabAnal_" + i + "_especieIsolada2"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - CLASSIFICAÇÃO ISOLADO 2", "ColetaSwabAnal_" + i + "_tipoIsolado2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - PERFIL RESISTÊNCIA ESPÉCIE 2", "ColetaSwabAnal_" + i + "_perfilResistenciaEspecie2"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP COLETA SWAB ANAL - MECANISMO RESISTÊNCIA ESPÉCIE 2", "ColetaSwabAnal_" + i + "_mecanismoResistenciaEspecie2"));
         }
 
+        //Analise uso medicação
+        for (int i = 0; i < NeonatoMapper.numeroAnalisesInfeccoes; i++) {
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ATB PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_usoAtbPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ATF PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_usoAtfPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ATB APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_usoAtbApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ATF APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_usoAtfApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥ ATB PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtbPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥ ATF PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtfPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥ ATB APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtbApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥ ATF APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtfApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP NOMES ATB PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_nomesAtbPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP NOMES ATF PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_nomesAtfPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP NOMES ATB APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_nomesAtbApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP NOMES ATF APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_nomesAtfApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS ATB PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAtbPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS ATF PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAtfPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS ATB APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAtbApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS ATF APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAtfApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO AMINOGLICOSÍDEOS", "MedicamentosEpisodiosInfeccao_" + i + "_usoAminoglicosideos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS AMINOGLICOSÍDEOS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAminoglicosideosPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS AMINOGLICOSÍDEOS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAminoglicosideosApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ANSAMICINAS", "MedicamentosEpisodiosInfeccao_" + i + "_usoAnsamicinas"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS ANSAMICINAS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAnsamicinasPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS ANSAMICINAS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAnsamicinasApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO BETALACTAMICOS", "MedicamentosEpisodiosInfeccao_" + i + "_usoBetalactamicos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS BETALACTAMICOS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisBetalactamicosPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS BETALACTAMICOS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisBetalactamicosApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO CARBAPENEMICOS", "MedicamentosEpisodiosInfeccao_" + i + "_usoCarbapenemicos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CARBAPENEMICOS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCarbapenemicosPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CARBAPENEMICOS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCarbapenemicosApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO CEFALOSPORINAS PRIMEIRA GERAÇÃO", "MedicamentosEpisodiosInfeccao_" + i + "_usoCefalosporinasPrimeiraGeracao"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS PRIMEIRA GERAÇÃO PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasPrimeiraGeracaoPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS PRIMEIRA GERAÇÃO APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasPrimeiraGeracaoApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO CEFALOSPORINAS SEGUNDA GERAÇÃO", "MedicamentosEpisodiosInfeccao_" + i + "_usoCefalosporinasSegundaGeracao"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS SEGUNDA GERAÇÃO PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasSegundaGeracaoPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS SEGUNDA GERAÇÃO APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasSegundaGeracaoApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO CEFALOSPORINAS TERCEIRA GERAÇÃO", "MedicamentosEpisodiosInfeccao_" + i + "_usoCefalosporinasTerceiraGeracao"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS TERCEIRA GERAÇÃO PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasTerceiraGeracaoPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS TERCEIRA GERAÇÃO APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasTerceiraGeracaoApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO CEFALOSPORINAS QUARTA GERAÇÃO", "MedicamentosEpisodiosInfeccao_" + i + "_usoCefalosporinasQuartaGeracao"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS QUARTA GERAÇÃO PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasQuartaGeracaoPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS QUARTA GERAÇÃO APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasQuartaGeracaoApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO CEFALOSPORINAS QUINTA GERAÇÃO", "MedicamentosEpisodiosInfeccao_" + i + "_usoCefalosporinasQuintaGeracao"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS QUINTA GERAÇÃO PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasQuintaGeracaoPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CEFALOSPORINAS QUINTA GERAÇÃO APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCefalosporinasQuintaGeracaoApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO GLICILCICLINAS", "MedicamentosEpisodiosInfeccao_" + i + "_usoGlicilciclinas"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS GLICILCICLINAS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisGlicilciclinasPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS GLICILCICLINAS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisGlicilciclinasApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO GLICOPEPTIDEOS", "MedicamentosEpisodiosInfeccao_" + i + "_usoGlicopeptideos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS GLICOPEPTIDEOS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisGlicopeptideosPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS GLICOPEPTIDEOS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisGlicopeptideosApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO INIBIDORES DE FOLATO", "MedicamentosEpisodiosInfeccao_" + i + "_usoInibidoresDeFolato"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS INIBIDORES DE FOLATO PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisInibidoresDeFolatoPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS INIBIDORES DE FOLATO APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisInibidoresDeFolatoApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO LINCOSAMIDAS", "MedicamentosEpisodiosInfeccao_" + i + "_usoLincosamidas"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS LINCOSAMIDAS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisLincosamidasPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS LINCOSAMIDAS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisLincosamidasApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO MACROLIDEOS", "MedicamentosEpisodiosInfeccao_" + i + "_usoMacrolideos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS MACROLIDEOS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisMacrolideosPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS MACROLIDEOS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisMacrolideosApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO NITROFURANICOS", "MedicamentosEpisodiosInfeccao_" + i + "_usoNitrofuranicos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS NITROFURANICOS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisNitrofuranicosPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS NITROFURANICOS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisNitrofuranicosApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO NITROIMIDAZOIS", "MedicamentosEpisodiosInfeccao_" + i + "_usoNitroimidazois"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS NITROIMIDAZOIS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisNitroimidazoisPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS NITROIMIDAZOIS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisNitroimidazoisApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO POLIMIXINAS", "MedicamentosEpisodiosInfeccao_" + i + "_usoPolimixinas"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS POLIMIXINAS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisPolimixinasPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS POLIMIXINAS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisPolimixinasApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO QUINOLONAS", "MedicamentosEpisodiosInfeccao_" + i + "_usoQuinolonas"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS QUINOLONAS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisQuinolonasPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS QUINOLONAS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisQuinolonasApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO TETRACICLINAS", "MedicamentosEpisodiosInfeccao_" + i + "_usoTetraciclinas"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS TETRACICLINAS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisTetraciclinasPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS TETRACICLINAS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisTetraciclinasApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO AZOIS", "MedicamentosEpisodiosInfeccao_" + i + "_usoAzois"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS AZOIS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAzoisPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS AZOIS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAzoisApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO EQUINOCANDINAS", "MedicamentosEpisodiosInfeccao_" + i + "_usoEquinocandinas"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS EQUINOCANDINAS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisEquinocandinasPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS EQUINOCANDINAS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisEquinocandinasApos"));
+
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO POLIENOS", "MedicamentosEpisodiosInfeccao_" + i + "_usoPolienos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS POLIENOS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisPolienosPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS POLIENOS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisPolienosApos"));
+
+        }
 
         return columnMappings;
     }

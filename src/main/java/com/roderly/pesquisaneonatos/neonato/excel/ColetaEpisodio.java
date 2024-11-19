@@ -13,10 +13,12 @@ public class ColetaEpisodio {
     String dataInfeccao;
     int numeroIsolados;
     Long especieIsolada;
+    Long tipoIsolado;
     Long perfilResistencia;
     Long mecanismoResistencia;
     int infeccaoMista;
     Long especieIsolada2;
+    Long tipoIsolado2;
     Long perfilResistenciaEspecie2;
     Long mecanismoResistenciaEspecie2;
 }

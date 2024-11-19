@@ -60,5 +60,5 @@ public class NeonatoGrupoInfectadoReportData {
     List<ColetaEpisodio> ColetaPontaCateter;
     List<ColetaEpisodio> ColetaSwabAnal;
 
-
+    List<MedicamentosDiasInfeccao> MedicamentosEpisodiosInfeccao;
 }

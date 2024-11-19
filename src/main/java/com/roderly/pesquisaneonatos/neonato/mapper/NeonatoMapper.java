@@ -31,6 +31,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NeonatoMapper {
 
+    public static int numeroAnalisesInfeccoes = 10;
+
     public static Neonato convertNeonatoRequestToNeonato(NeonatoRequest request) {
 
         var sexo = request.idSexo() != null ? new Sexo(request.idSexo()) : null;
@@ -299,6 +301,7 @@ public class NeonatoMapper {
         var sondaVesicalList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 4L);
         var nutricaoParenteralList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 5L);
         var drenoList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 2L);
+        var medicacaoList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 1L);
 
         var coletasInfeccao = neonatoService.buscarColetasInfeccao(neonato.getEventoList());
         var datasInfeccao = new ArrayList<>(neonatoService.getDatasInfeccoes(coletasInfeccao));
@@ -356,6 +359,8 @@ public class NeonatoMapper {
         report.setColetaSecrecaoPulmonar(coletasSecrecaoPulmonar);
         report.setColetaSwabAnal(coletasSwabAnal);
         report.setColetaPontaCateter(coletasPontaCateter);
+
+        report.setMedicamentosEpisodiosInfeccao(neonatoService.getMedicamentosEpisodiosInfeccao(medicacaoList, datasInfeccao));
 
         return report;
     }
