@@ -5,6 +5,7 @@ CREATE TABLE isolado_coleta
     id_microorganismo                       BIGINT   NOT NULL,
     id_perfil_resistencia_microorganismo    BIGINT   NOT NULL,
     id_mecanismo_resistencia_microorganismo BIGINT   NOT NULL,
+    desconsiderar_coleta                    TINYINT  NULL,
     criado_em                               DATETIME NULL,
     criado_por_id                           BIGINT   NULL,
     alterado_em                             DATETIME NULL,

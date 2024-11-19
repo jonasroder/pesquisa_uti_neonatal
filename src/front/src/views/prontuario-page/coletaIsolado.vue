@@ -6,11 +6,11 @@ import {serviceLoadColetaIsolado} from "@/service/prontuario";
 
 
 const props = defineProps({
-    idNeonato         : {
+    idNeonato: {
         type   : [String, Number],
         default: ''
     },
-    onSave            : {
+    onSave   : {
         type    : Function,
         required: true
     }
@@ -25,6 +25,7 @@ const coletasIsolados            = ref([{
     idMicroorganismo                    : null,
     idMecanismoResistenciaMicroorganismo: null,
     idPerfilResistenciaMicroorganismo   : null,
+    desconsiderarColeta                 : false,
     antibiogramas                       : []
 }]);
 
@@ -39,8 +40,9 @@ onMounted(async () => {
 
 const carregarDadosIsolados = async () => {
     coletasIsolados.value = await serviceLoadColetaIsolado(props.idNeonato);
-
     for (const coleta of coletasIsolados.value) {
+
+        console.log(coleta)
         if (coleta.antibiogramas.length === 0) {
             adicionarAntibiograma(coleta);
         }
@@ -106,7 +108,17 @@ watch(coletasIsolados, () => {
                     <v-card>
                         <v-card-title>
                             {{ coleta.dataEvento }}
+
+
                         </v-card-title>
+
+                        <v-alert
+                            v-if="coleta.desconsiderarColeta"
+                            density="compact"
+                            text="DESCONSIDERADO POR EXISTIR UM RESULTADO IDÊNTICO REGISTRADO EM UM INTERVALO INFERIOR A 15 DIAS"
+                            type="warning"
+                            class="ma-3"
+                        />
 
                         <v-card-subtitle>
                             Local: {{ coleta.descricao || 'Sem descrição' }}

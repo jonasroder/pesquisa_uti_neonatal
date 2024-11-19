@@ -39,6 +39,9 @@ public class IsoladoColeta extends EntidadeRastreada {
     @JoinColumn(name = "id_mecanismo_resistencia_microorganismo", referencedColumnName = "id_mecanismo_resistencia_microorganismo", nullable = false)
     private MecanismoResistenciaMicroorganismo mecanismoResistenciaMicroorganismo;
 
+    @Column(name = "desconsiderar_coleta")
+    private Boolean desconsiderarColeta = true;
+
     @OneToMany(mappedBy = "isoladoColeta", fetch = FetchType.LAZY)
     private List<AntibiogramaIsolado> antibiogramasIsolado = new ArrayList<>();
 

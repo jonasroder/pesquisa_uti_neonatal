@@ -102,6 +102,7 @@ public class ProntuarioMapper {
                 coletaSemAntibiogramas.idMicroorganismo(),
                 idPerfilResistenciaMicroorganismo,
                 idMecanismoResistenciaMicroorganismo,
+                coletaSemAntibiogramas.desconsiderarColeta(),
                 antibiogramaIsolado
         );
     }
@@ -136,6 +137,7 @@ public class ProntuarioMapper {
         isoladoColeta.setMicroorganismo(idMicroorganismo);
         isoladoColeta.setPerfilResistenciaMicroorganismo(idPerfilResistenciaMicroorganismo);
         isoladoColeta.setMecanismoResistenciaMicroorganismo(idMecanismoResistenciaMicroorganismo);
+        isoladoColeta.setDesconsiderarColeta(false);
 
         return isoladoColeta;
     }

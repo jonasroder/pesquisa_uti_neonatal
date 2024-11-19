@@ -284,23 +284,24 @@ public class NeonatoMapper {
     }
 
 
-    public static NeonatoGrupoInfectadoReportData convertToNeonatoGrupoInfectadoReportData(Neonato neonato, Long diasForaUti, NeonatoService neonatoService) {
+    public static NeonatoGrupoInfectadoReportData convertToNeonatoGrupoInfectadoReportData(Neonato neonato, NeonatoService neonatoService) {
 
         var dataNascimento = neonato.getDataNascimento() != null ? DateUtil.LocalDateToDateBR(neonato.getDataNascimento()) : null;
         var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
         var dataDesfecho = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
         var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
+        var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getIdNeonato());
         var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L) - diasForaUti;
 
         var malformacaoList = neonato.getNeonatoMalformacaoList();
         var cirurgiasList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 9L);
-        var flebotomiaList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 8L);
-        var cvuList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 7L);
-        var piccList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 6L);
-        var entubacaoList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 3L);
-        var sondaVesicalList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 4L);
-        var nutricaoParenteralList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 5L);
-        var drenoList  = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 2L);
+        var flebotomiaList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 8L);
+        var cvuList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 7L);
+        var piccList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 6L);
+        var entubacaoList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 3L);
+        var sondaVesicalList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 4L);
+        var nutricaoParenteralList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 5L);
+        var drenoList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 2L);
         var medicacaoList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 1L);
 
         var coletasInfeccao = neonatoService.buscarColetasInfeccao(neonato.getEventoList());

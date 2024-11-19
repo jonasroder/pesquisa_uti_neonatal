@@ -171,9 +171,7 @@ public class NeonatoService {
 
         return neonatos.stream()
                 .map(neonato -> {
-                    var diasForaUti = calcularDiasForaUTI(neonato.getIdNeonato());
-
-                    return NeonatoMapper.convertToNeonatoGrupoInfectadoReportData(neonato, diasForaUti, this);
+                    return NeonatoMapper.convertToNeonatoGrupoInfectadoReportData(neonato, this);
                 })
                 .toList();
     }
@@ -188,9 +186,11 @@ public class NeonatoService {
 
     public List<Evento> buscarColetasInfeccao(List<Evento> eventos) {
         return eventos.stream()
-                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getTipoEvento().getIsActive() && evento.getIsoladoColeta() != null)
+                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getTipoEvento().getIsActive()
+                        && evento.getIsoladoColeta() != null && !evento.getIsoladoColeta().getDesconsiderarColeta())
                 .toList();
     }
+
 
     public ProcedimentosDiasInfeccao getProcedimentosDiasInfeccao(List<Evento> eventos, List<LocalDate> datasInfeccao) {
         var procedimentosDiasInfeccao = new ProcedimentosDiasInfeccao();
@@ -254,7 +254,8 @@ public class NeonatoService {
 
     public List<Evento> filtrarListaColetasPorLocal(List<Evento> eventos, Long sitioColeta) {
         return eventos.stream()
-                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getEventoEntidade().getIdEntidade().equals(sitioColeta) && evento.getTipoEvento().getIsActive())
+                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getEventoEntidade().getIdEntidade().equals(sitioColeta)
+                        && evento.getTipoEvento().getIsActive())
                 .toList();
     }
 

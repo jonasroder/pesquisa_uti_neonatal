@@ -1,6 +1,11 @@
 package com.roderly.pesquisaneonatos.prontuario.service;
 
+import com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.model.Antimicrobiano;
 import com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.repository.AntimicrobianoRepository;
+import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.model.MecanismoResistenciaMicroorganismo;
+import com.roderly.pesquisaneonatos.cadastros_gerais.microorganismo.model.Microorganismo;
+import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.model.PerfilResistenciaMicroorganismo;
+import com.roderly.pesquisaneonatos.cadastros_gerais.resistencia_microorganismo.model.ResistenciaMicroorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.resistencia_microorganismo.repository.ResistenciaMicroorganismoRepository;
 import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
@@ -11,13 +16,20 @@ import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.mapper.ProntuarioMapper;
+import com.roderly.pesquisaneonatos.prontuario.model.AntibiogramaIsolado;
+import com.roderly.pesquisaneonatos.prontuario.model.Evento;
+import com.roderly.pesquisaneonatos.prontuario.model.IsoladoColeta;
 import com.roderly.pesquisaneonatos.prontuario.repository.*;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +42,7 @@ public class ProntuarioService {
     private final AntibiogramaIsoladoRepository antibiogramaIsoladoRepository;
     private final IsoladoColetaRepository isoladoColetaRepository;
     private final EventoViaAdministracaoRepository eventoViaAdministracaoRepository;
+    private final ResistenciaMicroorganismoRepository resistenciaMicroorganismoRepository;
 
     public ProntuarioResponse load(Long id) {
         var neonato = neonatoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Neonato não encontrado com ID: " + id));
@@ -76,9 +89,12 @@ public class ProntuarioService {
 
     public ApiResponseDTO salvarColetaIsolado(List<ColetaIsoladoRequest> request) throws IOException {
 
+        Long idEvento = null;
+
         for (ColetaIsoladoRequest coletaIsoladoRequest : request) {
             var isoladoColeta = ProntuarioMapper.coletaIsoladoRequestToIsoladoColeta(coletaIsoladoRequest);
             var isolado = isoladoColetaRepository.save(isoladoColeta);
+            idEvento = isolado.getEvento().getIdEvento();
 
             for (AntibiogramaIsoladoRequest antibiogramaIsolado : coletaIsoladoRequest.antibiogramas()) {
 
@@ -91,7 +107,58 @@ public class ProntuarioService {
             }
         }
 
+        verificarEExcluirDuplicatas(eventoRepository.findIdNeonatoByIdEvento(idEvento));
+
         return ApiResponseDTO.successMessage("O registro foi salvo!");
     }
+
+
+    private void verificarEExcluirDuplicatas(Long idNeonato) {
+        // Obtém os IsoladosColeta duplicados, respeitando a regra da query ajustada
+        var listIsoladosColeta = eventoRepository.findDuplicatedIsoladoColeta(idNeonato);
+
+        if (listIsoladosColeta.isEmpty()) {
+            return; // Sem duplicatas para processar
+        }
+
+        // Agrupa os IsoladosColeta por campos relevantes
+        Map<String, List<IsoladoColeta>> grupos = listIsoladosColeta.stream()
+                .collect(Collectors.groupingBy(this::gerarChaveUnica));
+
+        for (var entry : grupos.entrySet()) {
+            List<IsoladoColeta> grupoDuplicado = entry.getValue();
+
+            if (grupoDuplicado.size() > 1) {
+                // Ordena os registros por dataEvento em ordem crescente
+                grupoDuplicado.sort(Comparator.comparing(ic -> ic.getEvento().getDataEvento()));
+
+                // Marca todos os registros como desconsiderados, exceto o primeiro (mais antigo)
+                for (int i = 1; i < grupoDuplicado.size(); i++) {
+                    var duplicado = grupoDuplicado.get(i);
+                    duplicado.setDesconsiderarColeta(true);
+                    isoladoColetaRepository.save(duplicado);
+                }
+            }
+        }
+    }
+
+
+    private String gerarChaveUnica(IsoladoColeta isolado) {
+        // Gera uma chave única baseada nos campos relevantes
+        return isolado.getMicroorganismo().getIdMicroorganismo() + "-" +
+                isolado.getPerfilResistenciaMicroorganismo().getIdPerfilResistenciaMicroorganismo() + "-" +
+                isolado.getMecanismoResistenciaMicroorganismo().getIdMecanismoResistenciaMicroorganismo() + "-" +
+                gerarChaveAntibiogramas(isolado.getAntibiogramasIsolado());
+    }
+
+
+    private String gerarChaveAntibiogramas(List<AntibiogramaIsolado> antibiogramas) {
+        // Gera uma chave única para os antibiogramas, considerando antimicrobianos e resistências
+        return antibiogramas.stream()
+                .sorted(Comparator.comparing(a -> a.getAntimicrobiano().getIdAntimicrobiano()))
+                .map(a -> a.getAntimicrobiano().getIdAntimicrobiano() + "-" + a.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo())
+                .collect(Collectors.joining("|"));
+    }
+
 
 }
