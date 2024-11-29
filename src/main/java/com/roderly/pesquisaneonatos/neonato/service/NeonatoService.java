@@ -665,7 +665,7 @@ public class NeonatoService {
 
         int i = 0;
         for (AntibiogramaIsolado antibiograma : antibiogramaIsolados) {
-            if (antibiograma.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo() == 1L) {
+            if (antibiograma.getResistenciaMicroorganismo() != null && antibiograma.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo() == 1L) {
                 i++;
             }
         }
@@ -685,6 +685,8 @@ public class NeonatoService {
                 .findFirst()
                 .orElse(null);
     }
+
+
 
 
     public Long verificarResistenciaAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idAntimicrobiano) {
