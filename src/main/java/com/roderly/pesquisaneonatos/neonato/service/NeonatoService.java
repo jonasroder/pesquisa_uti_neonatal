@@ -667,33 +667,33 @@ public class NeonatoService {
 
 
     public Long verificarResistenciaClasseAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idClasseAntimicrobiano) {
-        for (AntibiogramaIsolado isolado : antibiogramas) {
-            var classe = isolado.getAntimicrobiano().getClasseAntimicrobiano();
-
-            if (classe.getIdClasseAntimicrobano().equals(idClasseAntimicrobiano)) {
-                if (isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo() == 1L) {
-                    return 1L;
-                } else {
-                    return 0L;
-                }
-            }
-        }
-        return null;
+        return antibiogramas.stream()
+                .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
+                .filter(isolado -> isolado.getAntimicrobiano().getClasseAntimicrobiano().getIdClasseAntimicrobano().equals(idClasseAntimicrobiano))
+                .map(isolado -> {
+                    Long idResistencia = isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo();
+                    return idResistencia != null && idResistencia == 2L ? 0L : 1L;
+                })
+                .findFirst()
+                .orElse(null);
     }
 
 
     public Long verificarResistenciaAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idAntimicrobiano) {
-        for (AntibiogramaIsolado isolado : antibiogramas) {
-            if (isolado.getAntimicrobiano().getIdAntimicrobiano().equals(idAntimicrobiano)) {
-                if (isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo() == 1L) {
-                    return 1L;
-                } else {
-                    return 0L;
-                }
-            }
-        }
-        return null;
+        return antibiogramas.stream()
+                .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
+                .filter(isolado -> isolado.getAntimicrobiano().getIdAntimicrobiano().equals(idAntimicrobiano))
+                .map(isolado -> {
+                    Long idResistencia = isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo();
+                    return idResistencia != null && idResistencia == 2L ? 0L : 1L;
+                })
+                .findFirst()
+                .orElse(null);
     }
+
+
+
+
 
 
 }
