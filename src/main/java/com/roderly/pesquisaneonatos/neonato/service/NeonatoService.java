@@ -653,9 +653,10 @@ public class NeonatoService {
         return neonatos.stream()
                 .flatMap(neonato -> neonato.getEventoList().stream())
                 .map(Evento::getIsoladoColeta)
-                .filter(isoladoColeta -> !isoladoColeta.getDesconsiderarColeta())
+                .filter(isoladoColeta -> isoladoColeta != null && !isoladoColeta.getDesconsiderarColeta())
                 .toList();
     }
+
 
 
     public Long verificarNResistencia(List<AntibiogramaIsolado> antibiogramaIsolados) {
