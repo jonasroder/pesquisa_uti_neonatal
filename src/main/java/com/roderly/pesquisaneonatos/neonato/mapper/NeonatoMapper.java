@@ -15,6 +15,7 @@ import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoAusenciaUTIResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
+import com.roderly.pesquisaneonatos.neonato.excel.IsoladosReportData;
 import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoControleReportData;
 import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoInfectadoReportData;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
@@ -23,6 +24,7 @@ import com.roderly.pesquisaneonatos.neonato.model.NeonatoSitioMalformacao;
 import com.roderly.pesquisaneonatos.neonato.service.NeonatoService;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
+import com.roderly.pesquisaneonatos.prontuario.model.IsoladoColeta;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -366,4 +368,126 @@ public class NeonatoMapper {
         return report;
     }
 
+
+    public static IsoladosReportData convertToIsoladosReportData(IsoladoColeta isoladoColeta, NeonatoService neonatoService) {
+
+        var evento = isoladoColeta.getEvento();
+        var neonato = evento.getNeonato();
+        var antibiogramas = isoladoColeta.getAntibiogramasIsolado();
+        var dataNascimento = neonato.getDataNascimento() != null ? DateUtil.LocalDateToDateBR(neonato.getDataNascimento()) : null;
+        var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
+        var dataDesfecho = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
+        var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
+        var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getIdNeonato());
+        var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L) - diasForaUti;
+
+        var report = new IsoladosReportData();
+
+        report.setAno(ano);
+        report.setProntuario(neonato.getProntuario());
+        report.setPaciente(neonato.getNomeMae());
+        report.setDataNascimento(dataNascimento);
+        report.setDataInternacao(dataInternacao);
+        report.setDataDesfecho(dataDesfecho);
+        report.setDiasInternacao(diasInternacao);
+        report.setObito(neonato.getObito() ? 1L : 0L);
+        report.setLocalNascimentoCodigo(neonato.getLocalNascimento() != null ? neonato.getLocalNascimento().getCodigo() : null);
+        report.setMotivoInternacaoCodigo(neonato.getMotivoInternacao() != null ? neonato.getMotivoInternacao().getCodigo() : null);
+        report.setSexoCodigo(neonato.getSexo() != null ? neonato.getSexo().getCodigo() : null);
+        report.setPesoGramas(neonato.getPesoGramas());
+        report.setPesoNascimentoCodigo(neonato.getPesoNascimento() != null ? neonato.getPesoNascimento().getCodigo() : null);
+        report.setIdadeGestacionalCodigo(neonato.getIdadeGestacional() != null ? neonato.getIdadeGestacional().getCodigo() : null);
+        report.setTipoPartoCodigo(neonato.getTipoParto() != null ? neonato.getTipoParto().getCodigo() : null);
+        report.setRoturaMembranaCodigo(neonato.getRoturaMembrana() != null ? neonato.getRoturaMembrana().getCodigo() : null);
+        report.setApgar1(neonato.getApgar1());
+        report.setApgar5(neonato.getApgar5());
+
+        report.setDataColeta(DateUtil.LocalDateToDateBR(isoladoColeta.getEvento().getDataEvento()));
+        report.setSitioColetaCodigo(neonatoService.getCodigoCadastro("sitio_coleta", "id_sitio_coleta", evento.getEventoEntidade().getIdEntidade()));
+        report.setAgenteCodigo(isoladoColeta.getMicroorganismo().getCodigo());
+        report.setClassificacaoAgenteCodigo(isoladoColeta.getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
+        report.setResistencia3OuMaisDrogas(neonatoService.verificarNResistencia(antibiogramas));
+        report.setMecanismoResistencia(isoladoColeta.getMecanismoResistenciaMicroorganismo().getCodigo());
+        report.setPerfilResistencia(isoladoColeta.getPerfilResistenciaMicroorganismo().getCodigo());
+
+        report.setResistenciaAminoglicosideos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 1L));
+        report.setResistenciaAnsamicinas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 2L));
+        report.setResistenciaBetalactamicos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 3L));
+        report.setResistenciaCarbapenemicos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 4L));
+        report.setResistenciaCefalosporinasPrimeiraGeracao(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 5L));
+        report.setResistenciaCefalosporinasSegundaGeracao(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 6L));
+        report.setResistenciaCefalosporinasTerceiraGeracao(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 7L));
+        report.setResistenciaCefalosporinasQuartaGeracao(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 8L));
+        report.setResistenciaCefalosporinasQuintaGeracao(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 9L));
+        report.setResistenciaGlicilciclinas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 10L));
+        report.setResistenciaGlicopeptideos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 11L));
+        report.setResistenciaInibidoresFolato(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 12L));
+        report.setResistenciaLincosamidas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 13L));
+        report.setResistenciaMacrolideos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 14L));
+        report.setResistenciaNitrofuranicos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 15L));
+        report.setResistenciaNitroimidazolicos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 16L));
+        report.setResistenciaPolimixinas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 17L));
+        report.setResistenciaQuinolonas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 18L));
+        report.setResistenciaTetraciclinas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 19L));
+        report.setResistenciaAzois(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 20L));
+        report.setResistenciaEquinocandinas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 21L));
+        report.setResistenciaPolienos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 22L));
+
+        report.setResistenciaAmicacina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 1L));
+        report.setResistenciaGentamicina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 2L));
+        report.setResistenciaRifampicina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 3L));
+        report.setResistenciaAmpicilina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 4L));
+        report.setResistenciaAmpicilinaSulbactam(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 5L));
+        report.setResistenciaAmoxicilinaAcidoClavulanico(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 6L));
+        report.setResistenciaBenzilpenicilina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 7L));
+        report.setResistenciaCefoxitina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 8L));
+        report.setResistenciaOxacilina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 9L));
+        report.setResistenciaPenicilina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 10L));
+        report.setResistenciaPiperacilinaTazobactam(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 11L));
+        report.setResistenciaTicarcilinaAcidoClavulanico(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 12L));
+        report.setResistenciaDoripenem(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 13L));
+        report.setResistenciaErtapenem(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 14L));
+        report.setResistenciaImipenem(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 15L));
+        report.setResistenciaMeropenem(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 16L));
+        report.setResistenciaCefalexina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 17L));
+        report.setResistenciaCefadroxil(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 18L));
+        report.setResistenciaCefalotina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 19L));
+        report.setResistenciaCefazolina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 20L));
+        report.setResistenciaCefuroxima(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 21L));
+        report.setResistenciaCefaclor(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 22L));
+        report.setResistenciaCeftriaxona(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 23L));
+        report.setResistenciaCeftaxima(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 24L));
+        report.setResistenciaCeftazidima(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 25L));
+        report.setResistenciaCefepima(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 26L));
+        report.setResistenciaCefpiroma(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 27L));
+        report.setResistenciaKefazol(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 28L));
+        report.setResistenciaTigeciclina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 29L));
+        report.setResistenciaVancomicina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 30L));
+        report.setResistenciaTeicoplanina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 31L));
+        report.setResistenciaTelavancina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 32L));
+        report.setResistenciaSulfazotrim(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 33L));
+        report.setResistenciaTrimetoprimaSulfametoxazol(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 34L));
+        report.setResistenciaClindamicina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 35L));
+        report.setResistenciaAzitromicina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 36L));
+        report.setResistenciaEritromicina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 37L));
+        report.setResistenciaNitrofurantoina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 38L));
+        report.setResistenciaMetronidazol(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 39L));
+        report.setResistenciaColistina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 40L));
+        report.setResistenciaPolimixinaB(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 41L));
+        report.setResistenciaCiprofloxacina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 42L));
+        report.setResistenciaLevofloxacina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 43L));
+        report.setResistenciaMoxifloxacina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 44L));
+        report.setResistenciaNorfloxacina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 45L));
+        report.setResistenciaTetraciclina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 46L));
+        report.setResistenciaFluconazol(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 47L));
+        report.setResistenciaVoriconazol(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 48L));
+        report.setResistenciaCetoconazol(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 49L));
+        report.setResistenciaMiconazol(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 50L));
+        report.setResistenciaCapsofungina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 51L));
+        report.setResistenciaMicafungina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 52L));
+        report.setResistenciaAnfotericinaB(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 53L));
+        report.setResistenciaNistatina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 54L));
+
+        return  report;
+    }
 }

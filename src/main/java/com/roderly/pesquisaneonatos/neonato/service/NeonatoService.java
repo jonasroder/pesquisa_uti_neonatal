@@ -13,6 +13,7 @@ import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.excel.*;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
+import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import com.roderly.pesquisaneonatos.neonato.model.NeonatoSitioMalformacao;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoAusenciaUTIRepository;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
@@ -20,7 +21,9 @@ import com.roderly.pesquisaneonatos.neonato.repository.NeonatoSitioMalformacaoRe
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.EventoTipoDiasResponse;
+import com.roderly.pesquisaneonatos.prontuario.model.AntibiogramaIsolado;
 import com.roderly.pesquisaneonatos.prontuario.model.Evento;
+import com.roderly.pesquisaneonatos.prontuario.model.IsoladoColeta;
 import com.roderly.pesquisaneonatos.prontuario.repository.EventoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -104,9 +107,13 @@ public class NeonatoService {
         var neonatosInfectados = getReportGrupoInfectado();
         var mappingGrupoInfectado = ExcelHelper.createGrupoInfectadoColumnMapping();
 
+        var isolados = getReportIsolados();
+        var mappingIsolados = ExcelHelper.createIsoladosColumnMapping();
+
         List<ExcelSheetData<?>> sheetDataList = new ArrayList<>();
         sheetDataList.add(new ExcelSheetData<>("Grupo Controle", neonatosControle, mappingGrupoControle));
         sheetDataList.add(new ExcelSheetData<>("Grupo Infectado", neonatosInfectados, mappingGrupoInfectado));
+        sheetDataList.add(new ExcelSheetData<>("Isolados", isolados, mappingIsolados));
 
         return new ExcelService().generateExcelReport(sheetDataList);
     }
@@ -620,5 +627,73 @@ public class NeonatoService {
                 .distinct()
                 .count();
     }
+
+
+    public List<IsoladosReportData> getReportIsolados() {
+        var idsNeonatosControle = neonatoRepository.findIdsNeonatosInfectados();
+        var neonatos = neonatoRepository.findAllById(idsNeonatosControle);
+        var isolados = getIsoladoColetaFromNeonatos(neonatos);
+
+        return isolados.stream()
+                .map(isolado -> {
+                    return NeonatoMapper.convertToIsoladosReportData(isolado, this);
+                })
+                .toList();
+    }
+
+
+    public List<IsoladoColeta> getIsoladoColetaFromNeonatos(List<Neonato> neonatos) {
+        return neonatos.stream()
+                .flatMap(neonato -> neonato.getEventoList().stream())
+                .map(Evento::getIsoladoColeta)
+                .filter(isoladoColeta -> !isoladoColeta.getDesconsiderarColeta())
+                .toList();
+    }
+
+
+    public Long verificarNResistencia(List<AntibiogramaIsolado> antibiogramaIsolados) {
+        if (antibiogramaIsolados.size() < 3)
+            return 0L;
+
+        int i = 0;
+        for (AntibiogramaIsolado antibiograma : antibiogramaIsolados) {
+            if (antibiograma.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo() == 1L) {
+                i++;
+            }
+        }
+
+        return i < 3 ? 0L : 1L;
+    }
+
+
+    public Long verificarResistenciaClasseAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idClasseAntimicrobiano) {
+        for (AntibiogramaIsolado isolado : antibiogramas) {
+            var classe = isolado.getAntimicrobiano().getClasseAntimicrobiano();
+
+            if (classe.getIdClasseAntimicrobano().equals(idClasseAntimicrobiano)) {
+                if (isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo() == 1L) {
+                    return 1L;
+                } else {
+                    return 0L;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public Long verificarResistenciaAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idAntimicrobiano) {
+        for (AntibiogramaIsolado isolado : antibiogramas) {
+            if (isolado.getAntimicrobiano().getIdAntimicrobiano().equals(idAntimicrobiano)) {
+                if (isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo() == 1L) {
+                    return 1L;
+                } else {
+                    return 0L;
+                }
+            }
+        }
+        return null;
+    }
+
 
 }

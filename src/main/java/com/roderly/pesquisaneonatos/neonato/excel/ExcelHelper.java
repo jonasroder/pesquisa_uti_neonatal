@@ -468,4 +468,125 @@ public class ExcelHelper {
 
         return columnMappings;
     }
+
+
+
+    public static List<ExcelColumnMapping> createIsoladosColumnMapping() {
+
+        List<ExcelColumnMapping> columnMappings = new ArrayList<>();
+
+        // Propriedades gerais
+        columnMappings.add(new ExcelColumnMapping("ANO", "ano"));
+        columnMappings.add(new ExcelColumnMapping("PRONTUÁRIO", "prontuario"));
+        columnMappings.add(new ExcelColumnMapping("PACIENTE", "paciente"));
+        columnMappings.add(new ExcelColumnMapping("DATA DE NASCIMENTO", "dataNascimento"));
+        columnMappings.add(new ExcelColumnMapping("DATA DE INTERNAÇÃO", "dataInternacao"));
+        columnMappings.add(new ExcelColumnMapping("DATA DO DESFECHO", "dataDesfecho"));
+        columnMappings.add(new ExcelColumnMapping("DIAS DE INTERNAÇÃO", "diasInternacao"));
+        columnMappings.add(new ExcelColumnMapping("DESFECHO", "obito"));
+        columnMappings.add(new ExcelColumnMapping("PROCEDÊNCIA", "localNascimentoCodigo"));
+        columnMappings.add(new ExcelColumnMapping("INDICAÇÃO DE INTERNAÇÃO", "motivoInternacaoCodigo"));
+        columnMappings.add(new ExcelColumnMapping("SEXO AO NASCIMENTO", "sexoCodigo"));
+        columnMappings.add(new ExcelColumnMapping("PESO AO NASCER", "pesoGramas"));
+        columnMappings.add(new ExcelColumnMapping("CLASSIFICAÇÃO PESO", "pesoNascimentoCodigo"));
+        columnMappings.add(new ExcelColumnMapping("CLASSIFICAÇÃO IDADE GESTACIONAL", "idadeGestacionalCodigo"));
+        columnMappings.add(new ExcelColumnMapping("TIPO DE PARTO", "tipoPartoCodigo"));
+        columnMappings.add(new ExcelColumnMapping("BOLSA ROTA", "roturaMembranaCodigo"));
+        columnMappings.add(new ExcelColumnMapping("APGAR 1", "apgar1"));
+        columnMappings.add(new ExcelColumnMapping("APGAR 5", "apgar5"));
+        columnMappings.add(new ExcelColumnMapping("RISCO INFECCIOSO", "riscoInfeccioso"));
+        columnMappings.add(new ExcelColumnMapping("SEPSE CLÍNICA", "sepseClinica"));
+
+        // Propriedades adicionais
+        columnMappings.add(new ExcelColumnMapping("DATA DA COLETA", "dataColeta"));
+        columnMappings.add(new ExcelColumnMapping("SÍTIO DE COLETA", "sitioColetaCodigo"));
+        columnMappings.add(new ExcelColumnMapping("AGENTE", "agenteCodigo"));
+        columnMappings.add(new ExcelColumnMapping("CLASSIFICAÇÃO DO AGENTE", "classificacaoAgenteCodigo"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A 3 OU MAIS DROGAS", "resistencia3OuMaisDrogas"));
+        columnMappings.add(new ExcelColumnMapping("MECANISMO DE RESISTÊNCIA", "mecanismoResistencia"));
+        columnMappings.add(new ExcelColumnMapping("PERFIL DE RESISTÊNCIA", "perfilResistencia"));
+
+        // Classe antimicrobianos
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A AMINOGLICOSÍDEOS", "resistenciaAminoglicosideos"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A ANSAMICINAS", "resistenciaAnsamicinas"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A BETALACTÂMICOS", "resistenciaBetalactamicos"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CARBAPENÊMICOS", "resistenciaCarbapenemicos"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFALOSPORINAS 1ª GERAÇÃO", "resistenciaCefalosporinasPrimeiraGeracao"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFALOSPORINAS 2ª GERAÇÃO", "resistenciaCefalosporinasSegundaGeracao"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFALOSPORINAS 3ª GERAÇÃO", "resistenciaCefalosporinasTerceiraGeracao"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFALOSPORINAS 4ª GERAÇÃO", "resistenciaCefalosporinasQuartaGeracao"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFALOSPORINAS 5ª GERAÇÃO", "resistenciaCefalosporinasQuintaGeracao"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A GLICILCICLINAS", "resistenciaGlicilciclinas"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A GLICOPEPTÍDEOS", "resistenciaGlicopeptideos"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A INIBIDORES DE FOLATO", "resistenciaInibidoresFolato"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A LINCOSAMIDAS", "resistenciaLincosamidas"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A MACROLÍDEOS", "resistenciaMacrolideos"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A NITROFURÂNICOS", "resistenciaNitrofuranicos"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A NITROIMIDAZÓLICOS", "resistenciaNitroimidazolicos"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A POLIMIXINAS", "resistenciaPolimixinas"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A QUINOLONAS", "resistenciaQuinolonas"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A TETRACICLINAS", "resistenciaTetraciclinas"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A AZÓIS", "resistenciaAzois"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A EQUINOCANDINAS", "resistenciaEquinocandinas"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A POLIENOS", "resistenciaPolienos"));
+
+        // Antimicrobianos individuais
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A AMICACINA", "resistenciaAmicacina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A GENTAMICINA", "resistenciaGentamicina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A RIFAMPICINA", "resistenciaRifampicina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A AMPICILINA", "resistenciaAmpicilina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A AMPICILINA-SULBACTAM", "resistenciaAmpicilinaSulbactam"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A AMOXICILINA-ÁCIDO CLAVULÂNICO", "resistenciaAmoxicilinaAcidoClavulanico"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A BENZILPENICILINA", "resistenciaBenzilpenicilina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFOXITINA", "resistenciaCefoxitina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A OXACILINA", "resistenciaOxacilina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A PENICILINA", "resistenciaPenicilina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A PIPERACILINA-TAZOBACTAM", "resistenciaPiperacilinaTazobactam"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A TICARCILINA-ÁCIDO CLAVULÂNICO", "resistenciaTicarcilinaAcidoClavulanico"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A DORIPENEM", "resistenciaDoripenem"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A ERTAPENEM", "resistenciaErtapenem"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A IMIPENEM", "resistenciaImipenem"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A MEROPENEM", "resistenciaMeropenem"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFALEXINA", "resistenciaCefalexina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFADROXIL", "resistenciaCefadroxil"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFALOTINA", "resistenciaCefalotina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFAZOLINA", "resistenciaCefazolina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFUROXIMA", "resistenciaCefuroxima"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFACLOR", "resistenciaCefaclor"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFTRIAXONA", "resistenciaCeftriaxona"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFTAXIMA", "resistenciaCeftaxima"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFTAZIDIMA", "resistenciaCeftazidima"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFEPIMA", "resistenciaCefepima"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CEFPIROMA", "resistenciaCefpiroma"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A KEFAZOL", "resistenciaKefazol"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A TIGECICLINA", "resistenciaTigeciclina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A VANCOMICINA", "resistenciaVancomicina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A TEICOPLANINA", "resistenciaTeicoplanina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A TELAVANCINA", "resistenciaTelavancina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A SULFAZOTRIM", "resistenciaSulfazotrim"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A TRIMETOPRIMA-SULFAMETOXAZOL", "resistenciaTrimetoprimaSulfametoxazol"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CLINDAMICINA", "resistenciaClindamicina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A AZITROMICINA", "resistenciaAzitromicina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A ERITROMICINA", "resistenciaEritromicina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A NITROFURANTOÍNA", "resistenciaNitrofurantoina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A METRONIDAZOL", "resistenciaMetronidazol"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A COLISTINA", "resistenciaColistina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A POLIMIXINA B", "resistenciaPolimixinaB"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CIPROFLOXACINA", "resistenciaCiprofloxacina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A LEVOFLOXACINA", "resistenciaLevofloxacina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A MOXIFLOXACINA", "resistenciaMoxifloxacina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A NORFLOXACINA", "resistenciaNorfloxacina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A TETRACICLINA", "resistenciaTetraciclina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A FLUCONAZOL", "resistenciaFluconazol"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A VORICONAZOL", "resistenciaVoriconazol"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CETOCONAZOL", "resistenciaCetoconazol"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A MICONAZOL", "resistenciaMiconazol"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A CAPSOFUNGINA", "resistenciaCapsofungina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A MICAFUNGINA", "resistenciaMicafungina"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A ANFOTERICINA B", "resistenciaAnfotericinaB"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA A NISTATINA", "resistenciaNistatina"));
+
+        return columnMappings;
+    }
+
 }
