@@ -193,8 +193,15 @@ public class NeonatoService {
 
     public List<Evento> buscarColetasInfeccao(List<Evento> eventos) {
         return eventos.stream()
-                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getTipoEvento().getIsActive()
-                        && evento.getIsoladoColeta() != null && !evento.getIsoladoColeta().getDesconsiderarColeta())
+                .filter(evento -> {
+                    if (evento.getTipoEvento() == null || !evento.getTipoEvento().getIdTipoEvento().equals(10L) || !evento.getTipoEvento().getIsActive()) {
+                        return false;
+                    }
+                    if (evento.getIsoladoColeta() == null) {
+                        return false;
+                    }
+                    return !evento.getIsoladoColeta().getDesconsiderarColeta();
+                })
                 .toList();
     }
 
