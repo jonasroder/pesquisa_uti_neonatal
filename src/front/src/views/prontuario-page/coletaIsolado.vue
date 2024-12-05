@@ -136,12 +136,6 @@ watch(coletasIsolados, () => {
 
                         <v-card-subtitle class="d-flex justify-space-between pb-1">
                             Antibiogramas
-
-                            <v-btn size="x-small" icon color="cinzaAzulado" @click="adicionarAntibiograma(coleta)">
-                                <v-icon size="small">fas fa-plus</v-icon>
-                                <v-tooltip text="Adicionar novo Antimicrobiano"/>
-                            </v-btn>
-
                         </v-card-subtitle>
 
                         <v-row v-for="(antibiograma, i) in coleta.antibiogramas" :key="i" class="ma-0 pb-0">
@@ -162,9 +156,16 @@ watch(coletasIsolados, () => {
                             </v-col>
 
                             <v-col cols="12" class="pb-0">
-                                <v-divider class="mb-5 pb-0"/>
+                                <v-divider class="pb-0"/>
                             </v-col>
                         </v-row>
+
+                        <v-col cols="12" class="pb-0 mb-5">
+                            <v-btn block size="small" color="cinzaAzulado" @click="adicionarAntibiograma(coleta)">
+                                Adicionar Antibiograma
+                                <v-tooltip text="Adicionar novo Antimicrobiano" />
+                            </v-btn>
+                        </v-col>
 
                         <v-card-subtitle>
                             Perfil de resistência

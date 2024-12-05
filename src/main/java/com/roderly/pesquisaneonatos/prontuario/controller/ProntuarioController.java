@@ -49,4 +49,11 @@ public class ProntuarioController {
         return ResponseEntity.ok(response);
     }
 
+
+    @PostMapping("/excluir_evento/{id}")
+    public ResponseEntity<ApiResponseDTO> excluirEvento(@PathVariable Long id) throws IOException {
+        ApiResponseDTO response = prontuarioService.excluirEvento(id);
+        return ResponseEntity.ok(response);
+    }
+
 }

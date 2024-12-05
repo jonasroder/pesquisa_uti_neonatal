@@ -11,6 +11,7 @@ import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoRespons
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.mapper.ProntuarioMapper;
 import com.roderly.pesquisaneonatos.prontuario.model.AntibiogramaIsolado;
+import com.roderly.pesquisaneonatos.prontuario.model.Evento;
 import com.roderly.pesquisaneonatos.prontuario.model.IsoladoColeta;
 import com.roderly.pesquisaneonatos.prontuario.repository.*;
 import jakarta.persistence.*;
@@ -39,7 +40,7 @@ public class ProntuarioService {
         var neonato = neonatoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Neonato não encontrado com ID: " + id));
         var neonatoResponse = NeonatoMapper.convertNeonatoToNeonatoListResponse(neonato);
 
-        var eventos = eventoRepository.findByNeonatoIdNeonato(id);
+        var eventos = eventoRepository.findByNeonatoIdNeonatoAndIsActiveTrue(id);
         var eventosList = eventos.stream()
                 .map(ProntuarioMapper::eventoToEventoResponse)
                 .collect(Collectors.toSet());
@@ -151,5 +152,13 @@ public class ProntuarioService {
                 .collect(Collectors.joining("|"));
     }
 
+
+    public ApiResponseDTO excluirEvento(Long idEvento) throws IOException {
+        var evento = eventoRepository.findById(idEvento).orElseThrow(() -> new EntityNotFoundException("Evento não encontrado com id: " + idEvento));
+        evento.setIsActive(false);
+        eventoRepository.save(evento);
+
+        return ApiResponseDTO.successMessage("O evento foi removido!");
+    }
 
 }

@@ -30,7 +30,7 @@ export const serviceSaveEvento = async (data) => {
 		return res.data;
 
 	} catch (e) {
-		return handleApiError(e, "Error on serviceSave");
+		return handleApiError(e, "Error on serviceSaveEvento");
 	}
 };
 
@@ -42,6 +42,18 @@ export const serviceSaveIsoladoColeta = async (data) => {
 		return res.data;
 
 	} catch (e) {
-		return handleApiError(e, "Error on serviceSave");
+		return handleApiError(e, "Error on serviceSaveIsoladoColeta");
+	}
+};
+
+
+export const serviceExcluirEvento = async (id) => {
+	try {
+		let res = await axios.post(`/api/prontuario/excluir_evento/${id}`);
+		setNotification(res.data.message, 'success');
+		return res.data;
+
+	} catch (e) {
+		return handleApiError(e, "Error on serviceExcluirEvento");
 	}
 };

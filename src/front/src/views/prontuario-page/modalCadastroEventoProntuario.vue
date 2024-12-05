@@ -3,7 +3,7 @@ import CardFormulario from "@/components/CardFormulario.vue";
 import {onMounted, reactive, ref} from "vue";
 import {loading} from "@/plugins/loadingService";
 import {getOptionsAutocomplete, verificarCamposObrigatorios} from "@/service/common/utils";
-import {serviceSaveEvento} from "@/service/prontuario";
+import {serviceSaveEvento, serviceExcluirEvento} from "@/service/prontuario";
 
 
 const props = defineProps({
@@ -139,6 +139,19 @@ const handleCloseModal = () => {
     emit('close_modal');
 };
 
+
+const excluirEvento = async () => {
+    loading.show();
+    const idEvento = data.idEvento;
+
+    if(idEvento)
+        await serviceExcluirEvento(idEvento)
+
+    emit('close_modal');
+    loading.hide();
+}
+
+
 </script>
 
 
@@ -204,6 +217,7 @@ const handleCloseModal = () => {
                     <v-spacer/>
                     <v-btn class="mr-2" variant="elevated" color="cinzaAzulado" @click="handleCloseModal">Fechar</v-btn>
                     <v-btn color="azulEscuro" variant="elevated" @click="handleSave">Salvar</v-btn>
+                    <v-btn v-if="data.idEvento" class="mr-2" variant="elevated" color="red" @click="excluirEvento">Excluir</v-btn>
                 </v-card-actions>
             </v-col>
         </v-row>

@@ -186,7 +186,7 @@ public class NeonatoService {
 
     public List<Evento> filtrarListaEventosPorTipo(List<Evento> eventos, Long tipo) {
         return eventos.stream()
-                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(tipo) && evento.getTipoEvento().getIsActive())
+                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(tipo))
                 .toList();
     }
 
@@ -194,7 +194,7 @@ public class NeonatoService {
     public List<Evento> buscarColetasInfeccao(List<Evento> eventos) {
         return eventos.stream()
                 .filter(evento -> {
-                    if (evento.getTipoEvento() == null || !evento.getTipoEvento().getIdTipoEvento().equals(10L) || !evento.getTipoEvento().getIsActive()) {
+                    if (evento.getTipoEvento() == null || !evento.getTipoEvento().getIdTipoEvento().equals(10L)) {
                         return false;
                     }
                     if (evento.getIsoladoColeta() == null) {
@@ -653,7 +653,7 @@ public class NeonatoService {
         return neonatos.stream()
                 .flatMap(neonato -> neonato.getEventoList().stream())
                 .map(Evento::getIsoladoColeta)
-                .filter(isoladoColeta -> isoladoColeta != null && !isoladoColeta.getDesconsiderarColeta())
+                .filter(isoladoColeta -> isoladoColeta != null && !isoladoColeta.getDesconsiderarColeta() && isoladoColeta.getEvento().getIsActive())
                 .toList();
     }
 
@@ -674,18 +674,18 @@ public class NeonatoService {
     }
 
 
+
     public Long verificarResistenciaClasseAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idClasseAntimicrobiano) {
         return antibiogramas.stream()
                 .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
                 .filter(isolado -> isolado.getAntimicrobiano().getClasseAntimicrobiano().getIdClasseAntimicrobano().equals(idClasseAntimicrobiano))
                 .map(isolado -> {
                     Long idResistencia = isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo();
-                    return idResistencia != null && idResistencia == 2L ? 0L : 1L;
+                    return idResistencia != null && idResistencia == 2L ? 1L : 0L;
                 })
                 .findFirst()
                 .orElse(null);
     }
-
 
 
 
@@ -695,7 +695,7 @@ public class NeonatoService {
                 .filter(isolado -> isolado.getAntimicrobiano().getIdAntimicrobiano().equals(idAntimicrobiano))
                 .map(isolado -> {
                     Long idResistencia = isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo();
-                    return idResistencia != null && idResistencia == 2L ? 0L : 1L;
+                    return idResistencia != null && idResistencia == 2L ? 1L : 0L;
                 })
                 .findFirst()
                 .orElse(null);

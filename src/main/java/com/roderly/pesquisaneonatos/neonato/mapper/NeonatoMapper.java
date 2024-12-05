@@ -294,31 +294,31 @@ public class NeonatoMapper {
         var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
         var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getIdNeonato());
         var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L) - diasForaUti;
+        var eventos = neonato.getEventoList().stream().filter(evento -> evento.getIsActive()).toList();
 
         var malformacaoList = neonato.getNeonatoMalformacaoList();
-        var cirurgiasList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 9L);
-        var flebotomiaList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 8L);
-        var cvuList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 7L);
-        var piccList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 6L);
-        var entubacaoList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 3L);
-        var sondaVesicalList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 4L);
-        var nutricaoParenteralList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 5L);
-        var drenoList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 2L);
-        var medicacaoList = neonatoService.filtrarListaEventosPorTipo(neonato.getEventoList(), 1L);
+        var cirurgiasList = neonatoService.filtrarListaEventosPorTipo(eventos, 9L);
+        var flebotomiaList = neonatoService.filtrarListaEventosPorTipo(eventos, 8L);
+        var cvuList = neonatoService.filtrarListaEventosPorTipo(eventos, 7L);
+        var piccList = neonatoService.filtrarListaEventosPorTipo(eventos, 6L);
+        var entubacaoList = neonatoService.filtrarListaEventosPorTipo(eventos, 3L);
+        var sondaVesicalList = neonatoService.filtrarListaEventosPorTipo(eventos, 4L);
+        var nutricaoParenteralList = neonatoService.filtrarListaEventosPorTipo(eventos, 5L);
+        var drenoList = neonatoService.filtrarListaEventosPorTipo(eventos, 2L);
+        var medicacaoList = neonatoService.filtrarListaEventosPorTipo(eventos, 1L);
 
-        var coletasInfeccao = neonatoService.buscarColetasInfeccao(neonato.getEventoList());
+        var coletasInfeccao = neonatoService.buscarColetasInfeccao(eventos);
         var datasInfeccao = new ArrayList<>(neonatoService.getDatasInfeccoes(coletasInfeccao));
 
-        var coletasSangue = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(neonato.getEventoList(), 1L));
-        var coletasLCR = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(neonato.getEventoList(), 2L));
-        var coletasSecrecaoOcular = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(neonato.getEventoList(), 3L));
-        var coletasSwabAnal = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(neonato.getEventoList(), 4L));
-        var coletasPontaCateter = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(neonato.getEventoList(), 5L));
-        var coletasUrina = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(neonato.getEventoList(), 6L));
-        var coletasSecrecaoPulmonar = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(neonato.getEventoList(), 7L));
-        var coletasLiquidoAscitico = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(neonato.getEventoList(), 8L));
-        var coletaLiquidoPleural = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(neonato.getEventoList(), 9L));
-
+        var coletasSangue = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 1L));
+        var coletasLCR = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 2L));
+        var coletasSecrecaoOcular = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 3L));
+        var coletasSwabAnal = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 4L));
+        var coletasPontaCateter = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 5L));
+        var coletasUrina = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 6L));
+        var coletasSecrecaoPulmonar = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 7L));
+        var coletasLiquidoAscitico = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 8L));
+        var coletaLiquidoPleural = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 9L));
 
         var report = new NeonatoGrupoInfectadoReportData();
 

@@ -11,7 +11,8 @@ import java.util.List;
 
 public interface EventoRepository extends JpaRepository<Evento, Long> {
 
-    List<Evento> findByNeonatoIdNeonato(Long idNeonato);
+    List<Evento> findByNeonatoIdNeonatoAndIsActiveTrue(Long idNeonato);
+
 
 
     @Query("SELECT new com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoSemAntibiogramasResponse( " +
