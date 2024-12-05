@@ -12,16 +12,20 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class EntidadeRastreada {
 
+    @Getter
     @Column(name = "criado_em", updatable = false)
     private LocalDateTime criadoEm;
 
+    @Getter
     @Column(name = "alterado_em")
     private LocalDateTime alteradoEm;
 
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "alterado_por_id")
     private Usuario alteradoPor;
 
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "criado_por_id", updatable = false)
     private Usuario criadoPor;

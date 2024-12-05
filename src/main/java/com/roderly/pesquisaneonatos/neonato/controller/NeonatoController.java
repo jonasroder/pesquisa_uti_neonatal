@@ -1,6 +1,6 @@
 package com.roderly.pesquisaneonatos.neonato.controller;
 
-import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
+import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;

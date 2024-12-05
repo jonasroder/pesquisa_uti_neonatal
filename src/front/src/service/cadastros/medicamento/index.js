@@ -1,5 +1,6 @@
 import axios from "axios";
 import {handleApiError} from  "@/service/common/handleApiError"
+import {setNotification} from "@/plugins/notificationService";
 
 
 export const serviceLoad = async (id_medicamento) => {
@@ -15,6 +16,7 @@ export const serviceLoad = async (id_medicamento) => {
 export const serviceSave = async (data) => {
 	try {
 		let res = await axios.post('/api/medicamento/save', data);
+		setNotification(res.data.message, 'success');
 		return res.data;
 
 	} catch (e) {

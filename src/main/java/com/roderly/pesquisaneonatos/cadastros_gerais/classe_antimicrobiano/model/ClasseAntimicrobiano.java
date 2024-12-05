@@ -33,5 +33,9 @@ public class ClasseAntimicrobiano {
     public ClasseAntimicrobiano(Long idClasseAntimicrobano) {
         this.idClasseAntimicrobano = idClasseAntimicrobano;
     }
+
+    public static ClasseAntimicrobiano of(Long id) {
+        return id != null ? new ClasseAntimicrobiano(id) : null;
+    }
 }
 

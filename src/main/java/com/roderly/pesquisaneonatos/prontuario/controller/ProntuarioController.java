@@ -1,7 +1,7 @@
 package com.roderly.pesquisaneonatos.prontuario.controller;
 
 
-import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
+import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.ColetaIsoladoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.EventoRequest;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoResponse;

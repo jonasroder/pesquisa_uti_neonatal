@@ -1,13 +1,7 @@
 package com.roderly.pesquisaneonatos.prontuario.service;
 
-import com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.model.Antimicrobiano;
-import com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.repository.AntimicrobianoRepository;
-import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.model.MecanismoResistenciaMicroorganismo;
-import com.roderly.pesquisaneonatos.cadastros_gerais.microorganismo.model.Microorganismo;
-import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.model.PerfilResistenciaMicroorganismo;
-import com.roderly.pesquisaneonatos.cadastros_gerais.resistencia_microorganismo.model.ResistenciaMicroorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.resistencia_microorganismo.repository.ResistenciaMicroorganismoRepository;
-import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
+import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
 import com.roderly.pesquisaneonatos.prontuario.dto.request.AntibiogramaIsoladoRequest;
@@ -17,7 +11,6 @@ import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoRespons
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.mapper.ProntuarioMapper;
 import com.roderly.pesquisaneonatos.prontuario.model.AntibiogramaIsolado;
-import com.roderly.pesquisaneonatos.prontuario.model.Evento;
 import com.roderly.pesquisaneonatos.prontuario.model.IsoladoColeta;
 import com.roderly.pesquisaneonatos.prontuario.repository.*;
 import jakarta.persistence.*;
@@ -25,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.roderly.pesquisaneonatos.common.dto;
+package com.roderly.pesquisaneonatos.common.dto.response;
 
 import java.util.List;
 import java.util.Map;

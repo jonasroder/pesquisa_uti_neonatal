@@ -6,6 +6,7 @@ import {useRouter} from "vue-router";
 import CardFormulario from "@/components/CardFormulario.vue";
 
 
+const emit   = defineEmits(['set-show-buttons']);
 const data   = ref([]);
 const search = ref("");
 const router = useRouter();
@@ -15,6 +16,8 @@ onMounted(async () => {
     loading.show();
     const resp = await serviceList();
     data.value = resp;
+
+    emit('set-show-buttons', false);
     loading.hide();
 });
 
@@ -69,27 +72,32 @@ const verProntuario = (idNeonato) => {
 
 <template>
     <CardFormulario title="Lista de Neonatos"
-                    subtitle="Centralizando Informações para Cuidado Integral"
+                    subtitle="Controle e Registro de Neonatos"
                     :showCreateButton="true"
                     createButton="Cadastrar Neonato"
                     @handleNew="handleNew">
 
-        <v-btn color="cinzaAzulado" @click="serviceDownloadDataExcel()">
-            baixar
-        </v-btn>
 
         <v-card flat>
             <v-card-title class="d-flex align-center pe-2">
-                <v-spacer/>
+
+                <v-btn color="cinzaAzulado" @click="serviceDownloadDataExcel()">
+                    baixar
+                </v-btn>
+
+                <v-spacer></v-spacer>
+
                 <v-text-field
-                    label="Buscar"
-                    type="text"
-                    prependInnerIcon="fa-solid fa-search"
                     v-model="search"
+                    density="compact"
+                    label="Buscar"
+                    prepend-inner-icon="fa-solid fa-search"
+                    variant="solo-filled"
+                    flat
+                    hide-details
+                    single-line
                 />
             </v-card-title>
-
-            <v-divider/>
 
             <v-data-table :headers="headers"
                           :items="data"

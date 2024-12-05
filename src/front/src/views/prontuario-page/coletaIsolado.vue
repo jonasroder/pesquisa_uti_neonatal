@@ -57,7 +57,7 @@ const getOpcoesAutocomplete = async () => {
         descColumn: 'acronimo',
         tableName : 'microorganismo'
     }), getOptionsAutocomplete({
-        idColumn  : 'id_classe_antimicrobiano',
+        idColumn  : 'id_antimicrobiano',
         descColumn: 'descricao',
         tableName : 'antimicrobiano'
     }), getOptionsAutocomplete({
@@ -108,8 +108,6 @@ watch(coletasIsolados, () => {
                     <v-card>
                         <v-card-title>
                             {{ coleta.dataEvento }}
-
-
                         </v-card-title>
 
                         <v-alert

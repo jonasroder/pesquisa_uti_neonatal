@@ -1,5 +1,5 @@
 package com.roderly.pesquisaneonatos.usuario.controller;
-import com.roderly.pesquisaneonatos.common.dto.ApiResponseDTO;
+import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.usuario.dto.request.UsuarioCompletoRequest;
 import com.roderly.pesquisaneonatos.usuario.mappper.UsuarioMapper;
 import com.roderly.pesquisaneonatos.usuario.model.Usuario;
