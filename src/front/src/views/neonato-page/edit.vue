@@ -10,7 +10,7 @@ import CardFormulario from "@/components/CardFormulario.vue";
 
 
 const id                      = ref(getIdFromUrl());
-const emit                    = defineEmits(['set-back-action', 'set-save-action']);
+const emit                    = defineEmits(['set-back-action', 'set-save-action', 'set-show-buttons']);
 const cpfDisabled             = ref(false);
 const router                  = useRouter();
 const camposObrigatorios      = ref(true);
@@ -188,12 +188,24 @@ const adicionarPeriodoAusencia = async () => {
 };
 
 
+const verProntuario = (idNeonato) => {
+    router.push({
+        name : 'Prontuario-Page',
+        query: {id: idNeonato}
+    });
+}
 </script>
 
 
 <template>
     <card-formulario title="Cadastro de Neonato"
                      subtitle="Você pode editar o formulário a qualquer momento">
+
+        <div class="d-flex justify-end mb-2">
+            <a href="#" class="editable-name" @click.prevent="verProntuario(id)">
+                <b>Prontuário do Neonato <i class="fas fa-external-link-alt"></i></b>
+            </a>
+        </div>
 
         <v-row>
             <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
@@ -400,3 +412,18 @@ const adicionarPeriodoAusencia = async () => {
 
     </card-formulario>
 </template>
+
+
+<style scoped>
+
+.editable-name {
+    color: #2c3e50;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.editable-name:hover {
+    text-decoration: underline;
+    color: #3498db;
+}
+</style>

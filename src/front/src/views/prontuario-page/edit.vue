@@ -25,6 +25,7 @@ const eventoSelecionado     = ref();
 const router                = useRouter();
 const nomeMae               = ref();
 const prontuario            = ref();
+const dataInternacao        = ref();
 const carregarDadosIsolados = ref(false);
 
 const coletaData = ref([{
@@ -38,8 +39,12 @@ const coletaData = ref([{
 
 onMounted(async () => {
     loading.show()
-
     await carregarDadosAgenda();
+
+    if (dataInternacao.value) {
+        const calendarApi = fullCalendarRef.value.getApi();
+        calendarApi.gotoDate(dataInternacao.value);
+    }
 
     emit('set-back-action', handleBack);
     emit('set-save-action', handleSave);
@@ -97,6 +102,7 @@ const calendarOptions = ref({
         year : 'numeric'
     },
     initialView  : 'dayGridMonth',
+    initialDate  : dataInternacao.value,
     locale       : ptLocale,
     events       : calendarEvents.value,
     selectable   : true,
@@ -109,10 +115,11 @@ const calendarOptions = ref({
 
 
 const carregarDadosAgenda = async () => {
-    const data       = await serviceLoad(id.value);
-    nomeMae.value    = data.neonato.nomeMae
-    prontuario.value = data.neonato.prontuario;
-    const eventos    = data.eventos;
+    const data           = await serviceLoad(id.value);
+    nomeMae.value        = data.neonato.nomeMae
+    prontuario.value     = data.neonato.prontuario;
+    const eventos        = data.eventos;
+    dataInternacao.value = formatDateToUS(data.neonato.dataInternacao);
 
     const eventosFormatados = eventos.map(evento => ({
         title : evento.tipoEvento,
@@ -136,6 +143,20 @@ const fecharModalCadastroRapido = async () => {
     loading.hide()
 }
 
+
+const formatDateToUS = (dateBR) => {
+    if (!dateBR) {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    }
+
+    const [day, month, year] = dateBR.split('/');
+    if (!day || !month || !year) {
+        throw new Error('Formato de data inválido. Use o formato DD/MM/AAAA.');
+    }
+
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+};
 
 
 const handleSave = async () => {
@@ -187,6 +208,15 @@ const mostrarBotoesNavBar = () => {
 };
 
 
+const navigateToEditPage = (idNeonato) => {
+    router.push({
+        name : 'Neonato-Page',
+        query: {id: idNeonato}
+    });
+};
+
+
+
 watch(abaPagina, (newVal) => {
     if (newVal === '1') {
         setTimeout(() => {
@@ -200,10 +230,17 @@ watch(abaPagina, (newVal) => {
 
 
 <template>
-    <card-formulario :title="`Prontuário do Neonato de: ${nomeMae} - ${prontuario}`"
+    <card-formulario :title="`Prontuário do Neonato de: ${nomeMae} - ${prontuario}` "
                      subtitle="Você pode editar o formulário a qualquer momento">
 
         <v-container class="pa-0">
+
+            <div class="d-flex justify-end mb-2">
+                <a href="#" class="editable-name" @click.prevent="navigateToEditPage(id)">
+                    <b>Cadastro do Neonato <i class="fas fa-external-link-alt"></i></b>
+                </a>
+            </div>
+
             <v-card>
                 <v-tabs v-model="abaPagina" bg-color="primary">
                     <v-tab value="1" @click="ocultarBotoesNavBar"><b>Procedimentos</b></v-tab>
@@ -239,4 +276,14 @@ watch(abaPagina, (newVal) => {
     margin-top: -9px !important;
 }
 
+.editable-name {
+    color: #2c3e50;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.editable-name:hover {
+    text-decoration: underline;
+    color: #3498db;
+}
 </style>
