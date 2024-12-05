@@ -201,7 +201,7 @@ const verProntuario = (idNeonato) => {
     <card-formulario title="Cadastro de Neonato"
                      subtitle="Você pode editar o formulário a qualquer momento">
 
-        <div class="d-flex justify-end mb-2">
+        <div class="d-flex justify-end mb-2" v-if="id">
             <a href="#" class="editable-name" @click.prevent="verProntuario(id)">
                 <b>Prontuário do Neonato <i class="fas fa-external-link-alt"></i></b>
             </a>
