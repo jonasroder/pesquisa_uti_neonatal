@@ -23,12 +23,16 @@ const optionsViaAdministracao = ref();
 const emit                    = defineEmits(['close_modal', 'saved']);
 const camposObrigatorios      = ref(true);
 const idTipoEvento            = ref();
+const dataInicio              = ref();
+const tiutloPatina            = ref("Cadastrar novo evento");
+const subtituloPagina         = ref("Adicione um novo evento na agenda");
 
 
 const data = reactive({
     idEvento                : null,
     idNeonato               : null,
     dataEvento              : null,
+    dataFim                 : null,
     idTipoEvento            : null,
     idEventoEntidade        : null,
     tipoEntidade            : null,
@@ -42,16 +46,23 @@ const data = reactive({
 
 
 onMounted(async () => {
-    loading.show()
+    loading.show();
 
-    await Promise.all([getOptionsTipoEvento(), getOptionsAntimicrobiano(), getOptionsSitioCirurgia(), getOptionsSitioColeta(), getOptionsViaAdministracao()]);
+    await Promise.all([getOptionsTipoEvento(), getOptionsAntimicrobiano(), getOptionsSitioCirurgia(), getOptionsSitioColeta(), getOptionsViaAdministracao(),]);
 
     if (props.eventoSelecionado) {
         Object.assign(data, props.eventoSelecionado);
+        dataInicio.value = formatarDataISO(data.dataEvento);
     }
 
-    loading.hide()
+    if (data.idEvento) {
+        tiutloPatina.value    = "Atualizar Evento";
+        subtituloPagina.value = "Salve para atualizar os dados";
+    }
+
+    loading.hide();
 });
+
 
 
 const getOptionsTipoEvento = async () => {
@@ -102,7 +113,7 @@ const getOptionsViaAdministracao = async () => {
 const handleSave = async () => {
     camposObrigatorios.value = true;
     data.tipoEntidade        = definirTipoEntidade(data.idTipoEvento);
-    debugger
+    data.dataEvento          = dataInicio.value;
 
     if (!verificarCamposObrigatorios(verificacoes)) {
         camposObrigatorios.value = false;
@@ -144,23 +155,65 @@ const excluirEvento = async () => {
     loading.show();
     const idEvento = data.idEvento;
 
-    if(idEvento)
-        await serviceExcluirEvento(idEvento)
+    if (idEvento) await serviceExcluirEvento(idEvento)
 
     emit('close_modal');
     loading.hide();
 }
 
 
+const formatarDataISO = (data) => {
+    if (!data) return "";
+
+    // Verifica se a data já está no formato "YYYY-MM-DD"
+    const regexISODate = /^\d{4}-\d{2}-\d{2}$/;
+    if (regexISODate.test(data)) {
+        return data; // Retorna a data sem transformações
+    }
+
+    // Converte para o formato "YYYY-MM-DD" se necessário
+    const date = new Date(data);
+    return date.toLocaleDateString("sv-SE"); // Formato compatível com "YYYY-MM-DD"
+};
+
+
+
 </script>
 
 
 <template>
-    <card-formulario title="Cadastrar novo evento"
-                     subtitle="Adicione um novo evento na agenda">
+    <card-formulario :title="tiutloPatina"
+                     :subtitle="subtituloPagina">
 
-        <v-row>
-            <v-col cols="12">
+        <v-col cols="12" class="pa-1">
+
+            <v-row class="align-center mt-1">
+                <v-col
+                    :cols="data.idEvento || (data.idTipoEvento === 9 || data.idTipoEvento === 10) ? 12 : 6"
+                    class="pb-0"
+                >
+                    <v-text-field
+                        label="Data"
+                        type="date"
+                        density="compact"
+                        variant="outlined"
+                        v-model="dataInicio"
+                    />
+                </v-col>
+
+                <v-col cols="6" class="pb-0" v-if="!data.idEvento && data.idTipoEvento !== 9 && data.idTipoEvento !== 10">
+                    <v-text-field
+                        label="Data de Término"
+                        type="date"
+                        density="compact"
+                        variant="outlined"
+                        v-model="data.dataFim"
+                    />
+                </v-col>
+            </v-row>
+
+
+            <v-row>
                 <v-col cols="12" class="pb-0">
                     <v-autocomplete
                         label="Tipo do Evento"
@@ -213,14 +266,16 @@ const excluirEvento = async () => {
 
                 <v-divider/>
 
-                <v-card-actions>
-                    <v-spacer/>
-                    <v-btn class="mr-2" variant="elevated" color="cinzaAzulado" @click="handleCloseModal">Fechar</v-btn>
-                    <v-btn color="azulEscuro" variant="elevated" @click="handleSave">Salvar</v-btn>
-                    <v-btn v-if="data.idEvento" class="mr-2" variant="elevated" color="red" @click="excluirEvento">Excluir</v-btn>
-                </v-card-actions>
-            </v-col>
-        </v-row>
+                <v-col cols="12">
+                    <v-card-actions>
+                        <v-spacer/>
+                        <v-btn class="mr-2" variant="elevated" color="cinzaAzulado" @click="handleCloseModal">Fechar</v-btn>
+                        <v-btn color="azulEscuro" variant="elevated" @click="handleSave">Salvar</v-btn>
+                        <v-btn v-if="data.idEvento" class="mr-2" variant="elevated" color="red" @click="excluirEvento">Excluir</v-btn>
+                    </v-card-actions>
+                </v-col>
+            </v-row>
+        </v-col>
     </card-formulario>
 
 </template>

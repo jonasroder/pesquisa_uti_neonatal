@@ -11,14 +11,14 @@ import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoRespons
 import com.roderly.pesquisaneonatos.prontuario.dto.response.ProntuarioResponse;
 import com.roderly.pesquisaneonatos.prontuario.mapper.ProntuarioMapper;
 import com.roderly.pesquisaneonatos.prontuario.model.AntibiogramaIsolado;
-import com.roderly.pesquisaneonatos.prontuario.model.Evento;
 import com.roderly.pesquisaneonatos.prontuario.model.IsoladoColeta;
 import com.roderly.pesquisaneonatos.prontuario.repository.*;
-import jakarta.persistence.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,6 @@ public class ProntuarioService {
     private final AntibiogramaIsoladoRepository antibiogramaIsoladoRepository;
     private final IsoladoColetaRepository isoladoColetaRepository;
     private final EventoViaAdministracaoRepository eventoViaAdministracaoRepository;
-    private final ResistenciaMicroorganismoRepository resistenciaMicroorganismoRepository;
 
     public ProntuarioResponse load(Long id) {
         var neonato = neonatoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Neonato não encontrado com ID: " + id));
@@ -50,7 +49,39 @@ public class ProntuarioService {
 
 
     public ApiResponseDTO salvarEvento(EventoRequest request) throws IOException {
-        var evento = ProntuarioMapper.eventoRequestToEvento(request);
+
+        // Verifica se múltiplos eventos devem ser criados
+        if (request.idEvento() == null
+                && request.dataFim() != null
+                && request.idTipoEvento() != 9L
+                && request.idTipoEvento() != 10L
+                && request.dataFim().isAfter(request.dataEvento())) {
+
+            LocalDate currentDate = request.dataEvento();
+
+            while (!currentDate.isAfter(request.dataFim())) {
+                var evento = ProntuarioMapper.eventoRequestToEvento(request, currentDate);
+                var eventoSalvo = eventoRepository.save(evento);
+
+                if (request.idEntidade() != null && eventoSalvo.getIdEvento() != null) {
+                    var eventoEntidade = ProntuarioMapper.eventoAndEventoRequestToEventoEntidade(request, eventoSalvo);
+                    eventoEntidadeRepository.save(eventoEntidade);
+                }
+
+                if (request.idViaAdministracao() != null && eventoSalvo.getIdEvento() != null) {
+                    var eventoViaAdministracao = ProntuarioMapper.eventoToeventoViaAdministracao(
+                            eventoSalvo, request.idEventoViaAdministracao(), request.idViaAdministracao());
+                    eventoViaAdministracaoRepository.save(eventoViaAdministracao);
+                }
+
+                currentDate = currentDate.plusDays(1);
+            }
+
+            return ApiResponseDTO.successMessage("Os eventos foram salvos!");
+        }
+
+        // Fluxo normal para salvar um único evento
+        var evento = ProntuarioMapper.eventoRequestToEvento(request, request.dataEvento());
         var eventoSalvo = eventoRepository.save(evento);
 
         if (request.idEntidade() != null && eventoSalvo.getIdEvento() != null) {
@@ -59,7 +90,8 @@ public class ProntuarioService {
         }
 
         if (request.idViaAdministracao() != null && eventoSalvo.getIdEvento() != null) {
-            var eventoViaAdministracao = ProntuarioMapper.eventoToeventoViaAdministracao(eventoSalvo, request.idEventoViaAdministracao(), request.idViaAdministracao());
+            var eventoViaAdministracao = ProntuarioMapper.eventoToeventoViaAdministracao(
+                    eventoSalvo, request.idEventoViaAdministracao(), request.idViaAdministracao());
             eventoViaAdministracaoRepository.save(eventoViaAdministracao);
         }
 

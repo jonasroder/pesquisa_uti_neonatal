@@ -6,6 +6,7 @@ public record EventoRequest(
         Long idEvento,
         Long idNeonato,
         LocalDate dataEvento,
+        LocalDate dataFim,
         Long idTipoEvento,
         Long idEventoEntidade,
         String tipoEntidade,

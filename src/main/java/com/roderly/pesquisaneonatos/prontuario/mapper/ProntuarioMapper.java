@@ -16,12 +16,13 @@ import com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoSemAnti
 import com.roderly.pesquisaneonatos.prontuario.dto.response.EventoResponse;
 import com.roderly.pesquisaneonatos.prontuario.model.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProntuarioMapper {
 
-    public static Evento eventoRequestToEvento(EventoRequest request) {
+    public static Evento eventoRequestToEvento(EventoRequest request, LocalDate dataEvento) {
         var neonato = request.idNeonato() != null ? new Neonato(request.idNeonato()) : null;
         var tipoEvento = request.idTipoEvento() != null ? new TipoEvento(request.idTipoEvento()) : null;
 
@@ -29,7 +30,7 @@ public class ProntuarioMapper {
         evento.setIdEvento(request.idEvento());
         evento.setTipoEvento(tipoEvento);
         evento.setNeonato(neonato);
-        evento.setDataEvento(request.dataEvento());
+        evento.setDataEvento(dataEvento);
         evento.setDiaInteiro(request.diaInteiro());
         evento.setObservacao(request.observacao());
 
