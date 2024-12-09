@@ -18,11 +18,23 @@ public class LoginLogService {
         LoginLog log = new LoginLog();
         log.setUsuario(usuario);
         log.setDataHora(LocalDateTime.now());
-        log.setIpAddress(request.getRemoteAddr());
+        log.setIpAddress(getClientIp(request));
         log.setUserAgent(request.getHeader("User-Agent"));
         log.setStatus(status);
         log.setMotivo(motivo);
 
         loginLogRepository.save(log);
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("X-Real-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr(); // Fallback para o IP direto
+        }
+        // Se houver múltiplos IPs no cabeçalho (em cenários com proxies encadeados), retorna o primeiro.
+        return ipAddress != null ? ipAddress.split(",")[0].trim() : "unknown";
     }
 }
