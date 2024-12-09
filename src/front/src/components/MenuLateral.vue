@@ -7,10 +7,12 @@ import {getToken, getSessionUserData} from "@/service/common/tokenService";
 
 import {removeToken} from "@/service/common/tokenService";
 
+
 const router      = useRouter();
 const menuLateral = ref([]);
 const userData    = ref({});
 const nomeUsuario = ref("");
+const roleUsuario = ref("");
 
 
 onMounted(async () => {
@@ -20,6 +22,7 @@ onMounted(async () => {
 
     userData.value    = getSessionUserData();
     nomeUsuario.value = userData.value.nome_completo
+    roleUsuario.value = userData.value.id_role
 
     loading.show()
     let cachedMenu    = localStorage.getItem('cachedMenu');
@@ -52,6 +55,10 @@ const logout = () => {
     router.push('/login');
 };
 
+const abrirAdminPanel = () => {
+    router.push({name: 'Usuario-List'});
+};
+
 </script>
 
 
@@ -62,7 +69,8 @@ const logout = () => {
                 <div>
                     <v-list-item-title class="d-flex align-center justify-space-between">
                         {{ nomeUsuario }}
-                        <v-icon @click="logout">fa-solid fa-arrow-right-from-bracket</v-icon>
+                        <v-icon v-if="roleUsuario === 1" @click="abrirAdminPanel" class="hoverable-icon">fa-solid fa-wrench</v-icon>
+                        <v-icon @click="logout" class="hoverable-icon">fa-solid fa-arrow-right-from-bracket</v-icon>
                     </v-list-item-title>
                     <v-list-item-subtitle>Logado</v-list-item-subtitle>
                 </div>
@@ -110,3 +118,16 @@ const logout = () => {
 </template>
 
 
+<style scoped>
+/* Estilo para hover no ícone */
+.hoverable-icon:hover {
+    color: #1976D2; /* Azul escuro do Vuetify */
+    transition: color 0.3s ease;
+}
+
+/* Opcional: para adicionar animação */
+.v-btn:hover {
+    background-color: rgba(25, 118, 210, 0.1); /* Fundo leve no hover */
+    transition: background-color 0.3s ease;
+}
+</style>

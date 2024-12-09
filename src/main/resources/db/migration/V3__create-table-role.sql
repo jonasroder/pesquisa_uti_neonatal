@@ -10,8 +10,6 @@ CREATE TABLE role
 );
 
 -- Inserindo dados na tabela role
-INSERT INTO role (nome,            is_active)
-VALUES           ('ADMIN',         1        ),
-                 ('MEDICO',        1        ),
-                 ('RECEPCIONISTA', 1        ),
-                 ('PACIENTE',      1        );
+INSERT INTO role (nome,      is_active)
+VALUES           ('Admin',   1        ),
+                 ('Usuário', 1        );

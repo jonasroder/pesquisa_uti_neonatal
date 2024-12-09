@@ -144,10 +144,9 @@ const handleSave = async () => {
         return;
     }
 
-    debugger
     const res = await serviceSave(neonato);
 
-    if (res.id > 0) {
+    if(res.success) {
         id.value          = res.id;
         neonato.idNeonato = res.id;
         cpfDisabled.value = true;

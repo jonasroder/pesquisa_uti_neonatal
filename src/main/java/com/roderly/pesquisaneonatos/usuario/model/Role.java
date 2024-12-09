@@ -15,16 +15,20 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "role")
-public class Role  extends EntidadeRastreada {
+public class Role extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_role;
+    @Column(name = "id_role")
+    private Long idRole;
 
-    @Column(unique = true)
+    @Column(name = "nome", unique = true, nullable = false)
     private String nome;
 
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Usuario> usuarios;
 
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-    private Set<UsuarioRole> usuarioRoles;
+    public Role(Long idRole) {
+        this.idRole = idRole;
+    }
 }

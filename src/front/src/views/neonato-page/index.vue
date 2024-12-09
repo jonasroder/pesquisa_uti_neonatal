@@ -4,16 +4,23 @@ import {loading} from "@/plugins/loadingService";
 import {serviceList, serviceDownloadDataExcel} from "@/service/neonato";
 import {useRouter} from "vue-router";
 import CardFormulario from "@/components/CardFormulario.vue";
+import {getSessionUserData} from "@/service/common/tokenService";
 
 
 const emit   = defineEmits(['set-show-buttons']);
 const data   = ref([]);
 const search = ref("");
 const router = useRouter();
+const userData = ref("");
+const roleUsuario = ref("");
 
 
 onMounted(async () => {
     loading.show();
+
+    userData.value    = getSessionUserData();
+    roleUsuario.value = userData.value.id_role;
+
     const resp = await serviceList();
     data.value = resp;
 
@@ -79,31 +86,28 @@ const verProntuario = (idNeonato) => {
 
 
         <v-card flat>
-            <v-card-title class="d-flex align-center pe-2">
-
-                <v-btn color="cinzaAzulado" @click="serviceDownloadDataExcel()">
-                    baixar
-                </v-btn>
-
-                <v-spacer></v-spacer>
-
-                <v-text-field
-                    v-model="search"
-                    density="compact"
-                    label="Buscar"
-                    prepend-inner-icon="fa-solid fa-search"
-                    variant="solo-filled"
-                    flat
-                    hide-details
-                    single-line
-                />
-            </v-card-title>
-
             <v-data-table :headers="headers"
                           :items="data"
                           :hover="true"
                           v-model:search="search"
                           class="elevation-1">
+                <template #top>
+                    <v-toolbar flat class="pa-2">
+                        <v-btn v-if="roleUsuario === 1" color="azulEscuro" variant="elevated" class="elevation-2" @click="serviceDownloadDataExcel()" >
+                            baixar
+                        </v-btn>
+                        <v-spacer></v-spacer>
+                        <v-text-field
+                            v-model="search"
+                            density="compact"
+                            label="Buscar"
+                            prepend-inner-icon="fa-solid fa-search"
+                            class="elevation-1"
+                            hide-details
+                            single-line
+                        />
+                    </v-toolbar>
+                </template>
 
                 <!-- Coluna Nome Mãe -->
                 <template v-slot:[`item.nomeMae`]="{ item }">

@@ -1,6 +1,7 @@
 package com.roderly.pesquisaneonatos.usuario.model;
 
 import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
+import com.roderly.pesquisaneonatos.login.model.LoginLog;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +10,10 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
-
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,37 +24,39 @@ import java.util.Set;
 public class Usuario extends EntidadeRastreada implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_usuario;
+    @Column(name = "id_usuario")
+    private Long idUsuario;
+
+    @Column(name = "email", unique = true, nullable = false)
     private String usuario;
+
+    @Column(name = "senha", nullable = false)
     private String senha;
-    private String nome_completo;
-    private String titulo;
-    private String especialidade;
-    private String telefone_1;
-    private String telefone_2;
+
+    @Column(name = "nome_completo")
+    private String nomeCompleto;
+
+    @Column(name = "telefone")
+    private String telefone;
+
+    @Column(name = "cpf", unique = true, nullable = false)
     private String cpf;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_role", referencedColumnName = "id_role", nullable = false)
+    private Role role;
+
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
-    private Set<UsuarioRole> usuarioRoles;
+    @OrderBy("dataHora DESC")
+    private List<LoginLog> loginLogs;
 
 
 
-    public Usuario(Long id_usuario) {
-        this.id_usuario = id_usuario;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Collections.singleton(() -> role.getNome());
     }
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return usuarioRoles.stream()
-//                .filter(UsuarioRole::getIs_active)
-//                .map(usuarioRole -> new SimpleGrantedAuthority(usuarioRole.getRole().getNome()))
-//                .collect(Collectors.toSet());
-//    }
 
     @Override
     public String getPassword() {
@@ -82,6 +85,6 @@ public class Usuario extends EntidadeRastreada implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.getIsActive();
     }
 }

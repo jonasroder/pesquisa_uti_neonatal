@@ -15,5 +15,5 @@ CREATE TABLE menu
 
 -- Inserindo dados na tabela menu
 INSERT INTO menu (id_vue_router, icon,          title,       activator, ordem, criado_em, criado_por_id, alterado_em, alterado_por_id, is_active)
-VALUES           (NULL,          'fas fa-cogs', 'Cadastros', 'a1',      2,     NULL,      NULL,          NULL,        NULL,            0        ),
+VALUES           (NULL,          'fas fa-cogs', 'Cadastros', 'a1',      2,     NULL,      NULL,          NULL,        NULL,            1        ),
                  (1,             'fas fa-user', 'Neonatos',  NULL,      1,     NULL,      NULL,          NULL,        NULL,            1        );

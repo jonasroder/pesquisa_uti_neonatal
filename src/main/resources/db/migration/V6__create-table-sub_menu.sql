@@ -11,3 +11,4 @@ CREATE TABLE sub_menu
     is_active       TINYINT DEFAULT 1
 );
 
+INSERT INTO sub_menu (id_menu, id_vue_router, title, is_active) VALUES (1, 6, 'Medicamentos', 1);

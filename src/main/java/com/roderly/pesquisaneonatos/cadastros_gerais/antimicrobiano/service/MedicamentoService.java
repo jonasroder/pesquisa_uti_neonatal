@@ -33,7 +33,6 @@ public class MedicamentoService {
 
     public MedicamentoResponse load(Long id) {
         var medicamento = antimicrobianoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Medicamento não encontrado com ID: " + id));
-        ;
         return MedicamentoMapper.antimicrobianoToMedicamentoResponse(medicamento);
     }
 

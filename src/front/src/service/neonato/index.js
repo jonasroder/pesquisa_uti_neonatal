@@ -6,7 +6,11 @@ import {downloadFile} from "@/service/common/utils";
 export const serviceSave = async (data) => {
 	try {
 		let res = await axios.post('/api/neonato/save', data);
-		setNotification(res.data.message, 'success');
+		if(res.data.success){
+			setNotification(res.data.message, 'success');
+		} else {
+			setNotification(res.data.message, 'error');
+		}
 		return res.data;
 
 	} catch (e) {

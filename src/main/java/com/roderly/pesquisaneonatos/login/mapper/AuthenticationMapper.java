@@ -1,7 +1,9 @@
 package com.roderly.pesquisaneonatos.login.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roderly.pesquisaneonatos.common.Utilitarios.ObjectUtils;
 import com.roderly.pesquisaneonatos.login.dto.response.UserDataResponse;
+import com.roderly.pesquisaneonatos.usuario.model.Role;
 import com.roderly.pesquisaneonatos.usuario.model.Usuario;
 
 import java.io.IOException;
@@ -12,9 +14,10 @@ public class AuthenticationMapper {
 
     public static UserDataResponse usuarioToUserDataResponse(Usuario usuario){
         return new UserDataResponse(
-                usuario.getId_usuario(),
+                usuario.getIdUsuario(),
+                ObjectUtils.safeGet(usuario.getRole(), Role::getIdRole),
                 usuario.getUsuario(),
-                usuario.getNome_completo()
+                usuario.getNomeCompleto()
         );
     }
 
@@ -24,9 +27,9 @@ public class AuthenticationMapper {
             var userDataResponse = objectMapper.readValue(userDataJson, UserDataResponse.class);
             var usuario = new Usuario();
 
-            usuario.setId_usuario(userDataResponse.id_usuario());
+            usuario.setIdUsuario(userDataResponse.id_usuario());
             usuario.setUsuario(userDataResponse.usuario());
-            usuario.setNome_completo(userDataResponse.nome_completo());
+            usuario.setNomeCompleto(userDataResponse.nome_completo());
 
             return usuario;
         } catch (IOException e) {

@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roderly.pesquisaneonatos.login.dto.response.UserDataResponse;
 import com.roderly.pesquisaneonatos.login.mapper.AuthenticationMapper;
 import com.roderly.pesquisaneonatos.usuario.model.Usuario;
+import com.roderly.pesquisaneonatos.usuario.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +19,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 @Service
+@RequiredArgsConstructor
 public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
     private ObjectMapper objectMapper = new ObjectMapper();
+    private final UsuarioRepository usuarioRepository;
 
     public String generateToken(Usuario usuario){
         try {
@@ -63,15 +67,26 @@ public class TokenService {
 
 
     public String refreshToken(String oldToken) {
-        String usuario = this.validateToken(oldToken);
-        var user = AuthenticationMapper.jsonUserDataFrontToUsuario(usuario);
+        // Valida o token e extrai os dados do usuário
+        String usuarioJson = this.validateToken(oldToken);
 
-        if (usuario.isEmpty()) {
+        if (usuarioJson == null || usuarioJson.isEmpty()) {
             throw new JWTVerificationException("Token inválido ou expirado");
         }
 
+        // Converte o JSON para um objeto Usuario
+        var user = AuthenticationMapper.jsonUserDataFrontToUsuario(usuarioJson);
+
+        Boolean isAtivo = usuarioRepository.isUsuarioAtivo(user.getIdUsuario());
+
+        if (isAtivo == null || !isAtivo) {
+            throw new JWTVerificationException("Usuário inativo. Operação não permitida.");
+        }
+
+        // Gera um novo token para o usuário válido
         return this.generateToken(user);
     }
+
 
 
     private Instant getExpireTimeToken(){

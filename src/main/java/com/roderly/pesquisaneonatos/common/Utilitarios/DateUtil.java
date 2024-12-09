@@ -77,4 +77,19 @@ public class DateUtil {
         }
     }
 
+
+    /**
+     * Converte um LocalDateTime para uma string no formato de data e horário brasileiro (dd/MM/yyyy HH:mm:ss).
+     *
+     * @param dateTime O LocalDateTime a ser formatado.
+     * @return Uma string representando a data e o horário no formato brasileiro.
+     */
+    public static String LocalDateTimeToDateTimeBR(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return dateTime.format(formatter);
+    }
+
 }

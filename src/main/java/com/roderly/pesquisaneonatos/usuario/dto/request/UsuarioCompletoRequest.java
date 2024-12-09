@@ -2,12 +2,12 @@ package com.roderly.pesquisaneonatos.usuario.dto.request;
 
 
 public record UsuarioCompletoRequest(
-        Long id_usuario,
+        Long idUsuario,
+        Long idRole,
         String usuario,
         String senha,
-        String nome_completo,
-        String telefone_1,
-        String telefone_2,
+        String nomeCompleto,
+        String telefone,
         String cpf,
-        Boolean is_active
+        Boolean isActive
 ) {}

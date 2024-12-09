@@ -47,20 +47,6 @@ const getChipColor = (isActive) => (isActive ? 'success' : 'error');
 
 <template>
     <v-card flat>
-        <v-card-title class="d-flex align-center pe-2">
-            <v-spacer></v-spacer>
-            <v-text-field
-                v-model="search"
-                density="compact"
-                :label="searchPlaceholder"
-                prepend-inner-icon="fa-solid fa-search"
-                variant="solo-filled"
-                flat
-                hide-details
-                single-line
-            />
-        </v-card-title>
-
         <v-data-table
             :headers="headers"
             :items="data"
@@ -71,6 +57,24 @@ const getChipColor = (isActive) => (isActive ? 'success' : 'error');
             show-current-page
             show-first-last-page
         >
+            <template #top>
+                <v-toolbar flat class="pa-2">
+                    <v-icon size="24" class="me-2">
+                        fa-solid fa-table
+                    </v-icon>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                        v-model="search"
+                        density="compact"
+                        label="Buscar"
+                        prepend-inner-icon="fa-solid fa-search"
+                        class="elevation-1"
+                        hide-details
+                        single-line
+                    />
+                </v-toolbar>
+            </template>
+
             <!-- Customização da coluna Descrição -->
             <template v-slot:[`item.descricao`]="{ item }">
                 <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.id)">

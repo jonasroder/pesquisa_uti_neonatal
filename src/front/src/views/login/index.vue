@@ -54,8 +54,8 @@ const handleEnter = (event) => {
                     <!--Input Usuário-->
                     <v-col cols="12">
                         <v-text-field
-                            label="Usuário"
-                            type="text"
+                            label="Email"
+                            type="email"
                             prepend-icon="fa-solid fa-user"
                             v-model="login.usuario"
                         />
