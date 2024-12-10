@@ -48,6 +48,7 @@ public class AuthenticationController {
             // Registrar login com falha
             loginLogService.registrarLog(null, request, "FAILURE", "Usuário ou senha inválidos.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário ou senha inválidos.");
+
         } catch (Exception e) {
             // Registrar falha genérica
             loginLogService.registrarLog(null, request, "FAILURE", "Erro interno no servidor.");
