@@ -1,8 +1,10 @@
 package com.roderly.pesquisaneonatos.dictionaries.controller;
 
 import com.roderly.pesquisaneonatos.dictionaries.dto.AutocompleteRequestDTO;
+import com.roderly.pesquisaneonatos.dictionaries.dto.TabelaCodigoDTO;
 import com.roderly.pesquisaneonatos.dictionaries.dto.ValueLabelDTO;
 import com.roderly.pesquisaneonatos.dictionaries.service.DictionaryService;
+import com.roderly.pesquisaneonatos.usuario.dto.response.UsuarioResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,13 @@ public class DictionaryController {
         );
 
         return ResponseEntity.ok(data);
+    }
+
+
+    @PostMapping("/verificarCodigo")
+    private ResponseEntity<TabelaCodigoDTO> buscarCodigoValido(@RequestBody TabelaCodigoDTO tabelaCodigoDTO) {
+        var response = dictionaryService.buscarCodigoValido(tabelaCodigoDTO);
+        return ResponseEntity.ok(response);
     }
 
 }

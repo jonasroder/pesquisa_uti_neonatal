@@ -231,3 +231,51 @@ export const downloadFile = (blob, filename) => {
 	link.parentNode.removeChild(link);
 	window.URL.revokeObjectURL(url);
 };
+
+
+
+/**
+ * Verifica se um código já existe em uma tabela e sugere um novo valor se necessário.
+ *
+ * A função é usada para validar códigos no backend e retorna o próximo código sugerido ou confirma o código existente.
+ *
+ * @async
+ * @function verificarCodigo
+ * @param {Object} params - Um objeto contendo as propriedades `codigo` e `tabela`.
+ * @param {number|null} [params.codigo=null] - O código a ser validado (ou `null` para buscar o maior código disponível).
+ * @param {string} params.tabela - O nome da tabela onde o código será verificado.
+ * @returns {Promise<Object>} - Um objeto contendo o código sugerido, o nome da tabela e se o código já existe.
+ */
+export const verificarCodigo = async ({ codigo = null, tabela }) => {
+	try {
+		const data = {
+			codigo,
+			tabela
+		};
+
+		const res = await axios.post('/api/dictionary/verificarCodigo', data);
+
+		if (res?.data) {
+			return {
+				codigo: res.data.codigo,
+				tabela: res.data.tabela,
+				codigoExistente: res.data.codigoExistente
+			};
+		}
+
+		return {
+			codigo: null,
+			tabela,
+			codigoExistente: false
+		};
+
+	} catch (error) {
+		setNotification("Ocorreu um erro ao verificar o código na tabela " + tabela, "error");
+		console.error("Erro ao verificar código:", error);
+		return {
+			codigo: null,
+			tabela,
+			codigoExistente: false
+		};
+	}
+};

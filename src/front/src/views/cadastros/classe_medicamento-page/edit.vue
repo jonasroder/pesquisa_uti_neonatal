@@ -22,8 +22,6 @@ onMounted(async () => {
     if (id.value > 0) {
         const data        = await serviceLoad(id.value);
         medicamento.value = data;
-    } else {
-        await verivicarCodigo();
     }
 
     emit('set-back-action', handleBack);
@@ -42,6 +40,15 @@ const getOptionsFabricanteMedicamento = async () => {
 }
 
 
+const medicamento = ref({
+    idMedicamento         : null,
+    descricao             : null,
+    codigo                : null,
+    idClasseAntimicrobiano: null,
+    isActive              : true,
+});
+
+
 const verivicarCodigo = async (codigo = null) => {
     const statusCodigo = await verificarCodigo({
         codigo: codigo,
@@ -57,16 +64,6 @@ const verivicarCodigo = async (codigo = null) => {
         setNotification(`O código ${codigo} está disponível.`, "success");
     }
 };
-
-
-
-const medicamento = ref({
-    idMedicamento         : null,
-    descricao             : null,
-    codigo                : null,
-    idClasseAntimicrobiano: null,
-    isActive              : true,
-});
 
 
 const handleSave = async () => {
@@ -137,7 +134,6 @@ const handleBack = () => {
                             @blur="verivicarCodigo(medicamento.codigo)"
                         />
                     </v-col>
-
 
                     <v-col cols="12" sm="12" md="3" lg="2" xl="2" class="pb-0 pt-0">
                         <v-switch

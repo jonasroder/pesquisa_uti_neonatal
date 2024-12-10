@@ -57,9 +57,9 @@ const getOpcoesAutocomplete = async () => {
         descColumn: 'acronimo',
         tableName : 'microorganismo'
     }), getOptionsAutocomplete({
-        idColumn  : 'id_antimicrobiano',
-        descColumn: 'descricao',
-        tableName : 'antimicrobiano'
+        idColumn: 'id_antimicrobiano',
+        descColumn: `CONCAT(descricao, ' (', (SELECT descricao FROM classe_antimicrobiano ca WHERE ca.id_classe_antimicrobiano = t.id_classe_antimicrobiano), ')')`,
+        tableName: 'antimicrobiano'
     }), getOptionsAutocomplete({
         idColumn  : 'id_resistencia_microorganismo',
         descColumn: 'descricao',

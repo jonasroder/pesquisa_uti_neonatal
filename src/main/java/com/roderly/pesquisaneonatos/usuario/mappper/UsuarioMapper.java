@@ -64,7 +64,7 @@ public class UsuarioMapper {
     public static ListaUsuarioResponseDTO usuarioToListaUsuarioResponseDTO(Usuario usuario) {
 
         var ultimoLogin = usuario.getLoginLogs().stream()
-                .max(Comparator.comparing(LoginLog::getDataHora))
+                .max(Comparator.comparing(LoginLog::getIdLoginLog))
                 .map(LoginLog::getDataHora)
                 .orElse(null);
 
