@@ -1,6 +1,7 @@
 package com.roderly.pesquisaneonatos.cadastros_gerais.classe_antimicrobiano.model;
 
 import com.roderly.pesquisaneonatos.cadastros_gerais.tipo_antimicrobiano.model.TipoAntimicrobiano;
+import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "classe_antimicrobiano")
-public class ClasseAntimicrobiano {
+public class ClasseAntimicrobiano extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_classe_antimicrobiano")

@@ -2,7 +2,7 @@
 import {onMounted, ref} from 'vue';
 import CardListagem from "@/components/CardListagem.vue";
 import {loading} from "@/plugins/loadingService";
-import {serviceList} from "@/service/cadastros/classe_medicamento";
+import {serviceList} from "@/service/cadastros/genero_microorganismo";
 import {useRouter} from "vue-router";
 import TabelaListagemCadastro from "@/components/TabelaListagemCadastro.vue";
 
@@ -22,7 +22,7 @@ onMounted(async () => {
 
 const navigateToEditPage = (id) => {
     router.push({
-        name : 'ClasseMedicamento-Page',
+        name : 'GeneroMicroorganismo-Page',
         query: {id: id}
     });
 };
@@ -30,7 +30,7 @@ const navigateToEditPage = (id) => {
 
 <template>
     <CardListagem
-        title="Classe Medicamentos"
+        title="Gênero Microorganismo"
         subtitle="Escolha um para editar ou cadastre um novo"
         @handleNew="() => navigateToEditPage(null)"
     >

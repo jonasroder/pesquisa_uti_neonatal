@@ -1,6 +1,5 @@
 package com.roderly.pesquisaneonatos.usuario.mappper;
 
-import com.roderly.pesquisaneonatos.cadastros_gerais.classe_antimicrobiano.model.ClasseAntimicrobiano;
 import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
 import com.roderly.pesquisaneonatos.common.Utilitarios.ObjectUtils;
 import com.roderly.pesquisaneonatos.common.Utilitarios.StringUtils;

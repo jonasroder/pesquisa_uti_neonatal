@@ -23,9 +23,9 @@ public class MedicamentoService {
 
 
     public List<ListagemCadastroResponse> list() {
-        var neonatoList = antimicrobianoRepository.findAll();
+        var list = antimicrobianoRepository.findAll();
 
-        return neonatoList.stream()
+        return list.stream()
                 .map(MedicamentoMapper::antimicrobianoToListagemCadastroResponse)
                 .toList();
     }

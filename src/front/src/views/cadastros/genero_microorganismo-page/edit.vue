@@ -4,7 +4,7 @@ import {onMounted, ref} from "vue";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {loading} from "@/plugins/loadingService";
 import {getIdFromUrl, adicionarParametrosURL, verificarCamposObrigatorios, verificarCodigo} from "@/service/common/utils"
-import {serviceSave, serviceLoad} from "@/service/cadastros/classificacao_microorganismo";
+import {serviceSave, serviceLoad} from "@/service/cadastros/genero_microorganismo";
 import {setNotification} from "@/plugins/notificationService";
 
 
@@ -18,8 +18,8 @@ onMounted(async () => {
     loading.show()
 
     if (id.value > 0) {
-        const data               = await serviceLoad(id.value);
-        tipoMicroorganismo.value = data;
+        const data                = await serviceLoad(id.value);
+        genero.value = data;
     }
 
     emit('set-back-action', handleBack);
@@ -29,25 +29,25 @@ onMounted(async () => {
 });
 
 
-const tipoMicroorganismo = ref({
-    idClassificacaoMicroorganismo: null,
-    descricao                    : null,
-    codigo                       : null,
-    isActive                     : true,
+const genero = ref({
+    idGenero : null,
+    descricao: null,
+    codigo   : null,
+    isActive : true,
 });
 
 
 const verivicarCodigo = async (codigo = null) => {
     const statusCodigo = await verificarCodigo({
         codigo: codigo,
-        tabela: 'classificacao_microorganismo'
+        tabela: 'genero'
     });
 
     if (statusCodigo.codigoExistente || codigo === null) {
         if (codigo !== null) {
             setNotification(`O código ${codigo} já existe! Sugerido: ${statusCodigo.codigo}`, "warning");
         }
-        tipoMicroorganismo.value.codigo = statusCodigo.codigo;
+        genero.value.codigo = statusCodigo.codigo;
     } else {
         setNotification(`O código ${codigo} está disponível.`, "success");
     }
@@ -57,7 +57,7 @@ const verivicarCodigo = async (codigo = null) => {
 const handleSave = async () => {
     loading.show()
 
-    const data = tipoMicroorganismo.value;
+    const data = genero.value;
 
     camposObrigatorios.value = true;
 
@@ -74,21 +74,21 @@ const handleSave = async () => {
 
     const res = await serviceSave(data);
 
-    id.value                                               = res.id;
-    tipoMicroorganismo.value.idClassificacaoMicroorganismo = id.value;
+    id.value                                   = res.id;
+    genero.value.idClassificacaoMicroorganismo = id.value;
     adicionarParametrosURL({id: res.id});
 
     loading.hide()
 }
 
 const handleBack = () => {
-    router.push({name: 'ClasseMicroorganismo-List'});
+    router.push({name: 'GeneroMicroorganismo-List'});
 };
 
 </script>
 
 <template>
-    <card-formulario title="Cadastro Tipo Microorganismo"
+    <card-formulario title="Cadastro Gênero Microorganismo"
                      subtitle="Você pode editar as informações a qualquer momento">
 
         <v-row>
@@ -98,8 +98,8 @@ const handleBack = () => {
                         <v-text-field
                             label="Descrição"
                             type="text"
-                            :error="!tipoMicroorganismo.descricao && !camposObrigatorios"
-                            v-model="tipoMicroorganismo.descricao"
+                            :error="!genero.descricao && !camposObrigatorios"
+                            v-model="genero.descricao"
                         />
                     </v-col>
 
@@ -107,9 +107,9 @@ const handleBack = () => {
                         <v-text-field
                             label="Código"
                             type="number"
-                            :error="!tipoMicroorganismo.codigo && !camposObrigatorios"
-                            v-model="tipoMicroorganismo.codigo"
-                            @blur="verivicarCodigo(tipoMicroorganismo.codigo)"
+                            :error="!genero.codigo && !camposObrigatorios"
+                            v-model="genero.codigo"
+                            @blur="verivicarCodigo(genero.codigo)"
                         />
                     </v-col>
 
@@ -118,8 +118,8 @@ const handleBack = () => {
                             class="d-flex justify-center"
                             :true-value="true"
                             :false-value="false"
-                            :label="tipoMicroorganismo.isActive === true ? 'Ativo' : 'Inativo'"
-                            v-model="tipoMicroorganismo.isActive"
+                            :label="genero.isActive === true ? 'Ativo' : 'Inativo'"
+                            v-model="genero.isActive"
                         />
                     </v-col>
 

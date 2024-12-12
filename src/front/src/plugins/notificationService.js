@@ -3,7 +3,7 @@ import { toast } from 'vue3-toastify';
 export function setNotification(message, type = 'warning') {
 	toast(message, {
 		type: type, // Pode ser 'success', 'info', 'warning', 'error', ou 'default'
-		position: 'top-right', // Pode ser 'top', 'bottom', 'top-right', etc.
+		position: 'bottom-right', // Pode ser 'top', 'bottom', 'top-right', etc.
 		timeout: 5000, // Tempo em milissegundos até a notificação desaparecer
 		showProgressBar: true, // Mostra a barra de progresso
 		closeOnClick: true, // Fecha a notificação ao clicar

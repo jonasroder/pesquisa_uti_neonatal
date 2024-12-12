@@ -4,15 +4,15 @@ import {onMounted, ref} from "vue";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {loading} from "@/plugins/loadingService";
 import {getIdFromUrl, adicionarParametrosURL, getOptionsAutocomplete, verificarCamposObrigatorios, verificarCodigo} from "@/service/common/utils"
-import {serviceSave, serviceLoad} from "@/service/cadastros/medicamento";
+import {serviceSave, serviceLoad} from "@/service/cadastros/classe_medicamento";
 import {setNotification} from "@/plugins/notificationService";
 
 
-const emit                         = defineEmits(['set-back-action', 'set-save-action', 'set-show-buttons']);
-const router                       = useRouter();
-const optionsFabricanteMedicamento = ref([]);
-const camposObrigatorios           = ref(true);
-const id                           = ref(getIdFromUrl());
+const emit                      = defineEmits(['set-back-action', 'set-save-action', 'set-show-buttons']);
+const router                    = useRouter();
+const optionsTipoAntimicrobiano = ref();
+const camposObrigatorios        = ref(true);
+const id                        = ref(getIdFromUrl());
 
 
 onMounted(async () => {
@@ -20,8 +20,8 @@ onMounted(async () => {
     await getOptionsFabricanteMedicamento();
 
     if (id.value > 0) {
-        const data        = await serviceLoad(id.value);
-        medicamento.value = data;
+        const data              = await serviceLoad(id.value);
+        classeMedicamento.value = data;
     }
 
     emit('set-back-action', handleBack);
@@ -32,19 +32,19 @@ onMounted(async () => {
 
 
 const getOptionsFabricanteMedicamento = async () => {
-    optionsFabricanteMedicamento.value = await getOptionsAutocomplete({
-        idColumn  : 'id_classe_antimicrobiano',
+    optionsTipoAntimicrobiano.value = await getOptionsAutocomplete({
+        idColumn  : 'id_tipo_antimicrobiano',
         descColumn: 'descricao',
-        tableName : 'classe_antimicrobiano'
+        tableName : 'tipo_antimicrobiano'
     })
 }
 
 
-const medicamento = ref({
-    idMedicamento         : null,
+const classeMedicamento = ref({
+    idClasseAntimicrobiano: null,
     descricao             : null,
     codigo                : null,
-    idClasseAntimicrobiano: null,
+    idTipoAntimicrobiano  : null,
     isActive              : true,
 });
 
@@ -52,14 +52,14 @@ const medicamento = ref({
 const verivicarCodigo = async (codigo = null) => {
     const statusCodigo = await verificarCodigo({
         codigo: codigo,
-        tabela: 'antimicrobiano'
+        tabela: 'classe_antimicrobiano'
     });
 
     if (statusCodigo.codigoExistente || codigo === null) {
-        if(codigo !== null) {
+        if (codigo !== null) {
             setNotification(`O código ${codigo} já existe! Sugerido: ${statusCodigo.codigo}`, "warning");
         }
-        medicamento.value.codigo = statusCodigo.codigo;
+        classeMedicamento.value.codigo = statusCodigo.codigo;
     } else {
         setNotification(`O código ${codigo} está disponível.`, "success");
     }
@@ -69,13 +69,13 @@ const verivicarCodigo = async (codigo = null) => {
 const handleSave = async () => {
     loading.show()
 
-    const data = medicamento.value;
+    const data = classeMedicamento.value;
 
     camposObrigatorios.value = true;
 
     const verificacoes = [{
         dados : data,
-        campos: ['descricao', 'codigo', 'idClasseAntimicrobiano']
+        campos: ['descricao', 'codigo', 'idTipoAntimicrobiano']
     }];
 
     if (!verificarCamposObrigatorios(verificacoes)) {
@@ -86,8 +86,8 @@ const handleSave = async () => {
 
     const res = await serviceSave(data);
 
-    id.value                        = res.id;
-    medicamento.value.idMedicamento = id.value;
+    id.value                                       = res.id;
+    classeMedicamento.value.idClasseAntimicrobiano = id.value;
     adicionarParametrosURL({id: res.id});
 
     loading.hide()
@@ -95,13 +95,13 @@ const handleSave = async () => {
 
 const handleBack = () => {
     console.log('teste')
-    router.push({name: 'Medicamento-List'});
+    router.push({name: 'ClasseMedicamento-List'});
 };
 
 </script>
 
 <template>
-    <card-formulario title="Cadastro de Medicamento"
+    <card-formulario title="Cadastro Classe Medicamento"
                      subtitle="Você pode editar as informações a qualquer momento">
 
         <v-row>
@@ -111,17 +111,17 @@ const handleBack = () => {
                         <v-text-field
                             label="Descrição"
                             type="text"
-                            :error="!medicamento.descricao && !camposObrigatorios"
-                            v-model="medicamento.descricao"
+                            :error="!classeMedicamento.descricao && !camposObrigatorios"
+                            v-model="classeMedicamento.descricao"
                         />
                     </v-col>
 
                     <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
                         <v-autocomplete
-                            label="Classe Antimicrobiano"
-                            :items="optionsFabricanteMedicamento"
-                            :error="!medicamento.idClasseAntimicrobiano && !camposObrigatorios"
-                            v-model="medicamento.idClasseAntimicrobiano"
+                            label="Classe"
+                            :items="optionsTipoAntimicrobiano"
+                            :error="!classeMedicamento.idTipoAntimicrobiano && !camposObrigatorios"
+                            v-model="classeMedicamento.idTipoAntimicrobiano"
                         />
                     </v-col>
 
@@ -129,22 +129,21 @@ const handleBack = () => {
                         <v-text-field
                             label="Código"
                             type="number"
-                            :error="!medicamento.codigo && !camposObrigatorios"
-                            v-model="medicamento.codigo"
-                            @blur="verivicarCodigo(medicamento.codigo)"
+                            :error="!classeMedicamento.codigo && !camposObrigatorios"
+                            v-model="classeMedicamento.codigo"
+                            @blur="verivicarCodigo(classeMedicamento.codigo)"
                         />
                     </v-col>
 
-                    <v-col cols="12" sm="12" md="3" lg="2" xl="2" class="pb-0 pt-0">
+                    <v-col cols="12" sm="12" md="3" lg="2" xl="2" class="pt-0">
                         <v-switch
                             class="d-flex justify-center"
                             :true-value="true"
                             :false-value="false"
-                            :label="medicamento.isActive === true ? 'Ativo' : 'Inativo'"
-                            v-model="medicamento.isActive"
+                            :label="classeMedicamento.isActive === true ? 'Ativo' : 'Inativo'"
+                            v-model="classeMedicamento.isActive"
                         />
                     </v-col>
-
 
                 </v-row>
             </v-col>

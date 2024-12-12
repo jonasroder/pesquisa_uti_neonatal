@@ -15,8 +15,8 @@ public class MedicamentoMapper {
                 antimicrobiano.getIdAntimicrobiano(),
                 antimicrobiano.getCodigo(),
                 antimicrobiano.getDescricao(),
-                DateUtil.LocalDateToDateBR(antimicrobiano.getCriadoEm()),
-                DateUtil.LocalDateToDateBR(antimicrobiano.getAlteradoEm()),
+                DateUtil.LocalDateTimeToDateTimeBR(antimicrobiano.getCriadoEm()),
+                DateUtil.LocalDateTimeToDateTimeBR(antimicrobiano.getAlteradoEm()),
                 antimicrobiano.getIsActive()
         );
     }

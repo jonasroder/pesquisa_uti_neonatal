@@ -12,23 +12,46 @@ public class DateUtil {
      * Converte um LocalDateTime para uma string no formato de data brasileiro (dd/MM/yyyy).
      *
      * @param dateTime O LocalDateTime a ser formatado.
-     * @return Uma string representando a data no formato brasileiro.
+     * @return Uma string representando a data no formato brasileiro ou null se o parâmetro for null.
      */
     public static String LocalDateToDateBR(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return dateTime.format(formatter);
     }
+
 
 
     /**
      * Converte um LocalDate para uma string no formato de data brasileiro (dd/MM/yyyy).
      *
      * @param date O LocalDate a ser formatado.
-     * @return Uma string representando a data no formato brasileiro.
+     * @return Uma string representando a data no formato brasileiro ou null se o parâmetro for null.
      */
     public static String LocalDateToDateBR(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return date.format(formatter);
+    }
+
+
+
+    /**
+     * Converte um LocalDateTime para uma string no formato de data e horário brasileiro (dd/MM/yyyy HH:mm:ss).
+     *
+     * @param dateTime O LocalDateTime a ser formatado.
+     * @return Uma string representando a data e o horário no formato brasileiro ou null se o parâmetro for null.
+     */
+    public static String LocalDateTimeToDateTimeBR(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return dateTime.format(formatter);
     }
 
 
@@ -75,21 +98,6 @@ public class DateUtil {
         } else {
             return null;
         }
-    }
-
-
-    /**
-     * Converte um LocalDateTime para uma string no formato de data e horário brasileiro (dd/MM/yyyy HH:mm:ss).
-     *
-     * @param dateTime O LocalDateTime a ser formatado.
-     * @return Uma string representando a data e o horário no formato brasileiro.
-     */
-    public static String LocalDateTimeToDateTimeBR(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        return dateTime.format(formatter);
     }
 
 }

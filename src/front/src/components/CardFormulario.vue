@@ -25,7 +25,7 @@ const {smAndDown} = useDisplay();
 const paddingConf = ref(smAndDown.value ? 'pa-0' : '');
 
 const updatePaddingConf = () => {
-    paddingConf.value = smAndDown.value ? 'pa-0' : '';
+    paddingConf.value = smAndDown.value ? 'pa-1' : '';
 };
 
 onMounted(() => {

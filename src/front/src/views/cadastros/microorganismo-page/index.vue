@@ -2,7 +2,7 @@
 import {onMounted, ref} from 'vue';
 import CardListagem from "@/components/CardListagem.vue";
 import {loading} from "@/plugins/loadingService";
-import {serviceList} from "@/service/cadastros/medicamento";
+import {serviceList} from "@/service/cadastros/microorganismo";
 import {useRouter} from "vue-router";
 import TabelaListagemCadastro from "@/components/TabelaListagemCadastro.vue";
 
@@ -20,24 +20,24 @@ onMounted(async () => {
 });
 
 
-const navigateToEditPage = (id_medicamento) => {
+const navigateToEditPage = (id) => {
     router.push({
-        name : 'Medicamento-Page',
-        query: {id: id_medicamento}
+        name : 'Microorganismo-Page',
+        query: {id: id}
     });
 };
 </script>
 
 <template>
     <CardListagem
-        title="Lista de Medicamentos"
+        title="Microorganismos"
         subtitle="Escolha um para editar ou cadastre um novo"
         @handleNew="() => navigateToEditPage(null)"
     >
         <TabelaListagemCadastro
             :data="data"
             :navigateToEditPage="navigateToEditPage"
-            search-placeholder="Buscar Medicamentos"
+            search-placeholder="Buscar na tabela"
         />
     </CardListagem>
 </template>

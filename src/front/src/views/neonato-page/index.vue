@@ -78,7 +78,7 @@ const verProntuario = (idNeonato) => {
 
 
 <template>
-    <CardFormulario title="Lista de Neonatos"
+    <CardFormulario title="Neonatos"
                     subtitle="Controle e Registro de Neonatos"
                     :showCreateButton="true"
                     createButton="Cadastrar Neonato"
