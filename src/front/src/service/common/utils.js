@@ -145,30 +145,35 @@ export const formatarTelefone = (numero) => {
  * @param {string} [params.whereClause=""] - Uma cláusula WHERE adicional para a busca SQL.
  * @returns {Promise<ref<Array>>} - Uma ref de Vue com um array de objetos contendo as opções para o autocomplete.
  */
-export const getOptionsAutocomplete = async ({ idColumn, descColumn, tableName, is_active = true, whereClause = "" }) => {
+export const getOptionsAutocomplete = async ({ idColumn, descColumn, tableName, is_active = true, whereClause = "", additionalColumns = [] }) => {
 	try {
 		const data = {
 			idColumn,
 			descColumn,
 			tableName,
 			is_active,
-			whereClause
+			whereClause,
+			additionalColumns
 		};
 
 		const res = await axios.post('/api/dictionary/autocomplete', data);
 
 		if (Array.isArray(res.data)) {
-			return res.data.map((item => ({value: item.value, label: item.label})));
+			return res.data.map(item => ({
+				value: item.value,
+				label: item.label,
+				additionalData: item.additionalData // Dados extras
+			}));
 		}
 
 		return [];
-
 	} catch (error) {
 		setNotification("Ocorreu um erro ao buscar as options de " + tableName, "error");
 		console.error("Erro ao buscar opções de autocomplete:", error);
 		return [];
 	}
 };
+
 
 
 

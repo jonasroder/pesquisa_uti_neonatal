@@ -3,6 +3,7 @@ import {onMounted, ref, watch} from 'vue';
 import {loading} from "@/plugins/loadingService";
 import {getOptionsAutocomplete} from "@/service/common/utils";
 import {serviceLoadColetaIsolado} from "@/service/prontuario";
+import {setNotification} from "@/plugins/notificationService";
 
 
 const props = defineProps({
@@ -53,13 +54,14 @@ const carregarDadosIsolados = async () => {
 
 const getOpcoesAutocomplete = async () => {
     const results = await Promise.all([getOptionsAutocomplete({
-        idColumn  : 'id_microorganismo',
+        idColumn: 'id_microorganismo',
         descColumn: 'acronimo',
-        tableName : 'microorganismo'
+        tableName: 'microorganismo'
     }), getOptionsAutocomplete({
-        idColumn: 'id_antimicrobiano',
+        idColumn  : 'id_antimicrobiano',
         descColumn: `CONCAT(descricao, ' (', (SELECT descricao FROM classe_antimicrobiano ca WHERE ca.id_classe_antimicrobiano = t.id_classe_antimicrobiano), ')')`,
-        tableName: 'antimicrobiano'
+        tableName : 'antimicrobiano',
+        additionalColumns: ['id_classe_antimicrobiano']
     }), getOptionsAutocomplete({
         idColumn  : 'id_resistencia_microorganismo',
         descColumn: 'descricao',
@@ -90,6 +92,48 @@ const adicionarAntibiograma = (coleta) => {
         idResistenciaMicroorganismo: null,
         isActive                   : true,
     });
+}
+
+
+const verificarResistencias = (coleta) => {
+    const antibiogramas = coleta.antibiogramas;
+    const classesAntimicrobianos = new Set();
+
+    for (const antibiograma of antibiogramas) {
+        const idAntimicrobiano = antibiograma.idAntimicrobiano;
+        const idResistencia = antibiograma.idResistenciaMicroorganismo;
+
+        if (idResistencia === 2) {
+            const antimicrobiano = optionsAntimicrobianos.value.find(
+                (item) => item.value === idAntimicrobiano
+            );
+
+            if (antimicrobiano && antimicrobiano.additionalData) {
+                const classeId = antimicrobiano.additionalData.id_classe_antimicrobiano;
+                if (classeId) {
+                    classesAntimicrobianos.add(classeId);
+                }
+            }
+        }
+    }
+
+    if(classesAntimicrobianos.size >= 3){
+        coleta.idPerfilResistenciaMicroorganismo = 2;
+        setNotification(`Perfil de resistência MDR detectado`, "warning");
+    } else if(classesAntimicrobianos.size < 3 && coleta.idMecanismoResistenciaMicroorganismo === 1 && coleta.idPerfilResistenciaMicroorganismo !== 1) {
+        coleta.idPerfilResistenciaMicroorganismo = 1;
+        setNotification(`Alteração no perfil de resistência`, "warning");
+    }
+};
+
+
+const verificarPerfilResistencia = (coleta) => {
+    if(coleta.idMecanismoResistenciaMicroorganismo !== 1){
+        coleta.idPerfilResistenciaMicroorganismo = 2;
+        setNotification(`Perfil de resistência MDR detectado`, "warning");
+    } else {
+        verificarResistencias(coleta);
+    }
 }
 
 
@@ -144,6 +188,7 @@ watch(coletasIsolados, () => {
                                     label="Antimicrobiano"
                                     :items="optionsAntimicrobianos"
                                     v-model="antibiograma.idAntimicrobiano"
+                                    @update:model-value="verificarResistencias(coleta)"
                                 />
                             </v-col>
 
@@ -152,6 +197,7 @@ watch(coletasIsolados, () => {
                                     label="Resistencia"
                                     :items="optionsResistencia"
                                     v-model="antibiograma.idResistenciaMicroorganismo"
+                                    @update:model-value="verificarResistencias(coleta)"
                                 />
                             </v-col>
 
@@ -163,7 +209,7 @@ watch(coletasIsolados, () => {
                         <v-col cols="12" class="pb-0 mb-5">
                             <v-btn block size="small" color="cinzaAzulado" @click="adicionarAntibiograma(coleta)">
                                 Adicionar Antibiograma
-                                <v-tooltip text="Adicionar novo Antimicrobiano" />
+                                <v-tooltip text="Adicionar novo Antimicrobiano"/>
                             </v-btn>
                         </v-col>
 
@@ -187,7 +233,11 @@ watch(coletasIsolados, () => {
                         </v-card-subtitle>
 
                         <v-col cols="12">
-                            <v-radio-group inline v-model="coleta.idMecanismoResistenciaMicroorganismo">
+                            <v-radio-group
+                                inline
+                                v-model="coleta.idMecanismoResistenciaMicroorganismo"
+                                @update:model-value="verificarPerfilResistencia(coleta)"
+                            >
                                 <v-radio
                                     v-for="option in optionsMecanismoReistencia"
                                     :key="option.value"

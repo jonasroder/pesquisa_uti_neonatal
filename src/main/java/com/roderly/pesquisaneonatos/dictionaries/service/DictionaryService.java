@@ -7,7 +7,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -17,31 +19,58 @@ public class DictionaryService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<ValueLabelDTO> findIdAndLabelByTableAndCondition(String idColumn, String descColumn, String tableName, String whereClause, boolean is_active) {
-        String where = "1 = 1 ";
+    public List<ValueLabelDTO> findIdAndLabelByTableAndCondition(
+            String idColumn,
+            String descColumn,
+            String tableName,
+            String whereClause,
+            boolean is_active,
+            List<String> additionalColumns) {
+
+        String where = "1 = 1";
 
         if (is_active) {
-            where += "AND is_active = 1 ";
+            where += " AND is_active = 1";
         }
 
         if (whereClause != null && !whereClause.isBlank()) {
             where += " AND " + whereClause;
         }
 
-        // Substituir a geração da query para respeitar possíveis expressões no descColumn
-        String queryStr = String.format("SELECT %s AS id, %s AS label FROM %s t WHERE %s ORDER BY label ASC",
-                idColumn, descColumn, tableName, where);
+        String additionalColumnsQuery = "";
+        if (additionalColumns != null && !additionalColumns.isEmpty()) {
+            additionalColumnsQuery = ", " + String.join(", ", additionalColumns);
+        }
+
+        String queryStr = String.format(
+                "SELECT %s AS id, %s AS label%s FROM %s t WHERE %s ORDER BY label ASC",
+                idColumn, descColumn, additionalColumnsQuery, tableName, where
+        );
 
         if (isValidQuery(queryStr)) {
             Query query = entityManager.createNativeQuery(queryStr);
             List<Object[]> results = query.getResultList();
+
             return results.stream()
-                    .map(result -> new ValueLabelDTO((Long) result[0], (String) result[1]))
+                    .map(result -> {
+                        Long value = ((Number) result[0]).longValue();
+                        String label = (String) result[1];
+
+                        Map<String, Object> additionalData = new HashMap<>();
+                        if (additionalColumns != null && !additionalColumns.isEmpty()) {
+                            for (int i = 0; i < additionalColumns.size(); i++) {
+                                additionalData.put(additionalColumns.get(i), result[i + 2]);
+                            }
+                        }
+
+                        return new ValueLabelDTO(value, label, additionalData);
+                    })
                     .collect(Collectors.toList());
         } else {
             throw new IllegalArgumentException("Consulta SQL inválida");
         }
     }
+
 
 
 

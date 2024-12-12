@@ -1,3 +1,10 @@
 package com.roderly.pesquisaneonatos.dictionaries.dto;
 
-public record ValueLabelDTO(Long value, String label) {}
+import java.util.Map;
+
+public record ValueLabelDTO(
+        Long value,
+        String label,
+        Map<String, Object> additionalData
+) {
+}

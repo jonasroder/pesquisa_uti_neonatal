@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dictionary")
@@ -19,17 +20,22 @@ public class DictionaryController {
     private DictionaryService dictionaryService;
 
     @PostMapping("/autocomplete")
-    public ResponseEntity<List<ValueLabelDTO>> getAutocompleteData(@Valid @RequestBody AutocompleteRequestDTO autocompleteRequestDTO) {
+    public ResponseEntity<List<ValueLabelDTO>> getAutocompleteData(
+            @Valid @RequestBody AutocompleteRequestDTO autocompleteRequestDTO) {
+
         List<ValueLabelDTO> data = dictionaryService.findIdAndLabelByTableAndCondition(
                 autocompleteRequestDTO.idColumn(),
                 autocompleteRequestDTO.descColumn(),
                 autocompleteRequestDTO.tableName(),
                 autocompleteRequestDTO.whereClause(),
-                autocompleteRequestDTO.is_active()
+                autocompleteRequestDTO.is_active(),
+                autocompleteRequestDTO.additionalColumns()
         );
 
         return ResponseEntity.ok(data);
     }
+
+
 
 
     @PostMapping("/verificarCodigo")

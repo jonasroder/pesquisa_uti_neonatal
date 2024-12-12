@@ -220,8 +220,8 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping("DIAS DRENO APÓS A " + i + "ª INFECÇÃO", "Dreno_diasAposInfecao" + i));
         }
 
-        columnMappings.add(new ExcelColumnMapping("SEPSE CLÍNICA", "sepseClinica"));
-        columnMappings.add(new ExcelColumnMapping("RISCO INFECCIOSO", "riscoInfeccioso"));
+        //columnMappings.add(new ExcelColumnMapping("SEPSE CLÍNICA", "sepseClinica"));
+        //columnMappings.add(new ExcelColumnMapping("RISCO INFECCIOSO", "riscoInfeccioso"));
 
         // Coleta Sangue
         for (int i = 0; i < 5; i++) {
@@ -470,7 +470,6 @@ public class ExcelHelper {
     }
 
 
-
     public static List<ExcelColumnMapping> createIsoladosColumnMapping() {
 
         List<ExcelColumnMapping> columnMappings = new ArrayList<>();
@@ -494,8 +493,8 @@ public class ExcelHelper {
         columnMappings.add(new ExcelColumnMapping("BOLSA ROTA", "roturaMembranaCodigo"));
         columnMappings.add(new ExcelColumnMapping("APGAR 1", "apgar1"));
         columnMappings.add(new ExcelColumnMapping("APGAR 5", "apgar5"));
-        columnMappings.add(new ExcelColumnMapping("RISCO INFECCIOSO", "riscoInfeccioso"));
-        columnMappings.add(new ExcelColumnMapping("SEPSE CLÍNICA", "sepseClinica"));
+        //columnMappings.add(new ExcelColumnMapping("RISCO INFECCIOSO", "riscoInfeccioso"));
+        //columnMappings.add(new ExcelColumnMapping("SEPSE CLÍNICA", "sepseClinica"));
 
         // Propriedades adicionais
         columnMappings.add(new ExcelColumnMapping("DATA DA COLETA", "dataColeta"));
