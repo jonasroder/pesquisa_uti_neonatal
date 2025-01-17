@@ -24,6 +24,8 @@ const emit                    = defineEmits(['close_modal', 'saved']);
 const camposObrigatorios      = ref(true);
 const idTipoEvento            = ref();
 const dataInicio              = ref();
+const dataFim                 = ref();
+const disableSaveButton       = ref(false);
 const tiutloPatina            = ref("Cadastrar novo evento");
 const subtituloPagina         = ref("Adicione um novo evento na agenda");
 
@@ -53,6 +55,7 @@ onMounted(async () => {
     if (props.eventoSelecionado) {
         Object.assign(data, props.eventoSelecionado);
         dataInicio.value = formatarDataISO(data.dataEvento);
+        dataFim.value    = formatarDataISO(data.dataEvento);
     }
 
     if (data.idEvento) {
@@ -111,18 +114,24 @@ const getOptionsViaAdministracao = async () => {
 
 
 const handleSave = async () => {
+    disableSaveButton.value = true;
+    loading.show();
+    emit('close_modal');
     camposObrigatorios.value = true;
     data.tipoEntidade        = definirTipoEntidade(data.idTipoEvento);
     data.dataEvento          = dataInicio.value;
+    data.dataFim             = dataFim.value;
 
     if (!verificarCamposObrigatorios(verificacoes)) {
         camposObrigatorios.value = false;
+        disableSaveButton.value = false;
         loading.hide();
         return;
     }
 
     await serviceSaveEvento(data);
-    emit('close_modal');
+    loading.hide();
+    disableSaveButton.value = false;
 };
 
 
@@ -177,7 +186,6 @@ const formatarDataISO = (data) => {
 };
 
 
-
 </script>
 
 
@@ -207,7 +215,7 @@ const formatarDataISO = (data) => {
                         type="date"
                         density="compact"
                         variant="outlined"
-                        v-model="data.dataFim"
+                        v-model="dataFim"
                     />
                 </v-col>
             </v-row>
@@ -269,9 +277,9 @@ const formatarDataISO = (data) => {
                 <v-col cols="12">
                     <v-card-actions>
                         <v-spacer/>
-                        <v-btn class="mr-2" variant="elevated" color="cinzaAzulado" @click="handleCloseModal">Fechar</v-btn>
-                        <v-btn color="azulEscuro" variant="elevated" @click="handleSave">Salvar</v-btn>
-                        <v-btn v-if="data.idEvento" class="mr-2" variant="elevated" color="red" @click="excluirEvento">Excluir</v-btn>
+                        <v-btn :disabled="disableSaveButton" class="mr-2" variant="elevated" color="cinzaAzulado" @click="handleCloseModal">Fechar</v-btn>
+                        <v-btn :disabled="disableSaveButton" color="azulEscuro" variant="elevated" @click="handleSave">Salvar</v-btn>
+                        <v-btn :disabled="disableSaveButton" v-if="data.idEvento" class="mr-2" variant="elevated" color="red" @click="excluirEvento">Excluir</v-btn>
                     </v-card-actions>
                 </v-col>
             </v-row>

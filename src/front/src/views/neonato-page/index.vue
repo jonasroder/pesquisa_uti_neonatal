@@ -13,6 +13,7 @@ const search = ref("");
 const router = useRouter();
 const userData = ref("");
 const roleUsuario = ref("");
+const isDownloading = ref(false);
 
 
 onMounted(async () => {
@@ -74,6 +75,14 @@ const verProntuario = (idNeonato) => {
 }
 
 
+const downloadExcel = async () => {
+    loading.show();
+    isDownloading.value = true;
+    await serviceDownloadDataExcel();
+    isDownloading.value = false;
+    loading.hide();
+}
+
 </script>
 
 
@@ -93,9 +102,14 @@ const verProntuario = (idNeonato) => {
                           class="elevation-1">
                 <template #top>
                     <v-toolbar flat class="pa-2">
-                        <v-btn v-if="roleUsuario === 1" color="azulEscuro" variant="elevated" class="elevation-2" @click="serviceDownloadDataExcel()" >
+                        <v-btn v-if="roleUsuario === 1" color="azulEscuro" :disabled="isDownloading" variant="elevated" class="elevation-2" @click="downloadExcel()" >
                             baixar
                         </v-btn>
+                        <v-spacer></v-spacer>
+                        <div v-if="isDownloading" class="d-flex align-center">
+                            <b>O download pode demorar alguns minutos, não atualize a página...</b>
+                            <v-progress-circular indeterminate color="azulEscuro" size="20" class="mr-2"></v-progress-circular>
+                        </div>
                         <v-spacer></v-spacer>
                         <v-text-field
                             v-model="search"

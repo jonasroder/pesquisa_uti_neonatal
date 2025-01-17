@@ -5,6 +5,7 @@ import MenuLateral from "@/components/MenuLateral.vue";
 import BarraSuperior from "@/components/BarraSuperior.vue";
 import {loading} from "@/plugins/loadingService.js";
 
+
 const route       = useRoute();
 const isLoginPage = computed(() => route.path === '/login');
 const isLoading   = computed(() => loading.state.value);
@@ -15,10 +16,10 @@ const toggleDrawer = () => {
     console.log(drawer.value);
 };
 
-const backAction  = ref(() => {
+const backAction = ref(() => {
 });
 
-const saveAction  = ref(() => {
+const saveAction = ref(() => {
 });
 
 const showButtons = ref(true);
@@ -59,8 +60,9 @@ const setSaveAction = (action) => {
             <router-view/>
         </v-main>
     </v-app>
-    <div v-if="isLoading" class="overlay"></div>
-    <v-progress-circular v-if="isLoading" :size="50" color="barraSuperior" indeterminate class="loading-overlay"></v-progress-circular>
+    <div v-if="isLoading" class="overlay">
+        <v-progress-circular v-if="isLoading" :size="50" color="primary" indeterminate class="loading-overlay"></v-progress-circular>
+    </div>
 </template>
 
 <style>
@@ -69,7 +71,7 @@ const setSaveAction = (action) => {
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
-    z-index: 2001 !important;
+    z-index: 10001 !important;
 }
 
 .overlay {
@@ -79,6 +81,6 @@ const setSaveAction = (action) => {
     width: 100vw;
     height: 100vh;
     background-color: rgba(255, 255, 255, 0.5);
-    z-index: 2000;
+    z-index: 10000;
 }
 </style>
