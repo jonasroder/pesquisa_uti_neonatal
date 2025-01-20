@@ -1,6 +1,7 @@
 package com.roderly.pesquisaneonatos.menu.model;
 
 import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
+import com.roderly.pesquisaneonatos.usuario.model.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,10 @@ public class Menu extends EntidadeRastreada {
     private String title;
     private String activator;
     private Long ordem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_role", referencedColumnName = "id_role", nullable = false)
+    private Role role;
 
     @OneToMany(mappedBy = "menu")
     private List<SubMenu> subMenuList;

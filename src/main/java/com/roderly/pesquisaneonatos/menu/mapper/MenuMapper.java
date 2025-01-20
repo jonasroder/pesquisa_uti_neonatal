@@ -6,6 +6,7 @@ import com.roderly.pesquisaneonatos.menu.dto.response.VueRouterResponse;
 import com.roderly.pesquisaneonatos.menu.model.Menu;
 import com.roderly.pesquisaneonatos.menu.model.SubMenu;
 import com.roderly.pesquisaneonatos.menu.model.VueRouter;
+import com.roderly.pesquisaneonatos.usuario.model.Usuario;
 
 import java.util.List;
 
@@ -22,10 +23,12 @@ public class MenuMapper {
                     .toList();
         }
 
+
         return new MenuLateralResponse(
                 menu.getIcon(),
                 menu.getTitle(),
                 menu.getActivator(),
+                menu.getRole().getIdRole(),
                 subMenus,
                 vouRoute
         );

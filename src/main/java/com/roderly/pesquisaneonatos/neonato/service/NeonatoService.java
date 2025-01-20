@@ -14,6 +14,7 @@ import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.excel.*;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
+import com.roderly.pesquisaneonatos.neonato.model.NeonatoAusenciaUTI;
 import com.roderly.pesquisaneonatos.neonato.model.NeonatoSitioMalformacao;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoAusenciaUTIRepository;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
@@ -143,14 +144,13 @@ public class NeonatoService {
     }
 
 
-    public long calcularDiasForaUTI(Long idNeonato) {
-        List<DiasAusenciaUTIProjection> diasForaUti = neonatoAusenciaUtiRepository.findDiasAusenciaUTI(idNeonato);
-
-        return diasForaUti.isEmpty() ? 0 :
-                diasForaUti.stream()
-                        .mapToLong(projection -> ChronoUnit.DAYS.between(projection.getDataSaida(), projection.getDataRetorno()))
-                        .sum();
+    public long calcularDiasForaUTI(List<NeonatoAusenciaUTI> neonatoAusenciaUti) {
+        return neonatoAusenciaUti.stream()
+                .filter(projection -> projection.getDataSaidaUti() != null && projection.getDataRetornoUti() != null)
+                .mapToLong(projection -> ChronoUnit.DAYS.between(projection.getDataSaidaUti(), projection.getDataRetornoUti()))
+                .sum();
     }
+
 
 
     public List<NeonatoGrupoControleReportData> getReportGrupoControle() {
@@ -163,10 +163,9 @@ public class NeonatoService {
                     var classesAntimicrobianos = neonatoRepository.findClasseAntimicrobianoCountsByNeonato(neonato.getIdNeonato());
                     var diasUsoATB = neonatoRepository.getDiasUsoAntimicrobiano(neonato.getIdNeonato(), 1L);
                     var diasUsoATF = neonatoRepository.getDiasUsoAntimicrobiano(neonato.getIdNeonato(), 2L);
-                    var diasForaUti = calcularDiasForaUTI(neonato.getIdNeonato());
                     var cirurgiaNeonato = eventoRepository.getCirugiasNeonato(neonato.getIdNeonato()) > 0 ? 1L : 0L;
 
-                    return NeonatoMapper.convertToNeonatoGrupoControleReportData(neonato, diasForaUti, cirurgiaNeonato, eventos, diasUsoATB, diasUsoATF, classesAntimicrobianos, this);
+                    return NeonatoMapper.convertToNeonatoGrupoControleReportData(neonato, cirurgiaNeonato, eventos, diasUsoATB, diasUsoATF, classesAntimicrobianos, this);
                 })
                 .toList();
     }

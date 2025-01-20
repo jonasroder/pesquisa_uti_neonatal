@@ -6,6 +6,7 @@ public record MenuLateralResponse(
         String icon,
         String title,
         String activator,
+        Long idRole,
         List<SubMenuResponse> subMenus,
         VueRouterResponse vueRouter
 

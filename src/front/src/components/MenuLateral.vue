@@ -1,13 +1,14 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
-import { loading } from "@/plugins/loadingService.js";
-import { useRouter } from "vue-router";
-import { getToken, getSessionUserData } from "@/service/common/tokenService";
-import { removeToken } from "@/service/common/tokenService";
+import {onMounted, ref, watch} from 'vue';
+import {loading} from "@/plugins/loadingService.js";
+import {useRouter} from "vue-router";
+import {getToken, getSessionUserData} from "@/service/common/tokenService";
+import {removeToken} from "@/service/common/tokenService";
 
-const router = useRouter();
+
+const router      = useRouter();
 const menuLateral = ref([]);
-const userData = ref({});
+const userData    = ref({});
 const nomeUsuario = ref("");
 const roleUsuario = ref("");
 
@@ -16,12 +17,12 @@ onMounted(async () => {
         return;
     }
 
-    userData.value = getSessionUserData();
-    nomeUsuario.value = userData.value.nome_completo;
+    userData.value    = getSessionUserData();
+    nomeUsuario.value = userData.value.nome_completo.split(' ')[0];
     roleUsuario.value = userData.value.id_role;
 
     loading.show();
-    let cachedMenu = localStorage.getItem('cachedMenu');
+    let cachedMenu    = localStorage.getItem('cachedMenu');
     menuLateral.value = cachedMenu ? JSON.parse(cachedMenu) : null;
     loading.hide();
 });
@@ -50,7 +51,7 @@ const logout = () => {
 };
 
 const abrirAdminPanel = () => {
-    router.push({ name: 'Usuario-List' });
+    router.push({name: 'Usuario-List'});
 };
 </script>
 
@@ -65,51 +66,54 @@ const abrirAdminPanel = () => {
                 <div>
                     <v-list-item-title class="user-info">
                         {{ nomeUsuario }}
-                        <v-icon v-if="roleUsuario === 1" @click="abrirAdminPanel" class="hoverable-icon">fa-solid fa-wrench</v-icon>
+                        <v-spacer/>
+                        <v-icon v-if="roleUsuario === 1" @click="abrirAdminPanel" class="hoverable-icon mr-3">fa-solid fa-wrench</v-icon>
                         <v-icon @click="logout" class="hoverable-icon">fa-solid fa-arrow-right-from-bracket</v-icon>
                     </v-list-item-title>
                     <v-list-item-subtitle class="user-status">Logado</v-list-item-subtitle>
                 </div>
             </v-list-item>
 
-            <v-divider />
+            <v-divider/>
 
             <template v-for="item in menuLateral">
-                <v-list-group
-                    v-if="item.subMenus && item.subMenus.length"
-                    :key="item.title"
-                >
-                    <template #activator="{ props }">
+                <template v-if="!(roleUsuario === 2 && item.idRole === 1) ">
+                    <v-list-group
+                        v-if="item.subMenus && item.subMenus.length"
+                        :key="item.title"
+                    >
+                        <template #activator="{ props }">
+                            <v-list-item
+                                v-bind="props"
+                                :prepend-icon="item.icon"
+                                class="list-item-title"
+                            >
+                                {{ item.title }}
+                            </v-list-item>
+                        </template>
+
                         <v-list-item
-                            v-bind="props"
-                            :prepend-icon="item.icon"
-                            class="list-item-title"
+                            v-for="subItem in item.subMenus"
+                            :key="subItem.title"
+                            @click="navigateTo(subItem.vueRouter.path)"
+                            :class="{'v-list-item--active': isActive(subItem.vueRouter.path)}"
+                            class="submenu-item"
                         >
-                            {{ item.title }}
+                            {{ subItem.title }}
                         </v-list-item>
-                    </template>
+                    </v-list-group>
 
                     <v-list-item
-                        v-for="subItem in item.subMenus"
-                        :key="subItem.title"
-                        @click="navigateTo(subItem.vueRouter.path)"
-                        :class="{'v-list-item--active': isActive(subItem.vueRouter.path)}"
-                        class="submenu-item"
+                        v-else
+                        :key="item.title"
+                        @click="navigateTo(item.vueRouter.path)"
+                        :class="{'v-list-item--active': isActive(item.vueRouter.path)}"
+                        :prepend-icon="item.icon"
+                        class="list-item-title"
                     >
-                        {{ subItem.title }}
+                        {{ item.title }}
                     </v-list-item>
-                </v-list-group>
-
-                <v-list-item
-                    v-else
-                    :key="item.title"
-                    @click="navigateTo(item.vueRouter.path)"
-                    :class="{'v-list-item--active': isActive(item.vueRouter.path)}"
-                    :prepend-icon="item.icon"
-                    class="list-item-title"
-                >
-                    {{ item.title }}
-                </v-list-item>
+                </template>
             </template>
         </v-list>
     </v-navigation-drawer>

@@ -1,11 +1,11 @@
 <script setup>
 import {ref, onMounted} from 'vue';
 import {loading} from "@/plugins/loadingService";
-import {serviceList, serviceDownloadDataExcel} from "@/service/neonato";
+import {serviceList} from "@/service/neonato";
 import {useRouter} from "vue-router";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {getSessionUserData} from "@/service/common/tokenService";
-
+import ModalDownload from "@/views/neonato-page/modalDownload.vue";
 
 const emit   = defineEmits(['set-show-buttons']);
 const data   = ref([]);
@@ -13,7 +13,7 @@ const search = ref("");
 const router = useRouter();
 const userData = ref("");
 const roleUsuario = ref("");
-const isDownloading = ref(false);
+const modalDownload   = ref(false);
 
 
 onMounted(async () => {
@@ -77,10 +77,13 @@ const verProntuario = (idNeonato) => {
 
 const downloadExcel = async () => {
     loading.show();
-    isDownloading.value = true;
-    await serviceDownloadDataExcel();
-    isDownloading.value = false;
+    modalDownload.value = true;
     loading.hide();
+}
+
+
+const fecharModal = async () => {
+    modalDownload.value = false;
 }
 
 </script>
@@ -105,12 +108,9 @@ const downloadExcel = async () => {
                         <v-btn v-if="roleUsuario === 1" color="azulEscuro" :disabled="isDownloading" variant="elevated" class="elevation-2" @click="downloadExcel()" >
                             baixar
                         </v-btn>
+
                         <v-spacer></v-spacer>
-                        <div v-if="isDownloading" class="d-flex align-center">
-                            <b>O download pode demorar alguns minutos, não atualize a página...</b>
-                            <v-progress-circular indeterminate color="azulEscuro" size="20" class="mr-2"></v-progress-circular>
-                        </div>
-                        <v-spacer></v-spacer>
+
                         <v-text-field
                             v-model="search"
                             density="compact"
@@ -141,7 +141,12 @@ const downloadExcel = async () => {
 
             </v-data-table>
         </v-card>
+
+        <v-dialog v-model="modalDownload" transition="dialog-top-transition" max-width="400px">
+            <ModalDownload @close_modal="fecharModal"/>
+        </v-dialog>
     </CardFormulario>
+
 </template>
 
 

@@ -1,7 +1,6 @@
 import axios from "axios";
 import {handleApiError} from "@/service/common/handleApiError"
 import {setNotification} from "@/plugins/notificationService";
-import {downloadFile} from "@/service/common/utils";
 
 export const serviceSave = async (data) => {
 	try {
@@ -39,14 +38,17 @@ export const serviceList = async () => {
 };
 
 
-export const serviceDownloadDataExcel = async () => {
+export const serviceSaveFilaDownloadExcel = async (data) => {
 	try {
-		const response = await axios.get(`/api/neonato/download`, {
-			responseType: 'blob'
-		});
-		downloadFile(response.data, 'neonatos.xlsx');
-	} catch (error) {
-		console.error("Error on serviceDownloadDataExcel", error);
-		handleApiError(error, "Error on serviceDownloadDataExcel");
+		let res = await axios.post('/api/download/save', data);
+		if(res.data.success){
+			setNotification(res.data.message, 'success');
+		} else {
+			setNotification(res.data.message, 'error');
+		}
+		return res.data;
+
+	} catch (e) {
+		return handleApiError(e, "Error on serviceSave");
 	}
 };
