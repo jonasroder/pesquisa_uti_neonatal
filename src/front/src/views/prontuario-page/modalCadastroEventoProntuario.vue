@@ -116,7 +116,6 @@ const getOptionsViaAdministracao = async () => {
 const handleSave = async () => {
     disableSaveButton.value = true;
     loading.show();
-    emit('close_modal');
     camposObrigatorios.value = true;
     data.tipoEntidade        = definirTipoEntidade(data.idTipoEvento);
     data.dataEvento          = dataInicio.value;
@@ -130,6 +129,8 @@ const handleSave = async () => {
     }
 
     await serviceSaveEvento(data);
+
+    emit('close_modal');
     loading.hide();
     disableSaveButton.value = false;
 };
