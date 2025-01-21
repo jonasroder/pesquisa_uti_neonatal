@@ -14,16 +14,16 @@ const emit                    = defineEmits(['set-back-action', 'set-save-action
 const cpfDisabled             = ref(false);
 const router                  = useRouter();
 const camposObrigatorios      = ref(true);
-const optionsSexo             = ref([]);
-const optionsPesoNascimento   = ref([]);
-const optionsLocalNascimento  = ref([]);
-const optionsMotivoInternacao = ref([]);
-const optionsIdadeGestacional = ref([]);
-const optionsTipoParto        = ref([]);
-const optionsRoturaMembrana   = ref([]);
-const optionsSitioMalformacao = ref([]);
-const optionsSitioCirurgia    = ref([]);
-const optionsCausaObito       = ref([]);
+const optionsSexo             = ref();
+const optionsPesoNascimento   = ref();
+const optionsLocalNascimento  = ref();
+const optionsMotivoInternacao = ref();
+const optionsIdadeGestacional = ref();
+const optionsTipoParto        = ref();
+const optionsRoturaMembrana   = ref();
+const optionsSitioMalformacao = ref();
+const optionsSitioCirurgia    = ref();
+const optionsCausaObito       = ref();
 
 
 const neonato = reactive({
@@ -34,6 +34,7 @@ const neonato = reactive({
     dataInternacao    : null,
     dataDesfecho      : null,
     obito             : false,
+    gemelar           : false,
     apgar1            : null,
     apgar5            : null,
     pesoGramas        : null,
@@ -363,6 +364,14 @@ const verProntuario = (idNeonato) => {
                         </v-radio-group>
                     </v-col>
             -->
+
+            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
+                <v-radio-group v-model="neonato.gemelar" inline label="Gemelar">
+                    <v-radio label="Sim" :value="true"/>
+                    <v-radio label="Não" :value="false"/>
+                </v-radio-group>
+            </v-col>
+
             <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
                 <v-radio-group v-model="neonato.obito" inline label="Óbito">
                     <v-radio label="Sim" :value="true"/>

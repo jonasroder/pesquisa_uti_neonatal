@@ -50,6 +50,9 @@ public class Neonato extends EntidadeRastreada {
     @Column(name = "obito")
     private Boolean obito;
 
+    @Column(name = "gemelar")
+    private Boolean gemelar;
+
     @Column(name = "risco_infeccioso")
     private Boolean riscoInfeccio;
 

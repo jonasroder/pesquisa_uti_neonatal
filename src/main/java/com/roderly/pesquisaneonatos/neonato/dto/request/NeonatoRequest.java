@@ -11,6 +11,7 @@ public record NeonatoRequest(
         LocalDate dataInternacao,
         LocalDate dataDesfecho,
         Boolean obito,
+        Boolean gemelar,
         Long apgar1,
         Long apgar5,
         Long pesoGramas,

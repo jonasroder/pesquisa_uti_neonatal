@@ -1,5 +1,7 @@
 package com.roderly.pesquisaneonatos.cadastros_gerais.motivo_internacao.model;
 
+import com.roderly.pesquisaneonatos.cadastros_gerais.sistema_fisiologico.model.SistemaFisiologico;
+import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,14 +17,15 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "motivo_internacao")
-public class MotivoInternacao {
+public class MotivoInternacao extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_motivo_internacao")
     private Long idMotivoInternacao;
 
-    @Column(name = "codigo")
-    private Long codigo;
+    @ManyToOne
+    @JoinColumn(name = "codigo", referencedColumnName = "codigo", nullable = false)
+    private SistemaFisiologico sistemaFisiologico;
 
     @Column(name = "descricao")
     private String descricao;

@@ -42,14 +42,14 @@ onBeforeUnmount(() => {
             <v-col cols="12" :class="paddingConf">
                 <v-card>
                     <v-row class="mb-2">
-                        <v-col cols="12" sm="12" md="8" lg="10">
+                        <v-col cols="12" sm="12" md="6" lg="8">
                             <v-card-title class="d-flex flex-column align-start text-wrap">
                                 <span class="text-h5">{{ $props.title }}</span>
                                 <small class="text-subtitle-1">{{ $props.subtitle }}</small>
                             </v-card-title>
                         </v-col>
 
-                        <v-col cols="12" sm="12" md="4" lg="2">
+                        <v-col cols="12" sm="12" md="6" lg="4">
                             <div class="d-flex justify-end mt-3 mr-2">
                                 <v-btn class="mr-2" color="azulEscuro" @click="$emit('handleNew')">{{ $props.botao }}</v-btn>
                             </div>

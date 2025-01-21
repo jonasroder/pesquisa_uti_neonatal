@@ -55,6 +55,7 @@ public class NeonatoMapper {
         neonato.setDataInternacao(request.dataInternacao());
         neonato.setDataDesfecho(request.dataDesfecho());
         neonato.setObito(request.obito());
+        neonato.setGemelar(request.gemelar());
         neonato.setRiscoInfeccio(request.riscoInfeccioso());
         neonato.setSepseClinica(request.sepseClinica());
         neonato.setApgar1(request.apgar1());
@@ -118,6 +119,7 @@ public class NeonatoMapper {
                 neonato.getDataInternacao(),
                 neonato.getDataDesfecho(),
                 neonato.getObito(),
+                neonato.getGemelar(),
                 neonato.getApgar1(),
                 neonato.getApgar5(),
                 neonato.getPesoGramas(),
@@ -205,7 +207,7 @@ public class NeonatoMapper {
         report.setObito(neonato.getObito() ? 1L : 0L);
         report.setLocalNascimentoCodigo(neonato.getLocalNascimento() != null ? neonato.getLocalNascimento().getCodigo() : null);
         report.setSexoCodigo(neonato.getSexo() != null ? neonato.getSexo().getCodigo() : null);
-        report.setMotivoInternacaoCodigo(neonato.getMotivoInternacao() != null ? neonato.getMotivoInternacao().getCodigo() : null);
+        report.setMotivoInternacaoCodigo(neonato.getMotivoInternacao() != null ? neonato.getMotivoInternacao().getSistemaFisiologico().getCodigo() : null);
         report.setPesoGramas(neonato.getPesoGramas());
         report.setPesoNascimentoCodigo(neonato.getPesoNascimento() != null ? neonato.getPesoNascimento().getCodigo() : null);
         report.setIdadeGestacionalCodigo(neonato.getIdadeGestacional() != null ? neonato.getIdadeGestacional().getCodigo() : null);
@@ -331,7 +333,7 @@ public class NeonatoMapper {
         report.setDiasInternacao(diasInternacao);
         report.setObito(neonato.getObito() ? 1L : 0L);
         report.setLocalNascimentoCodigo(neonato.getLocalNascimento() != null ? neonato.getLocalNascimento().getCodigo() : null);
-        report.setMotivoInternacaoCodigo(neonato.getMotivoInternacao() != null ? neonato.getMotivoInternacao().getCodigo() : null);
+        report.setMotivoInternacaoCodigo(neonato.getMotivoInternacao() != null ? neonato.getMotivoInternacao().getSistemaFisiologico().getCodigo() : null);
         report.setSexoCodigo(neonato.getSexo() != null ? neonato.getSexo().getCodigo() : null);
         report.setPesoGramas(neonato.getPesoGramas());
         report.setPesoNascimentoCodigo(neonato.getPesoNascimento() != null ? neonato.getPesoNascimento().getCodigo() : null);
@@ -392,7 +394,7 @@ public class NeonatoMapper {
         report.setDiasInternacao(diasInternacao);
         report.setObito(neonato.getObito() ? 1L : 0L);
         report.setLocalNascimentoCodigo(neonato.getLocalNascimento() != null ? neonato.getLocalNascimento().getCodigo() : null);
-        report.setMotivoInternacaoCodigo(neonato.getMotivoInternacao() != null ? neonato.getMotivoInternacao().getCodigo() : null);
+        report.setMotivoInternacaoCodigo(neonato.getMotivoInternacao() != null ? neonato.getMotivoInternacao().getSistemaFisiologico().getCodigo() : null);
         report.setSexoCodigo(neonato.getSexo() != null ? neonato.getSexo().getCodigo() : null);
         report.setPesoGramas(neonato.getPesoGramas());
         report.setPesoNascimentoCodigo(neonato.getPesoNascimento() != null ? neonato.getPesoNascimento().getCodigo() : null);

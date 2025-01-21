@@ -22,7 +22,7 @@ public class SolicitacaoDownloadMapper {
                 solicitacaoDownload.getIdSolicitacaoDownload(),
                 solicitacaoDownload.getDescricao(),
                 solicitacaoDownload.getCriadoPor().getNomeCompleto(),
-                DateUtil.LocalDateToDateBR(solicitacaoDownload.getCriadoEm()),
+                DateUtil.LocalDateTimeToDateTimeBR(solicitacaoDownload.getCriadoEm()),
                 solicitacaoDownload.getStatus().toString()
         );
     }
