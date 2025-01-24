@@ -7,7 +7,6 @@ import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
 import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.common.excel.ExcelService;
 import com.roderly.pesquisaneonatos.common.excel.ExcelSheetData;
-import com.roderly.pesquisaneonatos.neonato.dto.projections.DiasAusenciaUTIProjection;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
@@ -360,6 +359,13 @@ public class NeonatoService {
 
         for (Evento evento : cirurgias) {
             var dataEvento = evento.getDataEvento();
+
+            // Verificar se o a cirurgia tem sitio definido
+            if (evento.getEventoEntidade() == null) {
+                System.out.println("Evento com EventoEntidade nulo. ID do evento: " + evento.getIdEvento());
+                continue;
+            }
+
             var codigoSitioCirurgia = getCodigoCadastro("sitio_cirurgia", "id_sitio_cirurgia", evento.getEventoEntidade().getIdEntidade());
 
             var cirurgia = new DataCodigoCirurgia();
