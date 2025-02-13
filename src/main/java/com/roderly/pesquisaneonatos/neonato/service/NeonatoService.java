@@ -691,7 +691,10 @@ public class NeonatoService {
     public Long verificarResistenciaClasseAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idClasseAntimicrobiano) {
         return antibiogramas.stream()
                 .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
-                .filter(isolado -> isolado.getAntimicrobiano().getClasseAntimicrobiano().getIdClasseAntimicrobano().equals(idClasseAntimicrobiano))
+                .filter(isolado -> isolado.getAntimicrobiano() != null)
+                .filter(isolado -> isolado.getAntimicrobiano().getClasseAntimicrobiano() != null)
+                .filter(isolado -> idClasseAntimicrobiano.equals(
+                        isolado.getAntimicrobiano().getClasseAntimicrobiano().getIdClasseAntimicrobano()))
                 .map(isolado -> {
                     Long idResistencia = isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo();
                     return idResistencia != null && idResistencia == 2L ? 1L : 0L;
@@ -699,13 +702,15 @@ public class NeonatoService {
                 .findFirst()
                 .orElse(null);
     }
+
 
 
 
     public Long verificarResistenciaAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idAntimicrobiano) {
         return antibiogramas.stream()
                 .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
-                .filter(isolado -> isolado.getAntimicrobiano().getIdAntimicrobiano().equals(idAntimicrobiano))
+                .filter(isolado -> isolado.getAntimicrobiano() != null)
+                .filter(isolado -> idAntimicrobiano.equals(isolado.getAntimicrobiano().getIdAntimicrobiano()))
                 .map(isolado -> {
                     Long idResistencia = isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo();
                     return idResistencia != null && idResistencia == 2L ? 1L : 0L;
@@ -713,6 +718,7 @@ public class NeonatoService {
                 .findFirst()
                 .orElse(null);
     }
+
 
 
 
