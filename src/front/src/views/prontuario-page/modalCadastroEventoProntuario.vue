@@ -121,7 +121,7 @@ const handleSave = async () => {
     data.dataEvento          = dataInicio.value;
     data.dataFim             = dataFim.value;
 
-    if (!verificarCamposObrigatorios(verificacoes)) {
+    if (!verificarCamposObrigatorios(getVerificacoes())) {
         camposObrigatorios.value = false;
         disableSaveButton.value = false;
         loading.hide();
@@ -150,10 +150,15 @@ const definirTipoEntidade = (idTipoEvento) => {
 };
 
 
-const verificacoes = [{
-    dados : data,
-    campos: ['idNeonato', 'dataEvento', 'idTipoEvento']
-}];
+const getVerificacoes = () => {
+    return [{
+        dados: data,
+        campos: data.idTipoEvento === 1 || data.idTipoEvento === 9 || data.idTipoEvento === 10
+                ? ['idNeonato', 'dataEvento', 'idTipoEvento', 'idEntidade']
+                : ['idNeonato', 'dataEvento', 'idTipoEvento']
+    }];
+};
+
 
 
 const handleCloseModal = () => {
@@ -237,6 +242,7 @@ const formatarDataISO = (data) => {
                     <v-autocomplete
                         label="Antibiótico"
                         :items="optionsAntimicrobiano"
+                        :error="!data.idEntidade && !camposObrigatorios"
                         v-model="data.idEntidade"
                     />
                 </v-col>
@@ -254,6 +260,7 @@ const formatarDataISO = (data) => {
                     <v-autocomplete
                         label="Sítio"
                         :items="optionsSitioCirurgia"
+                        :error="!data.idEntidade && !camposObrigatorios"
                         v-model="data.idEntidade"
                     />
                 </v-col>
@@ -262,6 +269,7 @@ const formatarDataISO = (data) => {
                     <v-autocomplete
                         label="Sítio"
                         :items="optionsSitioColeta"
+                        :error="!data.idEntidade && !camposObrigatorios"
                         v-model="data.idEntidade"
                     />
                 </v-col>

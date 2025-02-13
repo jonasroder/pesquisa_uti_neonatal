@@ -158,6 +158,8 @@ public class NeonatoService {
 
         return neonatos.stream()
                 .map(neonato -> {
+                    System.out.println("Report Controle IdNeonato: " + neonato.getIdNeonato());
+
                     var eventos = neonatoRepository.findEventoCountsByNeonato(neonato.getIdNeonato());
                     var classesAntimicrobianos = neonatoRepository.findClasseAntimicrobianoCountsByNeonato(neonato.getIdNeonato());
                     var diasUsoATB = neonatoRepository.getDiasUsoAntimicrobiano(neonato.getIdNeonato(), 1L);
@@ -176,6 +178,8 @@ public class NeonatoService {
 
         return neonatos.stream()
                 .map(neonato -> {
+                    System.out.println("Report Infectado IdNeonato: " + neonato.getIdNeonato());
+
                     return NeonatoMapper.convertToNeonatoGrupoInfectadoReportData(neonato, this);
                 })
                 .toList();
@@ -589,8 +593,10 @@ public class NeonatoService {
     }
 
 
+
     public List<Evento> getTipoMedicacao(List<Evento> eventos, List<Antimicrobiano> antimicrobianos, Long idTipoMedicacao) {
         return eventos.stream()
+                .filter(evento -> evento.getEventoEntidade() != null)
                 .filter(evento -> {
                     return antimicrobianos.stream()
                             .filter(antimicrobiano -> antimicrobiano.getIdAntimicrobiano().equals(evento.getEventoEntidade().getIdEntidade()))
@@ -604,8 +610,10 @@ public class NeonatoService {
     }
 
 
+
     public List<Evento> getEventosPorClasseAntimicrobiano(List<Evento> eventos, List<Antimicrobiano> antimicrobianos, Long idClasseAntimicrobiano) {
         return eventos.stream()
+                .filter(evento -> evento.getEventoEntidade() != null)
                 .filter(evento ->
                         antimicrobianos.stream()
                                 .filter(antimicrobiano -> antimicrobiano.getIdAntimicrobiano().equals(evento.getEventoEntidade().getIdEntidade()))
