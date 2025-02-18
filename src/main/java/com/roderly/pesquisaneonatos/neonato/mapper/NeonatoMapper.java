@@ -302,6 +302,8 @@ public class NeonatoMapper {
         var cirurgiasList = neonatoService.filtrarListaEventosPorTipo(eventos, 9L);
         var flebotomiaList = neonatoService.filtrarListaEventosPorTipo(eventos, 8L);
         var cvuList = neonatoService.filtrarListaEventosPorTipo(eventos, 7L);
+        var intracathList = neonatoService.filtrarListaEventosPorTipo(eventos, 11L);
+        var cvcDuploLumenList = neonatoService.filtrarListaEventosPorTipo(eventos, 12L);
         var piccList = neonatoService.filtrarListaEventosPorTipo(eventos, 6L);
         var entubacaoList = neonatoService.filtrarListaEventosPorTipo(eventos, 3L);
         var sondaVesicalList = neonatoService.filtrarListaEventosPorTipo(eventos, 4L);
@@ -353,6 +355,8 @@ public class NeonatoMapper {
         report.setSondaVesical(neonatoService.getProcedimentosDiasInfeccao(sondaVesicalList, datasInfeccao));
         report.setNutricaoParenteral(neonatoService.getProcedimentosDiasInfeccao(nutricaoParenteralList, datasInfeccao));
         report.setDreno(neonatoService.getProcedimentosDiasInfeccao(drenoList, datasInfeccao));
+        report.setIntracath(neonatoService.getProcedimentosDiasInfeccao(intracathList, datasInfeccao));
+        report.setCvcDuploLumen(neonatoService.getProcedimentosDiasInfeccao(cvcDuploLumenList, datasInfeccao));
         //report.setRiscoInfeccioso(neonato.getRiscoInfeccio() ? 1 : 0);
         //report.setSepseClinica(neonato.getSepseClinica() ? 1 : 0);
         report.setColetaSangue(coletasSangue);

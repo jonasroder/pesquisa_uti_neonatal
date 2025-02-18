@@ -1,11 +1,12 @@
 <script setup>
-import {ref, onMounted} from 'vue';
+import {onMounted, ref} from 'vue';
 import {loading} from "@/plugins/loadingService";
 import {serviceList} from "@/service/neonato";
 import {useRouter} from "vue-router";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {getSessionUserData} from "@/service/common/tokenService";
 import ModalDownload from "@/views/neonato-page/modalDownload.vue";
+
 
 const emit   = defineEmits(['set-show-buttons']);
 const data   = ref([]);
@@ -22,8 +23,7 @@ onMounted(async () => {
     userData.value    = getSessionUserData();
     roleUsuario.value = userData.value.id_role;
 
-    const resp = await serviceList();
-    data.value = resp;
+    data.value = await serviceList();
 
     emit('set-show-buttons', false);
     loading.hide();
@@ -105,7 +105,7 @@ const fecharModal = async () => {
                           class="elevation-1">
                 <template #top>
                     <v-toolbar flat class="pa-2">
-                        <v-btn v-if="roleUsuario === 1" color="azulEscuro" :disabled="isDownloading" variant="elevated" class="elevation-2" @click="downloadExcel()" >
+                        <v-btn v-if="roleUsuario === 1" color="azulEscuro" variant="elevated" class="elevation-2" @click="downloadExcel()" >
                             baixar
                         </v-btn>
 
@@ -142,8 +142,8 @@ const fecharModal = async () => {
             </v-data-table>
         </v-card>
 
-        <v-dialog v-model="modalDownload" transition="dialog-top-transition" max-width="400px">
-            <ModalDownload @close_modal="fecharModal"/>
+        <v-dialog v-model="modalDownload" transition="dialog-top-transition" max-width="600px">
+                <ModalDownload @close_modal="fecharModal"/>
         </v-dialog>
     </CardFormulario>
 
@@ -151,11 +151,6 @@ const fecharModal = async () => {
 
 
 <style scoped>
-.fit-cover {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-}
 
 .editable-name {
     color: #2c3e50;

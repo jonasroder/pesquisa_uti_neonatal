@@ -1,5 +1,6 @@
 package com.roderly.pesquisaneonatos.download.service;
 
+import com.roderly.pesquisaneonatos.download.mapper.SolicitacaoDownloadMapper;
 import com.roderly.pesquisaneonatos.download.model.SolicitacaoDownload;
 import com.roderly.pesquisaneonatos.download.model.StatusSolicitacao;
 import com.roderly.pesquisaneonatos.download.repository.SolicitacaoDownloadRepository;
@@ -37,8 +38,10 @@ public class SolicitacaoDownloadProcessor {
                 atualizarStatusSolicitacao(solicitacao, StatusSolicitacao.EM_ANDAMENTO);
                 System.out.println("Solicitação de relatório iniciado id: " + solicitacao.getIdSolicitacaoDownload());
 
+                var filtrosRequest = SolicitacaoDownloadMapper.convertJsonToFiltrosRequest(solicitacao.getFiltros());
+
                 // Gerar arquivo Excel
-                byte[] excelBytes = neonatoService.generateExcelReport();
+                byte[] excelBytes = neonatoService.generateExcelReport(filtrosRequest);
 
                 // Salvar arquivo em diretório
                 String filePath = salvarArquivo(solicitacao.getIdSolicitacaoDownload(), excelBytes);

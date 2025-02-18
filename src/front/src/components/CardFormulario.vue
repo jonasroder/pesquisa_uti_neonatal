@@ -2,21 +2,22 @@
 import {defineProps, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useDisplay} from "vuetify";
 
+
 defineProps({
-    title   : {
+    title           : {
         type    : String,
         required: true
     },
-    subtitle: {
+    subtitle        : {
         type   : String,
         default: ''
     },
-    createButton: {
-        type: String,
+    createButton    : {
+        type   : String,
         default: 'Novo Cadastro'
     },
     showCreateButton: {
-        type: Boolean,
+        type   : Boolean,
         default: false,
     },
 });
@@ -44,7 +45,7 @@ onBeforeUnmount(() => {
             <v-col cols="12" :class="paddingConf">
                 <v-card>
                     <v-row class="mb-2">
-                        <v-col cols="12" sm="12" md="6" lg="8">
+                        <v-col cols="12" sm="12" :md="!$props.showCreateButton ? 12 : 6" :lg="!$props.showCreateButton ? 12 : 8">
                             <v-card-title class="d-flex flex-column align-start text-wrap">
                                 <span class="text-h5">{{ $props.title }}</span>
                                 <small class="text-subtitle-1">{{ $props.subtitle }}</small>

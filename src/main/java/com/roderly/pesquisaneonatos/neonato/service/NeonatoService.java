@@ -7,6 +7,7 @@ import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
 import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.common.excel.ExcelService;
 import com.roderly.pesquisaneonatos.common.excel.ExcelSheetData;
+import com.roderly.pesquisaneonatos.download.dto.request.FiltrosExcelRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
@@ -18,6 +19,7 @@ import com.roderly.pesquisaneonatos.neonato.model.NeonatoSitioMalformacao;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoAusenciaUTIRepository;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoSitioMalformacaoRepository;
+import com.roderly.pesquisaneonatos.neonato.specification.NeonatoSpecification;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.response.EventoTipoDiasResponse;
@@ -97,17 +99,17 @@ public class NeonatoService {
     }
 
 
-    public byte[] generateExcelReport() throws IOException {
+    public byte[] generateExcelReport(FiltrosExcelRequest filtrosRequest) throws IOException {
 
         antimicrobianos = antimicrobianoRepository.findAll();
 
-        var neonatosControle = getReportGrupoControle();
+        var neonatosControle = getReportGrupoControle(filtrosRequest);
         var mappingGrupoControle = ExcelHelper.createGrupoControleColumnMapping();
 
-        var neonatosInfectados = getReportGrupoInfectado();
+        var neonatosInfectados = getReportGrupoInfectado(filtrosRequest);
         var mappingGrupoInfectado = ExcelHelper.createGrupoInfectadoColumnMapping();
 
-        var isolados = getReportIsolados();
+        var isolados = getReportIsolados(filtrosRequest);
         var mappingIsolados = ExcelHelper.createIsoladosColumnMapping();
 
         List<ExcelSheetData<?>> sheetDataList = new ArrayList<>();
@@ -152,9 +154,9 @@ public class NeonatoService {
 
 
 
-    public List<NeonatoGrupoControleReportData> getReportGrupoControle() {
-        var idsNeonatosControle = neonatoRepository.findIdsNeonatosControle();
-        var neonatos = neonatoRepository.findAllById(idsNeonatosControle);
+    public List<NeonatoGrupoControleReportData> getReportGrupoControle(FiltrosExcelRequest filtrosRequest) {
+
+        var neonatos = neonatoRepository.findAll(NeonatoSpecification.byFiltros(filtrosRequest, "controle"));
 
         return neonatos.stream()
                 .map(neonato -> {
@@ -172,9 +174,9 @@ public class NeonatoService {
     }
 
 
-    public List<NeonatoGrupoInfectadoReportData> getReportGrupoInfectado() {
-        var idsNeonatosControle = neonatoRepository.findIdsNeonatosInfectados();
-        var neonatos = neonatoRepository.findAllById(idsNeonatosControle);
+    public List<NeonatoGrupoInfectadoReportData> getReportGrupoInfectado(FiltrosExcelRequest filtrosRequest) {
+
+        var neonatos = neonatoRepository.findAll(NeonatoSpecification.byFiltros(filtrosRequest, "infectado"));
 
         return neonatos.stream()
                 .map(neonato -> {
@@ -593,7 +595,6 @@ public class NeonatoService {
     }
 
 
-
     public List<Evento> getTipoMedicacao(List<Evento> eventos, List<Antimicrobiano> antimicrobianos, Long idTipoMedicacao) {
         return eventos.stream()
                 .filter(evento -> evento.getEventoEntidade() != null)
@@ -608,7 +609,6 @@ public class NeonatoService {
                 })
                 .toList();
     }
-
 
 
     public List<Evento> getEventosPorClasseAntimicrobiano(List<Evento> eventos, List<Antimicrobiano> antimicrobianos, Long idClasseAntimicrobiano) {
@@ -649,10 +649,10 @@ public class NeonatoService {
     }
 
 
-    public List<IsoladosReportData> getReportIsolados() {
-        var idsNeonatosControle = neonatoRepository.findIdsNeonatosInfectados();
-        var neonatos = neonatoRepository.findAllById(idsNeonatosControle);
-        var isolados = getIsoladoColetaFromNeonatos(neonatos);
+    public List<IsoladosReportData> getReportIsolados(FiltrosExcelRequest filtrosRequest) {
+
+        var neonatos = neonatoRepository.findAll(NeonatoSpecification.byFiltros(filtrosRequest, "infectado"));
+        var isolados = getIsoladoColetaFromNeonatos(neonatos, filtrosRequest);
 
         return isolados.stream()
                 .map(isolado -> {
@@ -662,12 +662,63 @@ public class NeonatoService {
     }
 
 
-    public List<IsoladoColeta> getIsoladoColetaFromNeonatos(List<Neonato> neonatos) {
+    public List<IsoladoColeta> getIsoladoColetaFromNeonatos(List<Neonato> neonatos, FiltrosExcelRequest filtrosRequest) {
         return neonatos.stream()
                 .flatMap(neonato -> neonato.getEventoList().stream())
                 .map(Evento::getIsoladoColeta)
-                .filter(isoladoColeta -> isoladoColeta != null && !isoladoColeta.getDesconsiderarColeta() && isoladoColeta.getEvento().getIsActive())
+                .filter(isoladoColeta -> isoladoColeta != null)
+                .filter(isoladoColeta -> !isoladoColeta.getDesconsiderarColeta())
+                .filter(isoladoColeta -> isoladoColeta.getEvento().getIsActive())
+                .filter(isoladoColeta -> filtrarSitioColeta(isoladoColeta, filtrosRequest))
+                .filter(isoladoColeta -> filtrarMecanismoResistencia(isoladoColeta, filtrosRequest))
+                .filter(isoladoColeta -> filtrarPerfilResistencia(isoladoColeta, filtrosRequest))
                 .toList();
+    }
+
+
+    private boolean filtrarSitioColeta(IsoladoColeta isoladoColeta, FiltrosExcelRequest filtros) {
+        // Se não houver filtro de 'sitioColeta', deixa passar
+        if (filtros.sitioColeta() == null || filtros.sitioColeta().isEmpty()) {
+            return true;
+        }
+        // Precisamos verificar se o EventoEntidade é do tipo "sitio_coleta" e se o idEntidade está no filtro
+        var eventoEntidade = isoladoColeta.getEvento().getEventoEntidade();
+        if (eventoEntidade == null) {
+            return false;
+        }
+        if (!"sitio_coleta".equals(eventoEntidade.getTipoEntidade())) {
+            return false;
+        }
+        // Se o ID de entidade está na lista
+        return filtros.sitioColeta().contains(eventoEntidade.getIdEntidade().intValue());
+    }
+
+
+    private boolean filtrarMecanismoResistencia(IsoladoColeta isoladoColeta, FiltrosExcelRequest filtros) {
+        // Se não houver filtro de 'mecanismoResistencia', deixa passar
+        if (filtros.mecanismoResistencia() == null || filtros.mecanismoResistencia().isEmpty()) {
+            return true;
+        }
+        // Verifica o mecanismoResistenciaMicroorganismo
+        var mecanismo = isoladoColeta.getMecanismoResistenciaMicroorganismo();
+        if (mecanismo == null) {
+            return false;
+        }
+        return filtros.mecanismoResistencia().contains(mecanismo.getIdMecanismoResistenciaMicroorganismo().intValue());
+    }
+
+
+    private boolean filtrarPerfilResistencia(IsoladoColeta isoladoColeta, FiltrosExcelRequest filtros) {
+        // Se não houver filtro de 'perfilResistencia', deixa passar
+        if (filtros.perfilResistencia() == null || filtros.perfilResistencia().isEmpty()) {
+            return true;
+        }
+        // Verifica o perfilResistenciaMicroorganismo
+        var perfil = isoladoColeta.getPerfilResistenciaMicroorganismo();
+        if (perfil == null) {
+            return false;
+        }
+        return filtros.perfilResistencia().contains(perfil.getIdPerfilResistenciaMicroorganismo().intValue());
     }
 
 
@@ -687,7 +738,6 @@ public class NeonatoService {
     }
 
 
-
     public Long verificarResistenciaClasseAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idClasseAntimicrobiano) {
         return antibiogramas.stream()
                 .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
@@ -704,8 +754,6 @@ public class NeonatoService {
     }
 
 
-
-
     public Long verificarResistenciaAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idAntimicrobiano) {
         return antibiogramas.stream()
                 .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
@@ -718,11 +766,6 @@ public class NeonatoService {
                 .findFirst()
                 .orElse(null);
     }
-
-
-
-
-
 
 
 }

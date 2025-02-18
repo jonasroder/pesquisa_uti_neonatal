@@ -212,12 +212,28 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping("DIAS NUTRIÇÃO PARENTERAL APÓS A " + i + "ª INFECÇÃO", "NutricaoParenteral_diasAposInfecao" + i));
         }
 
-        //Nutrição parenteral
+        //Dreno
         columnMappings.add(new ExcelColumnMapping("USO DRENO", "Dreno_uso"));
         columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS DRENO", "Dreno_diasTotaisUso"));
         for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
             columnMappings.add(new ExcelColumnMapping("DIAS DRENO ATÉ A " + i + "ª INFECÇÃO", "Dreno_diasAteInfecao" + i));
             columnMappings.add(new ExcelColumnMapping("DIAS DRENO APÓS A " + i + "ª INFECÇÃO", "Dreno_diasAposInfecao" + i));
+        }
+
+        //Intracath
+        columnMappings.add(new ExcelColumnMapping("USO INTRACATH", "Intracath_uso"));
+        columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS INTRACATH", "Intracath_diasTotaisUso"));
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
+            columnMappings.add(new ExcelColumnMapping("DIAS INTRACATH ATÉ A " + i + "ª INFECÇÃO", "Intracath_diasAteInfecao" + i));
+            columnMappings.add(new ExcelColumnMapping("DIAS INTRACATH APÓS A " + i + "ª INFECÇÃO", "Intracath_diasAposInfecao" + i));
+        }
+
+        //CVC Duplo Lumen
+        columnMappings.add(new ExcelColumnMapping("USO CVC DUPLO LUMEN", "CvcDuploLumen_uso"));
+        columnMappings.add(new ExcelColumnMapping("DIAS TOTAIS CVC DUPLO LUMEN", "CvcDuploLumen_diasTotaisUso"));
+        for (int i = 1; i <= NeonatoMapper.numeroAnalisesInfeccoes; i++) {
+            columnMappings.add(new ExcelColumnMapping("DIAS CVC DUPLO LUMEN ATÉ A " + i + "ª INFECÇÃO", "CvcDuploLumen_diasAteInfecao" + i));
+            columnMappings.add(new ExcelColumnMapping("DIAS CVC DUPLO LUMEN APÓS A " + i + "ª INFECÇÃO", "CvcDuploLumen_diasAposInfecao" + i));
         }
 
         //columnMappings.add(new ExcelColumnMapping("SEPSE CLÍNICA", "sepseClinica"));

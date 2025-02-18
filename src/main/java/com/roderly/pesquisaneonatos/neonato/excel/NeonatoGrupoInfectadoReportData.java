@@ -46,6 +46,8 @@ public class NeonatoGrupoInfectadoReportData {
     ProcedimentosDiasInfeccao SondaVesical;
     ProcedimentosDiasInfeccao NutricaoParenteral;
     ProcedimentosDiasInfeccao Dreno;
+    ProcedimentosDiasInfeccao Intracath;
+    ProcedimentosDiasInfeccao CvcDuploLumen;
 
     int riscoInfeccioso;
     int sepseClinica;

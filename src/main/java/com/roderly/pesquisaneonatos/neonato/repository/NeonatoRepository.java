@@ -4,29 +4,16 @@ import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface NeonatoRepository extends JpaRepository<Neonato, Long> {
+public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpecificationExecutor<Neonato> {
 
     Optional<Neonato> findByProntuario(String prontuario);
-
-
-    @Query("""
-        SELECT n.idNeonato
-        FROM Neonato n
-        WHERE NOT EXISTS (
-            SELECT 1
-            FROM n.eventoList e
-            JOIN e.isoladoColeta ic
-            WHERE e.tipoEvento.idTipoEvento = 10
-        )
-        """)
-    List<Long> findIdsNeonatosControle();
-
 
 
     @Query(value = """
@@ -69,13 +56,6 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long> {
             """, nativeQuery = true)
     Long getDiasUsoAntimicrobiano(@Param("idNeonato") Long idNeonato, @Param("idTipoAntimicrobiano") Long idTipoAntimicrobiano);
 
-
-    @Query("""
-        SELECT DISTINCT e.neonato.idNeonato
-        FROM IsoladoColeta ic
-        JOIN Evento e ON e.idEvento = ic.evento.idEvento
-        """)
-    List<Long> findIdsNeonatosInfectados();
 
 }
 
