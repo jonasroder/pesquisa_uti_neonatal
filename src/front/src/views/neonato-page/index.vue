@@ -31,11 +31,6 @@ onMounted(async () => {
 
 
 const headers = ref([{
-    title: 'RN de',
-    key  : 'nomeMae',
-    align: 'start',
-    class: 'text--primary',
-}, {
     title: 'Prontuário',
     key  : 'prontuario',
     align: 'start'
@@ -65,15 +60,6 @@ const navigateToEditPage = (idNeonato) => {
 const handleNew = () => {
     router.push({name: 'Neonato-Page'});
 }
-
-
-const verProntuario = (idNeonato) => {
-    router.push({
-        name : 'Prontuario-Page',
-        query: {id: idNeonato}
-    });
-}
-
 
 const downloadExcel = async () => {
     loading.show();
@@ -123,17 +109,9 @@ const fecharModal = async () => {
                     </v-toolbar>
                 </template>
 
-                <!-- Coluna Nome Mãe -->
-                <template v-slot:[`item.nomeMae`]="{ item }">
-                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.idNeonato)">
-                        <b>{{ item.nomeMae }}</b>
-                        <v-tooltip text="Visualizar ou editar cadastro do neonato"/>
-                    </a>
-                </template>
-
                 <!-- Coluna Prontuário -->
                 <template v-slot:[`item.prontuario`]="{ item }">
-                    <a href="#" class="editable-name" @click.prevent="verProntuario(item.idNeonato)">
+                    <a href="#" class="editable-name" @click.prevent="navigateToEditPage(item.idNeonato)">
                         <b>{{ item.prontuario }}</b>
                         <v-tooltip text="Visualizar ou editar prontuário do neonato"/>
                     </a>

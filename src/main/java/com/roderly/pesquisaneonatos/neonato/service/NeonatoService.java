@@ -456,6 +456,15 @@ public class NeonatoService {
                 var tetraciclinasPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 19L);
                 var tetraciclinasPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 19L);
 
+                var anfenicoisPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 23L);
+                var anfenicoisPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 23L);
+
+                var oxazolidinonasPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 24L);
+                var oxazolidinonasPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 24L);
+
+                var fosfonicosPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 25L);
+                var fosfonicosPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 25L);
+
                 var azoisPre = getEventosPorClasseAntimicrobiano(eventosAteInfeccao, antimicrobianos, 20L);
                 var azoisPos = getEventosPorClasseAntimicrobiano(eventosAposInfeccao, antimicrobianos, 20L);
 
@@ -558,6 +567,18 @@ public class NeonatoService {
                 medicamentos.setUsoTetraciclinas(tetraciclinasPos.isEmpty() && tetraciclinasPre.isEmpty() ? 0 : 1);
                 medicamentos.setDiasTotaisTetraciclinasPrevio(contarEventosDatasUnicas(tetraciclinasPre));
                 medicamentos.setDiasTotaisTetraciclinasApos(contarEventosDatasUnicas(tetraciclinasPos));
+
+                medicamentos.setUsoAnfenicois(anfenicoisPos.isEmpty() && anfenicoisPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisAnfenicoisPrevio(contarEventosDatasUnicas(anfenicoisPre));
+                medicamentos.setDiasTotaisAnfenicoisApos(contarEventosDatasUnicas(anfenicoisPos));
+
+                medicamentos.setUsoOxazolidinonas(oxazolidinonasPos.isEmpty() && oxazolidinonasPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisOxazolidinonasPrevio(contarEventosDatasUnicas(oxazolidinonasPre));
+                medicamentos.setDiasTotaisOxazolidinonasApos(contarEventosDatasUnicas(oxazolidinonasPos));
+
+                medicamentos.setUsoFosfonicos(fosfonicosPos.isEmpty() && fosfonicosPre.isEmpty() ? 0 : 1);
+                medicamentos.setDiasTotaisFosfonicosPrevio(contarEventosDatasUnicas(fosfonicosPre));
+                medicamentos.setDiasTotaisFosfonicosApos(contarEventosDatasUnicas(fosfonicosPos));
 
                 medicamentos.setUsoAzois(azoisPos.isEmpty() && azoisPre.isEmpty() ? 0 : 1);
                 medicamentos.setDiasTotaisAzoisPrevio(contarEventosDatasUnicas(azoisPre));
@@ -759,10 +780,7 @@ public class NeonatoService {
                 .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
                 .filter(isolado -> isolado.getAntimicrobiano() != null)
                 .filter(isolado -> idAntimicrobiano.equals(isolado.getAntimicrobiano().getIdAntimicrobiano()))
-                .map(isolado -> {
-                    Long idResistencia = isolado.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo();
-                    return idResistencia != null && idResistencia == 2L ? 1L : 0L;
-                })
+                .map(isolado -> isolado.getResistenciaMicroorganismo().getCodigo())
                 .findFirst()
                 .orElse(null);
     }

@@ -92,6 +92,12 @@ public class NeonatoGrupoControleReportData {
     Long diasEquinocandinas;
     Long polienos;
     Long diasPolienos;
+    Long anfenicois;
+    Long diasAnfenicois;
+    Long oxazolidinonas;
+    Long diasOxazolidinonas;
+    Long fosfonicos;
+    Long diasFosfonicos;
 
     Long motivoObito;
 }

@@ -110,6 +110,18 @@ public class MedicamentosDiasInfeccao {
     Integer diasTotaisTetraciclinasPrevio;
     Integer diasTotaisTetraciclinasApos;
 
+    Integer usoAnfenicois;
+    Integer diasTotaisAnfenicoisPrevio;
+    Integer diasTotaisAnfenicoisApos;
+
+    Integer usoOxazolidinonas;
+    Integer diasTotaisOxazolidinonasPrevio;
+    Integer diasTotaisOxazolidinonasApos;
+
+    Integer usoFosfonicos;
+    Integer diasTotaisFosfonicosPrevio;
+    Integer diasTotaisFosfonicosApos;
+
     Integer usoAzois;
     Integer diasTotaisAzoisPrevio;
     Integer diasTotaisAzoisApos;

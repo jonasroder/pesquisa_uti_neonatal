@@ -136,7 +136,7 @@ const handleSave = async () => {
 
     const verificacoes = [{
         dados : neonato,
-        campos: ['prontuario', 'nomeMae']
+        campos: ['prontuario']
     }];
 
     if (!verificarCamposObrigatorios(verificacoes)) {
@@ -208,14 +208,6 @@ const verProntuario = (idNeonato) => {
         </div>
 
         <v-row>
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="RN de *"
-                    type="text"
-                    v-model="neonato.nomeMae"
-                    :error="!neonato.nomeMae && !camposObrigatorios"
-                />
-            </v-col>
 
             <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
                 <v-text-field

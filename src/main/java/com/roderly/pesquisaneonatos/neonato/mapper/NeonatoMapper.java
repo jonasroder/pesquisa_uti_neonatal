@@ -195,6 +195,9 @@ public class NeonatoMapper {
         var azois = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 20L);
         var equinocandinas = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 21L);
         var polienos = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 22L);
+        var anfenicois = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 23L);
+        var oxazolidinonas = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 24L);
+        var fosfonicos = neonatoService.getClasseAnimicrobianoDias(classeAntimicrobiano, 25L);
 
         var report = new NeonatoGrupoControleReportData();
 
@@ -271,6 +274,12 @@ public class NeonatoMapper {
         report.setDiasQuinolonas(quinolonas.diasEvento());
         report.setTetraciclinas(tetraciclinas.evento());
         report.setDiasTetraciclinas(tetraciclinas.diasEvento());
+        report.setAnfenicois(anfenicois.evento());
+        report.setDiasAnfenicois(anfenicois.diasEvento());
+        report.setOxazolidinonas(oxazolidinonas.evento());
+        report.setDiasOxazolidinonas(oxazolidinonas.diasEvento());
+        report.setFosfonicos(fosfonicos.evento());
+        report.setDiasFosfonicos(fosfonicos.diasEvento());
 
 
         report.setUsoATF(diasUsoATF > 0 ? 1L : 0L);
@@ -328,7 +337,7 @@ public class NeonatoMapper {
 
         report.setAno(ano);
         report.setProntuario(neonato.getProntuario());
-        report.setPaciente(neonato.getNomeMae());
+        //report.setPaciente(neonato.getNomeMae());
         report.setDataNascimento(dataNascimento);
         report.setDataInternacao(dataInternacao);
         report.setDataDesfecho(dataDesfecho);
@@ -391,7 +400,7 @@ public class NeonatoMapper {
 
         report.setAno(ano);
         report.setProntuario(neonato.getProntuario());
-        report.setPaciente(neonato.getNomeMae());
+        //report.setPaciente(neonato.getNomeMae());
         report.setDataNascimento(dataNascimento);
         report.setDataInternacao(dataInternacao);
         report.setDataDesfecho(dataDesfecho);
@@ -435,6 +444,9 @@ public class NeonatoMapper {
         report.setResistenciaPolimixinas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 17L));
         report.setResistenciaQuinolonas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 18L));
         report.setResistenciaTetraciclinas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 19L));
+        report.setResistenciaAnfenicois(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 23L));
+        report.setResistenciaOxazolidinonas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 24L));
+        report.setResistenciaFosfonicos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 25L));
         report.setResistenciaAzois(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 20L));
         report.setResistenciaEquinocandinas(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 21L));
         report.setResistenciaPolienos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 22L));
@@ -493,6 +505,12 @@ public class NeonatoMapper {
         report.setResistenciaMicafungina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 52L));
         report.setResistenciaAnfotericinaB(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 53L));
         report.setResistenciaNistatina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 54L));
+        report.setResistenciaClorafenicol(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 55L));
+        report.setResistenciaNeomicina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 57L));
+        report.setResistenciaTobramicina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 58L));
+        report.setResistenciaLinezolida(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 59L));
+        report.setResistenciaFosfomicina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 60L));
+        report.setResistenciaAmoxicilina(neonatoService.verificarResistenciaAntimicrobiano(antibiogramas, 61L));
 
         return  report;
     }

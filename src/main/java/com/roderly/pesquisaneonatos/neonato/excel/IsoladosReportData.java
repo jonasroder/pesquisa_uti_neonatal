@@ -60,6 +60,9 @@ public class IsoladosReportData {
     Long resistenciaPolimixinas;
     Long resistenciaQuinolonas;
     Long resistenciaTetraciclinas;
+    Long resistenciaAnfenicois;
+    Long resistenciaOxazolidinonas;
+    Long resistenciaFosfonicos;
     Long resistenciaAzois;
     Long resistenciaEquinocandinas;
     Long resistenciaPolienos;
@@ -119,4 +122,10 @@ public class IsoladosReportData {
     Long resistenciaMicafungina;
     Long resistenciaAnfotericinaB;
     Long resistenciaNistatina;
+    Long resistenciaClorafenicol;
+    Long resistenciaNeomicina;
+    Long resistenciaTobramicina;
+    Long resistenciaLinezolida;
+    Long resistenciaFosfomicina;
+    Long resistenciaAmoxicilina;
 }
