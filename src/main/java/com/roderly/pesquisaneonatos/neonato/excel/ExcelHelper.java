@@ -55,8 +55,8 @@ public class ExcelHelper {
         columnMappings.add(new ExcelColumnMapping("AMINOGLICOSÍDEOS", "aminoglicosideos"));
         columnMappings.add(new ExcelColumnMapping("AMINOGLICOSÍDEOS DIAS", "diasAminoglicosideos"));
 
-        columnMappings.add(new ExcelColumnMapping("BETALACTÂMICOS", "betalactamicos"));
-        columnMappings.add(new ExcelColumnMapping("BETALACTÂMICOS DIAS", "diasBetalactamicos"));
+        columnMappings.add(new ExcelColumnMapping("PENICILINAS", "betalactamicos"));
+        columnMappings.add(new ExcelColumnMapping("PENICILINAS DIAS", "diasBetalactamicos"));
 
         columnMappings.add(new ExcelColumnMapping("CEFALOSPORINAS 1 GER", "cefalosporinasPrimeiraGeracao"));
         columnMappings.add(new ExcelColumnMapping("CEFALOSPORINAS 1 GER DIAS", "diasCefalosporinasPrimeiraGeracao"));
@@ -409,9 +409,9 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS ANSAMICINAS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAnsamicinasPrevio"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS ANSAMICINAS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisAnsamicinasApos"));
 
-            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO BETALACTAMICOS", "MedicamentosEpisodiosInfeccao_" + i + "_usoBetalactamicos"));
-            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS BETALACTAMICOS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisBetalactamicosPrevio"));
-            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS BETALACTAMICOS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisBetalactamicosApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO PENICILINAS", "MedicamentosEpisodiosInfeccao_" + i + "_usoBetalactamicos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS PENICILINAS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisBetalactamicosPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS PENICILINAS APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisBetalactamicosApos"));
 
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO CARBAPENEMICOS", "MedicamentosEpisodiosInfeccao_" + i + "_usoCarbapenemicos"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP DIAS CARBAPENEMICOS PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_diasTotaisCarbapenemicosPrevio"));
@@ -545,7 +545,7 @@ public class ExcelHelper {
         // Classe antimicrobianos
         columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA AMINOGLICOSÍDEOS", "resistenciaAminoglicosideos"));
         columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA ANSAMICINAS", "resistenciaAnsamicinas"));
-        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA BETALACTÂMICOS", "resistenciaBetalactamicos"));
+        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA PENICILINAS", "resistenciaBetalactamicos"));
         columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA CARBAPENÊMICOS", "resistenciaCarbapenemicos"));
         columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA CEFALOSPORINAS 1ª GERAÇÃO", "resistenciaCefalosporinasPrimeiraGeracao"));
         columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA CEFALOSPORINAS 2ª GERAÇÃO", "resistenciaCefalosporinasSegundaGeracao"));
