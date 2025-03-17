@@ -162,8 +162,10 @@ public class NeonatoMapper {
         var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
         var dataDesfecho = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
         var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
+
         var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getNeonatoAusenciaUtiList());
-        var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L) - diasForaUti;
+        var diasUti = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L);
+        var diasInternacao = diasUti - diasForaUti + 1;
 
         var flebotomia = neonatoService.getEventoTipoDias(eventos, 8L);
         var cvu = neonatoService.getEventoTipoDias(eventos, 7L);
@@ -303,9 +305,11 @@ public class NeonatoMapper {
         var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
         var dataDesfecho = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
         var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
-        var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getNeonatoAusenciaUtiList());
-        var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L) - diasForaUti;
         var eventos = neonato.getEventoList().stream().filter(evento -> evento.getIsActive()).toList();
+
+        var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getNeonatoAusenciaUtiList());
+        var diasUti = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L);
+        var diasInternacao = diasUti - diasForaUti + 1;
 
         var malformacaoList = neonato.getNeonatoMalformacaoList();
         var cirurgiasList = neonatoService.filtrarListaEventosPorTipo(eventos, 9L);
@@ -393,8 +397,10 @@ public class NeonatoMapper {
         var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
         var dataDesfecho = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
         var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
+
         var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getNeonatoAusenciaUtiList());
-        var diasInternacao = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L) - diasForaUti;
+        var diasUti = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L);
+        var diasInternacao = diasUti - diasForaUti + 1;
 
         var report = new IsoladosReportData();
 

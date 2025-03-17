@@ -1,0 +1,7 @@
+package com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.repository;
+
+import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.model.PerfilResistenciaMicroorganismo;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PerfilResistenciaMicrorganismoRepository extends JpaRepository <PerfilResistenciaMicroorganismo, Long> {
+}

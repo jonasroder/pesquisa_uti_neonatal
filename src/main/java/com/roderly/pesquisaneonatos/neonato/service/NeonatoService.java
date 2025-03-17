@@ -146,9 +146,13 @@ public class NeonatoService {
 
 
     public long calcularDiasForaUTI(List<NeonatoAusenciaUTI> neonatoAusenciaUti) {
+        if (neonatoAusenciaUti == null || neonatoAusenciaUti.isEmpty()) {
+            return 0L;
+        }
+
         return neonatoAusenciaUti.stream()
-                .filter(projection -> projection.getDataSaidaUti() != null && projection.getDataRetornoUti() != null)
-                .mapToLong(projection -> ChronoUnit.DAYS.between(projection.getDataSaidaUti(), projection.getDataRetornoUti()))
+                .filter(item -> item.getDataSaidaUti() != null && item.getDataRetornoUti() != null)
+                .mapToLong(item -> ChronoUnit.DAYS.between(item.getDataSaidaUti(), item.getDataRetornoUti()))
                 .sum();
     }
 
