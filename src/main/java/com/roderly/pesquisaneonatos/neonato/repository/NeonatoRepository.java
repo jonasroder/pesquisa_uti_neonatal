@@ -15,6 +15,8 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
 
     Optional<Neonato> findByProntuario(String prontuario);
 
+    List<Neonato> findByIsActiveTrueOrderByDataInternacaoDesc();
+
 
     @Query(value = """
             SELECT te.id_tipo_evento AS idTipoEvento,

@@ -1,0 +1,7 @@
+package com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.repository;
+
+import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.model.MecanismoResistenciaMicroorganismo;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MecanismoResistenciaMicrorganismoRepository extends JpaRepository <MecanismoResistenciaMicroorganismo, Long> {
+}

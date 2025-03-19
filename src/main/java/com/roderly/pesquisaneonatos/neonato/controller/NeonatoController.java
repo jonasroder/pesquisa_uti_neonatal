@@ -26,12 +26,19 @@ public class NeonatoController {
         return ResponseEntity.ok(response);
     }
 
+
     @GetMapping("/load/{id}")
     public ResponseEntity<NeonatoResponse> load(@PathVariable Long id) {
         var response = neonatoService.load(id);
         return ResponseEntity.ok(response);
     }
 
+
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<ApiResponseDTO> delete(@PathVariable Long id) throws IOException {
+        ApiResponseDTO response = neonatoService.delete(id);
+        return ResponseEntity.ok(response);
+    }
 
 
     @GetMapping("/list")

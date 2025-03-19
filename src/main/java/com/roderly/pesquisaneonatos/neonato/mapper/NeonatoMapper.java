@@ -165,7 +165,7 @@ public class NeonatoMapper {
 
         var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getNeonatoAusenciaUtiList());
         var diasUti = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L);
-        var diasInternacao = diasUti - diasForaUti + 1;
+        var diasInternacao = diasUti + 1 - diasForaUti;
 
         var flebotomia = neonatoService.getEventoTipoDias(eventos, 8L);
         var cvu = neonatoService.getEventoTipoDias(eventos, 7L);
@@ -309,7 +309,7 @@ public class NeonatoMapper {
 
         var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getNeonatoAusenciaUtiList());
         var diasUti = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L);
-        var diasInternacao = diasUti - diasForaUti + 1;
+        var diasInternacao = diasUti + 1 - diasForaUti;
 
         var malformacaoList = neonato.getNeonatoMalformacaoList();
         var cirurgiasList = neonatoService.filtrarListaEventosPorTipo(eventos, 9L);
@@ -400,7 +400,7 @@ public class NeonatoMapper {
 
         var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getNeonatoAusenciaUtiList());
         var diasUti = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L);
-        var diasInternacao = diasUti - diasForaUti + 1;
+        var diasInternacao = diasUti + 1 - diasForaUti;
 
         var report = new IsoladosReportData();
 
@@ -427,8 +427,8 @@ public class NeonatoMapper {
         report.setSitioColetaCodigo(neonatoService.getCodigoCadastro("sitio_coleta", "id_sitio_coleta", evento.getEventoEntidade().getIdEntidade()));
         report.setAgenteCodigo(isoladoColeta.getMicroorganismo().getCodigo());
         report.setClassificacaoAgenteCodigo(isoladoColeta.getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
-        report.setResistencia3OuMaisDrogas(neonatoService.verificarNResistencia(antibiogramas));
-        report.setMecanismoResistencia(isoladoColeta.getMecanismoResistenciaMicroorganismo().getCodigo());
+        //report.setResistencia3OuMaisDrogas(neonatoService.verificarNResistencia(antibiogramas));
+        report.setMecanismoResistencia(isoladoColeta.getMecanismoResistenciaMicroorganismo() != null ? isoladoColeta.getMecanismoResistenciaMicroorganismo().getCodigo() : null);
         report.setPerfilResistencia(isoladoColeta.getPerfilResistenciaMicroorganismo().getCodigo());
 
         report.setResistenciaAminoglicosideos(neonatoService.verificarResistenciaClasseAntimicrobiano(antibiogramas, 1L));

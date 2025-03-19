@@ -52,3 +52,13 @@ export const serviceSaveFilaDownloadExcel = async (data) => {
 		return handleApiError(e, "Error on serviceSave");
 	}
 };
+
+
+export const serviceApagarNeonato = async (id) => {
+	try {
+		const response = await axios.post(`/api/neonato/delete/${id}`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on serviceLoad");
+	}
+};

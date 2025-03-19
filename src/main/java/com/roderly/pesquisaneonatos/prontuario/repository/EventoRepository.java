@@ -14,7 +14,6 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     List<Evento> findByNeonatoIdNeonatoAndIsActiveTrue(Long idNeonato);
 
 
-
     @Query("SELECT new com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoSemAntibiogramasResponse( " +
             "e.idEvento, " +
             "ee.idEventoEntidade, " +
@@ -26,15 +25,18 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
             "ic.microorganismo.idMicroorganismo, " +
             "ic.perfilResistenciaMicroorganismo.idPerfilResistenciaMicroorganismo, " +
             "ic.mecanismoResistenciaMicroorganismo.idMecanismoResistenciaMicroorganismo, " +
-            "ic.desconsiderarColeta) " +
+            "ic.desconsiderarColeta, " +
+            "CASE WHEN m.classificacaoMicroorganismo.idClassificacaoMicroorganismo = 3 THEN true ELSE false END) " +
             "FROM Evento e " +
             "JOIN EventoEntidade ee ON ee.evento.idEvento = e.idEvento " +
             "LEFT JOIN SitioColeta sc ON sc.idSitioColeta = ee.idEntidade " +
             "LEFT JOIN IsoladoColeta ic ON ic.evento.idEvento = e.idEvento " +
+            "LEFT JOIN Microorganismo m ON m = ic.microorganismo " +
             "WHERE e.tipoEvento.idTipoEvento = 10 AND e.isActive = true " +
             "AND e.neonato.idNeonato = :idNeonato " +
             "ORDER BY e.dataEvento ASC")
     List<ColetaIsoladoSemAntibiogramasResponse> findColetaIsoladoByIdNeonato(@Param("idNeonato") Long idNeonato);
+
 
 
     @Query(value = """            
@@ -68,7 +70,6 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     @Query("SELECT e.neonato.idNeonato FROM Evento e WHERE e.idEvento = :idEvento")
     Long findIdNeonatoByIdEvento(@Param("idEvento") Long idEvento);
-
 
 
 }

@@ -389,10 +389,10 @@ public class ExcelHelper {
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ATF PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_usoAtfPrevio"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ATB APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_usoAtbApos"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ATF APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_usoAtfApos"));
-            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥ ATB PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtbPrevio"));
-            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥ ATF PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtfPrevio"));
-            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥ ATB APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtbApos"));
-            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥ ATF APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtfApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥3 ATB PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtbPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥3 ATF PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtfPrevio"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥3 ATB APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtbApos"));
+            columnMappings.add(new ExcelColumnMapping((i + 1) + " EP USO ≥3 ATF APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_uso3MaisAtfApos"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP NOMES ATB PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_nomesAtbPrevio"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP NOMES ATF PRÉVIO", "MedicamentosEpisodiosInfeccao_" + i + "_nomesAtfPrevio"));
             columnMappings.add(new ExcelColumnMapping((i + 1) + " EP NOMES ATB APÓS", "MedicamentosEpisodiosInfeccao_" + i + "_nomesAtbApos"));
@@ -538,7 +538,7 @@ public class ExcelHelper {
         columnMappings.add(new ExcelColumnMapping("SÍTIO DE COLETA", "sitioColetaCodigo"));
         columnMappings.add(new ExcelColumnMapping("AGENTE", "agenteCodigo"));
         columnMappings.add(new ExcelColumnMapping("CLASSIFICAÇÃO DO AGENTE", "classificacaoAgenteCodigo"));
-        columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA 3 OU MAIS DROGAS", "resistencia3OuMaisDrogas"));
+        //columnMappings.add(new ExcelColumnMapping("RESISTÊNCIA 3 OU MAIS DROGAS", "resistencia3OuMaisDrogas"));
         columnMappings.add(new ExcelColumnMapping("MECANISMO DE RESISTÊNCIA", "mecanismoResistencia"));
         columnMappings.add(new ExcelColumnMapping("PERFIL DE RESISTÊNCIA", "perfilResistencia"));
 

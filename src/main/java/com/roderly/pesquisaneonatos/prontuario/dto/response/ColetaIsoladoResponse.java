@@ -18,6 +18,7 @@ public record ColetaIsoladoResponse(
         Long idPerfilResistenciaMicroorganismo,
         Long idMecanismoResistenciaMicroorganismo,
         Boolean desconsiderarColeta,
+        Boolean fungo,
         List<AntibiogramaIsoladoResponse> antibiogramas
 ) {
 }

@@ -104,6 +104,7 @@ public class ProntuarioMapper {
                 idPerfilResistenciaMicroorganismo,
                 idMecanismoResistenciaMicroorganismo,
                 coletaSemAntibiogramas.desconsiderarColeta(),
+                coletaSemAntibiogramas.fungo(),
                 antibiogramaIsolado
         );
     }
@@ -125,19 +126,17 @@ public class ProntuarioMapper {
     }
 
 
-    public static IsoladoColeta coletaIsoladoRequestToIsoladoColeta(ColetaIsoladoRequest request) {
+    public static IsoladoColeta coletaIsoladoRequestToIsoladoColeta(ColetaIsoladoRequest request, MecanismoResistenciaMicroorganismo mecanismoResistenciaMicroorganismo, PerfilResistenciaMicroorganismo perfilResistencia) {
 
         var idEvento = new Evento(request.idEvento());
         var idMicroorganismo = new Microorganismo(request.idMicroorganismo());
-        var idPerfilResistenciaMicroorganismo = new PerfilResistenciaMicroorganismo(request.idPerfilResistenciaMicroorganismo());
-        var idMecanismoResistenciaMicroorganismo = new MecanismoResistenciaMicroorganismo(request.idMecanismoResistenciaMicroorganismo());
 
         var isoladoColeta = new IsoladoColeta();
         isoladoColeta.setIdIsoladoColeta(request.idIsoladoColeta());
         isoladoColeta.setEvento(idEvento);
         isoladoColeta.setMicroorganismo(idMicroorganismo);
-        isoladoColeta.setPerfilResistenciaMicroorganismo(idPerfilResistenciaMicroorganismo);
-        isoladoColeta.setMecanismoResistenciaMicroorganismo(idMecanismoResistenciaMicroorganismo);
+        isoladoColeta.setPerfilResistenciaMicroorganismo(perfilResistencia);
+        isoladoColeta.setMecanismoResistenciaMicroorganismo(mecanismoResistenciaMicroorganismo);
         isoladoColeta.setDesconsiderarColeta(false);
 
         return isoladoColeta;

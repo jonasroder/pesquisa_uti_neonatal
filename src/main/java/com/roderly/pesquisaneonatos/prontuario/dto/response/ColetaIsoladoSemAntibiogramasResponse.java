@@ -16,5 +16,6 @@ public record ColetaIsoladoSemAntibiogramasResponse(
         Long idMicroorganismo,
         Long idPerfilResistenciaMicroorganismo,
         Long idMecanismoResistenciaMicroorganismo,
-        Boolean desconsiderarColeta
+        Boolean desconsiderarColeta,
+        Boolean fungo
 ) {}

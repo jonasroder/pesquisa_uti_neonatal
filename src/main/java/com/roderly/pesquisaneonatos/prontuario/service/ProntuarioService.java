@@ -1,6 +1,9 @@
 package com.roderly.pesquisaneonatos.prontuario.service;
 
-import com.roderly.pesquisaneonatos.cadastros_gerais.resistencia_microorganismo.repository.ResistenciaMicroorganismoRepository;
+import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.model.MecanismoResistenciaMicroorganismo;
+import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.repository.MecanismoResistenciaMicrorganismoRepository;
+import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.model.PerfilResistenciaMicroorganismo;
+import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.repository.PerfilResistenciaMicrorganismoRepository;
 import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
@@ -14,7 +17,9 @@ import com.roderly.pesquisaneonatos.prontuario.model.AntibiogramaIsolado;
 import com.roderly.pesquisaneonatos.prontuario.model.IsoladoColeta;
 import com.roderly.pesquisaneonatos.prontuario.repository.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,6 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ProntuarioService {
 
@@ -34,6 +40,8 @@ public class ProntuarioService {
     private final AntibiogramaIsoladoRepository antibiogramaIsoladoRepository;
     private final IsoladoColetaRepository isoladoColetaRepository;
     private final EventoViaAdministracaoRepository eventoViaAdministracaoRepository;
+    private final MecanismoResistenciaMicrorganismoRepository MecanismoResistenciaMicrorganismoRepository;
+    private final PerfilResistenciaMicrorganismoRepository PerfilResistenciaMicrorganismoRepository;
 
     public ProntuarioResponse load(Long id) {
         var neonato = neonatoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Neonato não encontrado com ID: " + id));
@@ -116,7 +124,23 @@ public class ProntuarioService {
         Long idEvento = null;
 
         for (ColetaIsoladoRequest coletaIsoladoRequest : request) {
-            var isoladoColeta = ProntuarioMapper.coletaIsoladoRequestToIsoladoColeta(coletaIsoladoRequest);
+
+            MecanismoResistenciaMicroorganismo mecanismoResistencia = null;
+            if (coletaIsoladoRequest.idMecanismoResistenciaMicroorganismo() != null) {
+                mecanismoResistencia = MecanismoResistenciaMicrorganismoRepository
+                        .findById(coletaIsoladoRequest.idMecanismoResistenciaMicroorganismo())
+                        .orElseThrow(() -> new EntityNotFoundException("Mecanismo Resistencia não encontrado"));
+            }
+
+            PerfilResistenciaMicroorganismo perfilResistencia = null;
+            if (coletaIsoladoRequest.idPerfilResistenciaMicroorganismo() != null) {
+                perfilResistencia = PerfilResistenciaMicrorganismoRepository
+                        .findById(coletaIsoladoRequest.idPerfilResistenciaMicroorganismo())
+                        .orElseThrow(() -> new EntityNotFoundException("Perfil Resistencia não encontrado"));
+            }
+
+            var isoladoColeta = ProntuarioMapper.coletaIsoladoRequestToIsoladoColeta(coletaIsoladoRequest, mecanismoResistencia, perfilResistencia);
+
             var isolado = isoladoColetaRepository.save(isoladoColeta);
             idEvento = isolado.getEvento().getIdEvento();
 

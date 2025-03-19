@@ -1,14 +1,16 @@
 <script setup>
 import {onMounted, reactive, ref} from 'vue';
 import {useRouter} from 'vue-router';
-import {serviceSave, serviceLoad} from "@/service/neonato";
+import {serviceSave, serviceLoad, serviceApagarNeonato} from "@/service/neonato";
 import {
     getIdFromUrl, adicionarParametrosURL, verificarCamposObrigatorios, getOptionsAutocomplete
 } from "@/service/common/utils";
 import {loading} from "@/plugins/loadingService.js";
 import CardFormulario from "@/components/CardFormulario.vue";
+import {getSessionUserData} from "@/service/common/tokenService";
 
 
+const roleUsuario             = ref(getSessionUserData().id_role);
 const id                      = ref(getIdFromUrl());
 const emit                    = defineEmits(['set-back-action', 'set-save-action', 'set-show-buttons']);
 const cpfDisabled             = ref(false);
@@ -24,6 +26,7 @@ const optionsRoturaMembrana   = ref();
 const optionsSitioMalformacao = ref();
 const optionsSitioCirurgia    = ref();
 const optionsCausaObito       = ref();
+const dialog                  = ref(false);
 
 
 const neonato = reactive({
@@ -194,6 +197,24 @@ const verProntuario = (idNeonato) => {
         query: {id: idNeonato}
     });
 }
+
+
+
+const apagarNeonato = () => {
+    dialog.value = true;
+};
+
+
+const confirmarApagar = async () => {
+    await serviceApagarNeonato(id.value);
+    handleBack();
+    dialog.value   = false;
+};
+
+
+const cancelar = () => {
+    dialog.value   = false;
+};
 </script>
 
 
@@ -201,9 +222,28 @@ const verProntuario = (idNeonato) => {
     <card-formulario title="Cadastro de Neonato"
                      subtitle="Você pode editar o formulário a qualquer momento">
 
-        <div class="d-flex justify-end mb-2" v-if="id">
+        <v-btn v-if="roleUsuario === 1" color="red" small variant="elevated" class="elevation-2" @click="apagarNeonato()">
+            Apagar Neonato
+        </v-btn>
+
+
+        <v-dialog v-model="dialog" max-width="500">
+            <v-card>
+                <v-card-title>Confirmar Exclusão</v-card-title>
+                <v-card-text>
+                    <p>Deseja realmente apagar o neonato?</p>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn variant="text" @click="cancelar">Cancelar</v-btn>
+                    <v-btn color="red" @click="confirmarApagar">Confirmar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+
+        <div class="d-flex justify-end mb-4" v-if="id">
             <a href="#" class="editable-name" @click.prevent="verProntuario(id)">
-                <b>Prontuário do Neonato <i class="fas fa-external-link-alt"></i></b>
+                <h3>Prontuário do Neonato <i class="fas fa-external-link-alt"></i></h3>
             </a>
         </div>
 

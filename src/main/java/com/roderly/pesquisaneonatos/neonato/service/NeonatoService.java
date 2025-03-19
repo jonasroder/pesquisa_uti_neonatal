@@ -90,12 +90,19 @@ public class NeonatoService {
 
 
     public List<NeonatoListResponse> list() {
-        var neonatoList = neonatoRepository.findAll();
+        var neonatoList = neonatoRepository.findByIsActiveTrueOrderByDataInternacaoDesc();
 
         return neonatoList.stream()
                 .map(NeonatoMapper::convertNeonatoToNeonatoListResponse)
                 .toList();
+    }
 
+
+    public ApiResponseDTO delete(Long id) {
+        var neonato = neonatoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Neonato não encontrado com ID: " + id));
+        neonato.setIsActive(false);
+        neonatoRepository.save(neonato);
+        return ApiResponseDTO.successMessage("O Neonato foi Apagado com sucesso!");
     }
 
 

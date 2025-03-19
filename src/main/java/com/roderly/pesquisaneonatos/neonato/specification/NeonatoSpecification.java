@@ -20,6 +20,8 @@ public class NeonatoSpecification {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            // ⬇️ Filtrar somente neonatos ativos
+            predicates.add(builder.isTrue(root.get("isActive")));
 
             // Filtrar por intervalo de datas de internacao (se preenchido)
             String dataInicial = filtros.dataInicial();

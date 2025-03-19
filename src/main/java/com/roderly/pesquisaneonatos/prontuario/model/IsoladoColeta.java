@@ -35,8 +35,8 @@ public class IsoladoColeta extends EntidadeRastreada {
     @JoinColumn(name = "id_perfil_resistencia_microorganismo", referencedColumnName = "id_perfil_resistencia_microorganismo", nullable = false)
     private PerfilResistenciaMicroorganismo perfilResistenciaMicroorganismo;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_mecanismo_resistencia_microorganismo", referencedColumnName = "id_mecanismo_resistencia_microorganismo", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_mecanismo_resistencia_microorganismo", referencedColumnName = "id_mecanismo_resistencia_microorganismo")
     private MecanismoResistenciaMicroorganismo mecanismoResistenciaMicroorganismo;
 
     @Column(name = "desconsiderar_coleta")

@@ -230,7 +230,7 @@ watch(abaPagina, (newVal) => {
 
 
 <template>
-    <card-formulario :title="`Prontuário do Neonato de: ${nomeMae} - ${prontuario}` "
+    <card-formulario :title="`Prontuário ${prontuario}` "
                      subtitle="Você pode editar o formulário a qualquer momento">
 
         <v-container class="pa-0">
