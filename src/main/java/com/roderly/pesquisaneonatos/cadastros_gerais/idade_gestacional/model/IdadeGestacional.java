@@ -1,5 +1,6 @@
 package com.roderly.pesquisaneonatos.cadastros_gerais.idade_gestacional.model;
 
+import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "idade_gestacional")
-public class IdadeGestacional {
+public class IdadeGestacional extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_idade_gestacional")

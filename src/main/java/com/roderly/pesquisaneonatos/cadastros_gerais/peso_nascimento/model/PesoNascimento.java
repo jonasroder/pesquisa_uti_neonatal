@@ -1,5 +1,6 @@
 package com.roderly.pesquisaneonatos.cadastros_gerais.peso_nascimento.model;
 
+import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "peso_nascimento")
-public class PesoNascimento {
+public class PesoNascimento extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_peso_nascimento")

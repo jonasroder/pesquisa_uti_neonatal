@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, reactive, ref} from 'vue';
+import {onMounted, reactive, ref, watch} from 'vue';
 import {useRouter} from 'vue-router';
 import {serviceSave, serviceLoad, serviceApagarNeonato} from "@/service/neonato";
 import {
@@ -8,6 +8,7 @@ import {
 import {loading} from "@/plugins/loadingService.js";
 import CardFormulario from "@/components/CardFormulario.vue";
 import {getSessionUserData} from "@/service/common/tokenService";
+import {setNotification} from "@/plugins/notificationService";
 
 
 const roleUsuario             = ref(getSessionUserData().id_role);
@@ -215,6 +216,61 @@ const confirmarApagar = async () => {
 const cancelar = () => {
     dialog.value   = false;
 };
+
+
+const validateDates = () => {
+    if (!neonato.dataDesfecho || !neonato.dataInternacao) return
+
+    const dataDesfecho = new Date(neonato.dataDesfecho)
+    const dataInternacao = new Date(neonato.dataInternacao)
+
+    if (dataDesfecho < dataInternacao) {
+        setNotification(`Erro: A Data de Desfecho não pode ser menor que a Data de Internação`, "error");
+    }
+
+    const diffDays = Math.abs(dataDesfecho - dataInternacao) / (1000 * 60 * 60 * 24)
+
+    if (diffDays > 90) {
+        setNotification(`A Diferença entre as datas de internação e desfecho é superior a 90 dias, verifique se está correto!`, "warning");
+    }
+}
+
+
+watch(
+    () => [neonato.dataDesfecho, neonato.dataInternacao],
+    () => validateDates()
+)
+
+
+const validateAusenciaDates = () => {
+    neonato.ausenciaUTI.forEach(ausencia => {
+        if (!ausencia.dataSaidaUti || !ausencia.dataRetornoUti) return;
+        const dataSaida = new Date(ausencia.dataSaidaUti);
+        const dataRetorno = new Date(ausencia.dataRetornoUti);
+
+        if (dataRetorno < dataSaida) {
+            setNotification(
+                'Erro: A Data de Retorno UTI não pode ser menor que a Data de Saída UTI',
+                'error'
+            );
+        }
+
+        const diffDays = Math.abs(dataRetorno - dataSaida) / (1000 * 60 * 60 * 24);
+        if (diffDays > 90) {
+            setNotification(
+                'Aviso: Diferença entre as datas de saída e retorno da UTI superior a 90 dias, verifique se está correto!',
+                'warning'
+            );
+        }
+    });
+};
+
+watch(
+    () => neonato.ausenciaUTI.map(item => [item.dataSaidaUti, item.dataRetornoUti]),
+    () => validateAusenciaDates(),
+    { deep: true }
+);
+
 </script>
 
 

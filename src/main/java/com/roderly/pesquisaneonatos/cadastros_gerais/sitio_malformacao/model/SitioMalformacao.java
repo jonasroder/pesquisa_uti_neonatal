@@ -1,16 +1,11 @@
 package com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model;
 
-import com.roderly.pesquisaneonatos.neonato.model.Neonato;
-import com.roderly.pesquisaneonatos.prontuario.model.Evento;
+import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -18,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "sitio_malformacao")
-public class SitioMalformacao {
+public class SitioMalformacao extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sitio_malformacao")

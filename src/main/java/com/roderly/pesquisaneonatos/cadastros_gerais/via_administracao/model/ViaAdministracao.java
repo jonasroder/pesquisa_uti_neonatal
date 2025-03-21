@@ -1,5 +1,6 @@
 package com.roderly.pesquisaneonatos.cadastros_gerais.via_administracao.model;
 
+import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "via_administracao")
-public class ViaAdministracao {
+public class ViaAdministracao extends EntidadeRastreada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_via_administracao")
