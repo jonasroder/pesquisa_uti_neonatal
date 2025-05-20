@@ -233,7 +233,7 @@ watch(abaPagina, (newVal) => {
     <card-formulario :title="`Prontuário ${prontuario}` "
                      subtitle="Você pode editar o formulário a qualquer momento">
 
-        <v-container class="pa-0">
+        <v-container fluid class="pa-0">
 
             <div class="d-flex justify-end mb-2">
                 <a href="#" class="editable-name" @click.prevent="navigateToEditPage(id)">

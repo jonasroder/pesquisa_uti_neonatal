@@ -40,7 +40,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <v-container :class="paddingConf">
+    <v-container  fluid class="paddingConf">
         <v-row justify="center" align="center" class="d-flex  pa-0 fill-height border border-sm border-opacity-100 border-barrasSperior rounded">
             <v-col cols="12" :class="paddingConf">
                 <v-card>

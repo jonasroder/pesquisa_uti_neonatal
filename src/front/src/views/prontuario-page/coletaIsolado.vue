@@ -93,7 +93,11 @@ const verificarResistencias = coleta => {
 
     // Recupera o microorganismo e seu gênero para análise
     const microganismo = optionsMicroorganismos.value.find(i => i.value === coleta.idMicroorganismo);
-    const idGenero = microganismo.additionalData.id_genero;
+    const idGenero     = microganismo.additionalData.id_genero;
+    const tipo         = microganismo.additionalData.id_classificacao_microorganismo;
+
+    //se for fungo retorna
+    if(tipo === 3) return;
 
     // Olhar se não é Staphylococcus resistente a oxacilina
     const staphResistantOxacillin = coleta.antibiogramas.some(antibiograma => {
@@ -103,12 +107,10 @@ const verificarResistencias = coleta => {
         // - O gênero é 17 (Staphylococcus)
         // - A resistência é 2 (resistente)
         // - O antimicrobiano é 9 (oxacilina)
-        return idGenero === 17 &&
-               antibiograma.idResistenciaMicroorganismo === 2 &&
-               antibiograma.idAntimicrobiano === 9;
+        return idGenero === 17 && antibiograma.idResistenciaMicroorganismo === 2 && antibiograma.idAntimicrobiano === 9;
     });
     if (staphResistantOxacillin) {
-        coleta.idPerfilResistenciaMicroorganismo = 2;
+        coleta.idPerfilResistenciaMicroorganismo    = 2;
         coleta.idMecanismoResistenciaMicroorganismo = 2;
         setNotification(`Perfil de resistência MDR detectado`, "warning");
         return;
@@ -122,10 +124,7 @@ const verificarResistencias = coleta => {
         // - O gênero é 17 (Staphylococcus)
         // - A resistência é 2 (resistente)
         // - O antimicrobiano é 9 (oxacilina)
-        return idGenero === 17 &&
-               antibiograma.idResistenciaMicroorganismo === 1 &&
-               coleta.idMecanismoResistenciaMicroorganismo === 2 &&
-               antibiograma.idAntimicrobiano === 9;
+        return idGenero === 17 && antibiograma.idResistenciaMicroorganismo === 1 && coleta.idMecanismoResistenciaMicroorganismo === 2 && antibiograma.idAntimicrobiano === 9;
     });
     if (verificarORS) {
         coleta.idMecanismoResistenciaMicroorganismo = 1;
@@ -206,10 +205,11 @@ const verificarSeFungo = coleta => {
     const tipo             = microganismo.additionalData.id_classificacao_microorganismo;
 
     coleta.fungo                                = tipo === 3;
-    coleta.idMecanismoResistenciaMicroorganismo = null;
+    coleta.idMecanismoResistenciaMicroorganismo = 1;
 
     if (coleta.fungo && (coleta.idPerfilResistenciaMicroorganismo !== 1 || coleta.idPerfilResistenciaMicroorganismo !== 5 || coleta.idPerfilResistenciaMicroorganismo === null)) {
-        coleta.idPerfilResistenciaMicroorganismo = 1;
+        coleta.idPerfilResistenciaMicroorganismo    = 1;
+        coleta.idMecanismoResistenciaMicroorganismo = null;
     }
 };
 
@@ -223,7 +223,7 @@ watch(coletasIsolados, () => {
         <v-col cols="12">
             <v-row>
                 <!-- Itera sobre o array de coletasIsolados e cria um card para cada item -->
-                <v-col v-for="(coleta, index) in coletasIsolados" :key="index" cols="12" md="4" class="mb-4">
+                <v-col v-for="(coleta, index) in coletasIsolados" :key="index" cols="12" sm="12" md="6" lg="4" class="mb-4">
                     <v-card>
                         <v-card-title>
                             {{ coleta.dataEvento }}

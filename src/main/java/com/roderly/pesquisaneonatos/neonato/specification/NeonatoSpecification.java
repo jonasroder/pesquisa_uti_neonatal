@@ -193,13 +193,19 @@ public class NeonatoSpecification {
 
             } else if ("infectado".equalsIgnoreCase(tipo)) {
                 // Incluir apenas neonatos que tenham pelo menos um evento com registro em isoladoColeta
-                query.distinct(true);
                 Join<Neonato, Evento> eventoJoin = root.join("eventoList", JoinType.LEFT);
                 predicates.add(builder.isNotNull(eventoJoin.get("isoladoColeta")));
+
+                query.orderBy(
+                        builder.asc(root.get("idNeonato")),
+                        builder.asc(eventoJoin.get("dataEvento"))
+                );
             }
 
             // ⬇️ ORDENAR PELO CAMPO dataInternacao EM ORDEM CRESCENTE
-            query.orderBy(builder.asc(root.get("dataInternacao")));
+            if (!"infectado".equalsIgnoreCase(tipo)) {
+                query.orderBy(builder.asc(root.get("dataInternacao")));
+            }
 
             return builder.and(predicates.toArray(new Predicate[0]));
         };

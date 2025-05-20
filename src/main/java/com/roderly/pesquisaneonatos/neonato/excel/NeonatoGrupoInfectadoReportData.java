@@ -36,18 +36,20 @@ public class NeonatoGrupoInfectadoReportData {
     Long malformacao;
     List<SitioMalformacao> SitioMalformacoes;
 
-    ProcedimentosDiasInfeccao Cirurgia;
+    UsoProcedimentos Cirurgia;
     List<DataCodigoCirurgia> ColunasCirurgia;
 
-    ProcedimentosDiasInfeccao Flebotomia;
-    ProcedimentosDiasInfeccao Cvu;
-    ProcedimentosDiasInfeccao Picc;
-    ProcedimentosDiasInfeccao Entubacao;
-    ProcedimentosDiasInfeccao SondaVesical;
-    ProcedimentosDiasInfeccao NutricaoParenteral;
-    ProcedimentosDiasInfeccao Dreno;
-    ProcedimentosDiasInfeccao Intracath;
-    ProcedimentosDiasInfeccao CvcDuploLumen;
+    UsoProcedimentos Flebotomia;
+    UsoProcedimentos Cvu;
+    UsoProcedimentos Picc;
+    UsoProcedimentos Entubacao;
+    UsoProcedimentos SondaVesical;
+    UsoProcedimentos NutricaoParenteral;
+    UsoProcedimentos Dreno;
+    UsoProcedimentos Intracath;
+    UsoProcedimentos CvcDuploLumen;
+
+    List<ProcedimentosEpisodioInfeccao> ProcedimentosEpisodioInfeccao;
 
     int riscoInfeccioso;
     int sepseClinica;

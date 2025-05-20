@@ -28,7 +28,7 @@ public class SolicitacaoDownloadProcessor {
     private String fileStorageLocation;
 
 
-    @Scheduled(fixedRate = 60000) // Executa a cada 1 minuto
+    @Scheduled(fixedRate = 6000) // Executa a cada 1 minuto
     public void processarSolicitacoesPendentes() {
         List<SolicitacaoDownload> pendentes = solicitacaoDownloadRepository.findByStatus(StatusSolicitacao.PENDENTE);
 

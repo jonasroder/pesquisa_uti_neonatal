@@ -10,6 +10,7 @@ import com.roderly.pesquisaneonatos.cadastros_gerais.sexo.model.Sexo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.sitio_malformacao.model.SitioMalformacao;
 import com.roderly.pesquisaneonatos.cadastros_gerais.tipo_parto.model.TipoParto;
 import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
+import com.roderly.pesquisaneonatos.common.persistense.EntidadeRastreada;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoAusenciaUTIRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoAusenciaUTIResponse;
@@ -18,16 +19,19 @@ import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.excel.IsoladosReportData;
 import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoControleReportData;
 import com.roderly.pesquisaneonatos.neonato.excel.NeonatoGrupoInfectadoReportData;
+import com.roderly.pesquisaneonatos.neonato.excel.ProcedimentosEpisodioContext;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import com.roderly.pesquisaneonatos.neonato.model.NeonatoAusenciaUTI;
 import com.roderly.pesquisaneonatos.neonato.model.NeonatoSitioMalformacao;
 import com.roderly.pesquisaneonatos.neonato.service.NeonatoService;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.ClasseAntimicrobianoCountProjection;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
+import com.roderly.pesquisaneonatos.prontuario.model.Evento;
 import com.roderly.pesquisaneonatos.prontuario.model.IsoladoColeta;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -305,24 +309,15 @@ public class NeonatoMapper {
         var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
         var dataDesfecho = neonato.getDataDesfecho() != null ? DateUtil.LocalDateToDateBR(neonato.getDataDesfecho()) : null;
         var ano = neonato.getDataInternacao() != null ? neonato.getDataInternacao().getYear() : null;
-        var eventos = neonato.getEventoList().stream().filter(evento -> evento.getIsActive()).toList();
+        var eventos = neonato.getEventoList().stream().sorted(Comparator.comparing(Evento::getDataEvento)).filter(EntidadeRastreada::getIsActive).toList();
+
 
         var diasForaUti = neonatoService.calcularDiasForaUTI(neonato.getNeonatoAusenciaUtiList());
         var diasUti = DateUtil.calcularDiferencaDias(neonato.getDataInternacao(), neonato.getDataDesfecho()).orElse(0L);
         var diasInternacao = diasUti + 1 - diasForaUti;
 
         var malformacaoList = neonato.getNeonatoMalformacaoList();
-        var cirurgiasList = neonatoService.filtrarListaEventosPorTipo(eventos, 9L);
-        var flebotomiaList = neonatoService.filtrarListaEventosPorTipo(eventos, 8L);
-        var cvuList = neonatoService.filtrarListaEventosPorTipo(eventos, 7L);
-        var intracathList = neonatoService.filtrarListaEventosPorTipo(eventos, 11L);
-        var cvcDuploLumenList = neonatoService.filtrarListaEventosPorTipo(eventos, 12L);
-        var piccList = neonatoService.filtrarListaEventosPorTipo(eventos, 6L);
-        var entubacaoList = neonatoService.filtrarListaEventosPorTipo(eventos, 3L);
-        var sondaVesicalList = neonatoService.filtrarListaEventosPorTipo(eventos, 4L);
-        var nutricaoParenteralList = neonatoService.filtrarListaEventosPorTipo(eventos, 5L);
-        var drenoList = neonatoService.filtrarListaEventosPorTipo(eventos, 2L);
-        var medicacaoList = neonatoService.filtrarListaEventosPorTipo(eventos, 1L);
+        var listaProcedimentos = new ProcedimentosEpisodioContext(eventos);
 
         var coletasInfeccao = neonatoService.buscarColetasInfeccao(eventos);
         var datasInfeccao = new ArrayList<>(neonatoService.getDatasInfeccoes(coletasInfeccao));
@@ -359,36 +354,27 @@ public class NeonatoMapper {
         report.setApgar5(neonato.getApgar5());
         report.setMalformacao(malformacaoList.isEmpty() ? 0L : 1L);
         report.setSitioMalformacoes(neonatoService.getColunasMalformacao(malformacaoList));
-        report.setCirurgia(neonatoService.getProcedimentosDiasInfeccao(cirurgiasList, datasInfeccao));
-        report.setColunasCirurgia(neonatoService.getColunasCirurgias(cirurgiasList));
-        report.setFlebotomia(neonatoService.getProcedimentosDiasInfeccao(flebotomiaList, datasInfeccao));
-        report.setCvu(neonatoService.getProcedimentosDiasInfeccao(cvuList, datasInfeccao));
-        report.setPicc(neonatoService.getProcedimentosDiasInfeccao(piccList, datasInfeccao));
-        report.setEntubacao(neonatoService.getProcedimentosDiasInfeccao(entubacaoList, datasInfeccao));
-        report.setSondaVesical(neonatoService.getProcedimentosDiasInfeccao(sondaVesicalList, datasInfeccao));
-        report.setNutricaoParenteral(neonatoService.getProcedimentosDiasInfeccao(nutricaoParenteralList, datasInfeccao));
-        report.setDreno(neonatoService.getProcedimentosDiasInfeccao(drenoList, datasInfeccao));
-        report.setIntracath(neonatoService.getProcedimentosDiasInfeccao(intracathList, datasInfeccao));
-        report.setCvcDuploLumen(neonatoService.getProcedimentosDiasInfeccao(cvcDuploLumenList, datasInfeccao));
-        //report.setRiscoInfeccioso(neonato.getRiscoInfeccio() ? 1 : 0);
-        //report.setSepseClinica(neonato.getSepseClinica() ? 1 : 0);
-        report.setColetaSangue(coletasSangue);
-        report.setColetaSecOcular(coletasSecrecaoOcular);
-        report.setColetaLiqPleural(coletaLiquidoPleural);
-        report.setColetaLCR(coletasLCR);
-        report.setColetaLiqAscitico(coletasLiquidoAscitico);
-        report.setColetaUrina(coletasUrina);
-        report.setColetaSecrecaoPulmonar(coletasSecrecaoPulmonar);
-        report.setColetaSwabAnal(coletasSwabAnal);
-        report.setColetaPontaCateter(coletasPontaCateter);
+        report.setCirurgia(neonatoService.getUsoProcedimentos(listaProcedimentos.cirurgiasList));
+        report.setColunasCirurgia(neonatoService.getColunasCirurgias(listaProcedimentos.cirurgiasList));
+        report.setFlebotomia(neonatoService.getUsoProcedimentos(listaProcedimentos.flebotomiaList));
+        report.setCvu(neonatoService.getUsoProcedimentos(listaProcedimentos.cvuList));
+        report.setPicc(neonatoService.getUsoProcedimentos(listaProcedimentos.piccList));
+        report.setEntubacao(neonatoService.getUsoProcedimentos(listaProcedimentos.entubacaoList));
+        report.setSondaVesical(neonatoService.getUsoProcedimentos(listaProcedimentos.sondaVesicalList));
+        report.setNutricaoParenteral(neonatoService.getUsoProcedimentos(listaProcedimentos.nutricaoParenteralList));
+        report.setDreno(neonatoService.getUsoProcedimentos(listaProcedimentos.drenoList));
+        report.setIntracath(neonatoService.getUsoProcedimentos(listaProcedimentos.intracathList));
+        report.setCvcDuploLumen(neonatoService.getUsoProcedimentos(listaProcedimentos.cvcDuploLumenList));
 
-        report.setMedicamentosEpisodiosInfeccao(neonatoService.getMedicamentosEpisodiosInfeccao(medicacaoList, datasInfeccao));
+        report.setProcedimentosEpisodioInfeccao(neonatoService.getProcedimentosEpisodioInfeccao(coletasInfeccao, listaProcedimentos));
+
+        report.setMedicamentosEpisodiosInfeccao(neonatoService.getMedicamentosEpisodiosInfeccao(listaProcedimentos.medicacaoList, datasInfeccao));
 
         return report;
     }
 
 
-    public static IsoladosReportData convertToIsoladosReportData(IsoladoColeta isoladoColeta, NeonatoService neonatoService) {
+    public static IsoladosReportData convertToIsoladosReportData(IsoladoColeta isoladoColeta, int nInfec, NeonatoService neonatoService) {
 
         var evento = isoladoColeta.getEvento();
         var neonato = evento.getNeonato();
@@ -425,6 +411,7 @@ public class NeonatoMapper {
 
         report.setDataColeta(DateUtil.LocalDateToDateBR(isoladoColeta.getEvento().getDataEvento()));
         report.setSitioColetaCodigo(neonatoService.getCodigoCadastro("sitio_coleta", "id_sitio_coleta", evento.getEventoEntidade().getIdEntidade()));
+        report.setNInfeccao(nInfec);
         report.setAgenteCodigo(isoladoColeta.getMicroorganismo().getCodigo());
         report.setClassificacaoAgenteCodigo(isoladoColeta.getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
         //report.setResistencia3OuMaisDrogas(neonatoService.verificarNResistencia(antibiogramas));

@@ -34,6 +34,7 @@ public class IsoladosReportData {
 
     String dataColeta;
     Long sitioColetaCodigo;
+    int nInfeccao;
     Long agenteCodigo;
     Long classificacaoAgenteCodigo;
     Long resistencia3OuMaisDrogas;

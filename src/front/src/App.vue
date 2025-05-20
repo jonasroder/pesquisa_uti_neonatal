@@ -50,7 +50,7 @@ const setSaveAction = (action) => {
         <barra-superior @toggle-drawer="toggleDrawer" @handle-save="handleSave" @handle-back="handleBack" :show-buttons="showButtons"/>
         <menu-lateral :drawer="drawer" :key="drawer"/>
         <v-main class="d-flex">
-            <v-container>
+            <v-container fluid>
                 <router-view @set-back-action="setBackAction" @set-save-action="setSaveAction" @set-show-buttons="setShowButtons"/>
             </v-container>
         </v-main>

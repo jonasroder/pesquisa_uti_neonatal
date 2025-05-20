@@ -33,6 +33,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -40,6 +41,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Transactional
@@ -164,7 +166,6 @@ public class NeonatoService {
     }
 
 
-
     public List<NeonatoGrupoControleReportData> getReportGrupoControle(FiltrosExcelRequest filtrosRequest) {
 
         var neonatos = neonatoRepository.findAll(NeonatoSpecification.byFiltros(filtrosRequest, "controle"));
@@ -199,13 +200,6 @@ public class NeonatoService {
     }
 
 
-    public List<Evento> filtrarListaEventosPorTipo(List<Evento> eventos, Long tipo) {
-        return eventos.stream()
-                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(tipo))
-                .toList();
-    }
-
-
     public List<Evento> buscarColetasInfeccao(List<Evento> eventos) {
         return eventos.stream()
                 .filter(evento -> {
@@ -215,31 +209,22 @@ public class NeonatoService {
                     if (evento.getIsoladoColeta() == null) {
                         return false;
                     }
+
+                    if (evento.getEventoEntidade().getIdEntidade() != null &&
+                            List.of(4L, 5L, 7L, 9L).contains(evento.getEventoEntidade().getIdEntidade())) {
+                        return false;
+                    }
+
                     return !evento.getIsoladoColeta().getDesconsiderarColeta();
                 })
                 .toList();
     }
 
 
-    public ProcedimentosDiasInfeccao getProcedimentosDiasInfeccao(List<Evento> eventos, List<LocalDate> datasInfeccao) {
-        var procedimentosDiasInfeccao = new ProcedimentosDiasInfeccao();
-
+    public UsoProcedimentos getUsoProcedimentos(List<Evento> eventos) {
+        var procedimentosDiasInfeccao = new UsoProcedimentos();
         procedimentosDiasInfeccao.setUso(eventos.isEmpty() ? 0 : 1);
         procedimentosDiasInfeccao.setDiasTotaisUso(eventos.size());
-
-        // Processa dias até a infecção e dias após a infecção para cada episódio
-        for (int i = 0; i < NeonatoMapper.numeroAnalisesInfeccoes; i++) {
-            if (i < datasInfeccao.size() && datasInfeccao.get(i) != null) {
-                LocalDate dataInfeccao = datasInfeccao.get(i);
-
-                // Define os dias até a infecção
-                procedimentosDiasInfeccao.setDiasAteInfecao(i + 1, getDiasEventoAteInfeccao(eventos, dataInfeccao));
-
-                // Define os dias após a infecção
-                procedimentosDiasInfeccao.setDiasAposInfecao(i + 1, getDiasEventoAposInfeccao(eventos, dataInfeccao));
-            }
-        }
-
         return procedimentosDiasInfeccao;
     }
 
@@ -250,22 +235,6 @@ public class NeonatoService {
                 .map(Evento::getDataEvento)
                 .sorted()
                 .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-
-    public int getDiasEventoAteInfeccao(List<Evento> eventos, LocalDate dataInfeccao) {
-        return (int) eventos.stream()
-                .filter(evento -> evento.getTipoEvento().getIsActive() &&
-                        evento.getDataEvento().isBefore(dataInfeccao))
-                .count();
-    }
-
-
-    public int getDiasEventoAposInfeccao(List<Evento> eventos, LocalDate dataInfeccao) {
-        return (int) eventos.stream()
-                .filter(evento -> evento.getTipoEvento().getIsActive() &&
-                        !evento.getDataEvento().isBefore(dataInfeccao))
-                .count();
     }
 
 
@@ -682,16 +651,66 @@ public class NeonatoService {
 
 
     public List<IsoladosReportData> getReportIsolados(FiltrosExcelRequest filtrosRequest) {
-
-        var neonatos = neonatoRepository.findAll(NeonatoSpecification.byFiltros(filtrosRequest, "infectado"));
+        // 1. busca os neonatos e extrai todos os isolados já filtrados
+        var neonatos = neonatoRepository.findAll(
+                NeonatoSpecification.byFiltros(filtrosRequest, "infectado")
+        );
         var isolados = getIsoladoColetaFromNeonatos(neonatos, filtrosRequest);
 
+        // 2. computa o número de infecção para cada IsoladoColeta
+        Map<IsoladoColeta, Integer> sequenciaPorIsolado = computeInfectionSequence(isolados);
+
+        // 3. mapeia para o DTO, agora passando o nº da infecção
         return isolados.stream()
                 .map(isolado -> {
-                    return NeonatoMapper.convertToIsoladosReportData(isolado, this);
+                    int nInfec = sequenciaPorIsolado.getOrDefault(isolado, 0);
+                    return NeonatoMapper
+                            .convertToIsoladosReportData(isolado, nInfec, this);
                 })
                 .toList();
     }
+
+    /**
+     * Para cada neonato, filtra apenas os isolados que são
+     * de infecção (site_coleta & idEntidade ∉ {4,5,7,9}),
+     * ordena por dataEvento e atribui 1,2,3...
+     */
+    private Map<IsoladoColeta, Integer> computeInfectionSequence(List<IsoladoColeta> isolados) {
+        // IDs que não contam como "infecção"
+        final Set<Long> EXCLUIDOS = Set.of(4L, 5L, 7L, 9L);
+
+        return isolados.stream()
+                // filtra só o que é veramente infecção
+                .filter(iso -> {
+                    var ent = iso.getEvento().getEventoEntidade();
+                    return "sitio_coleta".equals(ent.getTipoEntidade())
+                            && !EXCLUIDOS.contains(ent.getIdEntidade());
+                })
+                // agrupa por neonato
+                .collect(Collectors.groupingBy(
+                        iso -> iso.getEvento().getNeonato().getIdNeonato(),
+                        LinkedHashMap::new, // mantém ordem de inserção por neonato (não estritamente necessário)
+                        Collectors.toList()
+                ))
+                // para cada neonato, ordena e gera pares (IsoladoColeta, seq)
+                .entrySet().stream()
+                .flatMap(entry -> {
+                    List<IsoladoColeta> listaOrdenada = entry.getValue().stream()
+                            .sorted(Comparator.comparing(
+                                    iso -> iso.getEvento().getDataEvento()
+                            ))
+                            .toList();
+
+                    return IntStream.range(0, listaOrdenada.size())
+                            .mapToObj(i -> Map.entry(listaOrdenada.get(i), i + 1));
+                })
+                // converte para um Map<IsoladoColeta, sequência>
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
+    }
+
 
 
     public List<IsoladoColeta> getIsoladoColetaFromNeonatos(List<Neonato> neonatos, FiltrosExcelRequest filtrosRequest) {
@@ -755,21 +774,6 @@ public class NeonatoService {
 
 
 
-    public Long verificarNResistencia(List<AntibiogramaIsolado> antibiogramaIsolados) {
-        if (antibiogramaIsolados.size() < 3)
-            return 0L;
-
-        int i = 0;
-        for (AntibiogramaIsolado antibiograma : antibiogramaIsolados) {
-            if (antibiograma.getResistenciaMicroorganismo() != null && antibiograma.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo() == 1L) {
-                i++;
-            }
-        }
-
-        return i < 3 ? 0L : 1L;
-    }
-
-
     public Long verificarResistenciaClasseAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idClasseAntimicrobiano) {
         return antibiogramas.stream()
                 .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
@@ -794,6 +798,90 @@ public class NeonatoService {
                 .map(isolado -> isolado.getResistenciaMicroorganismo().getCodigo())
                 .findFirst()
                 .orElse(null);
+    }
+
+
+
+    public List<ProcedimentosEpisodioInfeccao> getProcedimentosEpisodioInfeccao(List<Evento> coletasInfeccao, ProcedimentosEpisodioContext procedimentos) {
+        var agrupadosSemOrdem = coletasInfeccao.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        evento -> Pair.of(evento.getDataEvento(), evento.getEventoEntidade().getIdEntidade())
+                ));
+
+        var agrupados = agrupadosSemOrdem.entrySet().stream()
+                .sorted(Comparator.comparing(e -> e.getKey().getFirst()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
+
+
+        var procedimentosEpisodioInfeccaoList = new ArrayList<ProcedimentosEpisodioInfeccao>();
+
+        for (var entry : agrupados.entrySet()) {
+            var eventos = entry.getValue();
+            if (eventos.isEmpty()) continue;
+
+            var dataInfeccao = entry.getKey().getFirst();
+            var idEntidade = entry.getKey().getSecond();
+
+            var procedimentosInfeccao = new ProcedimentosEpisodioInfeccao();
+            procedimentosInfeccao.setData(DateUtil.LocalDateToDateBR(dataInfeccao));
+            procedimentosInfeccao.setSitio(getCodigoCadastro("sitio_coleta", "id_sitio_coleta", idEntidade));
+
+            // Preenchimento comum
+            procedimentosInfeccao.setDiasFlebotomiaAte(getEventosAteInfeccao(procedimentos.flebotomiaList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasFlebotomiaApos(getEventosAposInfeccao(procedimentos.flebotomiaList, dataInfeccao).size());
+
+            procedimentosInfeccao.setDiasCvuAte(getEventosAteInfeccao(procedimentos.cvuList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasCvuApos(getEventosAposInfeccao(procedimentos.cvuList, dataInfeccao).size());
+
+            procedimentosInfeccao.setDiasPiccAte(getEventosAteInfeccao(procedimentos.piccList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasPiccApos(getEventosAposInfeccao(procedimentos.piccList, dataInfeccao).size());
+
+            procedimentosInfeccao.setDiasEntubacaoAte(getEventosAteInfeccao(procedimentos.entubacaoList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasEntubacaoApos(getEventosAposInfeccao(procedimentos.entubacaoList, dataInfeccao).size());
+
+            procedimentosInfeccao.setDiasSondaVesicalAte(getEventosAteInfeccao(procedimentos.sondaVesicalList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasSondaVesicalApos(getEventosAposInfeccao(procedimentos.sondaVesicalList, dataInfeccao).size());
+
+            procedimentosInfeccao.setDiasNutricaoParenteralAte(getEventosAteInfeccao(procedimentos.nutricaoParenteralList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasNutricaoParenteralApos(getEventosAposInfeccao(procedimentos.nutricaoParenteralList, dataInfeccao).size());
+
+            procedimentosInfeccao.setDiasDrenoAte(getEventosAteInfeccao(procedimentos.drenoList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasDrenoApos(getEventosAposInfeccao(procedimentos.drenoList, dataInfeccao).size());
+
+            procedimentosInfeccao.setDiasIntracathAte(getEventosAteInfeccao(procedimentos.intracathList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasIntracathApos(getEventosAposInfeccao(procedimentos.intracathList, dataInfeccao).size());
+
+            procedimentosInfeccao.setDiasCvcDuploLumenAte(getEventosAteInfeccao(procedimentos.cvcDuploLumenList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasCvcDuploLumenApos(getEventosAposInfeccao(procedimentos.cvcDuploLumenList, dataInfeccao).size());
+
+            procedimentosInfeccao.setInfeccaoMista(eventos.size() > 1 ? 1 : 0);
+
+            // Preenche campos para 1º evento
+            var ev1 = eventos.get(0);
+            procedimentosInfeccao.setMicroorganismo(ev1.getIsoladoColeta().getMicroorganismo().getCodigo());
+            procedimentosInfeccao.setClassificacaoMicroorganismo(ev1.getIsoladoColeta().getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
+            procedimentosInfeccao.setPerfilResistenciaMicroorganismo(ev1.getIsoladoColeta().getPerfilResistenciaMicroorganismo().getCodigo());
+            procedimentosInfeccao.setMecanismoResistenciaMicroorganismo(ev1.getIsoladoColeta().getPerfilResistenciaMicroorganismo().getCodigo());
+
+            // Preenche campos do segundo microorganismo (se houver)
+            if (eventos.size() > 1) {
+                var ev2 = eventos.get(1);
+                procedimentosInfeccao.setMicroorganismo2(ev2.getIsoladoColeta().getMicroorganismo().getCodigo());
+                procedimentosInfeccao.setClassificacaoMicroorganismo2(ev2.getIsoladoColeta().getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
+                procedimentosInfeccao.setPerfilResistenciaMicroorganismo2(ev2.getIsoladoColeta().getPerfilResistenciaMicroorganismo().getCodigo());
+                procedimentosInfeccao.setMecanismoResistenciaMicroorganismo2(ev2.getIsoladoColeta().getPerfilResistenciaMicroorganismo().getCodigo());
+            }
+
+            procedimentosEpisodioInfeccaoList.add(procedimentosInfeccao);
+        }
+
+        return procedimentosEpisodioInfeccaoList;
     }
 
 
