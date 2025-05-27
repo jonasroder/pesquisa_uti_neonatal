@@ -13,8 +13,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class NeonatoSpecification {
+
+    // IDs de eventos considerados colonização (devem ir para controle, não infectado)
+    private static final Set<Long> COLONIZACOES = Set.of(4L, 5L, 7L, 9L);
 
     public static Specification<Neonato> byFiltros(FiltrosExcelRequest filtros, String tipo) {
         return (root, query, builder) -> {
@@ -178,29 +182,53 @@ public class NeonatoSpecification {
 
             // Lógica condicional para tipo "controle" ou "infectado"
             if ("controle".equalsIgnoreCase(tipo)) {
-                // Excluir neonatos que tenham ao menos um evento com registro em isoladoColeta
+                // Excluir neonatos que tenham ao menos um evento de infecção verdadeira
                 Subquery<Long> subquery = query.subquery(Long.class);
                 var subRoot = subquery.from(Neonato.class);
                 Join<Neonato, Evento> subEventoJoin = subRoot.join("eventoList", JoinType.LEFT);
+                Join<Evento, ?> subEventoEntidadeJoin = subEventoJoin.join("eventoEntidade", JoinType.LEFT);
 
                 subquery.select(subRoot.get("idNeonato"))
                         .where(
                                 builder.equal(subRoot.get("idNeonato"), root.get("idNeonato")),
-                                builder.isNotNull(subEventoJoin.get("isoladoColeta"))
+                                builder.equal(subEventoEntidadeJoin.get("tipoEntidade"), "sitio_coleta"),
+                                builder.not(subEventoEntidadeJoin.get("idEntidade").in(COLONIZACOES))
                         );
 
                 predicates.add(builder.not(builder.exists(subquery)));
 
             } else if ("infectado".equalsIgnoreCase(tipo)) {
-                // Incluir apenas neonatos que tenham pelo menos um evento com registro em isoladoColeta
+                query.distinct(false);
+
+                // Incluir apenas neonatos que tenham pelo menos um evento de infecção verdadeira
                 Join<Neonato, Evento> eventoJoin = root.join("eventoList", JoinType.LEFT);
+                Join<Evento, ?> eventoEntidadeJoin = eventoJoin.join("eventoEntidade", JoinType.LEFT);
+
                 predicates.add(builder.isNotNull(eventoJoin.get("isoladoColeta")));
+                predicates.add(builder.equal(eventoEntidadeJoin.get("tipoEntidade"), "sitio_coleta"));
+                predicates.add(builder.not(eventoEntidadeJoin.get("idEntidade").in(COLONIZACOES)));
+
+                query.orderBy(
+                        builder.asc(root.get("idNeonato")),
+                        builder.asc(eventoJoin.get("dataEvento"))
+                );
+
+            } else if ("colonizado".equalsIgnoreCase(tipo)) {
+                query.distinct(false);
+
+                // Incluir apenas neonatos que tenham ao menos um evento de colonização
+                Join<Neonato, Evento> eventoJoin = root.join("eventoList", JoinType.LEFT);
+                Join<Evento, ?> eventoEntidadeJoin = eventoJoin.join("eventoEntidade", JoinType.LEFT);
+
+                predicates.add(builder.equal(eventoEntidadeJoin.get("tipoEntidade"), "sitio_coleta"));
+                predicates.add(eventoEntidadeJoin.get("idEntidade").in(COLONIZACOES));
 
                 query.orderBy(
                         builder.asc(root.get("idNeonato")),
                         builder.asc(eventoJoin.get("dataEvento"))
                 );
             }
+
 
             // ⬇️ ORDENAR PELO CAMPO dataInternacao EM ORDEM CRESCENTE
             if (!"infectado".equalsIgnoreCase(tipo)) {

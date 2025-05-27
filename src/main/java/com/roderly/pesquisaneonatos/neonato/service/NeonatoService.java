@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -56,6 +58,7 @@ public class NeonatoService {
     private final EntityManager entityManager;
 
     private List<Antimicrobiano> antimicrobianos;
+    private static final Set<Long> COLONIZACOES = Set.of(4L, 5L, 7L, 9L);
 
     public ApiResponseDTO save(NeonatoRequest request) throws IOException {
         var prontuarioExistente = neonatoRepository.findByProntuario(request.prontuario());
@@ -118,12 +121,16 @@ public class NeonatoService {
         var neonatosInfectados = getReportGrupoInfectado(filtrosRequest);
         var mappingGrupoInfectado = ExcelHelper.createGrupoInfectadoColumnMapping();
 
+        var neonatosColonizados = getReportGrupoColonizado(filtrosRequest);
+        var mappingGrupoColonizado = ExcelHelper.createGrupoColonizadoColumnMapping();
+
         var isolados = getReportIsolados(filtrosRequest);
         var mappingIsolados = ExcelHelper.createIsoladosColumnMapping();
 
         List<ExcelSheetData<?>> sheetDataList = new ArrayList<>();
         sheetDataList.add(new ExcelSheetData<>("Grupo Controle", neonatosControle, mappingGrupoControle));
         sheetDataList.add(new ExcelSheetData<>("Grupo Infectado", neonatosInfectados, mappingGrupoInfectado));
+        sheetDataList.add(new ExcelSheetData<>("Grupo Colonizado", neonatosColonizados, mappingGrupoColonizado));
         sheetDataList.add(new ExcelSheetData<>("Isolados", isolados, mappingIsolados));
 
         return new ExcelService().generateExcelReport(sheetDataList);
@@ -194,30 +201,61 @@ public class NeonatoService {
                 .map(neonato -> {
                     System.out.println("Report Infectado IdNeonato: " + neonato.getIdNeonato());
 
-                    return NeonatoMapper.convertToNeonatoGrupoInfectadoReportData(neonato, this);
+                    return NeonatoMapper.convertToNeonatoGrupoInfectadoReportData(neonato, this, "infectado");
                 })
                 .toList();
     }
 
 
-    public List<Evento> buscarColetasInfeccao(List<Evento> eventos) {
-        return eventos.stream()
-                .filter(evento -> {
-                    if (evento.getTipoEvento() == null || !evento.getTipoEvento().getIdTipoEvento().equals(10L)) {
-                        return false;
-                    }
-                    if (evento.getIsoladoColeta() == null) {
-                        return false;
-                    }
+    public List<NeonatoGrupoInfectadoReportData> getReportGrupoColonizado(FiltrosExcelRequest filtrosRequest) {
 
-                    if (evento.getEventoEntidade().getIdEntidade() != null &&
-                            List.of(4L, 5L, 7L, 9L).contains(evento.getEventoEntidade().getIdEntidade())) {
-                        return false;
-                    }
+        var neonatos = neonatoRepository.findAll(NeonatoSpecification.byFiltros(filtrosRequest, "colonizado"));
 
-                    return !evento.getIsoladoColeta().getDesconsiderarColeta();
+        return neonatos.stream()
+                .map(neonato -> {
+                    System.out.println("Report Colonizado IdNeonato: " + neonato.getIdNeonato());
+
+                    return NeonatoMapper.convertToNeonatoGrupoInfectadoReportData(neonato, this, "colonizado");
                 })
                 .toList();
+    }
+
+
+    public List<Evento> buscarColetasInfeccao(List<Evento> eventos, String tipoRelatorio) {
+        Predicate<Evento> isColetaBacteriana = evento ->
+                evento.getTipoEvento() != null
+                        && Objects.equals(evento.getTipoEvento().getIdTipoEvento(), 10L);
+
+        // só isolados válidos (não nulos e não desconsiderados)
+        Predicate<Evento> isIsoladoValido = evento ->
+                evento.getIsoladoColeta() != null
+                        && !evento.getIsoladoColeta().getDesconsiderarColeta();
+
+        // filtro para infectado: exclui colonizações
+        Predicate<Evento> filtroInfectado = evento -> {
+            Long idEnt = evento.getEventoEntidade().getIdEntidade();
+            // permite eventos sem entidade, ou com entidade NÃO em COLONIZACOES
+            return idEnt == null || !COLONIZACOES.contains(idEnt);
+        };
+
+        // filtro para colonizado: só colonizações
+        Predicate<Evento> filtroColonizado = evento -> {
+            Long idEnt = evento.getEventoEntidade().getIdEntidade();
+            return idEnt != null && COLONIZACOES.contains(idEnt);
+        };
+
+        return eventos.stream()
+                .filter(isColetaBacteriana)
+                .filter(isIsoladoValido)
+                .filter(evento -> {
+                    if ("infectado".equalsIgnoreCase(tipoRelatorio)) {
+                        return filtroInfectado.test(evento);
+                    } else if ("colonizado".equalsIgnoreCase(tipoRelatorio)) {
+                        return filtroColonizado.test(evento);
+                    }
+                    return true;
+                })
+                .collect(Collectors.toList());
     }
 
 
@@ -247,88 +285,6 @@ public class NeonatoService {
         } catch (NoResultException e) {
             return null;
         }
-    }
-
-
-    public List<Evento> filtrarListaColetasPorLocal(List<Evento> eventos, Long sitioColeta) {
-        return eventos.stream()
-                .filter(evento -> evento.getTipoEvento().getIdTipoEvento().equals(10L) && evento.getEventoEntidade().getIdEntidade().equals(sitioColeta)
-                        && evento.getTipoEvento().getIsActive())
-                .toList();
-    }
-
-
-    public List<ColetaEpisodio> listaEpisodiosColeta(List<Evento> eventos) {
-
-        List<ColetaEpisodio> episodios = new ArrayList<>();
-
-        var dataEventos = eventos.stream()
-                .filter(evento -> evento.getDataEvento() != null)
-                .collect(Collectors.groupingBy(
-                        Evento::getDataEvento,
-                        TreeMap::new,
-                        Collectors.toList()
-                ));
-
-        for (Map.Entry<LocalDate, List<Evento>> entry : dataEventos.entrySet()) {
-            LocalDate data = entry.getKey();
-            List<Evento> eventosDoDia = entry.getValue();
-
-            // Conta apenas os eventos que possuem isolados
-            long nColetasComIsolados = eventosDoDia.stream()
-                    .filter(evento -> evento.getIsoladoColeta() != null)
-                    .count();
-
-            var infeccaoMista = nColetasComIsolados > 1 ? 1 : 0;
-            var coleta = new ColetaEpisodio();
-
-            coleta.setDataInfeccao(DateUtil.LocalDateToDateBR(data));
-            coleta.setNumeroIsolados((int) nColetasComIsolados); // Define o número de eventos com isolados
-
-            // Verifica se há pelo menos um evento no dia e define o primeiro isolado, se presente
-            if (!eventosDoDia.isEmpty()) {
-                Evento primeiroEvento = eventosDoDia.get(0);
-                if (primeiroEvento.getIsoladoColeta() != null) {
-                    var isoladoColeta = primeiroEvento.getIsoladoColeta();
-
-                    if (isoladoColeta.getMicroorganismo() != null) {
-                        coleta.setEspecieIsolada(isoladoColeta.getMicroorganismo().getCodigo());
-                        coleta.setTipoIsolado(isoladoColeta.getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
-                    }
-                    if (isoladoColeta.getPerfilResistenciaMicroorganismo() != null) {
-                        coleta.setPerfilResistencia(isoladoColeta.getPerfilResistenciaMicroorganismo().getCodigo());
-                    }
-                    if (isoladoColeta.getMecanismoResistenciaMicroorganismo() != null) {
-                        coleta.setMecanismoResistencia(isoladoColeta.getMecanismoResistenciaMicroorganismo().getCodigo());
-                    }
-                }
-            }
-
-            coleta.setInfeccaoMista(infeccaoMista);
-
-            // Verifica se há pelo menos dois eventos com isolados para acessar o segundo isolado
-            if (nColetasComIsolados > 1 && eventosDoDia.size() > 1) {
-                Evento segundoEvento = eventosDoDia.get(1);
-                if (segundoEvento.getIsoladoColeta() != null) {
-                    var isoladoColeta2 = segundoEvento.getIsoladoColeta();
-
-                    if (isoladoColeta2.getMicroorganismo() != null) {
-                        coleta.setEspecieIsolada2(isoladoColeta2.getMicroorganismo().getCodigo());
-                        coleta.setTipoIsolado2(isoladoColeta2.getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
-                    }
-                    if (isoladoColeta2.getPerfilResistenciaMicroorganismo() != null) {
-                        coleta.setPerfilResistenciaEspecie2(isoladoColeta2.getPerfilResistenciaMicroorganismo().getCodigo());
-                    }
-                    if (isoladoColeta2.getMecanismoResistenciaMicroorganismo() != null) {
-                        coleta.setMecanismoResistenciaEspecie2(isoladoColeta2.getMecanismoResistenciaMicroorganismo().getCodigo());
-                    }
-                }
-            }
-
-            episodios.add(coleta);
-        }
-
-        return episodios;
     }
 
 
@@ -657,15 +613,17 @@ public class NeonatoService {
         );
         var isolados = getIsoladoColetaFromNeonatos(neonatos, filtrosRequest);
 
-        // 2. computa o número de infecção para cada IsoladoColeta
+        // 2. computa o número
         Map<IsoladoColeta, Integer> sequenciaPorIsolado = computeInfectionSequence(isolados);
+        Map<IsoladoColeta,Integer> sequenciaColonizacao = computeColonizationSequence(isolados);
 
         // 3. mapeia para o DTO, agora passando o nº da infecção
         return isolados.stream()
                 .map(isolado -> {
                     int nInfec = sequenciaPorIsolado.getOrDefault(isolado, 0);
+                    int seqColonizacao = sequenciaColonizacao.getOrDefault(isolado, 0);
                     return NeonatoMapper
-                            .convertToIsoladosReportData(isolado, nInfec, this);
+                            .convertToIsoladosReportData(isolado, nInfec, seqColonizacao, this);
                 })
                 .toList();
     }
@@ -676,41 +634,104 @@ public class NeonatoService {
      * ordena por dataEvento e atribui 1,2,3...
      */
     private Map<IsoladoColeta, Integer> computeInfectionSequence(List<IsoladoColeta> isolados) {
-        // IDs que não contam como "infecção"
-        final Set<Long> EXCLUIDOS = Set.of(4L, 5L, 7L, 9L);
+        // Resultado mantido na ordem de ocorrência
+        Map<IsoladoColeta, Integer> sequenceMap = new LinkedHashMap<>();
 
-        return isolados.stream()
-                // filtra só o que é veramente infecção
+        isolados.stream()
+                // filtra só o que é realmente infecção
                 .filter(iso -> {
                     var ent = iso.getEvento().getEventoEntidade();
                     return "sitio_coleta".equals(ent.getTipoEntidade())
-                            && !EXCLUIDOS.contains(ent.getIdEntidade());
+                            && !COLONIZACOES.contains(ent.getIdEntidade());
                 })
                 // agrupa por neonato
                 .collect(Collectors.groupingBy(
                         iso -> iso.getEvento().getNeonato().getIdNeonato(),
-                        LinkedHashMap::new, // mantém ordem de inserção por neonato (não estritamente necessário)
+                        LinkedHashMap::new, // mantém ordem de inserção por neonato
                         Collectors.toList()
                 ))
-                // para cada neonato, ordena e gera pares (IsoladoColeta, seq)
-                .entrySet().stream()
-                .flatMap(entry -> {
-                    List<IsoladoColeta> listaOrdenada = entry.getValue().stream()
-                            .sorted(Comparator.comparing(
-                                    iso -> iso.getEvento().getDataEvento()
-                            ))
+                .forEach((neonatoId, lista) -> {
+                    // ordena cronologicamente dentro de cada neonato
+                    List<IsoladoColeta> ordenados = lista.stream()
+                            .sorted(Comparator.comparing(iso -> iso.getEvento().getDataEvento()))
                             .toList();
 
-                    return IntStream.range(0, listaOrdenada.size())
-                            .mapToObj(i -> Map.entry(listaOrdenada.get(i), i + 1));
-                })
-                // converte para um Map<IsoladoColeta, sequência>
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
+                    Integer seq = 0;
+                    LocalDate prevDate = null;
+                    Long prevSite = null;
+
+                    for (IsoladoColeta iso : ordenados) {
+                        LocalDate data = iso.getEvento().getDataEvento();
+                        Long site = iso.getEvento().getEventoEntidade().getIdEntidade();
+
+                        // só incrementa seq quando mudar data ou sítio
+                        if (prevDate == null
+                                || !data.equals(prevDate)
+                                || !Objects.equals(site, prevSite)) {
+                            seq++;
+                            prevDate = data;
+                            prevSite = site;
+                        }
+
+                        sequenceMap.put(iso, seq);
+                    }
+                });
+
+        return sequenceMap;
     }
 
+
+    /**
+     * Para cada neonato, filtra apenas os isolados que são
+     * de colonização (site_coleta & idEntidade ∈ COLONIZACOES),
+     * ordena por dataEvento e atribui 1,2,3... mantendo
+     * o mesmo número quando data e sítio forem iguais.
+     */
+    private Map<IsoladoColeta, Integer> computeColonizationSequence(List<IsoladoColeta> isolados) {
+        Map<IsoladoColeta, Integer> sequenceMap = new LinkedHashMap<>();
+
+        isolados.stream()
+                // filtra só o que é colonização
+                .filter(iso -> {
+                    var ent = iso.getEvento().getEventoEntidade();
+                    return "sitio_coleta".equals(ent.getTipoEntidade())
+                            && COLONIZACOES.contains(ent.getIdEntidade());
+                })
+                // agrupa por neonato
+                .collect(Collectors.groupingBy(
+                        iso -> iso.getEvento().getNeonato().getIdNeonato(),
+                        LinkedHashMap::new,    // mantém ordem de inserção por neonato
+                        Collectors.toList()
+                ))
+                .forEach((neonatoId, lista) -> {
+                    // ordena cronologicamente dentro de cada neonato
+                    List<IsoladoColeta> ordenados = lista.stream()
+                            .sorted(Comparator.comparing(iso -> iso.getEvento().getDataEvento()))
+                            .toList();
+
+                    Integer seq = 0;
+                    LocalDate prevDate = null;
+                    Long prevSite = null;
+
+                    for (IsoladoColeta iso : ordenados) {
+                        LocalDate data = iso.getEvento().getDataEvento();
+                        Long site = iso.getEvento().getEventoEntidade().getIdEntidade();
+
+                        // incrementa seq só quando muda data OU sítio
+                        if (prevDate == null
+                                || !data.equals(prevDate)
+                                || !Objects.equals(site, prevSite)) {
+                            seq++;
+                            prevDate = data;
+                            prevSite = site;
+                        }
+
+                        sequenceMap.put(iso, seq);
+                    }
+                });
+
+        return sequenceMap;
+    }
 
 
     public List<IsoladoColeta> getIsoladoColetaFromNeonatos(List<Neonato> neonatos, FiltrosExcelRequest filtrosRequest) {
@@ -773,7 +794,6 @@ public class NeonatoService {
     }
 
 
-
     public Long verificarResistenciaClasseAntimicrobiano(List<AntibiogramaIsolado> antibiogramas, Long idClasseAntimicrobiano) {
         return antibiogramas.stream()
                 .filter(isolado -> isolado.getResistenciaMicroorganismo() != null)
@@ -799,7 +819,6 @@ public class NeonatoService {
                 .findFirst()
                 .orElse(null);
     }
-
 
 
     public List<ProcedimentosEpisodioInfeccao> getProcedimentosEpisodioInfeccao(List<Evento> coletasInfeccao, ProcedimentosEpisodioContext procedimentos) {
@@ -833,6 +852,9 @@ public class NeonatoService {
             procedimentosInfeccao.setSitio(getCodigoCadastro("sitio_coleta", "id_sitio_coleta", idEntidade));
 
             // Preenchimento comum
+            procedimentosInfeccao.setDiasCirurgiaAte(getEventosAteInfeccao(procedimentos.cirurgiasList, dataInfeccao).size());
+            procedimentosInfeccao.setDiasCirurgiaApos(getEventosAposInfeccao(procedimentos.cirurgiasList, dataInfeccao).size());
+
             procedimentosInfeccao.setDiasFlebotomiaAte(getEventosAteInfeccao(procedimentos.flebotomiaList, dataInfeccao).size());
             procedimentosInfeccao.setDiasFlebotomiaApos(getEventosAposInfeccao(procedimentos.flebotomiaList, dataInfeccao).size());
 

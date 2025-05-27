@@ -209,19 +209,19 @@ const apagarNeonato = () => {
 const confirmarApagar = async () => {
     await serviceApagarNeonato(id.value);
     handleBack();
-    dialog.value   = false;
+    dialog.value = false;
 };
 
 
 const cancelar = () => {
-    dialog.value   = false;
+    dialog.value = false;
 };
 
 
 const validateDates = () => {
     if (!neonato.dataDesfecho || !neonato.dataInternacao) return
 
-    const dataDesfecho = new Date(neonato.dataDesfecho)
+    const dataDesfecho   = new Date(neonato.dataDesfecho)
     const dataInternacao = new Date(neonato.dataInternacao)
 
     if (dataDesfecho < dataInternacao) {
@@ -236,40 +236,27 @@ const validateDates = () => {
 }
 
 
-watch(
-    () => [neonato.dataDesfecho, neonato.dataInternacao],
-    () => validateDates()
-)
+watch(() => [neonato.dataDesfecho, neonato.dataInternacao], () => validateDates())
 
 
 const validateAusenciaDates = () => {
     neonato.ausenciaUTI.forEach(ausencia => {
         if (!ausencia.dataSaidaUti || !ausencia.dataRetornoUti) return;
-        const dataSaida = new Date(ausencia.dataSaidaUti);
+        const dataSaida   = new Date(ausencia.dataSaidaUti);
         const dataRetorno = new Date(ausencia.dataRetornoUti);
 
         if (dataRetorno < dataSaida) {
-            setNotification(
-                'Erro: A Data de Retorno UTI não pode ser menor que a Data de Saída UTI',
-                'error'
-            );
+            setNotification('Erro: A Data de Retorno UTI não pode ser menor que a Data de Saída UTI', 'error');
         }
 
         const diffDays = Math.abs(dataRetorno - dataSaida) / (1000 * 60 * 60 * 24);
         if (diffDays > 90) {
-            setNotification(
-                'Aviso: Diferença entre as datas de saída e retorno da UTI superior a 90 dias, verifique se está correto!',
-                'warning'
-            );
+            setNotification('Aviso: Diferença entre as datas de saída e retorno da UTI superior a 90 dias, verifique se está correto!', 'warning');
         }
     });
 };
 
-watch(
-    () => neonato.ausenciaUTI.map(item => [item.dataSaidaUti, item.dataRetornoUti]),
-    () => validateAusenciaDates(),
-    { deep: true }
-);
+watch(() => neonato.ausenciaUTI.map(item => [item.dataSaidaUti, item.dataRetornoUti]), () => validateAusenciaDates(), {deep: true});
 
 </script>
 
@@ -278,7 +265,7 @@ watch(
     <card-formulario title="Cadastro de Neonato"
                      subtitle="Você pode editar o formulário a qualquer momento">
 
-        <v-btn v-if="roleUsuario === 1" color="red" small variant="elevated" class="elevation-2" @click="apagarNeonato()">
+        <v-btn v-if="roleUsuario === 1 && id" color="red" small variant="elevated" class="elevation-2" @click="apagarNeonato()">
             Apagar Neonato
         </v-btn>
 

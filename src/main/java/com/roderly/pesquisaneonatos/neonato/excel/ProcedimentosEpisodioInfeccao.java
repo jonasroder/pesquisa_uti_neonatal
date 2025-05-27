@@ -21,6 +21,8 @@ public class ProcedimentosEpisodioInfeccao {
     Long classificacaoMicroorganismo2;
     Long perfilResistenciaMicroorganismo2;
     Long mecanismoResistenciaMicroorganismo2;
+    Integer diasCirurgiaAte;
+    Integer diasCirurgiaApos;
     Integer diasFlebotomiaAte;
     Integer diasFlebotomiaApos;
     Integer diasCvuAte;

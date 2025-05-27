@@ -303,7 +303,7 @@ public class NeonatoMapper {
     }
 
 
-    public static NeonatoGrupoInfectadoReportData convertToNeonatoGrupoInfectadoReportData(Neonato neonato, NeonatoService neonatoService) {
+    public static NeonatoGrupoInfectadoReportData convertToNeonatoGrupoInfectadoReportData(Neonato neonato, NeonatoService neonatoService, String tipoRelatorio) {
 
         var dataNascimento = neonato.getDataNascimento() != null ? DateUtil.LocalDateToDateBR(neonato.getDataNascimento()) : null;
         var dataInternacao = neonato.getDataInternacao() != null ? DateUtil.LocalDateToDateBR(neonato.getDataInternacao()) : null;
@@ -319,24 +319,13 @@ public class NeonatoMapper {
         var malformacaoList = neonato.getNeonatoMalformacaoList();
         var listaProcedimentos = new ProcedimentosEpisodioContext(eventos);
 
-        var coletasInfeccao = neonatoService.buscarColetasInfeccao(eventos);
+        var coletasInfeccao = neonatoService.buscarColetasInfeccao(eventos, tipoRelatorio);
         var datasInfeccao = new ArrayList<>(neonatoService.getDatasInfeccoes(coletasInfeccao));
-
-        var coletasSangue = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 1L));
-        var coletasLCR = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 2L));
-        var coletasSecrecaoOcular = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 3L));
-        var coletasSwabAnal = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 4L));
-        var coletasPontaCateter = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 5L));
-        var coletasUrina = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 6L));
-        var coletasSecrecaoPulmonar = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 7L));
-        var coletasLiquidoAscitico = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 8L));
-        var coletaLiquidoPleural = neonatoService.listaEpisodiosColeta(neonatoService.filtrarListaColetasPorLocal(eventos, 9L));
 
         var report = new NeonatoGrupoInfectadoReportData();
 
         report.setAno(ano);
         report.setProntuario(neonato.getProntuario());
-        //report.setPaciente(neonato.getNomeMae());
         report.setDataNascimento(dataNascimento);
         report.setDataInternacao(dataInternacao);
         report.setDataDesfecho(dataDesfecho);
@@ -374,7 +363,7 @@ public class NeonatoMapper {
     }
 
 
-    public static IsoladosReportData convertToIsoladosReportData(IsoladoColeta isoladoColeta, int nInfec, NeonatoService neonatoService) {
+    public static IsoladosReportData convertToIsoladosReportData(IsoladoColeta isoladoColeta, int nInfec, int nColonizacao, NeonatoService neonatoService) {
 
         var evento = isoladoColeta.getEvento();
         var neonato = evento.getNeonato();
@@ -412,6 +401,7 @@ public class NeonatoMapper {
         report.setDataColeta(DateUtil.LocalDateToDateBR(isoladoColeta.getEvento().getDataEvento()));
         report.setSitioColetaCodigo(neonatoService.getCodigoCadastro("sitio_coleta", "id_sitio_coleta", evento.getEventoEntidade().getIdEntidade()));
         report.setNInfeccao(nInfec);
+        report.setNColonizacao(nColonizacao);
         report.setAgenteCodigo(isoladoColeta.getMicroorganismo().getCodigo());
         report.setClassificacaoAgenteCodigo(isoladoColeta.getMicroorganismo().getClassificacaoMicroorganismo().getCodigo());
         //report.setResistencia3OuMaisDrogas(neonatoService.verificarNResistencia(antibiogramas));
