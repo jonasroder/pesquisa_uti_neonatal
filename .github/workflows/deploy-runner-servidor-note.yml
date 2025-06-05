@@ -1,0 +1,99 @@
+name: Deploy JAR UTI Neonatal
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    # ========== 1) roda NO SEU runner local (self-hosted) ==========
+    runs-on: [ self-hosted, linux ]
+
+    steps:
+      # --------------------------------------------------
+      # 2) Faz checkout do código
+      # --------------------------------------------------
+      - name: Checkout do repositório
+        uses: actions/checkout@v3
+
+      # --------------------------------------------------
+      # 3) Configura JDK 17
+      # --------------------------------------------------
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      # --------------------------------------------------
+      # 4) Configura Node.js (caso você tenha frontend)
+      # --------------------------------------------------
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '21.1.0'
+
+      # --------------------------------------------------
+      # 5) Cache das dependências do Gradle
+      # --------------------------------------------------
+      - name: Cache de dependências Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('*/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # --------------------------------------------------
+      # 6) Cache dos módulos npm (se existir frontend)
+      # --------------------------------------------------
+      - name: Cache de módulos npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      # --------------------------------------------------
+      # 7) Dá permissão de execução ao gradlew
+      # --------------------------------------------------
+      - name: Dar permissão ao gradlew
+        run: chmod +x gradlew
+
+      # --------------------------------------------------
+      # 8) Build do projeto Java + Frontend (gera o JAR em build/libs/)
+      # --------------------------------------------------
+      - name: Build com Gradle
+        run: ./gradlew buildWithFrontend
+
+      # --------------------------------------------------
+      # 9) (Opcional) Upload do JAR como artifact para debugging
+      # --------------------------------------------------
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: build/libs/*.jar
+
+      # --------------------------------------------------
+      # 10) Build da Imagem Docker e deploy via docker-compose
+      # --------------------------------------------------
+      - name: Deploy via Docker Compose
+        run: |
+          # 10.1) Vai para a pasta onde estão Dockerfile e docker-compose.yml
+          cd /var/www/neonatalepidemiology
+
+          # 10.2) Rebuilda a imagem a partir do Dockerfile
+          docker compose build app
+
+          # 10.3) Sobe (ou recria) o container em background
+          docker compose up -d
+
+          # Se você tiver service de DB no mesmo docker-compose, 
+          # ele já deverá estar healthy antes de subir o app. 
+          # Caso use DB externo, ignore esta parte.
