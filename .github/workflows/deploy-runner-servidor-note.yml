@@ -1,4 +1,4 @@
-name: Deploy JAR UTI Neonatal
+name: Deploy JAR UTI Neonatal (Local via Docker)
 
 on:
   push:
@@ -7,19 +7,19 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
-    # ========== 1) roda NO SEU runner local (self-hosted) ==========
-    runs-on: [ self-hosted, linux ]
+  build-and-deploy-local:
+    name: Deploy via Docker Compose (servidor local)
+    runs-on: [ self-hosted, linux ]  # usa o runner que você configurou no outro servidor
 
     steps:
       # --------------------------------------------------
-      # 2) Faz checkout do código
+      # 1) Checkout do repositório
       # --------------------------------------------------
       - name: Checkout do repositório
         uses: actions/checkout@v3
 
       # --------------------------------------------------
-      # 3) Configura JDK 17
+      # 2) Configura JDK 17
       # --------------------------------------------------
       - name: Configurar JDK 17
         uses: actions/setup-java@v3
@@ -28,7 +28,7 @@ jobs:
           distribution: 'adopt'
 
       # --------------------------------------------------
-      # 4) Configura Node.js (caso você tenha frontend)
+      # 3) (Opcional) Configura Node.js
       # --------------------------------------------------
       - name: Configurar Node.js
         uses: actions/setup-node@v3
@@ -36,7 +36,7 @@ jobs:
           node-version: '21.1.0'
 
       # --------------------------------------------------
-      # 5) Cache das dependências do Gradle
+      # 4) Cache das dependências do Gradle
       # --------------------------------------------------
       - name: Cache de dependências Gradle
         uses: actions/cache@v3
@@ -49,7 +49,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # --------------------------------------------------
-      # 6) Cache dos módulos npm (se existir frontend)
+      # 5) Cache de módulos npm
       # --------------------------------------------------
       - name: Cache de módulos npm
         uses: actions/cache@v3
@@ -60,19 +60,19 @@ jobs:
             ${{ runner.os }}-npm-
 
       # --------------------------------------------------
-      # 7) Dá permissão de execução ao gradlew
+      # 6) Permissão no gradlew
       # --------------------------------------------------
       - name: Dar permissão ao gradlew
         run: chmod +x gradlew
 
       # --------------------------------------------------
-      # 8) Build do projeto Java + Frontend (gera o JAR em build/libs/)
+      # 7) Build do Gradle (gera JAR em build/libs/)
       # --------------------------------------------------
       - name: Build com Gradle
         run: ./gradlew buildWithFrontend
 
       # --------------------------------------------------
-      # 9) (Opcional) Upload do JAR como artifact para debugging
+      # 8) (Opcional) Upload do JAR como artifact
       # --------------------------------------------------
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
@@ -81,19 +81,22 @@ jobs:
           path: build/libs/*.jar
 
       # --------------------------------------------------
-      # 10) Build da Imagem Docker e deploy via docker-compose
+      # 9) Copiar o JAR para /var/www/neonatalepidemiology/app.jar
       # --------------------------------------------------
-      - name: Deploy via Docker Compose
+      - name: Copiar JAR para pasta Docker (local)
         run: |
-          # 10.1) Vai para a pasta onde estão Dockerfile e docker-compose.yml
+          # Como o runner já está na raiz do repo:
+          cp -f build/libs/pesquisa_uti_neonatal-0.0.1-SNAPSHOT.jar /var/www/neonatalepidemiology/app.jar
+
+      # --------------------------------------------------
+      # 10) Deploy via Docker Compose no servidor local
+      # --------------------------------------------------
+      - name: Deploy via Docker Compose (local)
+        run: |
           cd /var/www/neonatalepidemiology
 
-          # 10.2) Rebuilda a imagem a partir do Dockerfile
+          # Reconstrói a imagem “app” com o novo app.jar
           docker compose build app
 
-          # 10.3) Sobe (ou recria) o container em background
+          # Sobe (ou recria) o container em background
           docker compose up -d
-
-          # Se você tiver service de DB no mesmo docker-compose, 
-          # ele já deverá estar healthy antes de subir o app. 
-          # Caso use DB externo, ignore esta parte.
