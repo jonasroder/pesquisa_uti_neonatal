@@ -69,7 +69,7 @@ const getChipColor = (status) => {
 
 <template>
     <CardFormulario title="Downloads"
-                    subtitle="Fila e controle de downloads"
+                    subtitle="Fila e monitoramento de downloads"
                     :showCreateButton="false">
 
 
