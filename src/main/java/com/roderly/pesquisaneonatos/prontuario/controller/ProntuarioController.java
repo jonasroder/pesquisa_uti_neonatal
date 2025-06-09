@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/prontuario")
 @RequiredArgsConstructor
-public class ProntuarioController {
+public class  ProntuarioController {
 
     private final ProntuarioService prontuarioService;
 

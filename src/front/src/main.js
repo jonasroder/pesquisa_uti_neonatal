@@ -10,10 +10,15 @@ import 'vue3-toastify/dist/index.css';
 import 'vuetify/styles'
 import './styles/main.scss';
 import '@fortawesome/fontawesome-free/css/all.css'
+import VueApexCharts from 'vue3-apexcharts';
+
 
 createApp(App)
 	.use(router)
 	.use(vuetify)
 	.use(Toastify)
+	.use(VueApexCharts)
 	.directive("maska", vMaska)
-	.mount('#app')
+	.component('ApexChart', VueApexCharts)
+	.mount('#app');
+

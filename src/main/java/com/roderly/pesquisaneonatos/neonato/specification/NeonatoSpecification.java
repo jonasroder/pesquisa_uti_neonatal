@@ -240,4 +240,11 @@ public class NeonatoSpecification {
     }
 
 
+
+    public static Specification<Neonato> internadoNosUltimosDias(int dias) {
+        return (root, query, cb) -> {
+            LocalDate dataLimite = LocalDate.now().minusDays(dias);
+            return cb.greaterThanOrEqualTo(root.get("dataInternacao"), dataLimite);
+        };
+    }
 }

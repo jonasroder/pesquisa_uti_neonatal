@@ -21,7 +21,7 @@ const submitLogin = async () => {
     loading.show()
     const response = await serviceAuthenticateUser(login);
     if (response) {
-        router.push({name: 'Neonato-List'});
+        router.push({name: 'Dashboard-Home'});
         window.removeEventListener('keydown', handleEnter);
     }
     loading.hide()
