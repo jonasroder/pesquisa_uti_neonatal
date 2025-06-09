@@ -134,7 +134,7 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
 
 
     @Query(value = """
-            SELECT 
+            SELECT
                 pr.descricao AS perfil,
                 COUNT(*) AS total
             FROM isolado_coleta ic
