@@ -1,7 +1,7 @@
 <script setup>
 import {ref, onMounted} from 'vue';
 import {loading} from '@/plugins/loadingService';
-import {getDistribuicaoMecanismos, getDistribuicaoPerfis, getResistenciaPorAntimicrobiano, serviceGetCadastrosPorDia, serviceGetInfeccoesPorAgente, serviceLoadUltimosNeonatosCadastrados} from '@/service/dashboard';
+import {getDistribuicaoMecanismos, getDistribuicaoPerfis, getResistenciaPorAntimicrobiano, serviceGetCadastrosPorDia, serviceGetColonizacoesPorAgente, serviceGetInfeccoesPorAgente, serviceLoadUltimosNeonatosCadastrados} from '@/service/dashboard';
 import {useRouter} from 'vue-router';
 import CardFormulario from "@/components/CardFormulario.vue";
 import ChartInternacoesPorDia from "@/views/dashboard-page/ChartInternacoesPorDia.vue";
@@ -9,6 +9,7 @@ import ChartInfeccoesPorAgente from "@/views/dashboard-page/ChartInfeccoesPorAge
 import ChartResistenciaPorAntimicrobiano from "@/views/dashboard-page/ChartResistenciaPorAntimicrobiano.vue";
 import ChartDistribuicaoMecanismos from "@/views/dashboard-page/ChartDistribuicaoMecanismos.vue";
 import ChartDistribuicaoPerfis from "@/views/dashboard-page/ChartDistribuicaoPerfis.vue";
+import ChartColonizacoesPorAgente from "@/views/dashboard-page/ChartColonizacoesPorAgente.vue";
 
 
 
@@ -18,23 +19,35 @@ const router = useRouter();
 const ultimosNeonatos              = ref([]);
 const internacoesPorDia            = ref([]);
 const infeccoesPorAgente           = ref([]);
+const colonizacoesPorAgente        = ref([]);
 const distribuicaoPerfis           = ref([]);
 const distribuicaoMecanismos       = ref([]);
 const resistenciaPorAntimicrobiano = ref([]);
 
 onMounted(async () => {
-    loading.show();
-    ultimosNeonatos.value              = await serviceLoadUltimosNeonatosCadastrados();
-    internacoesPorDia.value            = await serviceGetCadastrosPorDia();
-    infeccoesPorAgente.value           = await serviceGetInfeccoesPorAgente();
-    distribuicaoPerfis.value           = await getDistribuicaoPerfis();
-    distribuicaoMecanismos.value       = await getDistribuicaoMecanismos();
-    resistenciaPorAntimicrobiano.value = await getResistenciaPorAntimicrobiano();
-
-    console.log(distribuicaoPerfis.value)
-    console.log(distribuicaoMecanismos.value)
-    console.log(resistenciaPorAntimicrobiano.value)
     emit('set-show-buttons', false);
+
+    loading.show();
+
+    [
+        ultimosNeonatos.value,
+        internacoesPorDia.value,
+        infeccoesPorAgente.value,
+        colonizacoesPorAgente.value,
+        distribuicaoPerfis.value,
+        distribuicaoMecanismos.value,
+        resistenciaPorAntimicrobiano.value
+    ] = await Promise.all([
+        serviceLoadUltimosNeonatosCadastrados(),
+        serviceGetCadastrosPorDia(),
+        serviceGetInfeccoesPorAgente(),
+        serviceGetColonizacoesPorAgente(),
+        getDistribuicaoPerfis(),
+        getDistribuicaoMecanismos(),
+        getResistenciaPorAntimicrobiano()
+    ]);
+
+
     loading.hide();
 });
 
@@ -88,6 +101,9 @@ const verProntuario = (idNeonato) => {
                     <v-card class="pa-4 mt-3 bg-grey-lighten-4" elevation="2">
                         <ChartInfeccoesPorAgente :dados="infeccoesPorAgente"/>
                     </v-card>
+                    <v-card class="pa-4 mt-3 bg-grey-lighten-4" elevation="2">
+                        <ChartColonizacoesPorAgente :dados="colonizacoesPorAgente"/>
+                    </v-card>
                 </v-col>
             </v-row>
         </v-container>
@@ -112,7 +128,7 @@ const verProntuario = (idNeonato) => {
             <v-row dense class="h-100" align="stretch">
                 <v-col cols="12" class="d-flex flex-column">
                     <v-card elevation="2" class="pa-2 bg-grey-lighten-4 flex-grow-1">
-                        <ChartResistenciaPorAntimicrobiano :dados="resistenciaPorAntimicrobiano" />
+                        <ChartResistenciaPorAntimicrobiano :dados="resistenciaPorAntimicrobiano"/>
                     </v-card>
                 </v-col>
             </v-row>

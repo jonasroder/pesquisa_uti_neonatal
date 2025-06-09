@@ -40,6 +40,13 @@ public class DashboardController {
     }
 
 
+    @GetMapping("/getColonizacoesPorAgente")
+    public ResponseEntity<List<InfeccoesPorAgenteResponse>> getColonizacoesPorAgente() {
+        var list = dashboardService.getColonizacoesPorAgente();
+        return ResponseEntity.ok(list);
+    }
+
+
     @GetMapping("/perfisResistencia")
     public List<PerfilResistenciaDistribuicaoResponse> getPerfis() {
         return dashboardService.getDistribuicaoPerfis();

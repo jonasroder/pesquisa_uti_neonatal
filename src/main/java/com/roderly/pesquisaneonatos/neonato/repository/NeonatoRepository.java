@@ -88,21 +88,49 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
 
 
     @Query(value = """
-                SELECT 
+                SELECT
                     DATE(e.data_evento) AS data,
                     m.acronimo AS agente,
                     COUNT(*) AS total,
-                    GROUP_CONCAT(DISTINCT n.prontuario) AS prontuarios
+                    GROUP_CONCAT(DISTINCT n.prontuario ORDER BY n.prontuario SEPARATOR ', ') AS prontuarios
                 FROM isolado_coleta ic
-                LEFT JOIN evento e ON e.id_evento = ic.id_evento
-                LEFT JOIN microorganismo m ON m.id_microorganismo = ic.id_microorganismo
-                LEFT JOIN neonato n ON n.id_neonato = e.id_neonato
-                WHERE e.data_evento >= CURDATE() - INTERVAL 180 DAY
-                    AND e.is_active = true AND ic.desconsiderar_coleta = false
+                JOIN evento e ON e.id_evento = ic.id_evento
+                JOIN microorganismo m ON m.id_microorganismo = ic.id_microorganismo
+                JOIN neonato n ON n.id_neonato = e.id_neonato
+                JOIN evento_entidade ee ON ee.id_evento = e.id_evento
+                WHERE
+                    e.data_evento >= CURDATE() - INTERVAL 180 DAY
+                    AND e.is_active = TRUE
+                    AND ic.desconsiderar_coleta = FALSE
+                    AND ee.tipo_entidade = 'sitio_coleta'
+                    AND ee.id_entidade NOT IN (4, 5, 7, 9)
                 GROUP BY DATE(e.data_evento), m.acronimo
                 ORDER BY DATE(e.data_evento), m.acronimo
             """, nativeQuery = true)
     List<Object[]> buscarInfeccoesPorAgenteUltimos180Dias();
+
+
+    @Query(value = """
+                SELECT
+                    DATE(e.data_evento) AS data,
+                    m.acronimo AS agente,
+                    COUNT(*) AS total,
+                    GROUP_CONCAT(DISTINCT n.prontuario ORDER BY n.prontuario SEPARATOR ', ') AS prontuarios
+                FROM isolado_coleta ic
+                JOIN evento e ON e.id_evento = ic.id_evento
+                JOIN microorganismo m ON m.id_microorganismo = ic.id_microorganismo
+                JOIN neonato n ON n.id_neonato = e.id_neonato
+                JOIN evento_entidade ee ON ee.id_evento = e.id_evento
+                WHERE
+                    e.data_evento >= CURDATE() - INTERVAL 180 DAY
+                    AND e.is_active = TRUE
+                    AND ic.desconsiderar_coleta = FALSE
+                    AND ee.tipo_entidade = 'sitio_coleta'
+                    AND ee.id_entidade IN (4, 5, 7, 9)
+                GROUP BY DATE(e.data_evento), m.acronimo
+                ORDER BY DATE(e.data_evento), m.acronimo
+            """, nativeQuery = true)
+    List<Object[]> buscarColonizacoesPorAgenteUltimos180Dias();
 
 
     @Query(value = """
@@ -121,15 +149,15 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
 
 
     @Query(value = """
-        SELECT mr.descricao AS mecanismo, COUNT(*) AS total
-        FROM isolado_coleta ic
-        JOIN mecanismo_resistencia_microorganismo mr ON mr.id_mecanismo_resistencia_microorganismo = ic.id_mecanismo_resistencia_microorganismo
-        JOIN evento e ON e.id_evento = ic.id_evento
-        WHERE e.data_evento >= CURDATE() - INTERVAL 180 DAY
-              AND e.is_active = true AND ic.desconsiderar_coleta = false
-        GROUP BY mr.descricao
-        ORDER BY total DESC
-    """, nativeQuery = true)
+                SELECT mr.descricao AS mecanismo, COUNT(*) AS total
+                FROM isolado_coleta ic
+                JOIN mecanismo_resistencia_microorganismo mr ON mr.id_mecanismo_resistencia_microorganismo = ic.id_mecanismo_resistencia_microorganismo
+                JOIN evento e ON e.id_evento = ic.id_evento
+                WHERE e.data_evento >= CURDATE() - INTERVAL 180 DAY
+                      AND e.is_active = true AND ic.desconsiderar_coleta = false
+                GROUP BY mr.descricao
+                ORDER BY total DESC
+            """, nativeQuery = true)
     List<Object[]> buscarDistribuicaoMecanismos180Dias();
 
 

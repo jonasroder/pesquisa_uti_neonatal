@@ -29,6 +29,15 @@ export const serviceGetInfeccoesPorAgente = async () => {
 	}
 };
 
+export const serviceGetColonizacoesPorAgente = async () => {
+	try {
+		const response = await axios.get(`/api/dashboard/getColonizacoesPorAgente`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on serviceGetColonizacoesPorAgente");
+	}
+};
+
 export const getDistribuicaoPerfis = async () => {
 	try {
 		const response = await axios.get(`/api/dashboard/perfisResistencia`);

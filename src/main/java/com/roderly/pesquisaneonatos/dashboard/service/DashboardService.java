@@ -38,17 +38,27 @@ public class DashboardService {
                 .toList();
     }
 
+
+    public List<InfeccoesPorAgenteResponse> getColonizacoesPorAgente() {
+        return neonatoRepository.buscarColonizacoesPorAgenteUltimos180Dias().stream()
+                .map(DashboardMapper::mapToInfeccoesPorAgenteResponse)
+                .toList();
+    }
+
+
     public List<PerfilResistenciaDistribuicaoResponse> getDistribuicaoPerfis() {
         return neonatoRepository.buscarDistribuicaoPerfisResistencia180Dias().stream()
                 .map(DashboardMapper::toPerfilResponse)
                 .toList();
     }
 
+
     public List<MecanismoResistenciaDistribuicaoResponse> getDistribuicaoMecanismos() {
         return neonatoRepository.buscarDistribuicaoMecanismos180Dias().stream()
                 .map(DashboardMapper::toMecanismoResponse)
                 .toList();
     }
+
 
     public List<AntimicrobianoResistenciaResponse> getResistenciaPorAntimicrobiano() {
         return neonatoRepository.buscarResistenciaPorAntimicrobiano180Dias().stream()

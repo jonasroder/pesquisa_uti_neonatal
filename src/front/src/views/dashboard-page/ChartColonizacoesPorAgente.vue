@@ -61,7 +61,7 @@ const chartOptions = computed(() => ({
         '#b3b3b3'
     ],
     title: {
-        text: 'Infecções por Agente (180 dias)',
+        text: 'Colonizações por Agente (180 dias)',
         align: 'left',
         style: {
             fontSize: '16px',
