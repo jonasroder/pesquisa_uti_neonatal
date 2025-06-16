@@ -2,6 +2,7 @@ package com.roderly.pesquisaneonatos.prontuario.service;
 
 import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.model.MecanismoResistenciaMicroorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.repository.MecanismoResistenciaMicrorganismoRepository;
+import com.roderly.pesquisaneonatos.cadastros_gerais.microorganismo.model.Microorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.model.PerfilResistenciaMicroorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.repository.PerfilResistenciaMicrorganismoRepository;
 import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -192,12 +194,23 @@ public class ProntuarioService {
 
 
     private String gerarChaveUnica(IsoladoColeta isolado) {
-        // Gera uma chave única baseada nos campos relevantes
-        return isolado.getMicroorganismo().getIdMicroorganismo() + "-" +
-                isolado.getPerfilResistenciaMicroorganismo().getIdPerfilResistenciaMicroorganismo() + "-" +
-                isolado.getMecanismoResistenciaMicroorganismo().getIdMecanismoResistenciaMicroorganismo() + "-" +
-                gerarChaveAntibiogramas(isolado.getAntibiogramasIsolado());
+        var idMicroorganismo = Optional.ofNullable(isolado.getMicroorganismo())
+                .map(Microorganismo::getIdMicroorganismo)
+                .orElse(0L); // ou null, ou "vazio", dependendo da estratégia
+
+        var idPerfilResistencia = Optional.ofNullable(isolado.getPerfilResistenciaMicroorganismo())
+                .map(PerfilResistenciaMicroorganismo::getIdPerfilResistenciaMicroorganismo)
+                .orElse(0L);
+
+        var idMecanismoResistencia = Optional.ofNullable(isolado.getMecanismoResistenciaMicroorganismo())
+                .map(MecanismoResistenciaMicroorganismo::getIdMecanismoResistenciaMicroorganismo)
+                .orElse(0L);
+
+        var chaveAntibiogramas = gerarChaveAntibiogramas(isolado.getAntibiogramasIsolado());
+
+        return idMicroorganismo + "-" + idPerfilResistencia + "-" + idMecanismoResistencia + "-" + chaveAntibiogramas;
     }
+
 
 
     private String gerarChaveAntibiogramas(List<AntibiogramaIsolado> antibiogramas) {
