@@ -91,12 +91,12 @@ jobs:
       # --------------------------------------------------
       # 10) Deploy via Docker Compose no servidor local
       # --------------------------------------------------
+      - name: Parar e remover container antigo (se existir)
+        run: |
+          docker rm -f neonatalepidemiology_app || true
+
       - name: Deploy via Docker Compose (local)
         run: |
           cd /var/www
-
-          # Reconstrói a imagem “app” com o novo app.jar
           docker compose build app
-
-          # Sobe (ou recria) o container em background
           docker compose up -d
