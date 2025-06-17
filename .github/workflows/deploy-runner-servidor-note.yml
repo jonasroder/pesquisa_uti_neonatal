@@ -93,7 +93,7 @@ jobs:
       # --------------------------------------------------
       - name: Deploy via Docker Compose (local)
         run: |
-          cd /var/www/neonatalepidemiology
+          cd /var/www
 
           # Reconstrói a imagem “app” com o novo app.jar
           docker compose build app
