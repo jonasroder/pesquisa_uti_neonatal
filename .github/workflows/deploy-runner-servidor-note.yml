@@ -21,6 +21,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Garantir permissão no gradlew
+        run: chmod +x ./gradlew
+
       - name: Build do projeto (gera o JAR)
         run: ./gradlew buildWithFrontend
 
