@@ -24,7 +24,7 @@ public class LoginLog extends EntidadeRastreada {
     private Long idLoginLog;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = true)
     private Usuario usuario;
 
     @Column(name = "data_hora", nullable = false)

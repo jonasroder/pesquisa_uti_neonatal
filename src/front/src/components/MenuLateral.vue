@@ -2,8 +2,9 @@
 import {onMounted, ref, watch} from 'vue';
 import {loading} from "@/plugins/loadingService.js";
 import {useRouter} from "vue-router";
-import {getToken, getSessionUserData} from "@/service/common/tokenService";
-import {removeToken} from "@/service/common/tokenService";
+import { getSessionUserData } from "@/service/common/tokenService";
+import { authStore } from "@/service/common/authStore";
+import { serviceLogout } from "@/service/login";
 
 
 const router      = useRouter();
@@ -13,7 +14,7 @@ const nomeUsuario = ref("");
 const roleUsuario = ref("");
 
 onMounted(async () => {
-    if (!getToken()) {
+    if (!authStore.accessToken) {
         return;
     }
 
@@ -45,8 +46,8 @@ const isActive = (route) => {
     return route === router.currentRoute.value.path;
 };
 
-const logout = () => {
-    removeToken();
+const logout = async () => {
+    await serviceLogout();
     router.push('/login');
 };
 

@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Configuration
 @EnableWebSecurity
-@CrossOrigin
 public class SecurityConfiguration {
 
     @Autowired
@@ -30,7 +29,6 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        System.out.println("entrei");
         return httpSecurity
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -38,6 +36,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/authenticate/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/authenticate/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/authenticate/renew").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/authenticate/logout").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )

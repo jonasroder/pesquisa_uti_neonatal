@@ -1,0 +1,1 @@
+ALTER TABLE refresh_token ADD COLUMN remember_me TINYINT(1) NOT NULL DEFAULT 0;

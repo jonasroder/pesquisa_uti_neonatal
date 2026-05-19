@@ -5,9 +5,6 @@ const props = defineProps({
     modelValue: [String, Object]
 });
 
-const path = require('path');
-console.log(path)
-
 const fileInput = ref(null);
 const video = ref(null);
 const div_video = ref(null);

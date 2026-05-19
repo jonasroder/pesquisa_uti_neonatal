@@ -1,6 +1,5 @@
 package com.roderly.pesquisaneonatos.infra.security;
 
-import com.roderly.pesquisaneonatos.infra.GlobalExceptionHandler;
 import com.roderly.pesquisaneonatos.login.mapper.AuthenticationMapper;
 import com.roderly.pesquisaneonatos.usuario.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
@@ -30,16 +29,19 @@ public class SecurityFilter extends OncePerRequestFilter {
         try {
             var token = this.recoverToken(request);
             if (token != null) {
-                var usuario = tokenService.validateToken(token);
-                var userData = AuthenticationMapper.jsonUserDataFrontToUsuario(usuario);
+                var subject = tokenService.validateToken(token);
 
-                if (usuario != null && !usuario.isEmpty()) {
+                if (subject != null && !subject.isEmpty()) {
+                    var userData = AuthenticationMapper.jsonUserDataFrontToUsuario(subject);
                     UserDetails user = usuarioRepository.findByUsuario(userData.getUsername());
-                    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    if (user != null && user.isEnabled()) {
+                        var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
             }
-        } catch (GlobalExceptionHandler.TokenValidationException e) {
+        } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token inválido ou expirado");
             return;
@@ -47,10 +49,9 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-
     public String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
-        if (authHeader == null) return null;
-        return authHeader.replace("Bearer ", "");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
+        return authHeader.substring(7);
     }
 }

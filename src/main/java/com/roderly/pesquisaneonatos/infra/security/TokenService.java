@@ -9,24 +9,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roderly.pesquisaneonatos.login.dto.response.UserDataResponse;
 import com.roderly.pesquisaneonatos.login.mapper.AuthenticationMapper;
 import com.roderly.pesquisaneonatos.usuario.model.Usuario;
-import com.roderly.pesquisaneonatos.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @RequiredArgsConstructor
 public class TokenService {
+
     @Value("${api.security.token.secret}")
     private String secret;
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private final UsuarioRepository usuarioRepository;
 
-    public String generateToken(Usuario usuario){
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public String generateToken(Usuario usuario) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             UserDataResponse userDataResponse = AuthenticationMapper.usuarioToUserDataResponse(usuario);
@@ -38,21 +37,18 @@ public class TokenService {
                 throw new RuntimeException("Erro ao converter dados do usuário para JSON", e);
             }
 
-
-            String token = JWT.create()
+            return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(userJsonString)
                     .withExpiresAt(getExpireTimeToken())
                     .sign(algorithm);
 
-            return token;
-
-        } catch (JWTCreationException exception){
+        } catch (JWTCreationException exception) {
             throw new RuntimeException("Erro ao gerar JWT de autenticação");
         }
     }
 
-    public String validateToken (String token){
+    public String validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
@@ -60,37 +56,12 @@ public class TokenService {
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException exception){
+        } catch (JWTVerificationException exception) {
             return "";
         }
     }
 
-
-    public String refreshToken(String oldToken) {
-        // Valida o token e extrai os dados do usuário
-        String usuarioJson = this.validateToken(oldToken);
-
-        if (usuarioJson == null || usuarioJson.isEmpty()) {
-            throw new JWTVerificationException("Token inválido ou expirado");
-        }
-
-        // Converte o JSON para um objeto Usuario
-        var user = AuthenticationMapper.jsonUserDataFrontToUsuario(usuarioJson);
-
-        Boolean isAtivo = usuarioRepository.isUsuarioAtivo(user.getIdUsuario());
-
-        if (isAtivo == null || !isAtivo) {
-            throw new JWTVerificationException("Usuário inativo. Operação não permitida.");
-        }
-
-        // Gera um novo token para o usuário válido
-        return this.generateToken(user);
+    private Instant getExpireTimeToken() {
+        return Instant.now().plus(30, ChronoUnit.MINUTES);
     }
-
-
-
-    private Instant getExpireTimeToken(){
-        return LocalDateTime.now().plusHours(8).toInstant(ZoneOffset.of("-03:00"));
-    }
-
 }

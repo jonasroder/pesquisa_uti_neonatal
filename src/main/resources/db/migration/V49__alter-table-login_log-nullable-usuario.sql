@@ -1,0 +1,1 @@
+ALTER TABLE login_log MODIFY COLUMN id_usuario BIGINT NULL;

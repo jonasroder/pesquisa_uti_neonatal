@@ -1,4 +1,4 @@
 package com.roderly.pesquisaneonatos.login.dto.request;
 
-public record Authentication(String usuario, String senha) {
+public record Authentication(String usuario, String senha, boolean rememberMe) {
 }

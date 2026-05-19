@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\jonas\\\\IdeaProjects\\\\pesquisa_uti_neonatal\\\\src\\\\front\" -Force | Select-Object Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){\"Directory\"}else{\"File\"}}} | Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\jonas\\\\IdeaProjects\\\\pesquisa_uti_neonatal\\\\src\\\\front\\\\src\" -Force | Select-Object Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){\"Directory\"}else{\"File\"}}} | Format-Table -AutoSize)",
+      "Bash(rm vue.config.js babel.config.js package-lock.json yarn.lock)",
+      "Bash(rm -rf node_modules)",
+      "Bash(yarn install *)",
+      "Bash(yarn start *)",
+      "Bash(yarn add *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jonas\\\\IdeaProjects\\\\pesquisa_uti_neonatal\\\\src\\\\main\\\\java\\\\com\\\\roderly\\\\pesquisaneonatos\" -Recurse -Directory)",
+      "Bash(Select-Object FullName)",
+      "Bash(Format-Table -AutoSize)"
+    ]
+  }
+}
