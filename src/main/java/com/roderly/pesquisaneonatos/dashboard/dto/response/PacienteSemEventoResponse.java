@@ -1,11 +1,10 @@
 package com.roderly.pesquisaneonatos.dashboard.dto.response;
 
-public record UltimosNeonatosCadastradosResponse(
+public record PacienteSemEventoResponse(
         Long idNeonato,
         String protocolo,
-        String dataNascimento,
         String dataInternacao,
-        String dataCadastro,
+        String ultimoEvento,
         String usuario
 ) {
 }

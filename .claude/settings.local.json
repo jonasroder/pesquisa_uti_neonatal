@@ -10,7 +10,11 @@
       "Bash(yarn add *)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jonas\\\\IdeaProjects\\\\pesquisa_uti_neonatal\\\\src\\\\main\\\\java\\\\com\\\\roderly\\\\pesquisaneonatos\" -Recurse -Directory)",
       "Bash(Select-Object FullName)",
-      "Bash(Format-Table -AutoSize)"
+      "Bash(Format-Table -AutoSize)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jonas\\\\IdeaProjects\\\\pesquisa_uti_neonatal\\\\src\\\\front\\\\src\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\jonas\\\\IdeaProjects\\\\pesquisa_uti_neonatal\\\\src\\\\main\\\\java\\\\com\\\\roderly\\\\pesquisaneonatos\" -Directory)"
     ]
   }
 }

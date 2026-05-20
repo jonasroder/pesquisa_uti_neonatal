@@ -8,7 +8,7 @@ const series = computed(() => props.dados.map(item => item.total));
 const labels = computed(() => props.dados.map(item => item.perfil));
 
 const chartOptions = computed(() => ({
-    chart: { type: 'donut' },
+    chart: { type: 'donut', fontFamily: 'Roboto, Arial, sans-serif' },
     labels: labels.value,
     legend: { position: 'bottom' },
     title: { text: 'Distribuição dos Perfis de Resistência (180 dias)' },

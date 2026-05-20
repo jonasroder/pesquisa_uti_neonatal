@@ -43,6 +43,7 @@ const chartOptions = computed(() => ({
         type: 'bar',
         stacked: true,
         toolbar: { show: true },
+        fontFamily: 'Roboto, Arial, sans-serif',
         animations: {
             enabled: true,
             easing: 'easeinout',

@@ -26,6 +26,7 @@ watchEffect(() => {
             type: 'line',
             height: 350,
             zoom: { enabled: false },
+            fontFamily: 'Roboto, Arial, sans-serif',
         },
         title: {
             text: 'Internações por Dia (30 dias)',

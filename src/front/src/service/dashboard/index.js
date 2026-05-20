@@ -65,4 +65,58 @@ export const getResistenciaPorAntimicrobiano = async () => {
 	}
 };
 
+export const getInternacoesEmAberto = async () => {
+	try {
+		const response = await axios.get(`/api/dashboard/internacoesEmAberto`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on getInternacoesEmAberto");
+	}
+};
+
+export const getListaInternacoesEmAberto = async () => {
+	try {
+		const response = await axios.get(`/api/dashboard/listaInternacoesEmAberto`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on getListaInternacoesEmAberto");
+	}
+};
+
+export const getMetricas = async () => {
+	try {
+		const response = await axios.get(`/api/dashboard/metricas`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on getMetricas");
+	}
+};
+
+export const getRankingMicroorganismos = async () => {
+	try {
+		const response = await axios.get(`/api/dashboard/rankingMicroorganismos`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on getRankingMicroorganismos");
+	}
+};
+
+export const getDistribuicaoPeso = async () => {
+	try {
+		const response = await axios.get(`/api/dashboard/distribuicaoPeso`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on getDistribuicaoPeso");
+	}
+};
+
+export const getPacientesSemEventos = async () => {
+	try {
+		const response = await axios.get(`/api/dashboard/pacientesSemEventos`);
+		return response.data;
+	} catch (e) {
+		return handleApiError(e, "Error on getPacientesSemEventos");
+	}
+};
+
 

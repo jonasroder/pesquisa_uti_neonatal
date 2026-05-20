@@ -1,50 +1,62 @@
 <script setup>
-import {onMounted, ref, watch} from 'vue';
-import {loading} from "@/plugins/loadingService.js";
-import {useRouter} from "vue-router";
+import { onMounted, ref, watch } from 'vue';
+import { useDisplay } from 'vuetify';
+import { loading } from "@/plugins/loadingService.js";
+import { useRouter } from "vue-router";
 import { getSessionUserData } from "@/service/common/tokenService";
 import { authStore } from "@/service/common/authStore";
 import { serviceLogout } from "@/service/login";
 
+const router         = useRouter();
+const { smAndDown }  = useDisplay();
+const menuLateral    = ref([]);
+const userData       = ref({});
+const nomeUsuario    = ref("");
+const roleUsuario    = ref("");
 
-const router      = useRouter();
-const menuLateral = ref([]);
-const userData    = ref({});
-const nomeUsuario = ref("");
-const roleUsuario = ref("");
+const iniciais = (nome) => {
+    if (!nome) return '?';
+    const partes = nome.trim().split(' ');
+    return partes.length >= 2
+        ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
+        : partes[0].substring(0, 2).toUpperCase();
+};
 
-onMounted(async () => {
-    if (!authStore.accessToken) {
-        return;
-    }
-
+const carregarMenu = () => {
     userData.value    = getSessionUserData();
-    nomeUsuario.value = userData.value.nome_completo.split(' ')[0];
-    roleUsuario.value = userData.value.id_role;
+    nomeUsuario.value = userData.value?.nome_completo ?? '';
+    roleUsuario.value = userData.value?.id_role;
 
-    loading.show();
-    let cachedMenu    = localStorage.getItem('cachedMenu');
-    menuLateral.value = cachedMenu ? JSON.parse(cachedMenu) : null;
-    loading.hide();
+    const cachedMenu  = localStorage.getItem('cachedMenu');
+    menuLateral.value = cachedMenu ? JSON.parse(cachedMenu) : [];
+};
+
+onMounted(() => {
+    if (authStore.accessToken) carregarMenu();
 });
 
-const props = defineProps({
-    drawer: Boolean
+watch(() => authStore.accessToken, (token) => {
+    if (token && menuLateral.value.length === 0) carregarMenu();
 });
+
+const props = defineProps({ drawer: Boolean });
+const emit  = defineEmits(['update:drawer']);
 
 const localDrawerState = ref(props.drawer);
 
-watch(() => props.drawer, (newVal) => {
-    localDrawerState.value = newVal;
-});
+watch(() => props.drawer, (val) => { localDrawerState.value = val; });
+watch(localDrawerState,   (val) => { emit('update:drawer', val); });
+
+const closeOnMobile = () => {
+    if (smAndDown.value) localDrawerState.value = false;
+};
 
 const navigateTo = (route) => {
     router.push(route);
+    closeOnMobile();
 };
 
-const isActive = (route) => {
-    return route === router.currentRoute.value.path;
-};
+const isActive = (route) => route === router.currentRoute.value.path;
 
 const logout = async () => {
     await serviceLogout();
@@ -52,42 +64,59 @@ const logout = async () => {
 };
 
 const abrirAdminPanel = () => {
-    router.push({name: 'Usuario-List'});
+    router.push({ name: 'Usuario-List' });
+    closeOnMobile();
 };
 </script>
 
 <template>
-    <v-navigation-drawer
-        v-model="localDrawerState"
-        color="white"
-        class="custom-drawer"
-    >
-        <v-list>
-            <v-list-item>
-                <div>
-                    <v-list-item-title class="user-info">
-                        {{ nomeUsuario }}
-                        <v-spacer/>
-                        <v-icon v-if="roleUsuario === 1" @click="abrirAdminPanel" class="hoverable-icon mr-3">fa-solid fa-wrench</v-icon>
-                        <v-icon @click="logout" class="hoverable-icon">fa-solid fa-arrow-right-from-bracket</v-icon>
-                    </v-list-item-title>
-                    <v-list-item-subtitle class="user-status">Logado</v-list-item-subtitle>
-                </div>
-            </v-list-item>
+    <v-navigation-drawer v-model="localDrawerState" class="nav-drawer">
 
-            <v-divider/>
+        <!-- Seção do usuário -->
+        <div class="user-section">
+            <div class="user-section__avatar">
+                {{ iniciais(nomeUsuario) }}
+            </div>
+            <div class="user-section__info">
+                <span class="user-section__name">{{ nomeUsuario?.split(' ')[0] }}</span>
+                <span class="user-section__status">
+                    <span class="status-dot" />
+                    Online
+                </span>
+            </div>
+            <div class="user-section__actions">
+                <button
+                    v-if="roleUsuario === 1"
+                    class="action-btn"
+                    title="Administração"
+                    @click="abrirAdminPanel"
+                >
+                    <i class="fa-solid fa-wrench" />
+                </button>
+                <button
+                    class="action-btn action-btn--logout"
+                    title="Sair"
+                    @click="logout"
+                >
+                    <i class="fa-solid fa-arrow-right-from-bracket" />
+                </button>
+            </div>
+        </div>
 
-            <template v-for="item in menuLateral">
-                <template v-if="!(roleUsuario === 2 && item.idRole === 1) ">
-                    <v-list-group
-                        v-if="item.subMenus && item.subMenus.length"
-                        :key="item.title"
-                    >
-                        <template #activator="{ props }">
+        <v-divider />
+
+        <!-- Menu -->
+        <v-list nav density="compact" class="nav-list">
+            <template v-for="item in menuLateral" :key="item.title">
+                <template v-if="!(roleUsuario === 2 && item.idRole === 1)">
+
+                    <v-list-group v-if="item.subMenus && item.subMenus.length">
+                        <template #activator="{ props: activatorProps }">
                             <v-list-item
-                                v-bind="props"
+                                v-bind="activatorProps"
                                 :prepend-icon="item.icon"
-                                class="list-item-title"
+                                class="nav-item"
+                                rounded="lg"
                             >
                                 {{ item.title }}
                             </v-list-item>
@@ -96,9 +125,9 @@ const abrirAdminPanel = () => {
                         <v-list-item
                             v-for="subItem in item.subMenus"
                             :key="subItem.title"
+                            :class="['nav-subitem', { 'nav-subitem--active': isActive(subItem.vueRouter.path) }]"
+                            rounded="lg"
                             @click="navigateTo(subItem.vueRouter.path)"
-                            :class="{'v-list-item--active': isActive(subItem.vueRouter.path)}"
-                            class="submenu-item"
                         >
                             {{ subItem.title }}
                         </v-list-item>
@@ -106,61 +135,152 @@ const abrirAdminPanel = () => {
 
                     <v-list-item
                         v-else
-                        :key="item.title"
-                        @click="navigateTo(item.vueRouter.path)"
-                        :class="{'v-list-item--active': isActive(item.vueRouter.path)}"
                         :prepend-icon="item.icon"
-                        class="list-item-title"
+                        :class="['nav-item', { 'nav-item--active': isActive(item.vueRouter?.path) }]"
+                        rounded="lg"
+                        @click="navigateTo(item.vueRouter.path)"
                     >
                         {{ item.title }}
                     </v-list-item>
+
                 </template>
             </template>
         </v-list>
+
     </v-navigation-drawer>
 </template>
 
-<style scoped>
-.custom-drawer {
-    border-right: 1px solid #ddd;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-    width: 260px;
-    background-color: #f9f9f9;
+<style lang="scss" scoped>
+.nav-drawer {
+    border-right: 1px solid #E2E8F0 !important;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04) !important;
 }
 
-.user-info {
+// ── Seção do usuário ─────────────────────────────────────
+.user-section {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    font-weight: 600;
-    font-size: 16px;
-    color: #444;
+    gap: 10px;
+    padding: 16px 14px;
+
+    &__avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #6fbfd9, #34568B);
+        color: #ffffff;
+        font-size: 0.78rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        letter-spacing: 0.5px;
+    }
+
+    &__info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    &__name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1E293B;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__status {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.72rem;
+        color: #94A3B8;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+    }
 }
 
-.user-status {
-    font-size: 12px;
-    color: #888;
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22C55E;
+    flex-shrink: 0;
 }
 
-.hoverable-icon:hover {
-    color: #1976D2;
-    transition: color 0.3s ease;
+.action-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #94A3B8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+        background: #F1F5F9;
+        color: #475569;
+    }
+
+    &--logout:hover {
+        background: #FEF2F2;
+        color: #EF4444;
+    }
 }
 
-.list-item-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
+// ── Itens de navegação ───────────────────────────────────
+.nav-list {
+    padding: 8px !important;
 }
 
-.submenu-item {
-    font-size: 13px;
-    color: #555;
-    margin-left: 20px;
+.nav-item {
+    font-size: 0.855rem !important;
+    font-weight: 500 !important;
+    color: #475569 !important;
+    margin-bottom: 2px;
+    min-height: 40px !important;
+
+    &--active {
+        background: #EFF6FF !important;
+        color: #1D4ED8 !important;
+        font-weight: 600 !important;
+    }
+
+    &:hover:not(.nav-item--active) {
+        background: #F8FAFC !important;
+    }
 }
 
-.v-list-item--active {
-    background-color: rgba(25, 118, 210, 0.1);
-    border-left: 4px solid #1976D2;
+.nav-subitem {
+    font-size: 0.82rem !important;
+    color: #64748B !important;
+    padding-left: 40px !important;
+    min-height: 36px !important;
+    margin-bottom: 1px;
+
+    &--active {
+        background: #EFF6FF !important;
+        color: #1D4ED8 !important;
+        font-weight: 600 !important;
+    }
+
+    &:hover:not(.nav-subitem--active) {
+        background: #F8FAFC !important;
+    }
 }
 </style>

@@ -27,7 +27,8 @@ const chartOptions = computed(() => ({
     chart: {
         type: 'bar',
         toolbar: { show: true },
-        stacked: false
+        stacked: false,
+        fontFamily: 'Roboto, Arial, sans-serif'
     },
     plotOptions: {
         bar: {

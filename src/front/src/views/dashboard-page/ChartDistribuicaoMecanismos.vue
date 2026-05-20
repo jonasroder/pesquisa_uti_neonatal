@@ -8,7 +8,7 @@ const series = computed(() => props.dados.map(item => item.total));
 const labels = computed(() => props.dados.map(item => item.mecanismo));
 
 const chartOptions = computed(() => ({
-    chart: { type: 'pie' },
+    chart: { type: 'pie', fontFamily: 'Roboto, Arial, sans-serif' },
     labels: labels.value,
     legend: { position: 'bottom' },
     title: { text: 'Distribuição dos Mecanismos de Resistência (180 dias)' },

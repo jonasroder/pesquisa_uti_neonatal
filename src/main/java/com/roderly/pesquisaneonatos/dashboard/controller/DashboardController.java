@@ -2,6 +2,8 @@ package com.roderly.pesquisaneonatos.dashboard.controller;
 
 import com.roderly.pesquisaneonatos.dashboard.dto.response.*;
 import com.roderly.pesquisaneonatos.dashboard.service.DashboardService;
+import com.roderly.pesquisaneonatos.dashboard.dto.response.DashboardMetricasResponse;
+import com.roderly.pesquisaneonatos.dashboard.dto.response.PacienteSemEventoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,5 +64,41 @@ public class DashboardController {
     @GetMapping("/resistenciaAntimicrobiano")
     public List<AntimicrobianoResistenciaResponse> getAntimicrobianos() {
         return dashboardService.getResistenciaPorAntimicrobiano();
+    }
+
+
+    @GetMapping("/internacoesEmAberto")
+    public ResponseEntity<Long> getInternacoesEmAberto() {
+        return ResponseEntity.ok(dashboardService.getInternacoesEmAberto());
+    }
+
+
+    @GetMapping("/listaInternacoesEmAberto")
+    public ResponseEntity<List<UltimosNeonatosCadastradosResponse>> getListaInternacoesEmAberto() {
+        return ResponseEntity.ok(dashboardService.getListaInternacoesEmAberto());
+    }
+
+
+    @GetMapping("/metricas")
+    public ResponseEntity<DashboardMetricasResponse> getMetricas() {
+        return ResponseEntity.ok(dashboardService.getMetricas());
+    }
+
+
+    @GetMapping("/rankingMicroorganismos")
+    public ResponseEntity<List<PerfilResistenciaDistribuicaoResponse>> getRankingMicroorganismos() {
+        return ResponseEntity.ok(dashboardService.getRankingMicroorganismos());
+    }
+
+
+    @GetMapping("/distribuicaoPeso")
+    public ResponseEntity<List<PerfilResistenciaDistribuicaoResponse>> getDistribuicaoPeso() {
+        return ResponseEntity.ok(dashboardService.getDistribuicaoPesoNascimento());
+    }
+
+
+    @GetMapping("/pacientesSemEventos")
+    public ResponseEntity<List<PacienteSemEventoResponse>> getPacientesSemEventos() {
+        return ResponseEntity.ok(dashboardService.getPacientesSemEventosRecentes());
     }
 }

@@ -7,6 +7,7 @@ import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @RequiredArgsConstructor
 public class DashboardMapper {
@@ -16,6 +17,7 @@ public class DashboardMapper {
                 neonato.getIdNeonato(),
                 neonato.getProntuario(),
                 DateUtil.LocalDateToDateBR(neonato.getDataNascimento()),
+                DateUtil.LocalDateToDateBR(neonato.getDataInternacao()),
                 DateUtil.LocalDateToDateBR(neonato.getCriadoEm()),
                 StringUtils.getPrimeiroEUltimoNome(neonato.getCriadoPor().getNomeCompleto())
         );
@@ -49,6 +51,37 @@ public class DashboardMapper {
 
     public static AntimicrobianoResistenciaResponse toAntimicrobianoResponse(Object[] obj) {
         return new AntimicrobianoResistenciaResponse((String) obj[0], (String) obj[1], ((Number) obj[2]).longValue());
+    }
+
+
+    public static PacienteSemEventoResponse toPacienteSemEventoResponse(Object[] row) {
+        String ultimoEvento = null;
+        if (row[3] != null) {
+            if (row[3] instanceof Date d) {
+                ultimoEvento = DateUtil.LocalDateToDateBR(d.toLocalDate());
+            } else if (row[3] instanceof Timestamp ts) {
+                ultimoEvento = DateUtil.LocalDateToDateBR(ts.toLocalDateTime());
+            }
+        }
+        return new PacienteSemEventoResponse(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                DateUtil.LocalDateToDateBR(((Date) row[2]).toLocalDate()),
+                ultimoEvento,
+                StringUtils.getPrimeiroEUltimoNome((String) row[4])
+        );
+    }
+
+
+    public static UltimosNeonatosCadastradosResponse mapInternacoesEmAberto(Object[] row) {
+        return new UltimosNeonatosCadastradosResponse(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                DateUtil.LocalDateToDateBR(((java.sql.Date) row[2]).toLocalDate()),
+                DateUtil.LocalDateToDateBR(((java.sql.Date) row[3]).toLocalDate()),
+                null,
+                StringUtils.getPrimeiroEUltimoNome((String) row[4])
+        );
     }
 
 

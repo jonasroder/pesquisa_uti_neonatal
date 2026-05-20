@@ -19,6 +19,20 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
     List<Neonato> findByIsActiveTrueOrderByDataInternacaoDesc();
 
 
+    @Query(value = "SELECT COUNT(*) FROM neonato WHERE data_desfecho IS NULL AND is_active = 1", nativeQuery = true)
+    Long countInternacoesEmAberto();
+
+
+    @Query(value = """
+            SELECT n.id_neonato, n.prontuario, n.data_nascimento, n.data_internacao, u.nome_completo
+            FROM neonato n
+            JOIN usuario u ON u.id_usuario = n.criado_por_id
+            WHERE n.data_desfecho IS NULL AND n.is_active = 1
+            ORDER BY n.data_internacao ASC
+            """, nativeQuery = true)
+    List<Object[]> findInternacoesEmAbertoList();
+
+
     @Query(value = """
             SELECT te.id_tipo_evento AS idTipoEvento,
                    te.descricao AS evento,
@@ -175,5 +189,106 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
                 ORDER BY a.descricao, rm.descricao;
             """, nativeQuery = true)
     List<Object[]> buscarResistenciaPorAntimicrobiano180Dias();
+
+
+    @Query(value = """
+            SELECT COALESCE(SUM(DATEDIFF(IFNULL(data_desfecho, CURDATE()), data_internacao)), 0)
+            FROM neonato
+            WHERE is_active = true
+              AND data_internacao <= CURDATE()
+              AND data_internacao >= CURDATE() - INTERVAL 180 DAY
+            """, nativeQuery = true)
+    Long getTotalPacientesDia180d();
+
+
+    @Query(value = """
+            SELECT COUNT(*)
+            FROM isolado_coleta ic
+            JOIN evento e ON e.id_evento = ic.id_evento
+            JOIN evento_entidade ee ON ee.id_evento = e.id_evento
+            WHERE e.data_evento >= CURDATE() - INTERVAL 180 DAY
+              AND e.is_active = TRUE
+              AND ic.desconsiderar_coleta = FALSE
+              AND ee.tipo_entidade = 'sitio_coleta'
+              AND ee.id_entidade NOT IN (4, 5, 7, 9)
+            """, nativeQuery = true)
+    Long countInfeccoesUltimos180d();
+
+
+    @Query(value = """
+            SELECT
+                SUM(CASE WHEN obito = 1 THEN 1 ELSE 0 END) AS total_obitos,
+                COUNT(*) AS total_desfechos
+            FROM neonato
+            WHERE is_active = true
+              AND data_desfecho IS NOT NULL
+              AND data_desfecho >= CURDATE() - INTERVAL 30 DAY
+            """, nativeQuery = true)
+    List<Object[]> getObitoStats30d();
+
+
+    @Query(value = """
+            SELECT AVG(DATEDIFF(data_desfecho, data_internacao))
+            FROM neonato
+            WHERE is_active = true
+              AND data_desfecho IS NOT NULL
+              AND data_desfecho >= CURDATE() - INTERVAL 90 DAY
+            """, nativeQuery = true)
+    Double getTempoMedioInternacao90d();
+
+
+    @Query(value = """
+            SELECT AVG(DATEDIFF(DATE(criado_em), data_internacao))
+            FROM neonato
+            WHERE is_active = true
+              AND data_internacao >= CURDATE() - INTERVAL 90 DAY
+            """, nativeQuery = true)
+    Double getAtrasoMedioCadastro();
+
+
+    @Query(value = """
+            SELECT m.acronimo AS descricao, COUNT(*) AS total
+            FROM isolado_coleta ic
+            JOIN evento e ON e.id_evento = ic.id_evento
+            JOIN microorganismo m ON m.id_microorganismo = ic.id_microorganismo
+            WHERE e.data_evento >= CURDATE() - INTERVAL 180 DAY
+              AND e.is_active = true
+              AND ic.desconsiderar_coleta = false
+            GROUP BY m.acronimo
+            ORDER BY total DESC
+            LIMIT 10
+            """, nativeQuery = true)
+    List<Object[]> buscarRankingMicroorganismos();
+
+
+    @Query(value = """
+            SELECT COALESCE(pn.descricao, 'Não informado') AS descricao, COUNT(*) AS total
+            FROM neonato n
+            LEFT JOIN peso_nascimento pn ON pn.id_peso_nascimento = n.id_peso_nascimento
+            WHERE n.is_active = true
+              AND n.data_internacao >= CURDATE() - INTERVAL 180 DAY
+            GROUP BY pn.descricao
+            ORDER BY total DESC
+            """, nativeQuery = true)
+    List<Object[]> buscarDistribuicaoPesoNascimento();
+
+
+    @Query(value = """
+            SELECT
+                n.id_neonato,
+                n.prontuario,
+                n.data_internacao,
+                MAX(e.data_evento) AS ultimo_evento,
+                u.nome_completo
+            FROM neonato n
+            JOIN usuario u ON u.id_usuario = n.criado_por_id
+            LEFT JOIN evento e ON e.id_neonato = n.id_neonato AND e.is_active = true
+            WHERE n.data_desfecho IS NULL
+              AND n.is_active = true
+            GROUP BY n.id_neonato, n.prontuario, n.data_internacao, u.nome_completo
+            HAVING MAX(e.data_evento) IS NULL OR MAX(e.data_evento) < CURDATE() - INTERVAL 7 DAY
+            ORDER BY MAX(e.data_evento) ASC, n.data_internacao ASC
+            """, nativeQuery = true)
+    List<Object[]> buscarPacientesSemEventosRecentes();
 }
 
