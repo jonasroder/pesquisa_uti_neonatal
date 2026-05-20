@@ -87,39 +87,35 @@ const handleBack = () => {
     <card-formulario title="Motivo Internação"
                      subtitle="Você pode editar as informações a qualquer momento">
 
-        <v-row>
-            <v-col cols="12">
-                <v-row>
-                    <v-col cols="12" sm="12" md="6" lg="6" xl="6" class="pb-0">
-                        <v-text-field
-                            label="Descrição"
-                            type="text"
-                            :error="!motivoInternacao.descricao && !camposObrigatorios"
-                            v-model="motivoInternacao.descricao"
-                        />
-                    </v-col>
+        <div class="form-body">
+            <v-row align="start">
+                <v-col cols="12" sm="12" md="5" lg="5" xl="5">
+                    <v-text-field
+                        label="Descrição"
+                        type="text"
+                        :error="!motivoInternacao.descricao && !camposObrigatorios"
+                        v-model="motivoInternacao.descricao"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                        <v-autocomplete
-                            label="Sistema Fisiológico"
-                            :items="optionsSistemaFisiologico"
-                            :error="!motivoInternacao.codigo && !camposObrigatorios"
-                            v-model="motivoInternacao.codigo"
-                        />
-                    </v-col>
+                <v-col cols="12" sm="12" md="5" lg="5" xl="5">
+                    <v-autocomplete
+                        label="Sistema Fisiológico"
+                        :items="optionsSistemaFisiologico"
+                        :error="!motivoInternacao.codigo && !camposObrigatorios"
+                        v-model="motivoInternacao.codigo"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="3" lg="2" xl="2" class="pb-0 pt-0">
-                        <v-switch
-                            class="d-flex justify-center"
-                            :true-value="true"
-                            :false-value="false"
-                            :label="motivoInternacao.isActive === true ? 'Ativo' : 'Inativo'"
-                            v-model="motivoInternacao.isActive"
-                        />
-                    </v-col>
-
-                </v-row>
-            </v-col>
-        </v-row>
+                <v-col cols="12" sm="12" md="2" lg="2" xl="2">
+                    <v-switch
+                        :true-value="true"
+                        :false-value="false"
+                        :label="motivoInternacao.isActive === true ? 'Ativo' : 'Inativo'"
+                        v-model="motivoInternacao.isActive"
+                    />
+                </v-col>
+            </v-row>
+        </div>
     </card-formulario>
 </template>

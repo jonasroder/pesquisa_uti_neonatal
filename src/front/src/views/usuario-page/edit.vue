@@ -108,86 +108,83 @@ const headers = ref([{
     <card-formulario title="Cadastro de Usuário"
                      subtitle="Você pode editar as informações a qualquer momento">
 
-        <v-row class="pa-2">
-            <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                <v-text-field
-                    label="Nome Completo"
-                    type="text"
-                    v-model="usuario.nomeCompleto"
-                    :error="!usuario.nomeCompleto && !camposObrigatorios"
-                />
-            </v-col>
+        <div class="form-body">
+            <v-row align="start">
+                <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+                    <v-text-field
+                        label="Nome Completo"
+                        type="text"
+                        v-model="usuario.nomeCompleto"
+                        :error="!usuario.nomeCompleto && !camposObrigatorios"
+                    />
+                </v-col>
 
-            <v-col cols="12" sm="12" md="3" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="CPF"
-                    type="text"
-                    v-maska:[maskCPF]
-                    v-model="usuario.cpf"
-                    :error="!usuario.cpf && !camposObrigatorios"
-                />
-            </v-col>
+                <v-col cols="12" sm="6" md="3" lg="3" xl="3">
+                    <v-text-field
+                        label="CPF"
+                        type="text"
+                        v-maska:[maskCPF]
+                        v-model="usuario.cpf"
+                        :error="!usuario.cpf && !camposObrigatorios"
+                    />
+                </v-col>
 
-            <v-col cols="12" sm="12" md="3" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="Telefone"
-                    type="text"
-                    v-maska:[maskCelular]
-                    v-model="usuario.telefone"
-                />
-            </v-col>
+                <v-col cols="12" sm="6" md="3" lg="3" xl="3">
+                    <v-text-field
+                        label="Telefone"
+                        type="text"
+                        v-maska:[maskCelular]
+                        v-model="usuario.telefone"
+                    />
+                </v-col>
 
+                <v-col cols="12" sm="6" md="2" lg="2" xl="2">
+                    <v-switch
+                        :true-value="true"
+                        :false-value="false"
+                        :label="usuario.isActive === true ? 'Ativo' : 'Inativo'"
+                        v-model="usuario.isActive"
+                    />
+                </v-col>
 
-            <v-col cols="12" sm="12" md="3" lg="2" xl="2" class="pb-0 pt-0">
-                <v-switch
-                    class="d-flex justify-center"
-                    :true-value="true"
-                    :false-value="false"
-                    :label="usuario.isActive === true ? 'Ativo' : 'Inativo'"
-                    v-model="usuario.isActive"
-                />
-            </v-col>
+                <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+                    <v-text-field
+                        label="Email"
+                        type="email"
+                        v-model="usuario.usuario"
+                        :error="!usuario.usuario && !camposObrigatorios"
+                    />
+                </v-col>
 
+                <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+                    <v-text-field
+                        label="Senha"
+                        type="password"
+                        v-model="usuario.senha"
+                    />
+                </v-col>
 
-            <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                <v-text-field
-                    label="Email"
-                    type="email"
-                    v-model="usuario.usuario"
-                    :error="!usuario.usuario && !camposObrigatorios"
-                />
-            </v-col>
+                <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+                    <v-autocomplete
+                        label="Permissões"
+                        :items="optionsRole"
+                        v-model="usuario.idRole"
+                        :error="!usuario.idRole && !camposObrigatorios"
+                    />
+                </v-col>
+            </v-row>
 
-            <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                <v-text-field
-                    label="Senha"
-                    type="password"
-                    v-model="usuario.senha"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                <v-autocomplete
-                    label="Permissões"
-                    :items="optionsRole"
-                    v-model="usuario.idRole"
-                    :error="!usuario.idRole && !camposObrigatorios"
-                />
-            </v-col>
-        </v-row>
-
-        <v-row class="pa-2">
             <v-data-table :headers="headers"
                           :items="logs"
                           :hover="true"
-                          class="elevation-1">
+                          class="elevation-1 mt-4">
                 <template #top>
                     <v-toolbar flat>
                         <v-toolbar-title>Histórico de Logins</v-toolbar-title>
                     </v-toolbar>
                 </template>
             </v-data-table>
-        </v-row>
+        </div>
 
     </card-formulario>
 </template>

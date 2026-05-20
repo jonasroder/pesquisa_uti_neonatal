@@ -235,17 +235,18 @@ watch(abaPagina, (newVal) => {
 
         <v-container fluid class="pa-0">
 
-            <div class="d-flex justify-end mb-2">
-                <a href="#" class="editable-name" @click.prevent="navigateToEditPage(id)">
-                    <b>Cadastro do Neonato <i class="fas fa-external-link-alt"></i></b>
-                </a>
-            </div>
-
             <v-card>
-                <v-tabs v-model="abaPagina" bg-color="primary">
-                    <v-tab value="1" @click="ocultarBotoesNavBar"><b>Procedimentos</b></v-tab>
-                    <v-tab value="2" @click="mostrarBotoesNavBar"><b>Isolados</b></v-tab>
-                </v-tabs>
+                <div class="tabs-bar">
+                    <v-tabs v-model="abaPagina" bg-color="primary" class="tabs-bar__tabs">
+                        <v-tab value="1" @click="ocultarBotoesNavBar"><b>Procedimentos</b></v-tab>
+                        <v-tab value="2" @click="mostrarBotoesNavBar"><b>Isolados</b></v-tab>
+                    </v-tabs>
+                    <a href="#" class="tab-record-link" @click.prevent="navigateToEditPage(id)">
+                        <i class="fa-solid fa-file-pen" />
+                        <span class="tab-record-link__text">Cadastro do Neonato</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square tab-record-link__arrow" />
+                    </a>
+                </div>
 
                 <v-card-text>
                     <v-window v-model="abaPagina">
@@ -276,14 +277,45 @@ watch(abaPagina, (newVal) => {
     margin-top: -9px !important;
 }
 
-.editable-name {
-    color: #2c3e50;
-    text-decoration: none;
-    cursor: pointer;
+.tabs-bar {
+    display: flex;
+    align-items: center;
+    background: #0882a0;
+    padding-right: 12px;
 }
 
-.editable-name:hover {
-    text-decoration: underline;
-    color: #3498db;
+.tabs-bar__tabs {
+    flex: 1;
+}
+
+.tab-record-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 7px;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.tab-record-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+}
+
+.tab-record-link__arrow {
+    font-size: 0.6rem;
+    opacity: 0.7;
+}
+
+@media (max-width: 480px) {
+    .tab-record-link__text { display: none; }
 }
 </style>

@@ -114,70 +114,63 @@ const handleBack = () => {
     <card-formulario title="Cadastro de Microorganismo"
                      subtitle="Você pode editar as informações a qualquer momento">
 
-        <v-row>
-            <v-col cols="12">
-                <v-row>
+        <div class="form-body">
+            <v-row align="start">
+                <v-col cols="12" sm="6" md="3" lg="3" xl="3">
+                    <v-autocomplete
+                        label="Gênero"
+                        :items="optionsGenero"
+                        :error="!microorganismo.idGenero && !camposObrigatorios"
+                        v-model="microorganismo.idGenero"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                        <v-autocomplete
-                            label="Gênero"
-                            :items="optionsGenero"
-                            :error="!microorganismo.idGenero && !camposObrigatorios"
-                            v-model="microorganismo.idGenero"
-                        />
-                    </v-col>
+                <v-col cols="12" sm="6" md="3" lg="3" xl="3">
+                    <v-autocomplete
+                        label="Tipo"
+                        :items="optionsClassificacaoMicroorganismo"
+                        :error="!microorganismo.idClassificacaoMicroorganismo && !camposObrigatorios"
+                        v-model="microorganismo.idClassificacaoMicroorganismo"
+                    />
+                </v-col>
 
+                <v-col cols="12" sm="6" md="3" lg="3" xl="3">
+                    <v-text-field
+                        label="Espécie"
+                        type="text"
+                        :error="!microorganismo.especie && !camposObrigatorios"
+                        v-model="microorganismo.especie"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                        <v-autocomplete
-                            label="Tipo"
-                            :items="optionsClassificacaoMicroorganismo"
-                            :error="!microorganismo.idClassificacaoMicroorganismo && !camposObrigatorios"
-                            v-model="microorganismo.idClassificacaoMicroorganismo"
-                        />
-                    </v-col>
+                <v-col cols="12" sm="6" md="3" lg="3" xl="3">
+                    <v-text-field
+                        label="Acrônimo"
+                        type="text"
+                        :error="!microorganismo.acronimo && !camposObrigatorios"
+                        v-model="microorganismo.acronimo"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                        <v-text-field
-                            label="Espécie"
-                            type="text"
-                            :error="!microorganismo.especie && !camposObrigatorios"
-                            v-model="microorganismo.especie"
-                        />
-                    </v-col>
+                <v-col cols="12" sm="6" md="10" lg="10" xl="10">
+                    <v-text-field
+                        label="Código"
+                        type="number"
+                        :error="!microorganismo.codigo && !camposObrigatorios"
+                        v-model="microorganismo.codigo"
+                        @blur="verivicarCodigo(microorganismo.codigo)"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                        <v-text-field
-                            label="Acrônimo"
-                            type="text"
-                            :error="!microorganismo.acronimo && !camposObrigatorios"
-                            v-model="microorganismo.acronimo"
-                        />
-                    </v-col>
-
-                    <v-col cols="12" sm="12" md="2" lg="6" xl="6" class="pb-0">
-                        <v-text-field
-                            label="Código"
-                            type="number"
-                            :error="!microorganismo.codigo && !camposObrigatorios"
-                            v-model="microorganismo.codigo"
-                            @blur="verivicarCodigo(microorganismo.codigo)"
-                        />
-                    </v-col>
-
-                    <v-col cols="12" sm="12" md="3" lg="2" xl="2" class="pt-0">
-                        <v-switch
-                            class="d-flex justify-center"
-                            :true-value="true"
-                            :false-value="false"
-                            :label="microorganismo.isActive === true ? 'Ativo' : 'Inativo'"
-                            v-model="microorganismo.isActive"
-                        />
-                    </v-col>
-
-
-                </v-row>
-            </v-col>
-        </v-row>
+                <v-col cols="12" sm="6" md="2" lg="2" xl="2">
+                    <v-switch
+                        :true-value="true"
+                        :false-value="false"
+                        :label="microorganismo.isActive === true ? 'Ativo' : 'Inativo'"
+                        v-model="microorganismo.isActive"
+                    />
+                </v-col>
+            </v-row>
+        </div>
     </card-formulario>
 </template>

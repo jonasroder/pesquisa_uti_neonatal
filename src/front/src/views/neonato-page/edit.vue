@@ -265,248 +265,475 @@ watch(() => neonato.ausenciaUTI.map(item => [item.dataSaidaUti, item.dataRetorno
     <card-formulario title="Cadastro de Neonato"
                      subtitle="Você pode editar o formulário a qualquer momento">
 
-        <v-btn v-if="roleUsuario === 1 && id" color="red" small variant="elevated" class="elevation-2" @click="apagarNeonato()">
-            Apagar Neonato
-        </v-btn>
-
-
-        <v-dialog v-model="dialog" max-width="500">
-            <v-card>
-                <v-card-title>Confirmar Exclusão</v-card-title>
-                <v-card-text>
-                    <p>Deseja realmente apagar o neonato?</p>
+        <v-dialog v-model="dialog" max-width="460">
+            <v-card rounded="lg">
+                <v-card-title class="dialog-title">Confirmar Exclusão</v-card-title>
+                <v-card-text class="dialog-text">
+                    Deseja realmente apagar este neonato? Esta ação não pode ser desfeita.
                 </v-card-text>
-                <v-card-actions>
-                    <v-btn variant="text" @click="cancelar">Cancelar</v-btn>
-                    <v-btn color="red" @click="confirmarApagar">Confirmar</v-btn>
+                <v-card-actions class="dialog-actions">
+                    <v-spacer />
+                    <button class="form-btn form-btn--ghost" @click="cancelar">Cancelar</button>
+                    <button class="form-btn form-btn--danger" @click="confirmarApagar">
+                        <i class="fa-solid fa-trash form-btn__icon" />
+                        Confirmar
+                    </button>
                 </v-card-actions>
             </v-card>
         </v-dialog>
 
+        <div class="form-body">
 
-        <div class="d-flex justify-end mb-4" v-if="id">
-            <a href="#" class="editable-name" @click.prevent="verProntuario(id)">
-                <h3>Prontuário do Neonato <i class="fas fa-external-link-alt"></i></h3>
-            </a>
-        </div>
+            <!-- Barra de ações -->
+            <div class="form-topbar">
+                <a v-if="id" class="record-link" @click.prevent="verProntuario(id)" href="#">
+                    <i class="fa-solid fa-file-medical record-link__icon" />
+                    Ver Prontuário
+                    <i class="fa-solid fa-arrow-up-right-from-square record-link__arrow" />
+                </a>
+                <div v-else class="record-link record-link--disabled">
+                    <i class="fa-solid fa-file-medical record-link__icon" />
+                    Prontuário disponível após salvar
+                </div>
+                <button v-if="roleUsuario === 1 && id" class="form-btn form-btn--danger-outline" @click="apagarNeonato">
+                    <i class="fa-solid fa-trash form-btn__icon" />
+                    Excluir
+                </button>
+            </div>
 
-        <v-row>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="Prontuário*"
-                    type="text"
-                    v-model="neonato.prontuario"
-                    :error="!neonato.prontuario && !camposObrigatorios"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="Data de Nascimento"
-                    type="date"
-                    v-model="neonato.dataNascimento"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="Data de Internação"
-                    type="date"
-                    v-model="neonato.dataInternacao"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Sexo"
-                    :items="optionsSexo"
-                    v-model="neonato.idSexo"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="Peso ao Nascimento (g)"
-                    type="number"
-                    v-model="neonato.pesoGramas"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Classificação do peso ao nascer"
-                    :items="optionsPesoNascimento"
-                    v-model="neonato.idPesoNascimento"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Local Nascimento"
-                    :items="optionsLocalNascimento"
-                    v-model="neonato.idLocalNascimento"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Idade Gestacional"
-                    :items="optionsIdadeGestacional"
-                    v-model="neonato.idIdadeGestacional"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Tipo de Parto"
-                    :items="optionsTipoParto"
-                    v-model="neonato.idTipoParto"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Bolsa Rota"
-                    :items="optionsRoturaMembrana"
-                    v-model="neonato.idRoturaMembrana"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="APGAR 1'"
-                    type="number"
-                    v-model="neonato.apgar1"
-                    :rules="apgarRules"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="APGAR 5'"
-                    type="number"
-                    v-model="neonato.apgar5"
-                    :rules="apgarRules"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Causa da Internação"
-                    :items="optionsMotivoInternacao"
-                    v-model="neonato.idMotivoInternacao"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Sítio Malformação Congênita"
-                    :items="optionsSitioMalformacao"
-                    v-model="neonato.idSitioMalformacao"
-                    multiple
-                    chips
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-text-field
-                    label="Data do Desfecho"
-                    type="date"
-                    v-model="neonato.dataDesfecho"
-                />
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-autocomplete
-                    label="Causa do Óbito"
-                    :items="optionsCausaObito"
-                    v-model="neonato.idCausaObito"
-                />
-            </v-col>
-            <!--
-                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                        <v-radio-group v-model="neonato.riscoInfeccioso" inline label="Risco Infeccioso">
-                            <v-radio label="Sim" :value="true"/>
-                            <v-radio label="Não" :value="false"/>
-                        </v-radio-group>
-                    </v-col>
-
-                    <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                        <v-radio-group v-model="neonato.sepseClinica" inline label="Sepse Clínica">
-                            <v-radio label="Sim" :value="true"/>
-                            <v-radio label="Não" :value="false"/>
-                        </v-radio-group>
-                    </v-col>
-            -->
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-radio-group v-model="neonato.gemelar" inline label="Gemelar">
-                    <v-radio label="Sim" :value="true"/>
-                    <v-radio label="Não" :value="false"/>
-                </v-radio-group>
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="3" xl="3" class="pb-0">
-                <v-radio-group v-model="neonato.obito" inline label="Óbito">
-                    <v-radio label="Sim" :value="true"/>
-                    <v-radio label="Não" :value="false"/>
-                </v-radio-group>
-            </v-col>
-        </v-row>
-
-        <v-row>
-            <v-col cols="6">
-                <v-col cols="12" class="d-flex align-center pb-1">
-                    <h4 class="mr-2">Períodos de Ausência na UTI</h4>
-                    <v-btn size="x-small" icon color="cinzaAzulado" @click="adicionarPeriodoAusencia">
-                        <v-icon size="small">fas fa-plus</v-icon>
-                        <v-tooltip text="Adicionar novo Período"/>
-                    </v-btn>
-                </v-col>
-
-                <v-col cols="12" class="pb-2">
-                    <v-divider></v-divider>
-                </v-col>
-
-                <v-row v-for="(ausencia, i) in neonato.ausenciaUTI" :key="i" class="ma-0 pb-0">
-                    <v-col cols="12" sm="12" md="6" lg="6" xl="6" class="pb-0">
+            <!-- Seção: Identificação -->
+            <div class="form-section">
+                <div class="form-section__header">
+                    <span class="form-section__title">Identificação</span>
+                </div>
+                <v-row align="start">
+                    <v-col cols="12" sm="6" md="4" lg="3">
                         <v-text-field
-                            label="Data Saída UTI"
-                            type="date"
-                            v-model="ausencia.dataSaidaUti"
+                            label="Prontuário *"
+                            v-model="neonato.prontuario"
+                            :error="!neonato.prontuario && !camposObrigatorios"
                         />
                     </v-col>
-
-                    <v-col cols="12" sm="12" md="6" lg="6" xl="6" class="pb-0">
+                    <v-col cols="12" sm="6" md="4" lg="3">
                         <v-text-field
-                            label="Data Retorno UTI"
+                            label="Data de Nascimento"
                             type="date"
-                            v-model="ausencia.dataRetornoUti"
+                            v-model="neonato.dataNascimento"
                         />
                     </v-col>
-
-                    <v-col cols="12" class="pb-0" v-if="neonato.ausenciaUTI > 1 || neonato.ausenciaUTI.length !== i+1">
-                        <v-divider class="mb-5 pb-0"></v-divider>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-text-field
+                            label="Data de Internação"
+                            type="date"
+                            v-model="neonato.dataInternacao"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-autocomplete
+                            label="Sexo"
+                            :items="optionsSexo"
+                            v-model="neonato.idSexo"
+                        />
                     </v-col>
                 </v-row>
-            </v-col>
-        </v-row>
+            </div>
 
+            <!-- Seção: Dados Clínicos -->
+            <div class="form-section">
+                <div class="form-section__header">
+                    <span class="form-section__title">Dados Clínicos</span>
+                </div>
+                <v-row align="start">
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-text-field
+                            label="Peso ao Nascimento (g)"
+                            type="number"
+                            v-model="neonato.pesoGramas"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-autocomplete
+                            label="Classificação do Peso"
+                            :items="optionsPesoNascimento"
+                            v-model="neonato.idPesoNascimento"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-autocomplete
+                            label="Local de Nascimento"
+                            :items="optionsLocalNascimento"
+                            v-model="neonato.idLocalNascimento"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-autocomplete
+                            label="Idade Gestacional"
+                            :items="optionsIdadeGestacional"
+                            v-model="neonato.idIdadeGestacional"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-autocomplete
+                            label="Tipo de Parto"
+                            :items="optionsTipoParto"
+                            v-model="neonato.idTipoParto"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-autocomplete
+                            label="Bolsa Rota"
+                            :items="optionsRoturaMembrana"
+                            v-model="neonato.idRoturaMembrana"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-text-field
+                            label="APGAR 1'"
+                            type="number"
+                            v-model="neonato.apgar1"
+                            :rules="apgarRules"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-text-field
+                            label="APGAR 5'"
+                            type="number"
+                            v-model="neonato.apgar5"
+                            :rules="apgarRules"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-autocomplete
+                            label="Causa da Internação"
+                            :items="optionsMotivoInternacao"
+                            v-model="neonato.idMotivoInternacao"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="12" md="8" lg="6">
+                        <v-autocomplete
+                            label="Sítio de Malformação Congênita"
+                            :items="optionsSitioMalformacao"
+                            v-model="neonato.idSitioMalformacao"
+                            multiple
+                            chips
+                            closable-chips
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <div class="radio-field">
+                            <span class="radio-field__label">Gemelar</span>
+                            <div class="radio-field__options">
+                                <label :class="['radio-btn', { 'radio-btn--on': neonato.gemelar === true }]">
+                                    <input type="radio" :value="true" v-model="neonato.gemelar" />
+                                    Sim
+                                </label>
+                                <label :class="['radio-btn', { 'radio-btn--on': neonato.gemelar === false }]">
+                                    <input type="radio" :value="false" v-model="neonato.gemelar" />
+                                    Não
+                                </label>
+                            </div>
+                        </div>
+                    </v-col>
+                </v-row>
+            </div>
+
+            <!-- Seção: Desfecho -->
+            <div class="form-section">
+                <div class="form-section__header">
+                    <span class="form-section__title">Desfecho</span>
+                </div>
+                <v-row align="start">
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-text-field
+                            label="Data do Desfecho"
+                            type="date"
+                            v-model="neonato.dataDesfecho"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <v-autocomplete
+                            label="Causa do Óbito"
+                            :items="optionsCausaObito"
+                            v-model="neonato.idCausaObito"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" lg="3">
+                        <div class="radio-field">
+                            <span class="radio-field__label">Óbito</span>
+                            <div class="radio-field__options">
+                                <label :class="['radio-btn', 'radio-btn--danger', { 'radio-btn--on': neonato.obito === true }]">
+                                    <input type="radio" :value="true" v-model="neonato.obito" />
+                                    Sim
+                                </label>
+                                <label :class="['radio-btn', { 'radio-btn--on': neonato.obito === false }]">
+                                    <input type="radio" :value="false" v-model="neonato.obito" />
+                                    Não
+                                </label>
+                            </div>
+                        </div>
+                    </v-col>
+                </v-row>
+            </div>
+
+            <!-- Seção: Ausências na UTI -->
+            <div class="form-section">
+                <div class="form-section__header">
+                    <span class="form-section__title">Períodos de Ausência na UTI</span>
+                    <button class="form-btn form-btn--add" @click="adicionarPeriodoAusencia">
+                        <i class="fa-solid fa-plus form-btn__icon" />
+                        Adicionar Período
+                    </button>
+                </div>
+
+                <div
+                    v-for="(ausencia, i) in neonato.ausenciaUTI"
+                    :key="i"
+                    class="ausencia-item"
+                >
+                    <span class="ausencia-item__num">{{ i + 1 }}</span>
+                    <div class="ausencia-item__fields">
+                        <v-text-field
+                            label="Data de Saída da UTI"
+                            type="date"
+                            v-model="ausencia.dataSaidaUti"
+                            hide-details="auto"
+                        />
+                        <v-text-field
+                            label="Data de Retorno à UTI"
+                            type="date"
+                            v-model="ausencia.dataRetornoUti"
+                            hide-details="auto"
+                        />
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </card-formulario>
 </template>
 
 
-<style scoped>
+<style lang="scss" scoped>
+.form-body {
+    padding: 24px 24px 36px;
 
-.editable-name {
-    color: #2c3e50;
-    text-decoration: none;
-    cursor: pointer;
+    @media (max-width: 600px) { padding: 16px 12px 28px; }
 }
 
-.editable-name:hover {
-    text-decoration: underline;
-    color: #3498db;
+/* ── Barra de ações ── */
+.form-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.record-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: #0882a0;
+    text-decoration: none;
+    padding: 7px 14px;
+    border: 1.5px solid #b2dce6;
+    border-radius: 8px;
+    background: #f0f9fb;
+    transition: background 0.15s, border-color 0.15s;
+
+    &:hover { background: #e0f4f8; border-color: #0882a0; }
+
+    &__icon  { font-size: 0.8rem; }
+    &__arrow { font-size: 0.6rem; opacity: 0.65; }
+
+    &--disabled {
+        color: #94A3B8;
+        border-color: #E2E8F0;
+        background: #F8FAFC;
+        pointer-events: none;
+        font-weight: 500;
+    }
+}
+
+/* ── Seções ── */
+.form-section {
+    margin-bottom: 32px;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+        border-bottom: 1.5px solid #F1F5F9;
+    }
+
+    &__title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.9px;
+        color: #94A3B8;
+    }
+}
+
+/* ── Botões de ação ── */
+.form-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 16px;
+    border-radius: 7px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+
+    &:active { transform: scale(0.98); }
+    &__icon  { font-size: 0.68rem; }
+
+    &--ghost {
+        background: #F1F5F9;
+        color: #475569;
+        border: 1.5px solid #E2E8F0;
+
+        &:hover { background: #E2E8F0; }
+    }
+
+    &--danger {
+        background: #DC2626;
+        color: #fff;
+        border: none;
+
+        &:hover { background: #B91C1C; }
+    }
+
+    &--danger-outline {
+        background: transparent;
+        color: #DC2626;
+        border: 1.5px solid #FECACA;
+
+        &:hover { background: #FEF2F2; border-color: #DC2626; }
+    }
+
+    &--add {
+        background: transparent;
+        color: #0882a0;
+        border: 1.5px solid #b2dce6;
+        padding: 5px 12px;
+        font-size: 0.78rem;
+
+        &:hover { background: #f0f9fb; border-color: #0882a0; }
+    }
+}
+
+/* ── Radio Sim/Não ── */
+.radio-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &__label {
+        font-size: 0.82rem;
+        color: #94A3B8;
+        font-weight: 400;
+        padding-left: 2px;
+    }
+
+    &__options {
+        display: flex;
+        gap: 6px;
+    }
+}
+
+.radio-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 18px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1.5px solid #E2E8F0;
+    color: #94A3B8;
+    background: #F8FAFC;
+    transition: all 0.15s;
+    user-select: none;
+
+    input[type="radio"] { display: none; }
+
+    &:hover:not(.radio-btn--on) { border-color: #CBD5E1; color: #64748B; }
+
+    &--on {
+        background: #e6f5f8;
+        border-color: #0882a0;
+        color: #0882a0;
+        font-weight: 600;
+    }
+
+    &--danger.radio-btn--on {
+        background: #FEF2F2;
+        border-color: #DC2626;
+        color: #DC2626;
+    }
+}
+
+/* ── Períodos de ausência ── */
+.ausencia-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #F8FAFC;
+    border: 1px solid #F1F5F9;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+
+    &__num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #E2E8F0;
+        color: #475569;
+        font-size: 0.72rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        margin-top: 10px;
+    }
+
+    &__fields {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+
+        @media (max-width: 600px) { grid-template-columns: 1fr; }
+    }
+}
+
+/* ── Dialog ── */
+.dialog-title {
+    font-size: 1rem !important;
+    font-weight: 700;
+    color: #0f2a45;
+    padding: 20px 20px 8px !important;
+}
+
+.dialog-text {
+    font-size: 0.875rem;
+    color: #475569;
+    padding: 0 20px 16px !important;
+}
+
+.dialog-actions {
+    padding: 0 16px 16px !important;
+    gap: 8px;
 }
 </style>

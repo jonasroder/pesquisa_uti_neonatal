@@ -91,41 +91,36 @@ const handleBack = () => {
     <card-formulario title="Cadastro Gênero Microorganismo"
                      subtitle="Você pode editar as informações a qualquer momento">
 
-        <v-row>
-            <v-col cols="12">
-                <v-row>
-                    <v-col cols="12" sm="12" md="3" lg="8" xl="8" class="pb-0">
-                        <v-text-field
-                            label="Descrição"
-                            type="text"
-                            :error="!genero.descricao && !camposObrigatorios"
-                            v-model="genero.descricao"
-                        />
-                    </v-col>
+        <div class="form-body">
+            <v-row align="start">
+                <v-col cols="12" sm="12" md="8" lg="8" xl="8">
+                    <v-text-field
+                        label="Descrição"
+                        type="text"
+                        :error="!genero.descricao && !camposObrigatorios"
+                        v-model="genero.descricao"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="2" lg="2" xl="2" class="pb-0">
-                        <v-text-field
-                            label="Código"
-                            type="number"
-                            :error="!genero.codigo && !camposObrigatorios"
-                            v-model="genero.codigo"
-                            @blur="verivicarCodigo(genero.codigo)"
-                        />
-                    </v-col>
+                <v-col cols="12" sm="6" md="2" lg="2" xl="2">
+                    <v-text-field
+                        label="Código"
+                        type="number"
+                        :error="!genero.codigo && !camposObrigatorios"
+                        v-model="genero.codigo"
+                        @blur="verivicarCodigo(genero.codigo)"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="3" lg="2" xl="2" class="pb-0 pt-0">
-                        <v-switch
-                            class="d-flex justify-center"
-                            :true-value="true"
-                            :false-value="false"
-                            :label="genero.isActive === true ? 'Ativo' : 'Inativo'"
-                            v-model="genero.isActive"
-                        />
-                    </v-col>
-
-
-                </v-row>
-            </v-col>
-        </v-row>
+                <v-col cols="12" sm="6" md="2" lg="2" xl="2">
+                    <v-switch
+                        :true-value="true"
+                        :false-value="false"
+                        :label="genero.isActive === true ? 'Ativo' : 'Inativo'"
+                        v-model="genero.isActive"
+                    />
+                </v-col>
+            </v-row>
+        </div>
     </card-formulario>
 </template>

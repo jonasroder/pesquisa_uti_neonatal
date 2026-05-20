@@ -10,19 +10,16 @@ export default createVuetify({
 		themes      : {
 			light: {
 				colors: {
-					primary   : '#6fbfd9',
-					secondary : '#b0bec5',
-					accent    : '#8c9eff',
-					background: '#d7e3e5',
+					primary   : '#0882a0',
+					secondary : '#64748B',
+					accent    : '#0e6a85',
+					background: '#EEF2F7',
 
-					barrasSperior: '#00bdda',
-					barraLateral : '#f6f8f8',
-					formArea     : '#ffffff',
-					azulEscuro   : '#34568B',
-					cinzaAzulado : '#9EADBA',
+					azulEscuro   : '#0f2a45',
+					cinzaAzulado : '#94A3B8',
 
-					textColor: '#9EADBA',
-					iconColor: '#9EADBA',
+					textColor: '#334155',
+					iconColor: '#64748B',
 				}
 			},
 			dark : {
@@ -60,33 +57,33 @@ export default createVuetify({
 			itemValue    : 'value',
 			variant      : 'outlined',
 			color        : 'primary',
-			density      : 'compact'
+			density      : 'comfortable',
 		},
 		VTextField   : {
 			variant: 'outlined',
 			color  : 'primary',
-			density: 'compact'
+			density: 'comfortable',
 		},
 		VTextarea    : {
 			variant: 'outlined',
 			color  : 'primary',
-			density: 'compact'
+			density: 'comfortable',
 		},
 		VRadio       : {
 			color: 'primary',
 		},
 		VRadioGroup  : {
 			color : 'primary',
-			inline: true
+			inline: true,
 		},
 		VSwitch      : {
-			color: 'azulEscuro',
-			inset: true
+			color: 'primary',
+			inset: true,
 		},
 		VFileInput   : {
 			variant: 'outlined',
 			color  : 'primary',
-			density: 'compact'
+			density: 'comfortable',
 		},
 		VTooltip     : {
 			activator: 'parent',

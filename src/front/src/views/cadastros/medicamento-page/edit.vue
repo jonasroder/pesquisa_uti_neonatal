@@ -107,51 +107,45 @@ const handleBack = () => {
     <card-formulario title="Cadastro de Medicamento"
                      subtitle="Você pode editar as informações a qualquer momento">
 
-        <v-row>
-            <v-col cols="12">
-                <v-row>
-                    <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                        <v-text-field
-                            label="Descrição"
-                            type="text"
-                            :error="!medicamento.descricao && !camposObrigatorios"
-                            v-model="medicamento.descricao"
-                        />
-                    </v-col>
+        <div class="form-body">
+            <v-row align="start">
+                <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+                    <v-text-field
+                        label="Descrição"
+                        type="text"
+                        :error="!medicamento.descricao && !camposObrigatorios"
+                        v-model="medicamento.descricao"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="3" lg="4" xl="4" class="pb-0">
-                        <v-autocomplete
-                            label="Classe Antimicrobiano"
-                            :items="optionsFabricanteMedicamento"
-                            :error="!medicamento.idClasseAntimicrobiano && !camposObrigatorios"
-                            v-model="medicamento.idClasseAntimicrobiano"
-                        />
-                    </v-col>
+                <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+                    <v-autocomplete
+                        label="Classe Antimicrobiano"
+                        :items="optionsFabricanteMedicamento"
+                        :error="!medicamento.idClasseAntimicrobiano && !camposObrigatorios"
+                        v-model="medicamento.idClasseAntimicrobiano"
+                    />
+                </v-col>
 
-                    <v-col cols="12" sm="12" md="2" lg="2" xl="2" class="pb-0">
-                        <v-text-field
-                            label="Código"
-                            type="number"
-                            :error="!medicamento.codigo && !camposObrigatorios"
-                            v-model="medicamento.codigo"
-                            @blur="verivicarCodigo(medicamento.codigo)"
-                        />
-                    </v-col>
+                <v-col cols="12" sm="6" md="2" lg="2" xl="2">
+                    <v-text-field
+                        label="Código"
+                        type="number"
+                        :error="!medicamento.codigo && !camposObrigatorios"
+                        v-model="medicamento.codigo"
+                        @blur="verivicarCodigo(medicamento.codigo)"
+                    />
+                </v-col>
 
-
-                    <v-col cols="12" sm="12" md="3" lg="2" xl="2" class="pb-0 pt-0">
-                        <v-switch
-                            class="d-flex justify-center"
-                            :true-value="true"
-                            :false-value="false"
-                            :label="medicamento.isActive === true ? 'Ativo' : 'Inativo'"
-                            v-model="medicamento.isActive"
-                        />
-                    </v-col>
-
-
-                </v-row>
-            </v-col>
-        </v-row>
+                <v-col cols="12" sm="6" md="2" lg="2" xl="2">
+                    <v-switch
+                        :true-value="true"
+                        :false-value="false"
+                        :label="medicamento.isActive === true ? 'Ativo' : 'Inativo'"
+                        v-model="medicamento.isActive"
+                    />
+                </v-col>
+            </v-row>
+        </div>
     </card-formulario>
 </template>

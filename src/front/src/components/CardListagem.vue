@@ -1,71 +1,91 @@
 <script setup>
-import {defineProps, onBeforeUnmount, onMounted, ref} from 'vue';
-import {useDisplay} from "vuetify";
-
 defineProps({
-    title: {
-        type: String,
-        required: true
-    },
-    subtitle: {
-        type: String,
-        default: ''
-    },
-    botao: {
-        type: String,
-        default: 'Novo Cadastro'
-    }
+    title   : { type: String, required: true },
+    subtitle: { type: String, default: '' },
+    botao   : { type: String, default: 'Novo Cadastro' }
 });
 
-
-const { smAndDown } = useDisplay();
-const paddingConf = ref(smAndDown.value ? 'pa-0' : '');
-
-const updatePaddingConf = () => {
-    paddingConf.value = smAndDown.value ? 'pa-0' : '';
-};
-
-onMounted(() => {
-    window.addEventListener('resize', updatePaddingConf);
-    updatePaddingConf();
-});
-
-onBeforeUnmount(() => {
-    window.removeEventListener('resize', updatePaddingConf);
-});
+defineEmits(['handleNew']);
 </script>
 
-
 <template>
-    <v-container :class="paddingConf">
-        <v-row justify="center" align="center"  class="d-flex  pa-0 fill-height border border-sm border-opacity-100 border-barrasSperior rounded" >
-            <v-col cols="12" :class="paddingConf">
-                <v-card>
-                    <v-row class="mb-2">
-                        <v-col cols="12" sm="12" md="6" lg="8">
-                            <v-card-title class="d-flex flex-column align-start text-wrap">
-                                <span class="text-h5">{{ $props.title }}</span>
-                                <small class="text-subtitle-1">{{ $props.subtitle }}</small>
-                            </v-card-title>
-                        </v-col>
-
-                        <v-col cols="12" sm="12" md="6" lg="4">
-                            <div class="d-flex justify-end mt-3 mr-2">
-                                <v-btn class="mr-2" color="azulEscuro" @click="$emit('handleNew')">{{ $props.botao }}</v-btn>
-                            </div>
-                        </v-col>
-                    </v-row>
-
-                    <v-divider></v-divider>
-
-                    <v-card-text :class="paddingConf">
-                        <v-form>
-                            <slot></slot>
-                        </v-form>
-                    </v-card-text>
-
-                </v-card>
-            </v-col>
-        </v-row>
-    </v-container>
+    <div class="list-page">
+        <div class="list-page__header">
+            <div>
+                <h1 class="list-page__title">{{ title }}</h1>
+                <p v-if="subtitle" class="list-page__subtitle">{{ subtitle }}</p>
+            </div>
+            <button class="page-btn" @click="$emit('handleNew')">
+                <i class="fa-solid fa-plus page-btn__icon" />
+                {{ botao }}
+            </button>
+        </div>
+        <div class="list-page__body">
+            <slot />
+        </div>
+    </div>
 </template>
+
+<style lang="scss" scoped>
+.list-page {
+    padding: 28px 24px;
+
+    @media (max-width: 600px) { padding: 16px 12px; }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    &__title {
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: #0f2a45;
+        margin: 0 0 4px;
+        line-height: 1.2;
+
+        @media (max-width: 600px) { font-size: 1.2rem; }
+    }
+
+    &__subtitle {
+        font-size: 0.83rem;
+        color: #94A3B8;
+        margin: 0;
+    }
+
+    &__body {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+        overflow: hidden;
+    }
+}
+
+.page-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    background: #0882a0;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+    box-shadow: 0 1px 3px rgba(8,130,160,0.25), 0 4px 12px rgba(8,130,160,0.15);
+    white-space: nowrap;
+
+    &:hover  { background: #07718c; box-shadow: 0 2px 6px rgba(8,130,160,0.3), 0 6px 16px rgba(8,130,160,0.2); }
+    &:active { transform: scale(0.98); }
+
+    &__icon { font-size: 0.72rem; }
+}
+</style>
