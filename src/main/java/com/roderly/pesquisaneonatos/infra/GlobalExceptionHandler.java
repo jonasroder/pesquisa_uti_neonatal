@@ -1,6 +1,7 @@
 package com.roderly.pesquisaneonatos.infra;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -63,6 +65,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request, HttpServletResponse response) {
         resetContentType(response);
+        log.error("Erro interno em {}: {}", request.getDescription(false), ex.getMessage(), ex);
         String message = "Um erro interno ocorreu. Por favor, contate o suporte.";
 
         ErrorDetails errorDetails = new ErrorDetails(

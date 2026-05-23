@@ -6,7 +6,7 @@ public class ErrorDetails {
     private Date timestamp;
     private String message;
     private String details;
-    private String errorCode; // Novo campo
+    private String errorCode;
 
     public ErrorDetails(Date timestamp, String message, String details, String errorCode) {
         super();
@@ -16,12 +16,9 @@ public class ErrorDetails {
         this.errorCode = errorCode;
     }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
+    public Date getTimestamp() { return timestamp; }
+    public String getMessage() { return message; }
+    public String getDetails() { return details; }
+    public String getErrorCode() { return errorCode; }
 }
 
