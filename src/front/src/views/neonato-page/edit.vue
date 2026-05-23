@@ -140,7 +140,7 @@ const handleSave = async () => {
 
     const verificacoes = [{
         dados : neonato,
-        campos: ['prontuario']
+        campos: ['prontuario', 'dataNascimento', 'dataInternacao']
     }];
 
     if (!verificarCamposObrigatorios(verificacoes)) {
@@ -316,16 +316,18 @@ watch(() => neonato.ausenciaUTI.map(item => [item.dataSaidaUti, item.dataRetorno
                     </v-col>
                     <v-col cols="12" sm="6" md="4" lg="3">
                         <v-text-field
-                            label="Data de Nascimento"
+                            label="Data de Nascimento *"
                             type="date"
                             v-model="neonato.dataNascimento"
+                            :error="!neonato.dataNascimento && !camposObrigatorios"
                         />
                     </v-col>
                     <v-col cols="12" sm="6" md="4" lg="3">
                         <v-text-field
-                            label="Data de Internação"
+                            label="Data de Internação *"
                             type="date"
                             v-model="neonato.dataInternacao"
+                            :error="!neonato.dataInternacao && !camposObrigatorios"
                         />
                     </v-col>
                     <v-col cols="12" sm="6" md="4" lg="3">

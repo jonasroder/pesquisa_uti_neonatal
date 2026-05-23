@@ -37,7 +37,7 @@ defineProps({
     </v-app-bar>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .barra-superior {
     background: linear-gradient(135deg, #0f2a45 0%, #0e6a85 100%) !important;
     color: #ffffff !important;

@@ -1,14 +1,17 @@
 package com.roderly.pesquisaneonatos.neonato.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public record NeonatoRequest(
         Long idNeonato,
         String nomeMae,
-        String prontuario,
-        LocalDate dataNascimento,
-        LocalDate dataInternacao,
+        @NotBlank String prontuario,
+        @NotNull LocalDate dataNascimento,
+        @NotNull LocalDate dataInternacao,
         LocalDate dataDesfecho,
         Boolean obito,
         Boolean gemelar,

@@ -2,12 +2,13 @@ package com.roderly.pesquisaneonatos.dashboard.mapper;
 
 import com.roderly.pesquisaneonatos.common.Utilitarios.DateUtil;
 import com.roderly.pesquisaneonatos.common.Utilitarios.StringUtils;
+import com.roderly.pesquisaneonatos.dashboard.dto.projections.InternacoesEmAbertoProjection;
+import com.roderly.pesquisaneonatos.dashboard.dto.projections.PacienteSemEventoProjection;
 import com.roderly.pesquisaneonatos.dashboard.dto.response.*;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 
 @RequiredArgsConstructor
 public class DashboardMapper {
@@ -54,33 +55,25 @@ public class DashboardMapper {
     }
 
 
-    public static PacienteSemEventoResponse toPacienteSemEventoResponse(Object[] row) {
-        String ultimoEvento = null;
-        if (row[3] != null) {
-            if (row[3] instanceof Date d) {
-                ultimoEvento = DateUtil.LocalDateToDateBR(d.toLocalDate());
-            } else if (row[3] instanceof Timestamp ts) {
-                ultimoEvento = DateUtil.LocalDateToDateBR(ts.toLocalDateTime());
-            }
-        }
+    public static PacienteSemEventoResponse toPacienteSemEventoResponse(PacienteSemEventoProjection p) {
         return new PacienteSemEventoResponse(
-                ((Number) row[0]).longValue(),
-                (String) row[1],
-                DateUtil.LocalDateToDateBR(((Date) row[2]).toLocalDate()),
-                ultimoEvento,
-                StringUtils.getPrimeiroEUltimoNome((String) row[4])
+                p.getIdNeonato(),
+                p.getProntuario(),
+                DateUtil.LocalDateToDateBR(p.getDataInternacao()),
+                DateUtil.LocalDateToDateBR(p.getUltimoEvento()),
+                StringUtils.getPrimeiroEUltimoNome(p.getNomeCompleto())
         );
     }
 
 
-    public static UltimosNeonatosCadastradosResponse mapInternacoesEmAberto(Object[] row) {
+    public static UltimosNeonatosCadastradosResponse mapInternacoesEmAberto(InternacoesEmAbertoProjection p) {
         return new UltimosNeonatosCadastradosResponse(
-                ((Number) row[0]).longValue(),
-                (String) row[1],
-                DateUtil.LocalDateToDateBR(((java.sql.Date) row[2]).toLocalDate()),
-                DateUtil.LocalDateToDateBR(((java.sql.Date) row[3]).toLocalDate()),
+                p.getIdNeonato(),
+                p.getProntuario(),
+                DateUtil.LocalDateToDateBR(p.getDataNascimento()),
+                DateUtil.LocalDateToDateBR(p.getDataInternacao()),
                 null,
-                StringUtils.getPrimeiroEUltimoNome((String) row[4])
+                StringUtils.getPrimeiroEUltimoNome(p.getNomeCompleto())
         );
     }
 

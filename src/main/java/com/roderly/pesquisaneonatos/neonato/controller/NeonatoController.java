@@ -5,6 +5,7 @@ import com.roderly.pesquisaneonatos.neonato.dto.request.NeonatoRequest;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoListResponse;
 import com.roderly.pesquisaneonatos.neonato.dto.response.NeonatoResponse;
 import com.roderly.pesquisaneonatos.neonato.service.NeonatoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class NeonatoController {
 
 
     @PostMapping("/save")
-    public ResponseEntity<ApiResponseDTO> save(@RequestBody NeonatoRequest request) throws IOException {
+    public ResponseEntity<ApiResponseDTO> save(@Valid @RequestBody NeonatoRequest request) throws IOException {
         ApiResponseDTO response = neonatoService.save(request);
         return ResponseEntity.ok(response);
     }

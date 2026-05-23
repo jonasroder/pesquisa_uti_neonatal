@@ -1,5 +1,7 @@
 package com.roderly.pesquisaneonatos.neonato.repository;
 
+import com.roderly.pesquisaneonatos.dashboard.dto.projections.InternacoesEmAbertoProjection;
+import com.roderly.pesquisaneonatos.dashboard.dto.projections.PacienteSemEventoProjection;
 import com.roderly.pesquisaneonatos.neonato.model.Neonato;
 import com.roderly.pesquisaneonatos.neonato.specification.NeonatoSpecification;
 import com.roderly.pesquisaneonatos.prontuario.dto.projections.EventoCountProjection;
@@ -27,13 +29,14 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
 
 
     @Query(value = """
-            SELECT n.id_neonato, n.prontuario, n.data_nascimento, n.data_internacao, u.nome_completo
+            SELECT n.id_neonato AS idNeonato, n.prontuario, n.data_nascimento AS dataNascimento,
+                   n.data_internacao AS dataInternacao, u.nome_completo AS nomeCompleto
             FROM neonato n
             JOIN usuario u ON u.id_usuario = n.criado_por_id
             WHERE n.data_desfecho IS NULL AND n.is_active = 1
             ORDER BY n.data_internacao ASC
             """, nativeQuery = true)
-    List<Object[]> findInternacoesEmAbertoList();
+    List<InternacoesEmAbertoProjection> findInternacoesEmAbertoList();
 
 
     @Query(value = """
@@ -278,11 +281,11 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
 
     @Query(value = """
             SELECT
-                n.id_neonato,
+                n.id_neonato AS idNeonato,
                 n.prontuario,
-                n.data_internacao,
-                MAX(e.data_evento) AS ultimo_evento,
-                u.nome_completo
+                n.data_internacao AS dataInternacao,
+                MAX(e.data_evento) AS ultimoEvento,
+                u.nome_completo AS nomeCompleto
             FROM neonato n
             JOIN usuario u ON u.id_usuario = n.criado_por_id
             LEFT JOIN evento e ON e.id_neonato = n.id_neonato AND e.is_active = true
@@ -292,6 +295,6 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
             HAVING MAX(e.data_evento) IS NULL OR MAX(e.data_evento) < CURDATE() - INTERVAL 7 DAY
             ORDER BY MAX(e.data_evento) ASC, n.data_internacao ASC
             """, nativeQuery = true)
-    List<Object[]> buscarPacientesSemEventosRecentes();
+    List<PacienteSemEventoProjection> buscarPacientesSemEventosRecentes();
 }
 

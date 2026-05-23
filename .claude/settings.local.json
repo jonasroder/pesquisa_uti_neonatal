@@ -17,7 +17,11 @@
       "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\jonas\\\\IdeaProjects\\\\pesquisa_uti_neonatal\\\\src\\\\main\\\\java\\\\com\\\\roderly\\\\pesquisaneonatos\" -Directory)",
       "Bash(Get-ChildItem *)",
       "Bash(curl -s http://localhost:8080/actuator/health)",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(./mvnw compile *)",
+      "Bash(mvn compile *)",
+      "PowerShell(.\\\\mvnw.cmd compile -q 2>&1 | Select-Object -Last 40)",
+      "PowerShell(.\\\\gradlew.bat compileJava 2>&1 | Select-Object -Last 50)"
     ]
   }
 }
