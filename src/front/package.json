@@ -23,6 +23,7 @@
 		"axios": "^1.6.1",
 		"core-js": "^3.8.3",
 		"maska": "^2.1.11",
+		"sockjs-client": "^1.6.1",
 		"vue": "^3.2.13",
 		"vue-router": "^4.2.5",
 		"vue3-apexcharts": "^1.8.0",

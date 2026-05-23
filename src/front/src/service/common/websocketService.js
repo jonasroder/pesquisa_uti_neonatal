@@ -1,4 +1,5 @@
 import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 import { ref } from 'vue';
 
 let stompClient = null;
@@ -6,11 +7,8 @@ let stompClient = null;
 export const lastDownloadNotification = ref(null);
 
 export const connectWebSocket = () => {
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const brokerURL = `${protocol}://${window.location.host}/ws`;
-
     stompClient = new Client({
-        brokerURL,
+        webSocketFactory: () => new SockJS('/ws'),
         reconnectDelay: 5000,
         onConnect: () => {
             console.log('[WS] Conectado ao broker STOMP');
