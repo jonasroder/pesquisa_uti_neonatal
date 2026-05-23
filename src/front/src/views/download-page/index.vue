@@ -1,7 +1,8 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import {loading} from "@/plugins/loadingService";
 import {serviceDownloadDataExcel, serviceList} from "@/service/download";
+import {lastDownloadNotification} from "@/service/common/websocketService";
 import CardFormulario from "@/components/CardFormulario.vue";
 
 
@@ -11,10 +12,14 @@ const search = ref("");
 
 onMounted(async () => {
     loading.show();
-
     data.value = await serviceList();
-
     loading.hide();
+});
+
+watch(lastDownloadNotification, (notification) => {
+    if (!notification) return;
+    const item = data.value.find(d => d.idSolicitacaoDownload === notification.id);
+    if (item) item.status = notification.status;
 });
 
 

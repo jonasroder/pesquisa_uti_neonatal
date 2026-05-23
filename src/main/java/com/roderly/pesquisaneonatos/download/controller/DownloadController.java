@@ -37,10 +37,16 @@ public class DownloadController {
     @GetMapping("/{id}/file")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) throws IOException {
         byte[] fileData = downloadService.getFileData(id);
+        String descricao = downloadService.getDescricao(id);
+        String filename = sanitizeFilename(descricao) + ".xlsx";
 
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=arquivo_" + id + ".xlsx")
+                .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
                 .body(fileData);
+    }
+
+    private String sanitizeFilename(String name) {
+        return name.replaceAll("[\\\\/:*?\"<>|]", "").trim().replace(" ", "_");
     }
 
 }

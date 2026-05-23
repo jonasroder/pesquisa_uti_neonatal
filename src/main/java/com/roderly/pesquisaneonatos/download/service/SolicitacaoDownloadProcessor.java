@@ -7,6 +7,7 @@ import com.roderly.pesquisaneonatos.download.repository.SolicitacaoDownloadRepos
 import com.roderly.pesquisaneonatos.neonato.service.NeonatoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -23,6 +25,7 @@ public class SolicitacaoDownloadProcessor {
 
     private final SolicitacaoDownloadRepository solicitacaoDownloadRepository;
     private final NeonatoService neonatoService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Value("${file.storage.location}")
     private String fileStorageLocation;
@@ -46,13 +49,13 @@ public class SolicitacaoDownloadProcessor {
                 // Salvar arquivo em diretório
                 String filePath = salvarArquivo(solicitacao.getIdSolicitacaoDownload(), excelBytes);
 
-                // Atualiza o status para CONCLUIDO e salva
                 atualizarStatusSolicitacao(solicitacao, StatusSolicitacao.CONCLUIDO);
+                notificarStatus(solicitacao, StatusSolicitacao.CONCLUIDO);
                 System.out.println("Solicitação de relatório finalizada id: " + solicitacao.getIdSolicitacaoDownload());
 
             } catch (Exception e) {
-                // Em caso de falha, atualiza o status para FALHA e salva
                 atualizarStatusSolicitacao(solicitacao, StatusSolicitacao.FALHA);
+                notificarStatus(solicitacao, StatusSolicitacao.FALHA);
                 System.out.println("Solicitação de relatório com erro id: " + solicitacao.getIdSolicitacaoDownload());
                 e.printStackTrace();
             }
@@ -78,5 +81,13 @@ public class SolicitacaoDownloadProcessor {
     private void atualizarStatusSolicitacao(SolicitacaoDownload solicitacao, StatusSolicitacao status) {
         solicitacao.setStatus(status);
         solicitacaoDownloadRepository.save(solicitacao);
+    }
+
+    private void notificarStatus(SolicitacaoDownload solicitacao, StatusSolicitacao status) {
+        messagingTemplate.convertAndSend("/topic/downloads", Map.of(
+                "id",       solicitacao.getIdSolicitacaoDownload(),
+                "status",   status.toString(),
+                "descricao", solicitacao.getDescricao()
+        ));
     }
 }

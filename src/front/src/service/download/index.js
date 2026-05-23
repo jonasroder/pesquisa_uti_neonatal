@@ -19,7 +19,10 @@ export const serviceDownloadDataExcel = async (id) => {
 		const response = await axios.get(`/api/download/${id}/file`, {
 			responseType: 'blob'
 		});
-		downloadFile(response.data, `neonatos_${id}.xlsx`);
+		const disposition = response.headers['content-disposition'] || '';
+		const match = disposition.match(/filename="?([^";]+)"?/);
+		const filename = match?.[1]?.trim() || `neonatos_${id}.xlsx`;
+		downloadFile(response.data, filename);
 	} catch (error) {
 		console.error("Erro ao realizar o download", error);
 		handleApiError(error, "Erro ao realizar o download");

@@ -16,6 +16,9 @@ public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpec
 
     Optional<Neonato> findByProntuario(String prontuario);
 
+    @Query("SELECT n.criadoEm, n.criadoPor.nomeCompleto FROM Neonato n WHERE n.isActive = true ORDER BY n.criadoEm DESC")
+    List<Object[]> findUltimaColeta(org.springframework.data.domain.Pageable pageable);
+
     List<Neonato> findByIsActiveTrueOrderByDataInternacaoDesc();
 
 

@@ -13,6 +13,9 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     List<Evento> findByNeonatoIdNeonatoAndIsActiveTrue(Long idNeonato);
 
+    @Query("SELECT e.criadoEm, e.criadoPor.nomeCompleto FROM Evento e WHERE e.isActive = true ORDER BY e.criadoEm DESC")
+    List<Object[]> findUltimaColeta(org.springframework.data.domain.Pageable pageable);
+
 
     @Query("SELECT new com.roderly.pesquisaneonatos.prontuario.dto.response.ColetaIsoladoSemAntibiogramasResponse( " +
             "e.idEvento, " +

@@ -1,18 +1,16 @@
 package com.roderly.pesquisaneonatos.download.service;
 
-import com.roderly.pesquisaneonatos.cadastros_gerais.microorganismo.dto.request.MicroorganismoRequest;
-import com.roderly.pesquisaneonatos.cadastros_gerais.microorganismo.mapper.MicroorganismoMapper;
 import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
-import com.roderly.pesquisaneonatos.common.dto.response.ListagemCadastroResponse;
 import com.roderly.pesquisaneonatos.download.dto.request.DownloadExcelNeonatoRequest;
 import com.roderly.pesquisaneonatos.download.dto.response.DownloadExcelNeonatoResponse;
 import com.roderly.pesquisaneonatos.download.mapper.SolicitacaoDownloadMapper;
+import com.roderly.pesquisaneonatos.download.model.SolicitacaoDownload;
 import com.roderly.pesquisaneonatos.download.repository.SolicitacaoDownloadRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,17 +47,17 @@ public class DownloadService {
 
 
     public byte[] getFileData(Long id) throws IOException {
-        // Caminho completo para o arquivo baseado no ID
-        String filePath = fileStorageLocation + "/" + id + ".xlsx";
-
-        // Verifica se o arquivo existe
-        Path path = Paths.get(filePath);
+        Path path = Paths.get(fileStorageLocation, id + ".xlsx");
         if (!Files.exists(path)) {
-            throw new IOException("Arquivo não encontrado: " + filePath);
+            throw new IOException("Arquivo não encontrado: " + path);
         }
-
-        // Retorna os bytes do arquivo
         return Files.readAllBytes(path);
+    }
+
+    public String getDescricao(Long id) {
+        return solicitacaoDownloadRepository.findById(id)
+                .map(SolicitacaoDownload::getDescricao)
+                .orElse("download");
     }
 
 
