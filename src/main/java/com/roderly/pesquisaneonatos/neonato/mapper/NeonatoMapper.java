@@ -40,19 +40,17 @@ public class NeonatoMapper {
     public static int numeroAnalisesInfeccoes = 10;
 
     public static Neonato convertNeonatoRequestToNeonato(NeonatoRequest request) {
-
-        var sexo = request.idSexo() != null ? new Sexo(request.idSexo()) : null;
-        var pesoNascimento = request.idPesoNascimento() != null ? new PesoNascimento(request.idPesoNascimento()) : null;
-        var motivoInternacao = request.idMotivoInternacao() != null ? new MotivoInternacao(request.idMotivoInternacao()) : null;
-        var localNascimento = request.idLocalNascimento() != null ? new LocalNascimento(request.idLocalNascimento()) : null;
-        var idadeGestacional = request.idIdadeGestacional() != null ? new IdadeGestacional(request.idIdadeGestacional()) : null;
-        var tipoParto = request.idTipoParto() != null ? new TipoParto(request.idTipoParto()) : null;
-        var roturaMembrana = request.idRoturaMembrana() != null ? new RoturaMembrana(request.idRoturaMembrana()) : null;
-        var causaObito = request.idCausaObito() != null ? new CausaObito(request.idCausaObito()) : null;
-
-
         var neonato = new Neonato();
+        applyRequestToNeonato(neonato, request);
         neonato.setIdNeonato(request.idNeonato());
+        return neonato;
+    }
+
+    public static void updateNeonatoFromRequest(Neonato neonato, NeonatoRequest request) {
+        applyRequestToNeonato(neonato, request);
+    }
+
+    private static void applyRequestToNeonato(Neonato neonato, NeonatoRequest request) {
         neonato.setNomeMae(request.nomeMae());
         neonato.setProntuario(request.prontuario());
         neonato.setDataNascimento(request.dataNascimento());
@@ -65,16 +63,14 @@ public class NeonatoMapper {
         neonato.setApgar1(request.apgar1());
         neonato.setApgar5(request.apgar5());
         neonato.setPesoGramas(request.pesoGramas());
-        neonato.setSexo(sexo);
-        neonato.setPesoNascimento(pesoNascimento);
-        neonato.setMotivoInternacao(motivoInternacao);
-        neonato.setLocalNascimento(localNascimento);
-        neonato.setIdadeGestacional(idadeGestacional);
-        neonato.setTipoParto(tipoParto);
-        neonato.setRoturaMembrana(roturaMembrana);
-        neonato.setCausaObito(causaObito);
-
-        return neonato;
+        neonato.setSexo(request.idSexo() != null ? new Sexo(request.idSexo()) : null);
+        neonato.setPesoNascimento(request.idPesoNascimento() != null ? new PesoNascimento(request.idPesoNascimento()) : null);
+        neonato.setMotivoInternacao(request.idMotivoInternacao() != null ? new MotivoInternacao(request.idMotivoInternacao()) : null);
+        neonato.setLocalNascimento(request.idLocalNascimento() != null ? new LocalNascimento(request.idLocalNascimento()) : null);
+        neonato.setIdadeGestacional(request.idIdadeGestacional() != null ? new IdadeGestacional(request.idIdadeGestacional()) : null);
+        neonato.setTipoParto(request.idTipoParto() != null ? new TipoParto(request.idTipoParto()) : null);
+        neonato.setRoturaMembrana(request.idRoturaMembrana() != null ? new RoturaMembrana(request.idRoturaMembrana()) : null);
+        neonato.setCausaObito(request.idCausaObito() != null ? new CausaObito(request.idCausaObito()) : null);
     }
 
 

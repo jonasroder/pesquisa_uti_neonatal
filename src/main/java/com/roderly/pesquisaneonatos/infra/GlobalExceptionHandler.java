@@ -1,7 +1,9 @@
 package com.roderly.pesquisaneonatos.infra;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,7 +33,8 @@ public class GlobalExceptionHandler {
 
     // Handler para a exceção TokenValidationException
     @ExceptionHandler(TokenValidationException.class)
-    public ResponseEntity<?> handleTokenValidationException(TokenValidationException ex, WebRequest request) {
+    public ResponseEntity<?> handleTokenValidationException(TokenValidationException ex, WebRequest request, HttpServletResponse response) {
+        resetContentType(response);
         ErrorDetails errorDetails = new ErrorDetails(
                 new Date(),
                 ex.getMessage(),
@@ -44,7 +47,8 @@ public class GlobalExceptionHandler {
 
     // Handler para a exceção ResourceNotFoundException
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request, HttpServletResponse response) {
+        resetContentType(response);
         ErrorDetails errorDetails = new ErrorDetails(
                 new Date(),
                 ex.getMessage(),
@@ -57,8 +61,8 @@ public class GlobalExceptionHandler {
 
     // Handler para exceções gerais
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request) {
-
+    public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request, HttpServletResponse response) {
+        resetContentType(response);
         String message = "Um erro interno ocorreu. Por favor, contate o suporte.";
 
         ErrorDetails errorDetails = new ErrorDetails(
@@ -74,7 +78,8 @@ public class GlobalExceptionHandler {
 
     // Handler para DataIntegrityViolationException
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
+    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request, HttpServletResponse response) {
+        resetContentType(response);
         String message = "Falha na validação dos dados: " + ex.getMostSpecificCause().getMessage();
         ErrorDetails errorDetails = new ErrorDetails(
                 new Date(),
@@ -83,6 +88,12 @@ public class GlobalExceptionHandler {
                 "DATA_INTEGRITY_VIOLATION"
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    private void resetContentType(HttpServletResponse response) {
+        if (!response.isCommitted()) {
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        }
     }
 
 

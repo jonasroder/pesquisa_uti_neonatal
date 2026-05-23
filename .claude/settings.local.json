@@ -15,7 +15,9 @@
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Sort-Object)",
       "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\jonas\\\\IdeaProjects\\\\pesquisa_uti_neonatal\\\\src\\\\main\\\\java\\\\com\\\\roderly\\\\pesquisaneonatos\" -Directory)",
-      "Bash(Get-ChildItem *)"
+      "Bash(Get-ChildItem *)",
+      "Bash(curl -s http://localhost:8080/actuator/health)",
+      "Bash(curl *)"
     ]
   }
 }

@@ -66,7 +66,14 @@ public class NeonatoService {
             return ApiResponseDTO.failure("Número do prontuário já existente!");
         }
 
-        var neonato = NeonatoMapper.convertNeonatoRequestToNeonato(request);
+        Neonato neonato;
+        if (request.idNeonato() != null) {
+            neonato = neonatoRepository.findById(request.idNeonato())
+                    .orElseThrow(() -> new EntityNotFoundException("Neonato não encontrado com ID: " + request.idNeonato()));
+            NeonatoMapper.updateNeonatoFromRequest(neonato, request);
+        } else {
+            neonato = NeonatoMapper.convertNeonatoRequestToNeonato(request);
+        }
         var neonatoSalvo = neonatoRepository.save(neonato);
 
         var ausenciasUti = request.ausenciaUTI().stream()
