@@ -358,8 +358,10 @@ onUnmounted(() => window.removeEventListener('keydown', handleEnter));
 @media (max-width: 600px) {
     .login-layout {
         flex-direction: column;
+        overflow-x: hidden;
         overflow-y: auto;
         position: static;
+        width: 100%;
         min-height: 100dvh;
     }
 

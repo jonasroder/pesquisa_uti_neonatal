@@ -50,8 +50,10 @@ const setSaveAction  = (action) => { saveAction.value = action; };
     </v-app>
 
     <v-app v-else>
-        <v-main class="d-flex">
-            <router-view />
+        <v-main class="d-flex" style="overflow: hidden;">
+            <div style="width: 100%; min-width: 0; overflow: hidden;">
+                <router-view />
+            </div>
         </v-main>
     </v-app>
 
