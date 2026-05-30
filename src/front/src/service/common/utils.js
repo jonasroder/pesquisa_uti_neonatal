@@ -1,5 +1,6 @@
 import { setNotification } from "@/plugins/notificationService";
 import axios from "axios";
+import router from "@/router";
 
 /**
  * Extrai o valor do parâmetro 'id' da URL atual.
@@ -27,15 +28,7 @@ export const limparMascara = (valor) => String(valor).replace(/\D+/g, '');
  * @param {Object} parametros Um objeto contendo os parâmetros e seus valores.
  */
 export const adicionarParametrosURL = (parametros) => {
-	const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
-
-	const parametrosString = Object.entries(parametros).reduce((acc, [chave, valor], index) => {
-		const prefixo = index === 0 ? '?' : '&';
-		return `${acc}${prefixo}${encodeURIComponent(chave)}=${encodeURIComponent(valor)}`;
-	}, '');
-
-	const newUrl = baseUrl + parametrosString;
-	window.history.pushState({path: newUrl}, '', newUrl);
+	router.replace({ query: parametros });
 };
 
 

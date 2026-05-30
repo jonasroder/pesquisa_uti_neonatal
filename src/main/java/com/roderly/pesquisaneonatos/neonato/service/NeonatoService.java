@@ -61,8 +61,10 @@ public class NeonatoService {
     private static final Set<Long> COLONIZACOES = Set.of(4L, 5L, 7L, 9L);
 
     public ApiResponseDTO save(NeonatoRequest request) throws IOException {
-        var prontuarioExistente = neonatoRepository.findByProntuario(request.prontuario());
-        if (prontuarioExistente.isPresent() && request.idNeonato() == null) {
+        var prontuarioExistente = neonatoRepository.findByProntuarioAndIsActiveTrue(request.prontuario());
+        boolean prontuarioDuplicado = prontuarioExistente.isPresent() &&
+                !prontuarioExistente.get().getIdNeonato().equals(request.idNeonato());
+        if (prontuarioDuplicado) {
             return ApiResponseDTO.failure("Número do prontuário já existente!");
         }
 
@@ -80,8 +82,10 @@ public class NeonatoService {
                 .filter(ausenciaRequest -> ausenciaRequest.dataSaidaUti() != null || ausenciaRequest.dataRetornoUti() != null)
                 .map(ausenciaRequest -> NeonatoMapper.neonatoAusenciaUTIrequestToNeonatoAusenciaUTI(ausenciaRequest, neonatoSalvo))
                 .toList();
-        neonatoAusenciaUtiRepository.saveAll(ausenciasUti);
-
+        var ausenciasSalvas = neonatoAusenciaUtiRepository.saveAll(ausenciasUti);
+        var ausenciaUtiIds = ausenciasSalvas.stream()
+                .map(NeonatoAusenciaUTI::getIdNeonatoAusenciaUti)
+                .collect(Collectors.toList());
 
         var malformacaoList = request.idSitioMalformacao().stream()
                 .map(idStioMalformacao -> NeonatoMapper.neonatoToNeonatoSitioMalformacao(idStioMalformacao, neonatoSalvo))
@@ -91,7 +95,8 @@ public class NeonatoService {
         neonatoSitioMalformacaoRepository.deleteByNeonato(neonatoSalvo);
         neonatoSitioMalformacaoRepository.saveAll(malformacaoList);
 
-        return new ApiResponseDTO(neonatoSalvo.getIdNeonato(), "O registro foi salvo!");
+        return new ApiResponseDTO(neonatoSalvo.getIdNeonato(), null, "O registro foi salvo!",
+                Map.of("ausenciaUtiIds", ausenciaUtiIds), true);
     }
 
 

@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public interface NeonatoRepository extends JpaRepository<Neonato, Long>, JpaSpecificationExecutor<Neonato> {
 
-    Optional<Neonato> findByProntuario(String prontuario);
+    Optional<Neonato> findByProntuarioAndIsActiveTrue(String prontuario);
 
     @Query("SELECT n.criadoEm, n.criadoPor.nomeCompleto FROM Neonato n WHERE n.isActive = true ORDER BY n.criadoEm DESC")
     List<Object[]> findUltimaColeta(org.springframework.data.domain.Pageable pageable);

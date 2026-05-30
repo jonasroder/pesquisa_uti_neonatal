@@ -111,7 +111,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleEnter));
 
                 <v-checkbox
                     v-model="login.rememberMe"
-                    label="Manter conectado por 30 dias"
+                    label="Manter conectado por 7 dias"
                     color="primary"
                     density="compact"
                     hide-details

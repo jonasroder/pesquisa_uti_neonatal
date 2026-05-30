@@ -150,16 +150,21 @@ const handleSave = async () => {
     }
 
     const res = await serviceSave(neonato);
+    loading.hide();
 
     if (res.success) {
         id.value          = res.id;
         neonato.idNeonato = res.id;
         cpfDisabled.value = true;
-        adicionarParametrosURL({id: res.id});
-        await getDadosNeonato();
+        adicionarParametrosURL({ id: res.id });
+        const ausenciaUtiIds = res.additionalData?.ausenciaUtiIds ?? [];
+        let idx = 0;
+        neonato.ausenciaUTI.forEach(ausencia => {
+            if (ausencia.dataSaidaUti != null || ausencia.dataRetornoUti != null) {
+                ausencia.idNeonatosAusenciaUti = ausenciaUtiIds[idx++] ?? null;
+            }
+        });
     }
-
-    loading.hide();
 };
 
 

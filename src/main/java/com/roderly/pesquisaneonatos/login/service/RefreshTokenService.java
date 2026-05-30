@@ -20,7 +20,7 @@ public class RefreshTokenService {
 
     private static final String COOKIE_NAME = "refreshToken";
     private static final int SESSION_DAYS = 1;
-    private static final int REMEMBER_ME_DAYS = 30;
+    private static final int REMEMBER_ME_DAYS = 7;
 
     @Value("${app.security.cookie.secure:false}")
     private boolean cookieSecure;

@@ -6,6 +6,12 @@ import { getMenu, getRoutes } from '@/service/menu';
 
 const viewModules = import.meta.glob('/src/views/**/*.vue');
 
+// Captura o path real do browser antes que qualquer redirect do router o sobrescreva
+const initialPath = (() => {
+    const p = window.location.pathname + window.location.search;
+    return p !== '/' && p !== '/login' ? p : null;
+})();
+
 
 export const loadRoutes = async () => {
     try {
@@ -73,6 +79,10 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     if (!authStore.initialized) {
         await initializeAuth();
+        if (initialPath && authStore.accessToken) {
+            return next(initialPath);
+        }
+        return next(to.fullPath);
     }
 
     if (to.name === 'Login-Page') {

@@ -4,8 +4,8 @@ export function setNotification(message, type = 'warning') {
 	toast(message, {
 		type: type, // Pode ser 'success', 'info', 'warning', 'error', ou 'default'
 		position: 'bottom-right', // Pode ser 'top', 'bottom', 'top-right', etc.
-		timeout: 5000, // Tempo em milissegundos até a notificação desaparecer
-		showProgressBar: true, // Mostra a barra de progresso
+		autoClose: 5000,
+
 		closeOnClick: true, // Fecha a notificação ao clicar
 		pauseOnFocusLoss: false, // Mantém a notificação ao trocar de aba
 		pauseOnHover: true, // Pausa o tempo de desaparecimento ao passar o mouse
