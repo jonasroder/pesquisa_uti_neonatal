@@ -21,7 +21,8 @@
       "Bash(./mvnw compile *)",
       "Bash(mvn compile *)",
       "PowerShell(.\\\\mvnw.cmd compile -q 2>&1 | Select-Object -Last 40)",
-      "PowerShell(.\\\\gradlew.bat compileJava 2>&1 | Select-Object -Last 50)"
+      "PowerShell(.\\\\gradlew.bat compileJava 2>&1 | Select-Object -Last 50)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(k\\) for k in d.get\\('contexts',{}\\).values\\(\\) for k in k.get\\('mappings',{}\\).get\\('dispatcherServlet',{}\\).get\\('mappings',{}\\).keys\\(\\) if 'ws' in k.lower\\(\\) or 'socket' in k.lower\\(\\)]\")"
     ]
   }
 }
