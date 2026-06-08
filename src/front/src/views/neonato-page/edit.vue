@@ -355,7 +355,10 @@ watch(() => neonato.ausenciaUTI.map(item => [item.dataSaidaUti, item.dataRetorno
                         <v-text-field
                             label="Peso ao Nascimento (g)"
                             type="number"
+                            step="1"
+                            min="0"
                             v-model="neonato.pesoGramas"
+                            @keydown="(e) => (e.key === '.' || e.key === ',') && e.preventDefault()"
                         />
                     </v-col>
                     <v-col cols="12" sm="6" md="4" lg="3">
