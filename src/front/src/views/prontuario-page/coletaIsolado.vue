@@ -162,17 +162,19 @@ const fecharModal = () => { modalAberto.value = false; };
 const salvarEFechar = async () => {
     const coleta = coletaAtual.value;
 
-    if (coleta?.idMicroorganismo) {
-        loading.show();
-
-        for (const ab of coleta.antibiogramas) {
-            ab.isActive = !!(ab.idAntimicrobiano && ab.idResistenciaMicroorganismo);
-        }
-
-        await serviceSaveIsoladoColeta([coleta]);
-        loading.hide();
+    if (!coleta?.idMicroorganismo) {
+        setNotification('Selecione o microorganismo antes de salvar', 'error');
+        return;
     }
 
+    loading.show();
+
+    for (const ab of coleta.antibiogramas) {
+        ab.isActive = !!(ab.idAntimicrobiano && ab.idResistenciaMicroorganismo);
+    }
+
+    await serviceSaveIsoladoColeta([coleta]);
+    loading.hide();
     fecharModal();
 };
 

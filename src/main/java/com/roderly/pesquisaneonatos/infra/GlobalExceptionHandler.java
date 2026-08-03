@@ -66,14 +66,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request, HttpServletResponse response) {
         resetContentType(response);
-        log.error("Erro interno em {}: {}", request.getDescription(false), ex.getMessage(), ex);
-        String message = "Um erro interno ocorreu. Por favor, contate o suporte.";
+        String traceId = gerarTraceId();
+        log.error("[{}] Erro interno em {}: {}", traceId, request.getDescription(false), ex.getMessage(), ex);
+        String message = "Um erro interno ocorreu. Por favor, contate o suporte informando o código " + traceId + ".";
 
         ErrorDetails errorDetails = new ErrorDetails(
                 new Date(),
                 message,
                 request.getDescription(false),
-                "INTERNAL_SERVER_ERROR"
+                "INTERNAL_SERVER_ERROR",
+                traceId
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -102,12 +104,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request, HttpServletResponse response) {
         resetContentType(response);
+        String traceId = gerarTraceId();
+        log.error("[{}] Violação de integridade em {}: {}", traceId, request.getDescription(false), ex.getMostSpecificCause().getMessage(), ex);
         String message = "Falha na validação dos dados: " + ex.getMostSpecificCause().getMessage();
         ErrorDetails errorDetails = new ErrorDetails(
                 new Date(),
                 message,
                 request.getDescription(false),
-                "DATA_INTEGRITY_VIOLATION"
+                "DATA_INTEGRITY_VIOLATION",
+                traceId
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
@@ -119,5 +124,8 @@ public class GlobalExceptionHandler {
     }
 
 
+    private String gerarTraceId() {
+        return java.util.UUID.randomUUID().toString().substring(0, 8);
+    }
 
 }

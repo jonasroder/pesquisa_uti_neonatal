@@ -1,10 +1,12 @@
 package com.roderly.pesquisaneonatos.prontuario.service;
 
+import com.roderly.pesquisaneonatos.cadastros_gerais.antimicrobiano.model.Antimicrobiano;
 import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.model.MecanismoResistenciaMicroorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.mecanismo_resistencia_microorganismo.repository.MecanismoResistenciaMicrorganismoRepository;
 import com.roderly.pesquisaneonatos.cadastros_gerais.microorganismo.model.Microorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.model.PerfilResistenciaMicroorganismo;
 import com.roderly.pesquisaneonatos.cadastros_gerais.perfil_resistencia_microorganismo.repository.PerfilResistenciaMicrorganismoRepository;
+import com.roderly.pesquisaneonatos.cadastros_gerais.resistencia_microorganismo.model.ResistenciaMicroorganismo;
 import com.roderly.pesquisaneonatos.common.dto.response.ApiResponseDTO;
 import com.roderly.pesquisaneonatos.neonato.mapper.NeonatoMapper;
 import com.roderly.pesquisaneonatos.neonato.repository.NeonatoRepository;
@@ -20,6 +22,7 @@ import com.roderly.pesquisaneonatos.prontuario.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -148,7 +152,13 @@ public class ProntuarioService {
 
             for (AntibiogramaIsoladoRequest antibiogramaIsolado : coletaIsoladoRequest.antibiogramas()) {
 
-                if ((antibiogramaIsolado.idAntimicrobiano() == null && antibiogramaIsolado.idResistenciaMicroorganismo() == null) && antibiogramaIsolado.idAntibiogramaIsolado() == null) {
+                boolean incompleto = antibiogramaIsolado.idAntimicrobiano() == null || antibiogramaIsolado.idResistenciaMicroorganismo() == null;
+                if (incompleto) {
+                    if (antibiogramaIsolado.idAntimicrobiano() != null || antibiogramaIsolado.idResistenciaMicroorganismo() != null) {
+                        log.warn("Antibiograma incompleto descartado ao salvar isolado {} (evento {}): idAntimicrobiano={}, idResistenciaMicroorganismo={}",
+                                isolado.getIdIsoladoColeta(), coletaIsoladoRequest.idEvento(),
+                                antibiogramaIsolado.idAntimicrobiano(), antibiogramaIsolado.idResistenciaMicroorganismo());
+                    }
                     continue;
                 }
 
@@ -157,7 +167,9 @@ public class ProntuarioService {
             }
         }
 
-        verificarEExcluirDuplicatas(eventoRepository.findIdNeonatoByIdEvento(idEvento));
+        Long idNeonato = eventoRepository.findIdNeonatoByIdEvento(idEvento);
+        log.info("Coleta de isolado salva: {} registro(s), neonato {}, evento {}", request.size(), idNeonato, idEvento);
+        verificarEExcluirDuplicatas(idNeonato);
 
         return ApiResponseDTO.successMessage("O registro foi salvo!");
     }
@@ -185,6 +197,9 @@ public class ProntuarioService {
                 // Marca todos os registros como desconsiderados, exceto o primeiro (mais antigo)
                 for (int i = 1; i < grupoDuplicado.size(); i++) {
                     var duplicado = grupoDuplicado.get(i);
+                    log.info("Isolado {} (evento {}, neonato {}) marcado como desconsiderado por duplicidade com isolado {}",
+                            duplicado.getIdIsoladoColeta(), duplicado.getEvento().getIdEvento(), idNeonato,
+                            grupoDuplicado.get(0).getIdIsoladoColeta());
                     duplicado.setDesconsiderarColeta(true);
                     isoladoColetaRepository.save(duplicado);
                 }
@@ -216,9 +231,15 @@ public class ProntuarioService {
     private String gerarChaveAntibiogramas(List<AntibiogramaIsolado> antibiogramas) {
         // Gera uma chave única para os antibiogramas, considerando antimicrobianos e resistências
         return antibiogramas.stream()
-                .sorted(Comparator.comparing(a -> a.getAntimicrobiano().getIdAntimicrobiano()))
-                .map(a -> a.getAntimicrobiano().getIdAntimicrobiano() + "-" + a.getResistenciaMicroorganismo().getIdResistenciaMicroorganismo())
+                .sorted(Comparator.comparing(a -> idOu0(a.getAntimicrobiano(), Antimicrobiano::getIdAntimicrobiano)))
+                .map(a -> idOu0(a.getAntimicrobiano(), Antimicrobiano::getIdAntimicrobiano) + "-"
+                        + idOu0(a.getResistenciaMicroorganismo(), ResistenciaMicroorganismo::getIdResistenciaMicroorganismo))
                 .collect(Collectors.joining("|"));
+    }
+
+
+    private <T, R> Long idOu0(T entidade, java.util.function.Function<T, Long> extractor) {
+        return Optional.ofNullable(entidade).map(extractor).orElse(0L);
     }
 
 
