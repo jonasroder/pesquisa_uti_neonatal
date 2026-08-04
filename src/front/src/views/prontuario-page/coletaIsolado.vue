@@ -144,12 +144,8 @@ const verificarSeFungo = coleta => {
     const tipo         = microganismo.additionalData.id_classificacao_microorganismo;
 
     coleta.fungo                                = tipo === 3;
-    coleta.idMecanismoResistenciaMicroorganismo = 1;
-
-    if (coleta.fungo && (coleta.idPerfilResistenciaMicroorganismo !== 1 || coleta.idPerfilResistenciaMicroorganismo !== 5 || coleta.idPerfilResistenciaMicroorganismo === null)) {
-        coleta.idPerfilResistenciaMicroorganismo    = 1;
-        coleta.idMecanismoResistenciaMicroorganismo = null;
-    }
+    coleta.idPerfilResistenciaMicroorganismo    = 1; // Ausente por padrão, sobrescrito ao preencher antibiograma
+    coleta.idMecanismoResistenciaMicroorganismo = coleta.fungo ? null : 1;
 };
 
 watch(coletasIsolados, () => { props.onSave(coletasIsolados.value); }, { deep: true });
@@ -279,12 +275,12 @@ const opcoesPerfilFiltradas = (coleta) =>
                 <!-- Badges de perfil e mecanismo -->
                 <div class="isolado-card__badges">
                     <span
-                        v-if="coleta.idPerfilResistenciaMicroorganismo"
+                        v-if="coleta.idPerfilResistenciaMicroorganismo && coleta.idPerfilResistenciaMicroorganismo !== 1"
                         :class="['profile-badge', perfilClass(coleta.idPerfilResistenciaMicroorganismo)]"
                     >
                         {{ perfilText(coleta.idPerfilResistenciaMicroorganismo) }}
                     </span>
-                    <span v-if="!coleta.fungo && coleta.idMecanismoResistenciaMicroorganismo" class="mech-chip">
+                    <span v-if="!coleta.fungo && coleta.idMecanismoResistenciaMicroorganismo && coleta.idMecanismoResistenciaMicroorganismo !== 1" class="mech-chip">
                         {{ labelOf(optionsMecanismoReistencia, coleta.idMecanismoResistenciaMicroorganismo) }}
                     </span>
                 </div>
